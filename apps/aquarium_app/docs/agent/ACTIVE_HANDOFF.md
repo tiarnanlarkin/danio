@@ -1,14 +1,14 @@
 # Danio Active Handoff
 
-Status: WF-2026-07-11-011 runner-contract/single-writer closeout checkpoint; setup unit 5 is next after live Git closeout is verified
-Last updated: 2026-07-12 in the Tasks 6-7 closeout tree; live Git state remains the final merge/push authority
+Status: WF-2026-07-11-012 CAS writer-claim closeout checkpoint; setup unit 6 is next after live Git closeout is verified
+Last updated: 2026-07-12 in the Task 8 closeout tree; live Git state remains the final merge/push authority
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch at durable slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-11-011.
+- Latest workflow slice: WF-2026-07-11-012.
 - This handoff becomes authoritative only when its containing closeout commit is
   on clean, pushed, aligned `main`. If read from a temporary branch, treat it as
   a closeout candidate and use live Git commands instead.
@@ -16,7 +16,7 @@ Last updated: 2026-07-12 in the Tasks 6-7 closeout tree; live Git state remains 
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - The WF-2026-07-11-011 temporary workflow branch is deleted after its
+  - The WF-2026-07-11-012 temporary workflow branch is deleted after its
     verified fast-forward merge.
 
 ## Completed Product Slice
@@ -143,7 +143,7 @@ Last updated: 2026-07-12 in the Tasks 6-7 closeout tree; live Git state remains 
 - Plan commit: `129337d0`.
 - Plan SHA-256:
   `754236361DC82FA822337A9254318AB3505E8486D22E5480E253E88D9B732A83`.
-- The plan defines 13 implementation tasks sequenced as eight workflow setup
+- The plan defines 13 implementation tasks sequenced as nine workflow setup
   units before product execution. Product work remains blocked until authority,
   runner compatibility, coordinator-only writing, transition validation, and
   the no-side-effect rehearsal all pass.
@@ -288,17 +288,49 @@ Last updated: 2026-07-12 in the Tasks 6-7 closeout tree; live Git state remains 
   behavior, Android runtime, Figma, account, paid/cloud/provider,
   store/deploy, operational task, or external state changed.
 
+## Autonomous Workflow Setup Unit 5
+
+- Slice: `WF-2026-07-11-012`, Enforce CAS Writer Claims And Unknown-Push
+  Reconciliation.
+- Plan scope: Task 8 only from
+  `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
+- Clean parent input: `a0fd00c7373fd733a07aa115fb47d5da1c1242bb`.
+- Implementation commit: `723e89b4d8aee1ce9632f9105ab632907786f0af`.
+- Result:
+  - the exact staged run-state transition is validated before and after the
+    Docs gate, committed with required verification trailers, and offered by
+    at most one normal non-force `HEAD:main` push;
+  - the production push endpoint is captured and canonicalized once, then used
+    unchanged for bounded noninteractive push, reconciliation fetch, and final
+    rejection proof;
+  - accepted, rejected, `unknown_accepted`, `unknown_not_accepted`,
+    `unknown_unresolved`, `REMOTE_MOVED`, unconfirmed termination, and partial
+    cleanup recovery all fail closed without decrementing the unit budget;
+  - exact rejection cleanup holds a prepared CAS ref lock across worktree
+    removal and restores the exact clean candidate identity if the transaction
+    fails after removal;
+  - the disposable two-clone race proves exactly one fast-forward winner and a
+    `WRITER_CLAIM_LOST` loser from the same base revision;
+  - operational launch, operational automatic chaining, product work, and live
+    run state remain disabled.
+- Two repository-read-only reviewers found no remaining critical or important
+  findings on the final 43-scenario implementation.
+- Scope remained workflow scripts/tests/docs only. No app product behavior,
+  Android runtime, Figma, installed skill, account, paid/cloud/provider,
+  store/deploy, operational task, or external state changed.
+
 ## Autonomous Chain Authorization
 
 The user authorized 20 bounded sequential units on 2026-07-11. The count
 includes the unit currently being completed. WF-2026-07-11-007 consumed the
 planning unit once, WF-2026-07-11-008 consumed setup unit 1 once,
 WF-2026-07-11-009 consumed setup unit 2 once, and WF-2026-07-11-010 consumed
-setup unit 3 once. WF-2026-07-11-011 consumes setup unit 4 exactly once when
-this closeout tree is merged, pushed, clean, and aligned on `main`. The next
-setup task then starts with 15 including itself. This block is the bootstrap
-budget record until Task 13 creates operational run state; automatic
-operational chaining remains disabled meanwhile.
+setup unit 3 once. WF-2026-07-11-011 consumed setup unit 4 once.
+WF-2026-07-11-012 consumes setup unit 5 exactly once when this closeout tree is
+merged, pushed, clean, and aligned on `main`. The next setup task then starts
+with 14 including itself. This block is the bootstrap budget record until Task
+13 creates operational run state; automatic operational chaining remains
+disabled meanwhile.
 
 ```json
 {
@@ -306,9 +338,9 @@ operational chaining remains disabled meanwhile.
   "schema_version": 1,
   "authorization_id": "danio-phone-complete-local-2026-07-11",
   "total_approved_units": 20,
-  "consumed_units": 5,
-  "remaining_units_including_current": 15,
-  "last_closed_unit_id": "WF-2026-07-11-011",
+  "consumed_units": 6,
+  "remaining_units_including_current": 14,
+  "last_closed_unit_id": "WF-2026-07-11-012",
   "operational_state_path": null
 }
 ```
@@ -319,6 +351,36 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+WF-2026-07-11-012:
+
+- Task 8 RED: the disposable writer-claim fixture failed because
+  `invoke_autonomous_writer_claim.ps1` was absent.
+- Final Task 8 GREEN passed 43 disposable scenarios, including all five
+  transport results, one real-push unconfirmed-termination path, immutable
+  relative-endpoint capture, exact rejection, accepted-local-alignment safety,
+  post-removal identity restoration, and the physical two-clone race. Exactly
+  one candidate won, the loser returned `WRITER_CLAIM_LOST`, and neither claim
+  decremented budget.
+- The PowerShell behavior suite passed all 15 allowed transitions over 27
+  ledger rows. The autonomous Dart contract suite passed 17 tests. PowerShell
+  parser checks, ASCII validation, and `git diff --check` passed.
+- The actual deterministic saved-project worktree projected a tracked path to
+  exactly 313 characters. Extended-path PowerShell access, the Flutter contract
+  suite, raw physical-path offline Gradle `help`, and the Docs profile were
+  proven against that worktree with only process-local Git configuration and an
+  ephemeral short drive alias; no persistent Git or machine setting changed.
+- Review-driven RED/GREEN closed unconfirmed process-tree termination,
+  interactive/unbounded fetch, push/fetch endpoint drift, relative endpoint
+  ambiguity, stale cleanup identity, ref-lock ordering, and post-removal
+  restoration. Two final repository-read-only reviews reported no critical or
+  important findings.
+- The final normal actual-length Docs profile passed 40 focused tests,
+  dependency validation, custom lint, and Flutter analysis. Clean-worktree
+  branch/main Docs profiles remain mandatory live closeout checks. No Full,
+  Android, ADB, emulator, live-preview runtime, Figma, installed-skill,
+  cloud/account, provider, store/deploy, or external gate is required for this
+  workflow-only slice.
 
 WF-2026-07-11-011:
 
@@ -657,6 +719,9 @@ DS-2026-07-05-044:
 - WF-2026-07-11-011 required no emulator, ADB, Figma, browser, live-preview,
   account, or external-service action. Installed-skill writes were limited to
   Task 6's exact runner files; all delegated reviewers were repository-read-only.
+- WF-2026-07-11-012 required no emulator, ADB, Figma, browser, live-preview,
+  installed-skill, account, or external-service action. All delegated reviewers
+  were repository-read-only.
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-050 because it was a screen failure-boundary data-safety proof
@@ -695,21 +760,22 @@ DS-2026-07-05-044:
   DS-2026-07-06-046, or
   WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 or
   WF-2026-07-11-007, WF-2026-07-11-008, WF-2026-07-11-009, or
-  WF-2026-07-11-010. WF-2026-07-11-011 has no content blocker; its budget
-  transition and successor authorization require the clean pushed closeout
-  stated above.
+  WF-2026-07-11-010. WF-2026-07-11-011 is durably closed.
+  WF-2026-07-11-012 has no content blocker; its budget transition and successor
+  authorization require the clean pushed closeout stated above.
 - Product implementation remains deliberately blocked while workflow setup is
   fail-closed. Task 1 resolved the known baseline `AUTHORITY_CONFLICT`; Tasks
   2-5 now provide strict contracts, pure readiness, deterministic claim
   planning, and staged/committed validation without claiming launch readiness.
   Tasks 6-7 pin compatible installed runners and enforce the coordinator-only
-  overlay, but `authorizes_launch` remains false. Task 8 is the next workflow
-  setup scope.
+  overlay. Task 8 now provides the exact one-push writer claim and fail-closed
+  reconciliation path, but `authorizes_launch` remains false. Task 9 is the
+  next workflow setup scope.
 - The actual deterministic worktree projects tracked paths to 313 characters.
-  Ephemeral Git long-path support is proven, but Task 8 must prove PowerShell,
-  Flutter, Gradle, and the Docs gate in that actual-length worktree before any
-  claim or activation. This is a launch blocker, not authorization to change
-  the mandated identity or persistent machine configuration.
+  Task 8 proved PowerShell, Flutter, Gradle, and the Docs gate in that
+  actual-length worktree without changing the mandated identity or persistent
+  machine configuration. The long-path toolchain blocker is closed; this does
+  not authorize a live writer claim or Task 13 activation.
 - The phone program's first product lane after setup and explicit launch is
   data resilience:
   `DCL-DR-001` through `DCL-DR-004`; DS-050 added proof that screen-level
@@ -721,29 +787,30 @@ DS-2026-07-05-044:
 - `DCL-TAB-001` owns later tablet layout, accessibility, visual polish, and
   performance; it remains parked and does not block the phone candidate.
 - Automatic operational task chaining and autonomous product launch remain
-  blocked. Runner pinning and the coordinator-only overlay now pass; actual
-  long-path writer-claim proof, later readiness/task-tool validation, and the
+  blocked. Runner pinning, the coordinator-only overlay, and actual-length
+  writer-claim proof now pass; Tasks 9-12, later task-tool validation, and the
   no-product-change rehearsal still remain before Task 13. The current 20-unit
   user approval authorizes only the exact sequential project-scoped bootstrap
   handoffs before Task 13.
 
 ## Next Action
 
-Create or reuse exactly one saved-project local task for setup unit 5 with
-marker `danio-autonomy-bootstrap-2026-07-11/5`. The task has 15 sequential
+Create or reuse exactly one saved-project local task for setup unit 6 with
+marker `danio-autonomy-bootstrap-2026-07-11/6`. The task has 14 sequential
 units remaining including itself and must use the plan's Inline Execution
 model: one writing coordinator and repository-read-only auditors.
 
 The setup task must load `$danio-autonomous-slice-runner`,
 `$verified-slice-runner`, and `superpowers:executing-plans`; rebuild live Git
-and installed-runner truth; then implement Task 8 only from
+and installed-runner truth; then implement Task 9 only from
 `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
-It must prove CAS writer-claim and unknown-push reconciliation in the
-deterministic actual-length worktree under RED/GREEN disposable Git fixtures,
-end on clean pushed aligned `main`, and record the bootstrap budget exactly
-once.
+It must prove evidence-manifest validation, the two-phase evidence/cleanup/state
+closeout, exactly-once unit charging, `STOP_PENDING`, and
+`active -> finalizing -> complete` under RED/GREEN behavior and disposable Git
+fixtures. It must end on clean pushed aligned `main` and record the bootstrap
+budget exactly once. Do not compress Task 9 with Task 10.
 
-Do not start Task 9 or `DCL-DR-001`, take Android runtime ownership, edit
+Do not start Task 10 or `DCL-DR-001`, take Android runtime ownership, edit
 Figma, create operational run state, or enable automatic chaining in setup
-unit 5. Do not edit installed skills. `DCL-DR-001` remains the first product
+unit 6. Do not edit installed skills. `DCL-DR-001` remains the first product
 lane only after Tasks 1-13 and explicit launch readiness pass.

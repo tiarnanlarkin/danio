@@ -238,10 +238,11 @@ race and unknown-outcome tests pass.
 | Setup unit 2 | Tasks 2-3 | Schema/behavior tests and Docs profile |
 | Setup unit 3 | Tasks 4-5 | Receipt/readiness/claim-plan fixture tests and Docs profile |
 | Setup unit 4 | Tasks 6-7 | Skill validation, independent review, agent-policy tests, Docs profile |
-| Setup unit 5 | Tasks 8-9 | Disposable Git mutation/evidence/finalization tests and Docs profile |
-| Setup unit 6 | Tasks 10-11 | Handoff capability tests and integrated Docs profile |
-| Setup unit 7 | Task 12 | Zero-side-effect rehearsal committed on clean pushed `main`; launch still inactive |
-| Setup unit 8 | Task 13 | Fresh post-rehearsal activation gate and clean pushed live run state |
+| Setup unit 5 | Task 8 | Disposable writer-claim race, unknown-outcome tests, actual-length toolchain proof, and Docs profile |
+| Setup unit 6 | Task 9 | Evidence, closeout, exactly-once charging, finalization fixtures, and Docs profile |
+| Setup unit 7 | Tasks 10-11 | Handoff capability tests and integrated Docs profile |
+| Setup unit 8 | Task 12 | Zero-side-effect rehearsal committed on clean pushed `main`; launch still inactive |
+| Setup unit 9 | Task 13 | Fresh post-rehearsal activation gate and clean pushed live run state |
 | Product units | Phone program Phases 1-7 | Lane-specific gates from `QUALITY_LADDER.md` |
 
 If a setup unit expands beyond its risk boundary, split it and consume another
@@ -1682,10 +1683,11 @@ cursor.ledger_row_ids = [DCL-DR-001]
 ```
 
 The committed activation state includes the planning unit and every setup unit
-through Task 13 in `consumed_units`. With the unsplit unit map in this plan that
-is 9 consumed and 11 remaining; if any earlier setup unit was split, derive the
-larger consumed count from the committed bootstrap-budget block and matching
-unique `SLICE_LOG.md` unit IDs. Specifically:
+through Task 13 in `consumed_units`. With the current risk-split unit map in
+this plan that is 10 consumed and 10 remaining; if any earlier setup unit is
+split again, derive the larger consumed count from the committed
+bootstrap-budget block and matching unique `SLICE_LOG.md` unit IDs.
+Specifically:
 
 ```text
 consumed_units = bootstrap.consumed_units + 1
