@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "manifest_id": "danio-phone-autonomy-runners",
-  "manifest_revision": 1,
+  "manifest_revision": 2,
   "authorizes_launch": false,
-  "runner_compatible": false,
+  "runner_compatible": true,
   "launch_proof": null,
   "design": {
     "path": "apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md",
@@ -24,18 +24,18 @@
       "name": "danio-autonomous-slice-runner",
       "role": "orchestrator",
       "skill_path": "skills/danio-autonomous-slice-runner/SKILL.md",
-      "skill_sha256": null,
+      "skill_sha256": "3783000ecb3d27db73a3da5373ca26689191c3c9a3929f83cb2913d5d4d79b0e",
       "contract_path": "skills/danio-autonomous-slice-runner/references/compatibility-contract.json",
-      "contract_sha256": null,
+      "contract_sha256": "0175f14fecb4b7776db95c16bb848b8a8206f54619cf4813f67f2507749b2055",
       "contract_version": "1.0.0"
     },
     {
       "name": "verified-slice-runner",
       "role": "base",
       "skill_path": "skills/verified-slice-runner/SKILL.md",
-      "skill_sha256": null,
+      "skill_sha256": "b9764bea9e0542f729ee6e1d38a71538186b35c3192f9672a28064d613c34008",
       "contract_path": "skills/verified-slice-runner/references/compatibility-contract.json",
-      "contract_sha256": null,
+      "contract_sha256": "3928cdb89ac5b2fc94542f6c5549df84630b108486160175a66a8041b512cbfd",
       "contract_version": "1.0.0"
     }
   ],

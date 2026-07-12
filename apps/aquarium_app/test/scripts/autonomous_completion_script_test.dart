@@ -450,6 +450,11 @@ void main() {
     expect(validate(compatibilityPath, compatibility), isEmpty);
     final compatibleWithoutPins = copy(compatibility);
     compatibleWithoutPins['runner_compatible'] = true;
+    for (final skill in compatibleWithoutPins['skills'] as List<dynamic>) {
+      final typedSkill = skill as Map<String, dynamic>;
+      typedSkill['skill_sha256'] = null;
+      typedSkill['contract_sha256'] = null;
+    }
     expect(validate(compatibilityPath, compatibleWithoutPins), isNotEmpty);
     final compatibleWithPins = copy(compatibleWithoutPins);
     for (final skill in compatibleWithPins['skills'] as List<dynamic>) {
@@ -872,7 +877,7 @@ void main() {
     );
   });
 
-  test('runner compatibility starts unpinned and launch-blocked', () {
+  test('runner compatibility pins reviewed contracts but blocks launch', () {
     final compatibility = _readJson(
       '$_contractRoot/runner_compatibility.json',
     );
@@ -880,24 +885,26 @@ void main() {
 
     expect(compatibility['schema_version'], 1);
     expect(compatibility['manifest_id'], 'danio-phone-autonomy-runners');
-    expect(compatibility['manifest_revision'], 1);
+    expect(compatibility['manifest_revision'], 2);
     expect(compatibility['authorizes_launch'], isFalse);
-    expect(compatibility['runner_compatible'], isFalse);
+    expect(compatibility['runner_compatible'], isTrue);
     expect(compatibility['launch_proof'], isNull);
     expect(
       compatibility['runner_order'],
       <String>['danio-autonomous-slice-runner', 'verified-slice-runner'],
     );
     expect(
-      skills.every(
-        (skill) => (skill as Map<String, dynamic>)['skill_sha256'] == null,
-      ),
+      skills.every((skill) {
+        final hash = (skill as Map<String, dynamic>)['skill_sha256'];
+        return hash is String && RegExp(r'^[0-9a-f]{64}$').hasMatch(hash);
+      }),
       isTrue,
     );
     expect(
-      skills.every(
-        (skill) => (skill as Map<String, dynamic>)['contract_sha256'] == null,
-      ),
+      skills.every((skill) {
+        final hash = (skill as Map<String, dynamic>)['contract_sha256'];
+        return hash is String && RegExp(r'^[0-9a-f]{64}$').hasMatch(hash);
+      }),
       isTrue,
     );
   });
@@ -986,11 +993,19 @@ void main() {
       'Start-Process',
       'Invoke-RestMethod',
       'Invoke-WebRequest',
-      'create_thread',
       'adb ',
     ]) {
       expect(source, isNot(contains(mutation)), reason: mutation);
     }
+    expect(
+      RegExp(
+        r'^\s*(?:&\s*)?create_thread(?:\s|$)',
+        caseSensitive: false,
+        multiLine: true,
+      ).hasMatch(source),
+      isFalse,
+      reason: 'create_thread invocation',
+    );
   });
 
   test('pure module carries the exact allowed transition matrix', () {

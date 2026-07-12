@@ -628,7 +628,7 @@ void main() {
               ),
             )
             as Map<String, dynamic>;
-    expect(compatibility['runner_compatible'], isFalse);
+    expect(compatibility['runner_compatible'], isTrue);
     expect(compatibility['authorizes_launch'], isFalse);
     expect(compatibility['launch_proof'], isNull);
     expect(

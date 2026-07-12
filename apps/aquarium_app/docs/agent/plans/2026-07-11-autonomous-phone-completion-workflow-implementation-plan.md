@@ -938,6 +938,7 @@ git commit -m "feat: add autonomous completion readiness"
 - Create: `apps/aquarium_app/scripts/autonomous_completion/validate_autonomous_completion_transition.ps1`
 - Create: `apps/aquarium_app/scripts/autonomous_completion/plan_autonomous_writer_claim.ps1`
 - Modify: `apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1`
+- Modify: `apps/aquarium_app/test/copy/current_docs_local_truth_test.dart`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_git_fixture_test.ps1`
 
@@ -1001,6 +1002,13 @@ git commit -m "feat: validate autonomous writer claims"
 
 ### Task 6: Reconcile And Validate The Installed Runner Contracts
 
+**Approved correction (2026-07-12):** Task 6 also owns the existing
+compatibility validator, runbook/bootstrap truth tests, and its Dart contract
+test so the manifest pin is validated against installed bytes rather than
+trusted as self-asserted evidence. Proof of `automatic_successor_capable` is deferred to
+Task 10, which owns task-tool capability inspection; Task 6 does not change
+that readiness field.
+
 **Files outside the product repository:**
 
 - Modify: `C:\Users\larki\.codex\skills\danio-autonomous-slice-runner\SKILL.md`
@@ -1014,7 +1022,10 @@ git commit -m "feat: validate autonomous writer claims"
 **Repository files:**
 
 - Modify: `apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json`
+- Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md`
+- Modify: `apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
+- Modify: `apps/aquarium_app/test/scripts/autonomous_completion_script_test.dart`
 
 **Interfaces:**
 
@@ -1026,9 +1037,10 @@ git commit -m "feat: validate autonomous writer claims"
 
 - [ ] **Step 1: Extend the failing compatibility fixture**
 
-Assert current installed skills produce `RUNNER_INCOMPATIBLE`, and that missing
-task tools produce `automatic_successor_capable: false` without changing
-`runner_compatible`.
+Assert unpinned or forged installed-skill digests produce
+`RUNNER_INCOMPATIBLE`, while the reviewed exact-byte pins produce
+`RUNNER_COMPATIBLE`. Task 10 will prove that missing task tools produce
+`automatic_successor_capable: false` without changing `runner_compatible`.
 
 - [ ] **Step 2: Define exact sidecars**
 
@@ -1100,14 +1112,17 @@ Get-FileHash -Algorithm SHA256 -LiteralPath C:\Users\larki\.codex\skills\verifie
 
 Set `runner_compatible: true` only when exact paths, frontmatter names,
 sidecars, semantic values, and hashes all pass. Keep `authorizes_launch: false`.
+The shared schema continues to admit either hexadecimal case for the approved
+design digest; the Task 6 runtime semantic validator and Dart pin assertion
+require the two installed-skill hash pairs to be lowercase.
 
 - [ ] **Step 6: Prove GREEN and commit the repo pin**
 
-Run compatibility behavior tests and Docs profile. Commit only the repository
-manifest/test changes:
+Run compatibility behavior tests and Docs profile. Commit only the Task 6
+repository-owned compatibility changes:
 
 ```powershell
-git add apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json apps/aquarium_app/test/scripts
+git add apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1 apps/aquarium_app/test/copy/current_docs_local_truth_test.dart apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1 apps/aquarium_app/test/scripts/autonomous_completion_script_test.dart
 git commit -m "chore: pin autonomous runner contracts"
 ```
 

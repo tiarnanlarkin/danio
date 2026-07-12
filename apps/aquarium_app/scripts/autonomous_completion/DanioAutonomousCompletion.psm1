@@ -108,6 +108,157 @@ function Test-DanioSha256 {
   return $Value -is [string] -and $Value -cmatch '^[0-9a-f]{64}$'
 }
 
+function Test-DanioExactString {
+  [CmdletBinding()]
+  param(
+    $Value,
+    [Parameter(Mandatory = $true)][string]$Expected
+  )
+
+  return $Value -is [string] -and $Value -ceq $Expected
+}
+
+function Test-DanioExactStringSequence {
+  [CmdletBinding()]
+  param(
+    $Value,
+    [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$Expected
+  )
+
+  if ($Value -isnot [System.Array]) {
+    return $false
+  }
+
+  $actual = @($Value)
+  if ($actual.Count -ne $Expected.Count) {
+    return $false
+  }
+
+  for ($index = 0; $index -lt $Expected.Count; $index += 1) {
+    if ($actual[$index] -isnot [string] -or $actual[$index] -cne $Expected[$index]) {
+      return $false
+    }
+  }
+
+  return $true
+}
+
+function Resolve-DanioPinnedInstallFile {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$InstallRoot,
+    [Parameter(Mandatory = $true)][string]$RelativePath
+  )
+
+  if (
+    -not [IO.Path]::IsPathRooted($InstallRoot) -or
+    -not (Test-DanioRepoPath -Value $RelativePath)
+  ) {
+    return $null
+  }
+
+  try {
+    $resolvedRoot = [IO.Path]::GetFullPath((Resolve-Path -LiteralPath $InstallRoot -ErrorAction Stop).Path)
+    $resolvedRoot = $resolvedRoot.TrimEnd(
+      [IO.Path]::DirectorySeparatorChar,
+      [IO.Path]::AltDirectorySeparatorChar
+    )
+    $nativeRelativePath = $RelativePath.Replace(
+      "/",
+      [string][IO.Path]::DirectorySeparatorChar
+    )
+    $candidate = [IO.Path]::GetFullPath((Join-Path $resolvedRoot $nativeRelativePath))
+    $cursor = $resolvedRoot
+    foreach ($segment in @($nativeRelativePath.Split([IO.Path]::DirectorySeparatorChar))) {
+      if ([string]::IsNullOrWhiteSpace($segment)) {
+        return $null
+      }
+      $cursor = Join-Path $cursor $segment
+      $item = Get-Item -LiteralPath $cursor -Force -ErrorAction Stop
+      if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+        return $null
+      }
+    }
+    $resolvedCandidate = [IO.Path]::GetFullPath(
+      (Resolve-Path -LiteralPath $candidate -ErrorAction Stop).Path
+    )
+    $requiredPrefix = $resolvedRoot + [IO.Path]::DirectorySeparatorChar
+    if (
+      -not $resolvedCandidate.StartsWith(
+        $requiredPrefix,
+        [StringComparison]::OrdinalIgnoreCase
+      ) -or
+      -not (Test-Path -LiteralPath $resolvedCandidate -PathType Leaf)
+    ) {
+      return $null
+    }
+
+    return $resolvedCandidate
+  }
+  catch {
+    return $null
+  }
+}
+
+function Test-DanioSkillFrontmatter {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$Path,
+    [Parameter(Mandatory = $true)][string]$ExpectedName
+  )
+
+  try {
+    $lines = [IO.File]::ReadAllLines($Path)
+  }
+  catch {
+    return $false
+  }
+
+  if ($lines.Count -lt 4 -or $lines[0] -cne "---") {
+    return $false
+  }
+
+  $closingIndex = -1
+  for ($index = 1; $index -lt $lines.Count; $index += 1) {
+    if ($lines[$index] -ceq "---") {
+      $closingIndex = $index
+      break
+    }
+  }
+  if ($closingIndex -lt 3) {
+    return $false
+  }
+
+  $keys = @()
+  $nameValue = $null
+  $descriptionValue = $null
+  for ($index = 1; $index -lt $closingIndex; $index += 1) {
+    $line = $lines[$index]
+    if ($line -cnotmatch '^([A-Za-z0-9_-]+):\s+(.+)$') {
+      return $false
+    }
+    $key = $Matches[1]
+    if ($keys -ccontains $key) {
+      return $false
+    }
+    $keys += $key
+    if ($key -ceq "name") {
+      $nameValue = $Matches[2]
+    }
+    elseif ($key -ceq "description") {
+      $descriptionValue = $Matches[2]
+    }
+  }
+
+  return (
+    $keys.Count -eq 2 -and
+    ($keys -ccontains "name") -and
+    ($keys -ccontains "description") -and
+    $nameValue -ceq $ExpectedName -and
+    -not [string]::IsNullOrWhiteSpace([string]$descriptionValue)
+  )
+}
+
 function Test-DanioReasonCode {
   [CmdletBinding()]
   param($Value)
@@ -2153,24 +2304,216 @@ function Test-DanioRunnerCompatibility {
     -Required $manifestFields
   if (
     -not $manifestSet.valid -or
+    ($Manifest.schema_version -isnot [long] -and $Manifest.schema_version -isnot [int]) -or
+    [int64]$Manifest.schema_version -ne 1 -or
+    -not (Test-DanioExactString -Value $Manifest.manifest_id -Expected "danio-phone-autonomy-runners") -or
+    ($Manifest.manifest_revision -isnot [long] -and $Manifest.manifest_revision -isnot [int]) -or
+    [int64]$Manifest.manifest_revision -lt 2 -or
     -not (Test-DanioBoolean -Value $Manifest.runner_compatible) -or
     -not (Test-DanioBoolean -Value $Manifest.authorizes_launch) -or
     -not $Manifest.runner_compatible -or
+    $Manifest.authorizes_launch -or
     ($RequireLaunchAuthorization -and -not $Manifest.authorizes_launch) -or
-    $Manifest.skills -isnot [System.Array]
+    (-not $Manifest.authorizes_launch -and $null -ne $Manifest.launch_proof) -or
+    $Manifest.skills -isnot [System.Array] -or
+    -not (Test-DanioExactStringSequence `
+      -Value $Manifest.runner_order `
+      -Expected @("danio-autonomous-slice-runner", "verified-slice-runner"))
   ) {
     return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner compatibility is false, malformed, or unpinned.")
   }
 
-  foreach ($skill in @($Manifest.skills)) {
-    $skillProperties = @($skill.PSObject.Properties | ForEach-Object { $_.Name })
+  $nestedContracts = @(
+    @{
+      Value = $Manifest.design
+      Fields = @("path", "commit", "blob_oid", "sha256")
+    },
+    @{
+      Value = $Manifest.install_root
+      Fields = @("environment", "fallback")
+    },
+    @{
+      Value = $Manifest.writer_policy
+      Fields = @("repository_writer", "claim_required", "parallel_write_agents", "android_repository_writes")
+    },
+    @{
+      Value = $Manifest.budget_policy
+      Fields = @("unit", "remaining_includes_current", "claim_state", "consume_on", "do_not_consume_on", "abandoned_pending", "exactly_once")
+    },
+    @{
+      Value = $Manifest.failure_policy
+      Fields = @("digest_or_semantic_mismatch", "successor_on_stop", "auto_repair_installed_skill")
+    },
+    @{
+      Value = $Manifest.handoff_policy
+      Fields = @("eligible_mode", "positive_remaining_required", "marker_format", "lookup_before_create", "saved_project_only", "decrement_on_transfer", "ambiguous_or_unavailable", "unknown_create_result")
+    },
+    @{
+      Value = $Manifest.thread_capabilities
+      Fields = @("required", "recovery_only", "not_for_successors")
+    },
+    @{
+      Value = $Manifest.validation
+      Fields = @("hash_algorithm", "hash_scope", "reject_path_escape", "reject_unknown_fields")
+    }
+  )
+  foreach ($contract in $nestedContracts) {
+    $propertySet = Test-DanioExactPropertySet `
+      -Value $contract.Value `
+      -Allowed $contract.Fields `
+      -Required $contract.Fields
+    if (-not $propertySet.valid) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner policy fields are malformed.")
+    }
+  }
+
+  if (
+    -not (Test-DanioExactString -Value $Manifest.design.path -Expected "apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md") -or
+    -not (Test-DanioExactString -Value $Manifest.design.commit -Expected "81be4c93444cfd47a80cf47730cbc76e9b8464ff") -or
+    -not (Test-DanioExactString -Value $Manifest.design.blob_oid -Expected "7a0921a215da64277d8141871008e556c8478bb3") -or
+    -not (Test-DanioExactString -Value $Manifest.design.sha256 -Expected "E9AAFCD0B0E1A4D9261E6FE08FCD4306E396C1BA9FF0E921C0A240924496F928") -or
+    -not (Test-DanioExactString -Value $Manifest.install_root.environment -Expected "CODEX_HOME") -or
+    -not (Test-DanioExactString -Value $Manifest.install_root.fallback -Expected '%USERPROFILE%\.codex') -or
+    -not (Test-DanioExactString -Value $Manifest.writer_policy.repository_writer -Expected "coordinator_only") -or
+    -not (Test-DanioBoolean -Value $Manifest.writer_policy.claim_required) -or
+    -not $Manifest.writer_policy.claim_required -or
+    -not (Test-DanioBoolean -Value $Manifest.writer_policy.parallel_write_agents) -or
+    $Manifest.writer_policy.parallel_write_agents -or
+    -not (Test-DanioBoolean -Value $Manifest.writer_policy.android_repository_writes) -or
+    $Manifest.writer_policy.android_repository_writes -or
+    -not (Test-DanioExactString -Value $Manifest.budget_policy.unit -Expected "claimed_task_unit") -or
+    -not (Test-DanioBoolean -Value $Manifest.budget_policy.remaining_includes_current) -or
+    -not $Manifest.budget_policy.remaining_includes_current -or
+    -not (Test-DanioExactString -Value $Manifest.budget_policy.claim_state -Expected "pending") -or
+    -not (Test-DanioExactStringSequence -Value $Manifest.budget_policy.consume_on -Expected @("handoff_ready", "paused", "stopped", "finalizing")) -or
+    -not (Test-DanioExactStringSequence -Value $Manifest.budget_policy.do_not_consume_on -Expected @("preclaim_exit", "WRITER_CLAIM_LOST")) -or
+    -not (Test-DanioExactString -Value $Manifest.budget_policy.abandoned_pending -Expected "consume_on_user_approved_recovery") -or
+    -not (Test-DanioBoolean -Value $Manifest.budget_policy.exactly_once) -or
+    -not $Manifest.budget_policy.exactly_once -or
+    -not (Test-DanioExactString -Value $Manifest.failure_policy.digest_or_semantic_mismatch -Expected "RUNNER_INCOMPATIBLE") -or
+    -not (Test-DanioBoolean -Value $Manifest.failure_policy.successor_on_stop) -or
+    $Manifest.failure_policy.successor_on_stop -or
+    -not (Test-DanioBoolean -Value $Manifest.failure_policy.auto_repair_installed_skill) -or
+    $Manifest.failure_policy.auto_repair_installed_skill -or
+    -not (Test-DanioExactString -Value $Manifest.handoff_policy.eligible_mode -Expected "handoff_ready") -or
+    -not (Test-DanioBoolean -Value $Manifest.handoff_policy.positive_remaining_required) -or
+    -not $Manifest.handoff_policy.positive_remaining_required -or
+    -not (Test-DanioExactString -Value $Manifest.handoff_policy.marker_format -Expected "run_id/handoff_generation") -or
+    -not (Test-DanioBoolean -Value $Manifest.handoff_policy.lookup_before_create) -or
+    -not $Manifest.handoff_policy.lookup_before_create -or
+    -not (Test-DanioBoolean -Value $Manifest.handoff_policy.saved_project_only) -or
+    -not $Manifest.handoff_policy.saved_project_only -or
+    -not (Test-DanioBoolean -Value $Manifest.handoff_policy.decrement_on_transfer) -or
+    $Manifest.handoff_policy.decrement_on_transfer -or
+    -not (Test-DanioExactString -Value $Manifest.handoff_policy.ambiguous_or_unavailable -Expected "paste_ready_handoff_only") -or
+    -not (Test-DanioExactString -Value $Manifest.handoff_policy.unknown_create_result -Expected "reconcile_without_retry") -or
+    -not (Test-DanioExactStringSequence -Value $Manifest.thread_capabilities.required -Expected @("list_threads", "read_thread", "create_thread.project_target")) -or
+    -not (Test-DanioExactStringSequence -Value $Manifest.thread_capabilities.recovery_only -Expected @("send_message_to_thread")) -or
+    -not (Test-DanioExactStringSequence -Value $Manifest.thread_capabilities.not_for_successors -Expected @("fork_thread")) -or
+    -not (Test-DanioExactString -Value $Manifest.validation.hash_algorithm -Expected "sha256") -or
+    -not (Test-DanioExactString -Value $Manifest.validation.hash_scope -Expected "exact_file_bytes") -or
+    -not (Test-DanioBoolean -Value $Manifest.validation.reject_path_escape) -or
+    -not $Manifest.validation.reject_path_escape -or
+    -not (Test-DanioBoolean -Value $Manifest.validation.reject_unknown_fields) -or
+    -not $Manifest.validation.reject_unknown_fields
+  ) {
+    return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner policy semantics do not match the reviewed contract.")
+  }
+
+  $installRoot = [Environment]::GetEnvironmentVariable("CODEX_HOME")
+  if ([string]::IsNullOrWhiteSpace($installRoot)) {
+    $installRoot = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".codex"
+  }
+
+  $expectedSkills = @(
+    @{
+      Name = "danio-autonomous-slice-runner"
+      Role = "orchestrator"
+      SkillPath = "skills/danio-autonomous-slice-runner/SKILL.md"
+      ContractPath = "skills/danio-autonomous-slice-runner/references/compatibility-contract.json"
+      Extends = "verified-slice-runner@1.0.0"
+    },
+    @{
+      Name = "verified-slice-runner"
+      Role = "base"
+      SkillPath = "skills/verified-slice-runner/SKILL.md"
+      ContractPath = "skills/verified-slice-runner/references/compatibility-contract.json"
+      Extends = $null
+    }
+  )
+  $expectedCapabilities = @(
+    "coordinator_only_writer",
+    "read_only_auditors",
+    "claimed_task_unit_budget",
+    "duplicate_safe_project_handoff",
+    "stop_pending",
+    "push_outcome_unknown"
+  )
+
+  $skills = @($Manifest.skills)
+  if ($skills.Count -ne $expectedSkills.Count) {
+    return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner skill order is malformed.")
+  }
+
+  for ($index = 0; $index -lt $expectedSkills.Count; $index += 1) {
+    $skill = $skills[$index]
+    $expected = $expectedSkills[$index]
+    $skillSet = Test-DanioExactPropertySet `
+      -Value $skill `
+      -Allowed @("name", "role", "skill_path", "skill_sha256", "contract_path", "contract_sha256", "contract_version") `
+      -Required @("name", "role", "skill_path", "skill_sha256", "contract_path", "contract_sha256", "contract_version")
     if (
-      $skillProperties -cnotcontains "skill_sha256" -or
-      $skillProperties -cnotcontains "contract_sha256" -or
+      -not $skillSet.valid -or
+      -not (Test-DanioExactString -Value $skill.name -Expected $expected.Name) -or
+      -not (Test-DanioExactString -Value $skill.role -Expected $expected.Role) -or
+      -not (Test-DanioExactString -Value $skill.skill_path -Expected $expected.SkillPath) -or
+      -not (Test-DanioExactString -Value $skill.contract_path -Expected $expected.ContractPath) -or
+      -not (Test-DanioExactString -Value $skill.contract_version -Expected "1.0.0") -or
       -not (Test-DanioSha256 -Value $skill.skill_sha256) -or
       -not (Test-DanioSha256 -Value $skill.contract_sha256)
     ) {
       return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner digest evidence is missing.")
+    }
+
+    $skillFile = Resolve-DanioPinnedInstallFile -InstallRoot $installRoot -RelativePath $skill.skill_path
+    $contractFile = Resolve-DanioPinnedInstallFile -InstallRoot $installRoot -RelativePath $skill.contract_path
+    if ($null -eq $skillFile -or $null -eq $contractFile) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Pinned runner files are missing or escape CODEX_HOME.")
+    }
+
+    if (-not (Test-DanioSkillFrontmatter -Path $skillFile -ExpectedName $skill.name)) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner skill frontmatter is incompatible.")
+    }
+
+    try {
+      $actualSkillHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $skillFile -ErrorAction Stop).Hash.ToLowerInvariant()
+      $actualContractHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $contractFile -ErrorAction Stop).Hash.ToLowerInvariant()
+      $sidecar = Get-Content -Raw -LiteralPath $contractFile -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+    }
+    catch {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Pinned runner files could not be validated.")
+    }
+
+    if ($actualSkillHash -cne $skill.skill_sha256 -or $actualContractHash -cne $skill.contract_sha256) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Pinned runner file bytes do not match reviewed digests.")
+    }
+
+    $sidecarSet = Test-DanioExactPropertySet `
+      -Value $sidecar `
+      -Allowed @("schema_version", "skill_name", "contract_version", "runner_role", "extends", "capabilities") `
+      -Required @("schema_version", "skill_name", "contract_version", "runner_role", "extends", "capabilities")
+    if (
+      -not $sidecarSet.valid -or
+      ($sidecar.schema_version -isnot [long] -and $sidecar.schema_version -isnot [int]) -or
+      [int64]$sidecar.schema_version -ne 1 -or
+      -not (Test-DanioExactString -Value $sidecar.skill_name -Expected $expected.Name) -or
+      -not (Test-DanioExactString -Value $sidecar.contract_version -Expected "1.0.0") -or
+      -not (Test-DanioExactString -Value $sidecar.runner_role -Expected $expected.Role) -or
+      (($null -eq $expected.Extends -and $null -ne $sidecar.extends) -or
+        ($null -ne $expected.Extends -and -not (Test-DanioExactString -Value $sidecar.extends -Expected $expected.Extends))) -or
+      -not (Test-DanioExactStringSequence -Value $sidecar.capabilities -Expected $expectedCapabilities)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner compatibility sidecar is malformed or semantically incompatible.")
     }
   }
 

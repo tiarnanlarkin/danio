@@ -1,7 +1,7 @@
 # Danio Autonomous Phone Completion Runbook
 
-Status: Bootstrap contracts defined; launch and operational chaining remain
-disabled
+Status: Installed runner contracts pinned; launch and operational chaining
+remain disabled
 Created: 2026-07-11
 Scope: Android phone complete-local workflow coordination only
 
@@ -20,10 +20,10 @@ owns category status and quality-bar summaries.
 ## Current Bootstrap State
 
 - Automatic operational successor creation is disabled.
-- `runner_compatible` is `false`.
+- `runner_compatible` is `true` for the reviewed installed bytes.
 - `authorizes_launch` is `false`.
-- Installed runner hashes and compatibility-contract hashes are unpinned and
-  explicitly `null`.
+- Installed runner hashes and compatibility-contract hashes are pinned to the
+  independently reviewed exact bytes in `runner_compatibility.json`.
 - No operational run-state file exists. Only Task 13 may create
   `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`.
 - The JSON files under
@@ -33,9 +33,10 @@ owns category status and quality-bar summaries.
 - Before Task 13, the bootstrap-budget block in `ACTIVE_HANDOFF.md` is the only
   machine-readable unit counter, and it changes only at durable clean closeout.
 
-`RUNNER_INCOMPATIBLE` is the intended launch result until the separately
-reviewed installed-runner contract is pinned. Setup Tasks 2 through 5 may add
-pure contracts and validators while this blocker remains.
+`RUNNER_COMPATIBLE` is now the expected compatibility result for the reviewed
+installed bytes. Launch remains blocked by `authorizes_launch: false`; Task 6
+does not prove task-tool successor capability or authorize operational
+chaining. Those responsibilities remain with Tasks 10, 12, and 13.
 
 ## Machine Contract Inventory
 

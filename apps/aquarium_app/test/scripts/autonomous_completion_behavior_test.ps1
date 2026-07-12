@@ -644,8 +644,77 @@ Assert-True `
 
 $runnerManifestPath = Join-Path $appRoot "docs/agent/autonomous_completion/runner_compatibility.json"
 $runnerManifest = Get-Content -Raw -LiteralPath $runnerManifestPath | ConvertFrom-Json
+$unpinnedRunnerManifestPath = Join-Path $fixtureRoot "runner_compatibility_unpinned.json"
+$unpinnedRunnerManifest = Get-Content -Raw -LiteralPath $unpinnedRunnerManifestPath | ConvertFrom-Json
+$unpinnedRunnerValidation = Test-DanioRunnerCompatibility -Manifest $unpinnedRunnerManifest
+Assert-Equal -Actual $unpinnedRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unpinned runner fixture did not remain fail-closed."
+
+$forgedRunnerManifest = Copy-JsonValue -Value $runnerManifest
+$forgedRunnerManifest.runner_compatible = $true
+foreach ($skill in @($forgedRunnerManifest.skills)) {
+  $skill.skill_sha256 = ("a" * 64)
+  $skill.contract_sha256 = ("b" * 64)
+}
+$forgedRunnerValidation = Test-DanioRunnerCompatibility -Manifest $forgedRunnerManifest
+Assert-Equal -Actual $forgedRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Forged runner digests were accepted without installed-byte validation."
+
 $currentRunnerValidation = Test-DanioRunnerCompatibility -Manifest $runnerManifest
-Assert-Equal -Actual $currentRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unpinned runner manifest did not remain fail-closed."
+Assert-Equal -Actual $currentRunnerValidation.code -Expected "RUNNER_COMPATIBLE" -Message "Reviewed installed runner contracts did not validate."
+
+$prematureLaunchManifest = Copy-JsonValue -Value $runnerManifest
+$prematureLaunchManifest.authorizes_launch = $true
+$prematureLaunchManifest.launch_proof = [pscustomobject]@{
+  report_path = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-forged.json"
+  report_sha256 = ("c" * 64)
+  report_commit = ("d" * 40)
+}
+$prematureLaunchValidation = Test-DanioRunnerCompatibility `
+  -Manifest $prematureLaunchManifest `
+  -RequireLaunchAuthorization
+Assert-Equal -Actual $prematureLaunchValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Launch authorization was accepted before Task 12 proof validation exists."
+
+$forgedDesignManifest = Copy-JsonValue -Value $runnerManifest
+$forgedDesignManifest.design.path = "apps/aquarium_app/docs/agent/plans/forged-design.md"
+$forgedDesignValidation = Test-DanioRunnerCompatibility -Manifest $forgedDesignManifest
+Assert-Equal -Actual $forgedDesignValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Forged runner design authority was accepted."
+
+$unknownDesignFieldManifest = Copy-JsonValue -Value $runnerManifest
+$unknownDesignFieldManifest.design | Add-Member -NotePropertyName "unexpected" -NotePropertyValue $true
+$unknownDesignFieldValidation = Test-DanioRunnerCompatibility -Manifest $unknownDesignFieldManifest
+Assert-Equal -Actual $unknownDesignFieldValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unknown runner design fields were accepted."
+
+$unknownTopLevelManifest = Copy-JsonValue -Value $runnerManifest
+$unknownTopLevelManifest | Add-Member -NotePropertyName "unexpected" -NotePropertyValue $true
+$unknownTopLevelValidation = Test-DanioRunnerCompatibility -Manifest $unknownTopLevelManifest
+Assert-Equal -Actual $unknownTopLevelValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unknown runner manifest fields were accepted."
+
+$missingDesignManifest = Copy-JsonValue -Value $runnerManifest
+$missingDesignManifest.PSObject.Properties.Remove("design")
+$missingDesignValidation = Test-DanioRunnerCompatibility -Manifest $missingDesignManifest
+Assert-Equal -Actual $missingDesignValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Missing runner design authority was accepted."
+
+$stringSchemaManifest = Copy-JsonValue -Value $runnerManifest
+$stringSchemaManifest.schema_version = "1"
+$stringSchemaValidation = Test-DanioRunnerCompatibility -Manifest $stringSchemaManifest
+Assert-Equal -Actual $stringSchemaValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "String runner schema version bypassed strict type validation."
+
+$stringBooleanManifest = Copy-JsonValue -Value $runnerManifest
+$stringBooleanManifest.writer_policy.claim_required = "true"
+$stringBooleanValidation = Test-DanioRunnerCompatibility -Manifest $stringBooleanManifest
+Assert-Equal -Actual $stringBooleanValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "String runner policy boolean bypassed strict type validation."
+
+$collectionStringManifest = Copy-JsonValue -Value $runnerManifest
+$collectionStringManifest.handoff_policy.eligible_mode = @("handoff_ready")
+$collectionStringValidation = Test-DanioRunnerCompatibility -Manifest $collectionStringManifest
+Assert-Equal -Actual $collectionStringValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Collection-valued runner policy string bypassed strict type validation."
+
+$collectionSkillNameManifest = Copy-JsonValue -Value $runnerManifest
+$collectionSkillNameManifest.skills[0].name = @("danio-autonomous-slice-runner")
+$collectionSkillNameValidation = Test-DanioRunnerCompatibility -Manifest $collectionSkillNameManifest
+Assert-Equal -Actual $collectionSkillNameValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Collection-valued runner skill name did not fail closed."
+
+$nullRunnerValidation = Test-DanioRunnerCompatibility -Manifest $null
+Assert-Equal -Actual $nullRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Null runner manifest did not fail closed."
 
 $originalOptionalLocks = [Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")
 try {
