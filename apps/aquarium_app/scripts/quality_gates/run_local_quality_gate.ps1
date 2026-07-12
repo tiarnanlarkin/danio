@@ -7,6 +7,7 @@ param(
     "test/copy/current_docs_local_truth_test.dart",
     "test/quality/content_validation_test.dart",
     "test/quality/visual_baseline_manifest_test.dart",
+    "test/scripts/autonomous_completion_script_test.dart",
     "test/scripts/external_quality_readiness_script_test.dart",
     "test/scripts/live_preview_workflow_script_test.dart",
     "test/scripts/local_quality_gate_script_test.dart"
@@ -311,6 +312,16 @@ function Invoke-FocusedTests {
   }
 }
 
+function Invoke-AutonomousCompletionTests {
+  Invoke-Step -Name "Autonomous completion behavior tests" -Command {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File `
+      "test/scripts/autonomous_completion_behavior_test.ps1"
+    if ($global:LASTEXITCODE -ne 0) {
+      throw "Autonomous completion behavior tests failed."
+    }
+  }
+}
+
 function Invoke-FullTests {
   Invoke-Step -Name "Full Flutter test suite" -Command {
     Invoke-Flutter -Arguments @("test", "--reporter", "compact")
@@ -517,12 +528,14 @@ switch ($Profile) {
   }
   "Docs" {
     Invoke-FocusedTests
+    Invoke-AutonomousCompletionTests
     Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-Analyze
   }
   "Full" {
     Invoke-FocusedTests
+    Invoke-AutonomousCompletionTests
     Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-FullTests

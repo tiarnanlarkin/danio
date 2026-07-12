@@ -116,6 +116,38 @@ Run `flutter test test/copy/current_docs_local_truth_test.dart` if the docs desc
 Docs-only setup changes do not require a full Flutter suite or debug APK build
 unless they alter product truth, test instructions, or launch/readiness claims.
 
+## Autonomous Completion Proof Tiers
+
+The Docs and Full profiles run the autonomous Dart contract and pure PowerShell
+behavior suites. The Git fixture suite stays separate because it creates only
+disposable, GUID-named repositories under the system temporary directory and
+removes its verified temporary path in `finally`.
+
+- **Autonomy authority/schema change:** run docs truth, the autonomous script
+  contract, and the Docs profile.
+- **Autonomy pure state/readiness change:** run the behavior suite, the
+  disposable Git fixture suite, and the Docs profile.
+- **Autonomy Git mutation/claim/closeout change:** run race/disposable Git
+  fixtures, the Docs profile, and the clean-main Docs profile.
+- **Autonomy no-product rehearsal:** run all autonomous suites and the Docs
+  profile with `-RequireCleanWorktree` after the rehearsal evidence is
+  committed.
+- **Phone release candidate:** run Full, AndroidPrep, validate the evidence
+  manifest, and complete affected phone QA.
+
+```powershell
+flutter test test/scripts/autonomous_completion_script_test.dart --reporter compact
+powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_behavior_test.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_git_fixture_test.ps1
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs -RequireCleanWorktree
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep
+```
+
+The disposable Git fixture command is tier-selected proof, not part of the
+normal Docs or Full gate. It must remain isolated and self-cleaning.
+
 ## Dependabot PR Checks
 
 Dependabot PRs are allowed only as free GitHub dependency-update automation.

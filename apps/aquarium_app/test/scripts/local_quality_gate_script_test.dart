@@ -273,4 +273,38 @@ void main() {
     expect(source, contains('--no-uninstall'));
     expect(source, contains('PATROL_ANALYTICS_ENABLED'));
   });
+
+  test('docs and full gates include autonomous completion proof', () {
+    final source = File(scriptPath).readAsStringSync();
+    final normalized = source.replaceAll('\r\n', '\n');
+
+    expect(
+      source,
+      contains('test/scripts/autonomous_completion_script_test.dart'),
+    );
+    expect(
+      normalized,
+      contains(
+        'function Invoke-AutonomousCompletionTests {\n'
+        '  Invoke-Step -Name "Autonomous completion behavior tests" -Command {\n'
+        '    & powershell -NoProfile -ExecutionPolicy Bypass -File `\n'
+        '      "test/scripts/autonomous_completion_behavior_test.ps1"\n'
+        '    if (\$global:LASTEXITCODE -ne 0) {\n'
+        '      throw "Autonomous completion behavior tests failed."\n'
+        '    }\n'
+        '  }\n'
+        '}',
+      ),
+    );
+    expect(
+      RegExp(r'\bInvoke-AutonomousCompletionTests\b').allMatches(source),
+      hasLength(3),
+      reason: 'one function plus Docs and Full invocations',
+    );
+    expect(
+      source,
+      isNot(contains('autonomous_completion_git_fixture_test.ps1')),
+      reason: 'Git fixtures remain tier-selected disposable proof',
+    );
+  });
 }

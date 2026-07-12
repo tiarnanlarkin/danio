@@ -1054,6 +1054,53 @@ void main() {
     }
   });
 
+  test('autonomous proof tiers keep Git fixtures disposable', () {
+    final gate = File(
+      'scripts/quality_gates/run_local_quality_gate.ps1',
+    ).readAsStringSync();
+    final fixture = File(
+      'test/scripts/autonomous_completion_git_fixture_test.ps1',
+    ).readAsStringSync();
+    final quality = File('docs/agent/QUALITY_LADDER.md').readAsStringSync();
+    final checklist = File(
+      'docs/agent/TESTING_CHECKLIST.md',
+    ).readAsStringSync();
+
+    expect(gate, contains('Invoke-AutonomousCompletionTests'));
+    expect(
+      gate,
+      contains('test/scripts/autonomous_completion_script_test.dart'),
+    );
+    expect(gate, isNot(contains('autonomous_completion_git_fixture_test.ps1')));
+    expect(fixture, contains("[Guid]::NewGuid().ToString('N')"));
+    expect(fixture, contains('[System.IO.Path]::GetTempPath()'));
+    expect(fixture, contains('finally'));
+    expect(
+      fixture,
+      contains(
+        r'$resolvedFixtureRoot.StartsWith($tempBase, '
+        '[StringComparison]::OrdinalIgnoreCase)',
+      ),
+    );
+    expect(
+      fixture,
+      contains(
+        'Remove-Item -LiteralPath \$extendedFixtureRoot -Recurse -Force',
+      ),
+    );
+
+    for (final tier in <String>[
+      'Autonomy authority/schema change',
+      'Autonomy pure state/readiness change',
+      'Autonomy Git mutation/claim/closeout change',
+      'Autonomy no-product rehearsal',
+      'Phone release candidate',
+    ]) {
+      expect(quality, contains(tier), reason: tier);
+      expect(checklist, contains(tier), reason: tier);
+    }
+  });
+
   test('runner manifest pins exact ordered semantic identities', () {
     final schema = _readJson('$_schemaRoot/runner_compatibility.schema.json');
     final properties = schema['properties'] as Map<String, dynamic>;

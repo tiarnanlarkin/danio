@@ -596,7 +596,18 @@ void main() {
     ]);
     _expectContainsAll('docs/agent/QUALITY_LADDER.md', [
       'Autonomy authority/bootstrap setup',
+      'Autonomy authority/schema change',
+      'Autonomy pure state/readiness change',
+      'Autonomy Git mutation/claim/closeout change',
+      'Autonomy no-product rehearsal',
       'automatic successor creation disabled',
+    ]);
+    _expectContainsAll('docs/agent/TESTING_CHECKLIST.md', [
+      'Autonomy authority/schema change',
+      'Autonomy pure state/readiness change',
+      'Autonomy Git mutation/claim/closeout change',
+      'Autonomy no-product rehearsal',
+      'test/scripts/autonomous_completion_git_fixture_test.ps1',
     ]);
 
     final runbook = _source(
