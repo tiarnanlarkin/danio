@@ -59,6 +59,68 @@ function Copy-JsonValue {
   return $copy
 }
 
+function ConvertTo-Utf8Base64 {
+  param([Parameter(Mandatory = $true)][string]$Value)
+
+  return [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($Value))
+}
+
+function Invoke-HandoffPromptGenerator {
+  param(
+    [Parameter(Mandatory = $true)][string]$ScriptPath,
+    [Parameter(Mandatory = $true)][string]$PromptKind,
+    [Parameter(Mandatory = $true)][string]$RunStateJson,
+    [Parameter(Mandatory = $true)][string]$ReadinessReportJson,
+    [Parameter(Mandatory = $true)][string]$TaskCapabilitiesJson,
+    [Parameter(Mandatory = $true)][string]$SavedProjectJson,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot
+  )
+
+  $scriptLiteral = $ScriptPath.Replace("'", "''")
+  $kindLiteral = $PromptKind.Replace("'", "''")
+  $rootLiteral = $RepositoryRoot.Replace("'", "''")
+  $runStateBase64 = ConvertTo-Utf8Base64 -Value $RunStateJson
+  $readinessBase64 = ConvertTo-Utf8Base64 -Value $ReadinessReportJson
+  $capabilitiesBase64 = ConvertTo-Utf8Base64 -Value $TaskCapabilitiesJson
+  $projectBase64 = ConvertTo-Utf8Base64 -Value $SavedProjectJson
+  $command = @"
+`$arguments = @{
+  PromptKind = '$kindLiteral'
+  RunStateJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$runStateBase64'))
+  ReadinessReportJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$readinessBase64'))
+  TaskCapabilitiesJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$capabilitiesBase64'))
+  SavedProjectJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$projectBase64'))
+  RepositoryRoot = '$rootLiteral'
+}
+& '$scriptLiteral' @arguments
+"@
+  $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
+  $startInfo = New-Object Diagnostics.ProcessStartInfo
+  $startInfo.FileName = "powershell.exe"
+  $startInfo.Arguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand $encodedCommand"
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.RedirectStandardError = $true
+  $process = New-Object Diagnostics.Process
+  $process.StartInfo = $startInfo
+  try {
+    if (-not $process.Start()) {
+      throw "Handoff prompt generator process did not start."
+    }
+    $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+    $stderrTask = $process.StandardError.ReadToEndAsync()
+    $process.WaitForExit()
+    return [pscustomobject]@{
+      exit_code = $process.ExitCode
+      stdout = $stdoutTask.Result.Trim()
+      stderr = $stderrTask.Result.Trim()
+    }
+  } finally {
+    $process.Dispose()
+  }
+}
+
 function Get-ExpectedOwnerToken {
   param(
     [Parameter(Mandatory = $true)][string]$RunId,
@@ -278,6 +340,7 @@ $syncScriptPath = Join-Path $appRoot "scripts/autonomous_completion/sync_autonom
 $readinessScriptPath = Join-Path $appRoot "scripts/autonomous_completion/check_autonomous_completion_readiness.ps1"
 $transitionScriptPath = Join-Path $appRoot "scripts/autonomous_completion/validate_autonomous_completion_transition.ps1"
 $claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan_autonomous_writer_claim.ps1"
+$handoffScriptPath = Join-Path $appRoot "scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1"
 $fixtureRoot = Join-Path $testRoot "fixtures/autonomous_completion"
 $ledgerPath = Join-Path $appRoot "docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
 $ledgerHashBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
@@ -296,6 +359,9 @@ if (-not (Test-Path -LiteralPath $transitionScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $claimPlannerScriptPath -PathType Leaf)) {
   throw "Expected claim planner wrapper is missing: $claimPlannerScriptPath"
+}
+if (-not (Test-Path -LiteralPath $handoffScriptPath -PathType Leaf)) {
+  throw "Expected Task 10 handoff generator is missing: $handoffScriptPath"
 }
 
 $module = Import-Module -Name $modulePath -Force -PassThru
@@ -1874,6 +1940,136 @@ $longIdentityParameters = @{} + $claimPlanParameters
 $longIdentityParameters.CurrentState = $longIdentityState
 $longIdentityPlan = New-DanioWriterClaimPlan @longIdentityParameters
 Assert-Equal -Actual $longIdentityPlan.code -Expected "OWNER_IDENTITY_INVALID" -Message "Oversized combined writer identity was accepted."
+
+$fullTaskCapabilities = [pscustomobject][ordered]@{
+  list_threads = $true
+  read_thread = $true
+  "create_thread.project_target" = $true
+}
+$exactSavedProject = [pscustomobject][ordered]@{
+  project_id = "C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project"
+  root = [string]$ready.authorization.saved_project_root
+}
+$launchReadiness = [pscustomobject][ordered]@{
+  document_type = "danio_readiness_report"
+  schema_version = 1
+  intent = "Launch"
+  checked_at_utc = "2026-07-11T12:00:30.0000000Z"
+  eligible = $false
+  stop_reason_code = "LAUNCH_NOT_AUTHORIZED"
+  checks = @(
+    [pscustomobject][ordered]@{
+      code = "LAUNCH_NOT_AUTHORIZED"
+      status = "fail"
+      detail = "The committed bootstrap manifest does not authorize launch."
+    }
+  )
+}
+$claimReadiness = [pscustomobject][ordered]@{
+  document_type = "danio_readiness_report"
+  schema_version = 1
+  intent = "Claim"
+  checked_at_utc = "2026-07-11T12:00:30.0000000Z"
+  eligible = $true
+  stop_reason_code = $null
+  checks = @(
+    [pscustomobject][ordered]@{
+      code = "READY"
+      status = "pass"
+      detail = "The fixture shape is eligible; live binding remains separately required."
+    }
+  )
+}
+
+$launchResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Launch" `
+  -RunStateJson ($ready | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($launchReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal `
+  -Actual $launchResult.exit_code `
+  -Expected 0 `
+  -Message "Launch fallback generation failed: stdout=$($launchResult.stdout) stderr=$($launchResult.stderr)"
+$launchReport = $launchResult.stdout | ConvertFrom-Json
+$launchMarker = "$($ready.run_id)/launch/0"
+Assert-Equal -Actual $launchReport.accepted -Expected $true -Message "Launch fallback was rejected."
+Assert-Equal -Actual $launchReport.code -Expected "HANDOFF_PROMPT_GENERATED" -Message "Launch fallback code mismatch."
+Assert-Equal -Actual $launchReport.marker -Expected $launchMarker -Message "Launch marker mismatch."
+Assert-Equal -Actual $launchReport.state_mode -Expected "ready" -Message "Launch state mode mismatch."
+Assert-Equal -Actual $launchReport.runner_compatible -Expected $true -Message "Runner compatibility was conflated with launch capability."
+Assert-Equal -Actual $launchReport.explicit_launch_task_capable -Expected $false -Message "Bootstrap manifest incorrectly enabled launch capability."
+Assert-Equal -Actual $launchReport.automatic_successor_capable -Expected $false -Message "Launch output incorrectly enabled successor capability."
+Assert-Equal -Actual $launchReport.mutations_performed -Expected $false -Message "Generator reported mutation."
+Assert-Equal -Actual ([regex]::Matches([string]$launchReport.title, [regex]::Escape($launchMarker)).Count) -Expected 1 -Message "Launch title marker count mismatch."
+Assert-Equal -Actual ([regex]::Matches([string]$launchReport.prompt, [regex]::Escape($launchMarker)).Count) -Expected 1 -Message "Launch prompt marker count mismatch."
+
+$successorResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Successor" `
+  -RunStateJson ($handoffReady | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($claimReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $successorResult.exit_code -Expected 0 -Message "Successor fallback generation failed: $($successorResult.stderr)"
+$successorReport = $successorResult.stdout | ConvertFrom-Json
+$successorMarker = "$($handoffReady.run_id)/$($handoffReady.handoff_generation)"
+Assert-Equal -Actual $successorReport.marker -Expected $successorMarker -Message "Successor marker mismatch."
+Assert-Equal -Actual $successorReport.state_mode -Expected "handoff_ready" -Message "Successor state mode mismatch."
+Assert-Equal -Actual $successorReport.runner_compatible -Expected $true -Message "Runner compatibility was lost in successor fallback."
+Assert-Equal -Actual $successorReport.automatic_successor_capable -Expected $false -Message "Bootstrap manifest incorrectly enabled automatic successor capability."
+Assert-Equal -Actual ([regex]::Matches([string]$successorReport.title, [regex]::Escape($successorMarker)).Count) -Expected 1 -Message "Successor title marker count mismatch."
+Assert-Equal -Actual ([regex]::Matches([string]$successorReport.prompt, [regex]::Escape($successorMarker)).Count) -Expected 1 -Message "Successor prompt marker count mismatch."
+
+$missingCapabilities = Copy-JsonValue -Value $fullTaskCapabilities
+$missingCapabilities.list_threads = $false
+$missingCapabilityResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Successor" `
+  -RunStateJson ($handoffReady | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($claimReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($missingCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $missingCapabilityResult.exit_code -Expected 0 -Message "Missing-tool fallback generation failed."
+$missingCapabilityReport = $missingCapabilityResult.stdout | ConvertFrom-Json
+Assert-Equal -Actual $missingCapabilityReport.automatic_successor_capable -Expected $false -Message "Missing list_threads capability was ignored."
+Assert-True -Condition ([string]$missingCapabilityReport.prompt).Contains($successorMarker) -Message "Missing-tool fallback lost the paste-ready prompt."
+
+$missingSavedProject = [pscustomobject][ordered]@{
+  project_id = $null
+  root = $null
+}
+$missingProjectResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Successor" `
+  -RunStateJson ($handoffReady | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($claimReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($missingSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $missingProjectResult.exit_code -Expected 0 -Message "Missing-project fallback generation failed."
+$missingProjectReport = $missingProjectResult.stdout | ConvertFrom-Json
+Assert-Equal -Actual $missingProjectReport.automatic_successor_capable -Expected $false -Message "Missing saved-project identity was ignored."
+Assert-True -Condition ([string]$missingProjectReport.prompt).Contains($successorMarker) -Message "Missing-project fallback lost the paste-ready prompt."
+
+$wrongStateResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Launch" `
+  -RunStateJson ($active | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($launchReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $wrongStateResult.exit_code -Expected 1 -Message "Active state was allowed to render Launch."
+$wrongStateReport = $wrongStateResult.stdout | ConvertFrom-Json
+Assert-Equal -Actual $wrongStateReport.accepted -Expected $false -Message "Invalid state rejection reported acceptance."
+Assert-Equal -Actual $wrongStateReport.code -Expected "PROMPT_KIND_STATE_INVALID" -Message "Invalid state rejection code mismatch."
+Assert-Equal -Actual $wrongStateReport.observed_state_mode -Expected "active" -Message "Invalid state rejection lost the observed mode."
+Assert-True -Condition ($null -eq $wrongStateReport.prompt) -Message "Invalid state rejection fabricated a prompt."
 
 $ledgerHashAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
 Assert-Equal -Actual $ledgerHashAfter -Expected $ledgerHashBefore -Message "Pure behavior tests changed the ledger."

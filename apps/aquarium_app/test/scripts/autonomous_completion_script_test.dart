@@ -42,6 +42,7 @@ const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/plan_autonomous_writer_claim.ps1',
   'scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1',
   'scripts/autonomous_completion/commit_autonomous_completion_transition.ps1',
+  'scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
   'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
@@ -962,7 +963,21 @@ void main() {
     }
 
     final handoff = _readJson('$_schemaRoot/handoff_prompt_report.schema.json');
+    final handoffRequired = (handoff['required'] as List<dynamic>)
+        .cast<String>()
+        .toSet();
+    expect(
+      handoffRequired,
+      containsAll(<String>{
+        'accepted',
+        'code',
+        'observed_state_mode',
+        'mutations_performed',
+      }),
+    );
     final handoffConditionals = jsonEncode(handoff['allOf']);
+    expect(handoffConditionals, contains('"accepted":{"const":true}'));
+    expect(handoffConditionals, contains('"accepted":{"const":false}'));
     expect(handoffConditionals, contains('"prompt_kind":{"const":"Launch"}'));
     expect(handoffConditionals, contains('"state_mode":{"const":"ready"}'));
     expect(
@@ -973,6 +988,70 @@ void main() {
       handoffConditionals,
       contains('"state_mode":{"const":"handoff_ready"}'),
     );
+    final handoffDefinitions = handoff[r'$defs'] as Map<String, dynamic>;
+    final taskCapabilities = handoffDefinitions['task_capabilities']
+        as Map<String, dynamic>;
+    expect(taskCapabilities['additionalProperties'], isFalse);
+    expect(
+      (taskCapabilities['required'] as List<dynamic>).cast<String>().toSet(),
+      <String>{
+        'list_threads',
+        'read_thread',
+        'create_thread.project_target',
+      },
+    );
+    final savedProject = handoffDefinitions['saved_project']
+        as Map<String, dynamic>;
+    expect(savedProject['additionalProperties'], isFalse);
+    expect(
+      (savedProject['required'] as List<dynamic>).cast<String>().toSet(),
+      <String>{'project_id', 'root'},
+    );
+  });
+
+  test('handoff generator is deterministic and task-tool-agnostic', () {
+    const generatorPath =
+        'scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1';
+    final source = File(generatorPath).readAsStringSync();
+    for (final parameter in <String>[
+      'PromptKind',
+      'RunStateJson',
+      'ReadinessReportJson',
+      'TaskCapabilitiesJson',
+      'SavedProjectJson',
+      'RepositoryRoot',
+    ]) {
+      expect(source, contains(RegExp('\\b$parameter\\b')), reason: parameter);
+    }
+    for (final field in <String>[
+      'runner_compatible',
+      'explicit_launch_task_capable',
+      'automatic_successor_capable',
+      'mutations_performed',
+    ]) {
+      expect(source, contains(RegExp('\\b$field\\s*=')), reason: field);
+    }
+    expect(source, contains('/launch/0'));
+    expect(source, contains('handoff_generation'));
+    expect(source, isNot(contains('codex_app__')));
+    expect(source, isNot(contains('fork_thread')));
+    expect(source, isNot(contains('send_message_to_thread')));
+    expect(source, isNot(contains('Invoke-RestMethod')));
+
+    final runbook = File(
+      'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
+    ).readAsStringSync();
+    for (final rule in <String>[
+      'Exhaust `list_threads` pagination',
+      '`read_thread` every exact candidate',
+      'Reuse one queued or running match without messaging it',
+      'Create once only when zero exact matches remain',
+      'Verify a returned task with `read_thread`',
+      '`send_message_to_thread` is recovery-only',
+      'Do not use `fork_thread` for successors',
+    ]) {
+      expect(runbook, contains(rule), reason: rule);
+    }
   });
 
   test('runner manifest pins exact ordered semantic identities', () {

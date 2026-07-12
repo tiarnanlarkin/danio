@@ -112,6 +112,10 @@ budget. If lookup, binding, or create outcome is unavailable or ambiguous,
 create nothing and return the complete paste-ready handoff.
 ```
 
-Task 10 will add the separately validated operational launch/successor prompt
-generator. Task 13 activation, not this bootstrap template, creates the live
-run-state authority.
+Task 10 adds the separately validated operational launch/successor prompt
+generator and coordinator lookup algorithm. While the committed manifest keeps
+`authorizes_launch: false` and no live run state exists, its reports are
+paste-ready fallbacks with operational task capabilities false. This bootstrap
+template remains the only continuation surface before the Task 12 rehearsal
+and Task 13 activation. Task 13 activation, not this template or the generator,
+creates the live run-state authority.

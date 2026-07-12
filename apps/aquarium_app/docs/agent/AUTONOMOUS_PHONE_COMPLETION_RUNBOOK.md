@@ -439,10 +439,59 @@ PowerShell may generate a title, exact marker, and paste-ready prompt. It never
 pretends to list, read, create, fork, or message Codex tasks. Task lookup and
 creation remain explicit coordinator actions using live tool schemas.
 
+`new_autonomous_handoff_prompt.ps1` accepts strict JSON input contracts:
+
+```json
+{
+  "list_threads": true,
+  "read_thread": true,
+  "create_thread.project_target": true
+}
+```
+
+The task-capability object contains exactly those three booleans. The saved
+project object contains exactly `project_id` and `root`. Both saved-project
+values are null when live project identity is unavailable; otherwise the ID is
+nonempty and the root is an absolute forward-slash Windows path matching the
+committed authorization. Unknown fields, wrong types, and mixed null/non-null
+identity reject without mutation.
+
+Launch consumes a `Launch` readiness report. Successor consumes a `Claim`
+readiness report. A selected task capability can become true only when the
+report is eligible and no older than 120 seconds, the runner manifest is both
+compatible and rehearsal-authorized, the exact supplied live-state bytes are
+committed on clean aligned `main`, repository/project binding is exact, every
+required task tool is available, and remaining budget is positive. Until Task
+12 and Task 13 establish those facts, the generator remains an honest
+paste-ready fallback with both operational task capabilities false.
+
+The compact report always sets `mutations_performed: false`. Valid kind/state
+input returns `accepted: true`, a complete prompt, and exit `0` even when the
+selected capability is false. Malformed strict input or a kind/state mismatch
+returns `accepted: false`, a stable code, the observed mode when parseable,
+null generated fields, at least one failed check, and exit `1`.
+
 Launch uses `<run_id>/launch/0` only from launch-authorized `ready`. A successor
 uses `<run_id>/<handoff_generation>` only from pushed, clean, aligned
 `handoff_ready`. Missing or ambiguous task capabilities or saved-project
 identity create nothing and return the full paste-ready prompt.
+
+After a report proves positive capability, the live coordinator follows this
+task-tool algorithm without delegating it to PowerShell:
+
+1. Resolve the exact saved Danio project and kind-specific marker.
+2. Exhaust `list_threads` pagination for that exact marker.
+3. `read_thread` every exact candidate.
+4. Reuse one queued or running match without messaging it.
+5. Inspect stopped or completed matches and preserve their real stop reason.
+6. Create once only when zero exact matches remain and project binding is exact.
+7. Verify a returned task with `read_thread`.
+8. On multiple matches, ambiguous binding, or unknown create outcome, create
+   nothing further, preserve `ready` or `handoff_ready`, and return the prompt.
+
+`send_message_to_thread` is recovery-only. Do not use `fork_thread` for successors.
+Use a native idempotency key only when the live create schema actually exposes
+one.
 
 During bootstrap, continuation uses only the explicit user-authorized marker
 and remaining budget carried by the current task. It is not operational

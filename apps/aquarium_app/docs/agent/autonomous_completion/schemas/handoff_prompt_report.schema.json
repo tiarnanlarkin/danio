@@ -9,6 +9,9 @@
     "schema_version",
     "prompt_kind",
     "generated_at_utc",
+    "accepted",
+    "code",
+    "observed_state_mode",
     "state_mode",
     "title",
     "marker",
@@ -16,6 +19,7 @@
     "runner_compatible",
     "explicit_launch_task_capable",
     "automatic_successor_capable",
+    "mutations_performed",
     "checks"
   ],
   "properties": {
@@ -23,39 +27,126 @@
     "schema_version": { "const": 1 },
     "prompt_kind": { "type": "string", "enum": ["Launch", "Successor"] },
     "generated_at_utc": { "$ref": "#/$defs/strict_utc" },
-    "state_mode": { "type": "string", "enum": ["ready", "handoff_ready"] },
-    "title": { "type": "string", "minLength": 1 },
-    "marker": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9._-]+/(?:launch/0|[0-9]+)$"
+    "accepted": { "type": "boolean" },
+    "code": { "$ref": "#/$defs/code" },
+    "observed_state_mode": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/mode" }
+      ]
     },
-    "prompt": { "type": "string", "minLength": 1 },
+    "state_mode": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "enum": ["ready", "handoff_ready"] }
+      ]
+    },
+    "title": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "marker": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+/(?:launch/0|[0-9]+)$"
+        }
+      ]
+    },
+    "prompt": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
     "runner_compatible": { "type": "boolean" },
     "explicit_launch_task_capable": { "type": "boolean" },
     "automatic_successor_capable": { "type": "boolean" },
+    "mutations_performed": { "const": false },
     "checks": {
       "type": "array",
-      "items": { "$ref": "#/$defs/check" }
+      "items": { "$ref": "#/$defs/check" },
+      "minItems": 1
     }
   },
   "allOf": [
     {
       "if": {
-        "required": ["prompt_kind"],
-        "properties": { "prompt_kind": { "const": "Launch" } }
+        "required": ["accepted"],
+        "properties": { "accepted": { "const": true } }
       },
       "then": {
         "properties": {
+          "code": { "const": "HANDOFF_PROMPT_GENERATED" },
+          "observed_state_mode": {
+            "type": "string",
+            "enum": ["ready", "handoff_ready"]
+          },
+          "state_mode": {
+            "type": "string",
+            "enum": ["ready", "handoff_ready"]
+          },
+          "title": { "type": "string", "minLength": 1 },
+          "marker": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+/(?:launch/0|[1-9][0-9]*)$"
+          },
+          "prompt": { "type": "string", "minLength": 1 }
+        }
+      },
+      "else": {
+        "properties": {
+          "accepted": { "const": false },
+          "state_mode": { "type": "null" },
+          "title": { "type": "null" },
+          "marker": { "type": "null" },
+          "prompt": { "type": "null" },
+          "runner_compatible": { "const": false },
+          "explicit_launch_task_capable": { "const": false },
+          "automatic_successor_capable": { "const": false },
+          "checks": {
+            "contains": {
+              "required": ["status"],
+              "properties": { "status": { "const": "fail" } }
+            },
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["accepted", "prompt_kind"],
+        "properties": {
+          "accepted": { "const": true },
+          "prompt_kind": { "const": "Launch" }
+        }
+      },
+      "then": {
+        "properties": {
+          "observed_state_mode": { "const": "ready" },
           "state_mode": { "const": "ready" },
           "marker": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/launch/0$"
           }
         }
-      },
-      "else": {
+      }
+    },
+    {
+      "if": {
+        "required": ["accepted", "prompt_kind"],
         "properties": {
-          "prompt_kind": { "const": "Successor" },
+          "accepted": { "const": true },
+          "prompt_kind": { "const": "Successor" }
+        }
+      },
+      "then": {
+        "properties": {
+          "observed_state_mode": { "const": "handoff_ready" },
           "state_mode": { "const": "handoff_ready" },
           "marker": {
             "type": "string",
@@ -66,6 +157,19 @@
     }
   ],
   "$defs": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "inactive",
+        "ready",
+        "active",
+        "handoff_ready",
+        "paused",
+        "stopped",
+        "finalizing",
+        "complete"
+      ]
+    },
     "strict_utc": {
       "type": "string",
       "format": "date-time",
@@ -76,6 +180,60 @@
     "code": {
       "type": "string",
       "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "task_capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list_threads",
+        "read_thread",
+        "create_thread.project_target"
+      ],
+      "properties": {
+        "list_threads": { "type": "boolean" },
+        "read_thread": { "type": "boolean" },
+        "create_thread.project_target": { "type": "boolean" }
+      }
+    },
+    "saved_project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_id", "root"],
+      "properties": {
+        "project_id": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "root": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "string",
+              "minLength": 4,
+              "pattern": "^(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z]:/.+$"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["project_id"],
+            "properties": { "project_id": { "type": "null" } }
+          },
+          "then": {
+            "properties": { "root": { "type": "null" } }
+          },
+          "else": {
+            "properties": {
+              "project_id": { "type": "string", "minLength": 1 },
+              "root": { "type": "string", "minLength": 4 }
+            }
+          }
+        }
+      ]
     },
     "check": {
       "type": "object",
