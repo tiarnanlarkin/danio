@@ -160,12 +160,14 @@ exit `$LASTEXITCODE
     }
     $terminationConfirmed = `
       $treeKillConfirmed -and $processExited -and $stdoutCompleted -and $stderrCompleted
-    $stdout = if ($stdoutCompleted) { $stdoutTask.Result } else { "" }
-    $stderr = if ($stderrCompleted) { $stderrTask.Result } else { "Push process tree or redirected streams did not terminate cleanly." }
+    $stdout = if ($stdoutCompleted) { [string]$stdoutTask.Result } else { "" }
+    $stderr = if ($stderrCompleted) { [string]$stderrTask.Result } else { "Push process tree or redirected streams did not terminate cleanly." }
     return [pscustomobject]@{
       timed_out = -not $completed
       termination_confirmed = $terminationConfirmed
       exit_code = if ($completed) { $process.ExitCode } else { $null }
+      stdout = $stdout.Trim()
+      stderr = $stderr.Trim()
       output = (@($stdout, $stderr) -join "`n").Trim()
     }
   } finally {
@@ -182,8 +184,26 @@ function Invoke-DanioBoundedPush {
 
   return Invoke-DanioBoundedTransportGit `
     -Root $Root `
-    -Arguments @("push", "--", $TransportTarget, "HEAD:main") `
+    -Arguments @("push", "--porcelain", "--", $TransportTarget, "HEAD:main") `
     -TimeoutSeconds $TimeoutSeconds
+}
+
+function Test-DanioExplicitRemoteRejection {
+  param(
+    [Parameter(Mandatory = $true)]
+    [AllowEmptyString()]
+    [string]$Stdout
+  )
+
+  $records = @(
+    $Stdout -split "`r?`n" |
+      Where-Object { $_ -match '^[!+=*\-]\t' }
+  )
+  if ($records.Count -ne 1) {
+    return $false
+  }
+  return [string]$records[0] -match `
+    '^!\tHEAD:refs/heads/main\t\[rejected\] \((fetch first|non-fast-forward)\)$'
 }
 
 function Invoke-DanioBoundedFetch {
@@ -1035,6 +1055,7 @@ $result = [ordered]@{
   push_attempt_count = 0
   push_timed_out = $false
   push_termination_confirmed = $null
+  push_rejection_proven = $false
   retry_performed = $false
   budget_consumed = $false
   cleanup_performed = $false
@@ -1187,26 +1208,26 @@ try {
     -BranchName ([string]$plan.branch_name) `
     -WorktreePath ([string]$plan.worktree_path) `
     -BaseCommit $originMain
-  if (@("absent", "exact_reusable") -cnotcontains [string]$identity.status) {
+  if ([string]$identity.status -cne "absent") {
+    if ([string]$identity.status -ceq "exact_reusable") {
+      throw "WRITER_IDENTITY_CONFLICT: pre-existing deterministic writer identity requires explicit recovery proof; Task 8 does not reuse it."
+    }
     throw "WRITER_IDENTITY_CONFLICT: $($identity.detail)"
   }
-  if ([string]$identity.status -ceq "absent") {
-    $result.mutations_performed = $true
-    if (-not (Test-Path -LiteralPath $worktreeRoot -PathType Container)) {
-      New-Item -ItemType Directory -Path $worktreeRoot | Out-Null
-    }
-    if (-not (Test-OrdinaryDirectory -Path $worktreeRoot)) {
-      throw "OWNER_IDENTITY_INVALID: writer worktree root is not an ordinary directory."
-    }
-    [void](Invoke-DanioGit `
-      -Root $resolvedRoot `
-      -Arguments @(
-        "worktree", "add", "-b", [string]$plan.branch_name,
-        [string]$plan.worktree_path, $originMain
-      ))
-  }
-
   $result.mutations_performed = $true
+  if (-not (Test-Path -LiteralPath $worktreeRoot -PathType Container)) {
+    New-Item -ItemType Directory -Path $worktreeRoot | Out-Null
+  }
+  if (-not (Test-OrdinaryDirectory -Path $worktreeRoot)) {
+    throw "OWNER_IDENTITY_INVALID: writer worktree root is not an ordinary directory."
+  }
+  [void](Invoke-DanioGit `
+    -Root $resolvedRoot `
+    -Arguments @(
+      "worktree", "add", "-b", [string]$plan.branch_name,
+      [string]$plan.worktree_path, $originMain
+    ))
+
   $stateAbsolutePath = Join-Path ([string]$plan.worktree_path) $statePath
   $stateDirectory = Split-Path -Parent $stateAbsolutePath
   [IO.Directory]::CreateDirectory((ConvertTo-ExtendedPath -Path $stateDirectory)) | Out-Null
@@ -1272,6 +1293,10 @@ Danio-Verified-At: $verifiedAt
     -Commit $candidateCommit
 
   $skipPush = @("rejected", "unknown_not_accepted") -ccontains $TestTransportOutcome
+  $definiteRejection = $TestTransportOutcome -ceq "rejected"
+  if ($definiteRejection) {
+    $result.push_rejection_proven = $true
+  }
   $skipReconciliation = $false
   if (-not $skipPush) {
     $result.push_attempted = $true
@@ -1284,11 +1309,20 @@ Danio-Verified-At: $verifiedAt
         timed_out = $true
         termination_confirmed = $false
         exit_code = $null
+        stdout = ""
+        stderr = "Injected unresolved process-tree termination evidence."
         output = "Injected unresolved process-tree termination evidence."
       }
     }
     $result.push_timed_out = [bool]$pushProbe.timed_out
     $result.push_termination_confirmed = [bool]$pushProbe.termination_confirmed
+    $explicitRemoteRejection = (
+      [bool]$pushProbe.termination_confirmed -and
+      -not [bool]$pushProbe.timed_out -and
+      $pushProbe.exit_code -ne 0 -and
+      (Test-DanioExplicitRemoteRejection -Stdout ([string]$pushProbe.stdout))
+    )
+    $result.push_rejection_proven = $explicitRemoteRejection
     if (-not [bool]$pushProbe.termination_confirmed) {
       if ([string]::IsNullOrWhiteSpace($TestTransportOutcome)) {
         $result.transport_result = "unknown"
@@ -1301,11 +1335,14 @@ Danio-Verified-At: $verifiedAt
       $result.artifacts_preserved = $true
       $skipReconciliation = $true
     } elseif ($pushProbe.timed_out) {
-      if ([string]::IsNullOrWhiteSpace($TestTransportOutcome)) {
+      $result.transport_result = "unknown"
+    } elseif ($pushProbe.exit_code -ne 0) {
+      if ($explicitRemoteRejection) {
+        $definiteRejection = $true
+        $result.transport_result = "rejected"
+      } else {
         $result.transport_result = "unknown"
       }
-    } elseif ($pushProbe.exit_code -ne 0 -and $TestTransportOutcome -ceq "accepted") {
-      $result.transport_result = "rejected"
     }
   }
 
@@ -1385,31 +1422,40 @@ Danio-Verified-At: $verifiedAt
         $result.details = @("The candidate is reachable, but origin/main advanced beyond it.")
         $result.artifacts_preserved = $true
       } elseif ($reachability.exit_code -eq 1) {
-        $result.code = "WRITER_CLAIM_LOST"
-        $result.reconciliation_status = "rejected"
-        $result.details = @("Fresh origin/main history proves the candidate was not accepted.")
-        try {
-          Remove-ExactRejectedIdentity `
-            -Root $resolvedRoot `
-            -Plan $plan `
-            -CandidateCommit $candidateCommit `
-            -TransportTarget $transportTarget `
-            -InjectPostRemovalCommitFailure $injectPostRemovalCommitFailure
-          $result.cleanup_performed = $true
-          $result.artifacts_preserved = $false
-        } catch {
-          $cleanupFailure = $_.Exception.Message
-          $result.details += $cleanupFailure
-          if ($cleanupFailure.StartsWith(
-            "REJECTION_CLEANUP_PARTIAL:",
-            [StringComparison]::Ordinal
-          )) {
-            $result.code = "REJECTION_CLEANUP_PARTIAL"
-            $result.cleanup_partial = $true
-            $result.recovery_required = $true
+        if (-not $definiteRejection) {
+          $result.code = "PUSH_OUTCOME_UNKNOWN"
+          $result.reconciliation_status = "unknown"
+          $result.details = @(
+            "Candidate absence was observed, but no explicit target-ref rejection proved the push was rejected; artifacts were preserved."
+          )
+          $result.artifacts_preserved = $true
+        } else {
+          $result.code = "WRITER_CLAIM_LOST"
+          $result.reconciliation_status = "rejected"
+          $result.details = @("Explicit rejection plus fresh origin/main history proves the candidate was not accepted.")
+          try {
+            Remove-ExactRejectedIdentity `
+              -Root $resolvedRoot `
+              -Plan $plan `
+              -CandidateCommit $candidateCommit `
+              -TransportTarget $transportTarget `
+              -InjectPostRemovalCommitFailure $injectPostRemovalCommitFailure
+            $result.cleanup_performed = $true
             $result.artifacts_preserved = $false
-          } else {
-            $result.artifacts_preserved = $true
+          } catch {
+            $cleanupFailure = $_.Exception.Message
+            $result.details += $cleanupFailure
+            if ($cleanupFailure.StartsWith(
+              "REJECTION_CLEANUP_PARTIAL:",
+              [StringComparison]::Ordinal
+            )) {
+              $result.code = "REJECTION_CLEANUP_PARTIAL"
+              $result.cleanup_partial = $true
+              $result.recovery_required = $true
+              $result.artifacts_preserved = $false
+            } else {
+              $result.artifacts_preserved = $true
+            }
           }
         }
       } else {

@@ -186,8 +186,9 @@ with its committed plan evidence.
 
 The transaction then:
 
-1. creates or exactly reuses the deterministic branch and worktree at the
-   planned base commit;
+1. creates the absent deterministic branch and worktree at the planned base
+   commit; any pre-existing identity requires explicit recovery proof and Task
+   8 fails closed rather than inferring quiescence from process command lines;
 2. writes and stages only
    `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`;
 3. records `git write-tree`, validates the staged transition, runs the Docs
@@ -198,7 +199,8 @@ The transaction then:
    `Danio-Docs-Profile: pass`, and `Danio-Verified-At`;
 5. captures exactly one expanded `origin` push endpoint, validates the
    committed transition, and attempts at most one bounded, noninteractive,
-   normal non-force `HEAD:main` push to that immutable endpoint; and
+   normal non-force `git push --porcelain HEAD:main` to that immutable endpoint;
+   and
 6. uses bounded, noninteractive fetches when possible, reconciles the exact
    candidate from the same immutable endpoint, and fast-forwards local `main`
    only when `origin/main` is exactly the candidate.
@@ -210,7 +212,8 @@ and worktree because that exact identity becomes the product writer.
 
 The compact `danio_writer_claim_result` records the transport observation,
 reconciliation status, push attempt count, retry flag, budget-consumed flag,
-push-timeout, process-tree termination, and fresh-readiness facts, cleanup and preservation facts,
+push-timeout, process-tree termination, explicit target-ref rejection, and
+fresh-readiness facts, cleanup and preservation facts,
 fixture-equivalence use, owner identity, base, candidate, staged tree, and
 observed `origin/main`. Exit `0` means only `WRITER_CLAIM_ACCEPTED`; every
 other code exits `1`.
@@ -220,11 +223,20 @@ the result is immediately `PUSH_OUTCOME_UNKNOWN`. The invoker performs no
 fetch, retry, rejection classification, or cleanup while that process may still
 be able to reach the remote.
 
+A confirmed timeout, disconnect, or unclassified nonzero exit may fetch to
+prove that the candidate was accepted or became reachable. Candidate absence
+after that ambiguous transport remains `PUSH_OUTCOME_UNKNOWN`; it never permits
+cleanup. Only the exact machine-readable porcelain rejection for
+`HEAD:refs/heads/main` captured from Git's standard-output stream, followed by
+fresh candidate-absence proof, is a definite remote rejection. Standard error
+is retained for diagnostics but never supplies rejection proof.
+
 | Fresh evidence | Code | Required disposition |
 | --- | --- | --- |
 | `origin/main` is the exact candidate and local `main` fast-forwards cleanly | `WRITER_CLAIM_ACCEPTED` | Preserve the accepted branch/worktree |
 | Candidate is reachable but `origin/main` advanced, or accepted local alignment is unsafe | `REMOTE_MOVED` | Preserve everything and stop |
-| Fresh history proves candidate absent | `WRITER_CLAIM_LOST` | Remove only the exact clean rejected branch/worktree |
+| Exact target-ref rejection and fresh history both prove candidate absent | `WRITER_CLAIM_LOST` | Remove only the exact clean rejected branch/worktree |
+| Candidate is absent after timeout, disconnect, or unclassified failure | `PUSH_OUTCOME_UNKNOWN` | Preserve everything; no retry or cleanup |
 | Fetch or reachability remains unprovable | `PUSH_OUTCOME_UNKNOWN` | Preserve everything; no retry or cleanup |
 
 Definite-rejection cleanup rechecks the candidate parent, owner token, claim
@@ -244,6 +256,10 @@ The five transport injections are exactly `accepted`, `rejected`,
 rejected unless `DANIO_AUTONOMY_TEST_MODE=1` and the repository is an ordinary
 clone below the system temp root with exactly one identical, reparse-free local
 bare fetch and push URL in the same fixture.
+The fixture-only `rejected` outcome is the sole no-send synthetic rejection
+proof and records `push_rejection_proven: true` alongside its non-null
+`test_transport_outcome`. `unknown_not_accepted` models candidate absence
+without rejection proof, so it preserves artifacts as `PUSH_OUTCOME_UNKNOWN`.
 The two-clone fixture may use a second physical clone only after proving both
 clones share that bare remote and the exact base tree and state blob. This
 fixture-only equivalence never weakens production repository-root identity.

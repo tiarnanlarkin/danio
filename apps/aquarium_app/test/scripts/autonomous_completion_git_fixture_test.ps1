@@ -505,7 +505,8 @@ function Assert-WriterClaimResult {
     [Parameter(Mandatory = $true)]$Invocation,
     [Parameter(Mandatory = $true)][bool]$Accepted,
     [Parameter(Mandatory = $true)][string]$Code,
-    [Parameter(Mandatory = $true)][string]$Scenario
+    [Parameter(Mandatory = $true)][string]$Scenario,
+    [bool]$RequireCandidate = $true
   )
 
   Assert-Equal `
@@ -539,9 +540,11 @@ function Assert-WriterClaimResult {
     -Actual $Invocation.result.retry_performed `
     -Expected $false `
     -Message "Writer claim reported a retry during $Scenario."
-  Assert-True `
-    -Condition ([string]$Invocation.result.candidate_commit -cmatch '^[0-9a-f]{40}$') `
-    -Message "Writer claim omitted its candidate commit during $Scenario."
+  if ($RequireCandidate) {
+    Assert-True `
+      -Condition ([string]$Invocation.result.candidate_commit -cmatch '^[0-9a-f]{40}$') `
+      -Message "Writer claim omitted its candidate commit during $Scenario."
+  }
 }
 
 function Invoke-TransitionValidation {
@@ -1547,6 +1550,76 @@ These lines are ordinary body text, not a terminal trailer block.
     -AfterState $relativeEndpointState `
     -Scenario "relative production endpoint capture"
 
+  $cwdReuseFixture = New-ClaimTransactionFixture `
+    -Name "cw" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -ClaimPlannerScriptPath $claimPlannerScriptPath
+  [void](Invoke-Git `
+    -RepositoryRoot $cwdReuseFixture.clone_one `
+    -GitArguments @(
+      "worktree", "add", "-b",
+      $cwdReuseFixture.plan.branch_name,
+      $cwdReuseFixture.plan.worktree_path,
+      $cwdReuseFixture.base_commit
+    ))
+  $cwdProcessStart = New-Object Diagnostics.ProcessStartInfo
+  $cwdProcessStart.FileName = (Get-Command powershell.exe -ErrorAction Stop).Source
+  $cwdProcessStart.Arguments = '-NoProfile -NonInteractive -Command "Start-Sleep -Seconds 90"'
+  $cwdProcessStart.WorkingDirectory = $cwdReuseFixture.plan.worktree_path
+  $cwdProcessStart.UseShellExecute = $false
+  $cwdProcessStart.CreateNoWindow = $true
+  $cwdProcess = New-Object Diagnostics.Process
+  $cwdProcess.StartInfo = $cwdProcessStart
+  $cwdProcessStarted = $false
+  try {
+    Assert-True -Condition $cwdProcess.Start() -Message "CWD-only fixture process did not start."
+    $cwdProcessStarted = $true
+    Start-Sleep -Milliseconds 500
+    $cwdObservation = Get-CimInstance `
+      -ClassName Win32_Process `
+      -Filter "ProcessId = $($cwdProcess.Id)" `
+      -ErrorAction Stop
+    $cwdCommandLine = ([string]$cwdObservation.CommandLine).Replace("\", "/")
+    Assert-True `
+      -Condition (
+        $cwdCommandLine.IndexOf(
+          $cwdReuseFixture.plan.worktree_path.Replace("\", "/"),
+          [StringComparison]::OrdinalIgnoreCase
+        ) -lt 0 -and
+        $cwdCommandLine.IndexOf(
+          $cwdReuseFixture.plan.branch_name,
+          [StringComparison]::OrdinalIgnoreCase
+        ) -lt 0
+      ) `
+      -Message "CWD-only fixture command line unexpectedly exposed the writer identity."
+    $cwdReuseInvocation = Invoke-WriterClaim `
+      -ScriptPath $claimInvokerScriptPath `
+      -RepositoryRoot $cwdReuseFixture.clone_one `
+      -ClaimPlan $cwdReuseFixture.plan `
+      -TestTransportOutcome "rejected"
+    Assert-WriterClaimResult `
+      -Invocation $cwdReuseInvocation `
+      -Accepted $false `
+      -Code "WRITER_IDENTITY_CONFLICT" `
+      -Scenario "pre-existing writer identity with cwd-only process" `
+      -RequireCandidate $false
+    Assert-Equal `
+      -Actual $cwdReuseInvocation.result.mutations_performed `
+      -Expected $false `
+      -Message "CWD-only pre-existing identity was mutated."
+    Assert-Equal `
+      -Actual $cwdReuseInvocation.result.push_attempt_count `
+      -Expected 0 `
+      -Message "CWD-only pre-existing identity attempted a push."
+  } finally {
+    if ($cwdProcessStarted -and -not $cwdProcess.HasExited) {
+      $cwdProcess.Kill()
+      $cwdProcess.WaitForExit()
+    }
+    $cwdProcess.Dispose()
+  }
+
   $rejectedFixture = New-ClaimTransactionFixture `
     -Name "r" `
     -FixtureRoot $tempRoot `
@@ -1566,6 +1639,10 @@ These lines are ordinary body text, not a terminal trailer block.
     -Actual $rejectedInvocation.result.transport_result `
     -Expected "rejected" `
     -Message "Rejected transport classification mismatch."
+  Assert-Equal `
+    -Actual $rejectedInvocation.result.push_rejection_proven `
+    -Expected $true `
+    -Message "Fixture-only definite rejection did not record its synthetic proof."
   Assert-Equal `
     -Actual $rejectedInvocation.result.cleanup_performed `
     -Expected $true `
@@ -1642,7 +1719,7 @@ These lines are ordinary body text, not a terminal trailer block.
   Assert-WriterClaimResult `
     -Invocation $unknownNotAcceptedInvocation `
     -Accepted $false `
-    -Code "WRITER_CLAIM_LOST" `
+    -Code "PUSH_OUTCOME_UNKNOWN" `
     -Scenario "unknown not accepted transport"
   Assert-Equal `
     -Actual $unknownNotAcceptedInvocation.result.transport_result `
@@ -1650,16 +1727,24 @@ These lines are ordinary body text, not a terminal trailer block.
     -Message "Unknown not accepted transport classification mismatch."
   Assert-Equal `
     -Actual $unknownNotAcceptedInvocation.result.reconciliation_status `
-    -Expected "rejected" `
-    -Message "Unknown not accepted transport did not reconcile to rejection."
+    -Expected "unknown" `
+    -Message "Unknown not accepted transport was over-classified."
+  Assert-Equal `
+    -Actual $unknownNotAcceptedInvocation.result.push_rejection_proven `
+    -Expected $false `
+    -Message "Unknown not accepted transport fabricated rejection proof."
   Assert-Equal `
     -Actual $unknownNotAcceptedInvocation.result.cleanup_performed `
-    -Expected $true `
-    -Message "Unknown not accepted claim did not clean up after proof."
-  Assert-Equal `
-    -Actual (Test-Path -LiteralPath $unknownNotAcceptedFixture.plan.worktree_path) `
     -Expected $false `
-    -Message "Unknown not accepted worktree remains."
+    -Message "Unknown not accepted claim performed cleanup without proof."
+  Assert-Equal `
+    -Actual $unknownNotAcceptedInvocation.result.artifacts_preserved `
+    -Expected $true `
+    -Message "Unknown not accepted claim did not preserve artifacts."
+  Assert-Equal `
+    -Actual (Test-Path -LiteralPath $unknownNotAcceptedFixture.plan.worktree_path -PathType Container) `
+    -Expected $true `
+    -Message "Unknown not accepted worktree was removed."
   $unknownNotAcceptedState = Read-RemoteRunState `
     -RepositoryRoot $unknownNotAcceptedFixture.clone_one `
     -StatePath $unknownNotAcceptedFixture.state_path
@@ -1735,6 +1820,126 @@ These lines are ordinary body text, not a terminal trailer block.
     -Scenario "unknown unresolved transport"
 
   $fixtureRealGit = (Get-Command git.exe -ErrorAction Stop).Source.Replace("'", "''")
+
+  $ambiguousPushFixture = New-ClaimTransactionFixture `
+    -Name "af" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -ClaimPlannerScriptPath $claimPlannerScriptPath
+  $ambiguousPushShimRoot = Join-Path $ambiguousPushFixture.root "git-shim"
+  $ambiguousPushShim = @"
+`$captured = @(`$args)
+if (@(`$captured | Where-Object { `$_ -ceq 'push' }).Count -eq 1) {
+  [Console]::Error.WriteLine('fatal: simulated connection reset after send')
+  exit 1
+}
+& '$fixtureRealGit' @args
+exit `$LASTEXITCODE
+"@
+  Write-FixtureScript `
+    -Path (Join-Path $ambiguousPushShimRoot "git.ps1") `
+    -Content $ambiguousPushShim
+  $ambiguousPushInvocation = Invoke-WriterClaim `
+    -ScriptPath $claimInvokerScriptPath `
+    -RepositoryRoot $ambiguousPushFixture.clone_one `
+    -ClaimPlan $ambiguousPushFixture.plan `
+    -TestTransportOutcome "accepted" `
+    -GitShimDirectory $ambiguousPushShimRoot
+  Assert-WriterClaimResult `
+    -Invocation $ambiguousPushInvocation `
+    -Accepted $false `
+    -Code "PUSH_OUTCOME_UNKNOWN" `
+    -Scenario "ambiguous completed push failure"
+  Assert-Equal `
+    -Actual $ambiguousPushInvocation.result.cleanup_performed `
+    -Expected $false `
+    -Message "Ambiguous completed push failure performed cleanup."
+  Assert-Equal `
+    -Actual $ambiguousPushInvocation.result.artifacts_preserved `
+    -Expected $true `
+    -Message "Ambiguous completed push failure did not preserve artifacts."
+  Assert-Equal `
+    -Actual $ambiguousPushInvocation.result.push_attempt_count `
+    -Expected 1 `
+    -Message "Ambiguous completed push failure did not attempt exactly one push."
+  Assert-True `
+    -Condition (Test-Path -LiteralPath $ambiguousPushFixture.plan.worktree_path -PathType Container) `
+    -Message "Ambiguous completed push failure removed the worktree."
+  Assert-True `
+    -Condition (Test-GitRefExists `
+      -RepositoryRoot $ambiguousPushFixture.clone_one `
+      -RefName "refs/heads/$($ambiguousPushFixture.plan.branch_name)") `
+    -Message "Ambiguous completed push failure removed the branch."
+  Assert-Equal `
+    -Actual (Invoke-Git `
+      -RepositoryRoot $ambiguousPushFixture.remote `
+      -GitArguments @("rev-parse", "refs/heads/main")) `
+    -Expected $ambiguousPushFixture.base_commit `
+    -Message "Ambiguous completed push fixture unexpectedly moved the remote."
+  $ambiguousPushState = Read-RemoteRunState `
+    -RepositoryRoot $ambiguousPushFixture.clone_one `
+    -StatePath $ambiguousPushFixture.state_path
+  Assert-ClaimBudgetUnchanged `
+    -BeforeState $ambiguousPushFixture.ready_state `
+    -AfterState $ambiguousPushState `
+    -Scenario "ambiguous completed push failure"
+
+  $stderrRejectionFixture = New-ClaimTransactionFixture `
+    -Name "sr" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -ClaimPlannerScriptPath $claimPlannerScriptPath
+  $stderrRejectionShimRoot = Join-Path $stderrRejectionFixture.root "git-shim"
+  $stderrRejectionShim = @"
+`$captured = @(`$args)
+if (@(`$captured | Where-Object { `$_ -ceq 'push' }).Count -eq 1) {
+  [Console]::Error.WriteLine("!`tHEAD:refs/heads/main`t[rejected] (fetch first)")
+  exit 1
+}
+& '$fixtureRealGit' @args
+exit `$LASTEXITCODE
+"@
+  Write-FixtureScript `
+    -Path (Join-Path $stderrRejectionShimRoot "git.ps1") `
+    -Content $stderrRejectionShim
+  $stderrRejectionInvocation = Invoke-WriterClaim `
+    -ScriptPath $claimInvokerScriptPath `
+    -RepositoryRoot $stderrRejectionFixture.clone_one `
+    -ClaimPlan $stderrRejectionFixture.plan `
+    -TestTransportOutcome "accepted" `
+    -GitShimDirectory $stderrRejectionShimRoot
+  Assert-WriterClaimResult `
+    -Invocation $stderrRejectionInvocation `
+    -Accepted $false `
+    -Code "PUSH_OUTCOME_UNKNOWN" `
+    -Scenario "rejection-looking stderr transport failure"
+  Assert-Equal `
+    -Actual $stderrRejectionInvocation.result.push_rejection_proven `
+    -Expected $false `
+    -Message "Rejection-looking stderr was treated as porcelain proof."
+  Assert-Equal `
+    -Actual $stderrRejectionInvocation.result.cleanup_performed `
+    -Expected $false `
+    -Message "Rejection-looking stderr transport failure performed cleanup."
+  Assert-Equal `
+    -Actual $stderrRejectionInvocation.result.artifacts_preserved `
+    -Expected $true `
+    -Message "Rejection-looking stderr transport failure did not preserve artifacts."
+  Assert-True `
+    -Condition (Test-Path -LiteralPath $stderrRejectionFixture.plan.worktree_path -PathType Container) `
+    -Message "Rejection-looking stderr transport failure removed the worktree."
+  Assert-True `
+    -Condition (Test-GitRefExists `
+      -RepositoryRoot $stderrRejectionFixture.clone_one `
+      -RefName "refs/heads/$($stderrRejectionFixture.plan.branch_name)") `
+    -Message "Rejection-looking stderr transport failure removed the branch."
+  $stderrRejectionState = Read-RemoteRunState `
+    -RepositoryRoot $stderrRejectionFixture.clone_one `
+    -StatePath $stderrRejectionFixture.state_path
+  Assert-ClaimBudgetUnchanged `
+    -BeforeState $stderrRejectionFixture.ready_state `
+    -AfterState $stderrRejectionState `
+    -Scenario "rejection-looking stderr transport failure"
 
   $remoteMovedFixture = New-ClaimTransactionFixture `
     -Name "rm" `
@@ -2087,7 +2292,7 @@ exit `$code
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 43
+    scenarios = 46
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {
