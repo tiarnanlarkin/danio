@@ -34,9 +34,10 @@ owns category status and quality-bar summaries.
   machine-readable unit counter, and it changes only at durable clean closeout.
 
 `RUNNER_COMPATIBLE` is now the expected compatibility result for the reviewed
-installed bytes. Launch remains blocked by `authorizes_launch: false`; Task 6
-does not prove task-tool successor capability or authorize operational
-chaining. Those responsibilities remain with Tasks 10, 12, and 13.
+installed bytes. Launch remains blocked by `authorizes_launch: false`; the
+Task 8 writer-claim transaction does not implement closeout, prove task-tool
+successor capability, authorize operational chaining, or create live state.
+Those responsibilities remain with Tasks 9 through 13.
 
 ## Machine Contract Inventory
 
@@ -169,6 +170,92 @@ expected_state_revision
 
 Branch and worktree identities use the first 12 token characters. Worktrees
 are allowed only below the saved project root at `.codex-worktrees/<id>`.
+
+## Atomic Writer Claim
+
+`invoke_autonomous_writer_claim.ps1` is the only Task 8 claim mutation entry
+point. It accepts a valid JSON result from `plan_autonomous_writer_claim.ps1`,
+an optional repository root, and the fixture-only `TestTransportOutcome`.
+Before any production mutation it performs a fresh synchronization and Claim
+readiness check. It then re-observes a clean `main`, requires
+`HEAD == main == origin/main == base_commit`, reloads the exact committed state
+and parent tree, reruns private pure claim-plan validation, re-derives the
+owner identity, and rechecks saved-project worktree containment. Only the
+strictly guarded disposable transport fixture may replace that live readiness
+with its committed plan evidence.
+
+The transaction then:
+
+1. creates or exactly reuses the deterministic branch and worktree at the
+   planned base commit;
+2. writes and stages only
+   `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`;
+3. records `git write-tree`, validates the staged transition, runs the Docs
+   profile without `-RequireCleanWorktree`, and validates the same staged tree
+   again with no unstaged or untracked output;
+4. creates one claim commit with the terminal trailers
+   `Danio-State-Tree`, `Danio-State-Validation: pass`,
+   `Danio-Docs-Profile: pass`, and `Danio-Verified-At`;
+5. captures exactly one expanded `origin` push endpoint, validates the
+   committed transition, and attempts at most one bounded, noninteractive,
+   normal non-force `HEAD:main` push to that immutable endpoint; and
+6. uses bounded, noninteractive fetches when possible, reconciles the exact
+   candidate from the same immutable endpoint, and fast-forwards local `main`
+   only when `origin/main` is exactly the candidate.
+
+No claim path force-pushes, rebases, retries a push, decrements budget, edits
+product files, or begins product work before local `main` is clean and aligned
+at the accepted candidate. A successful claim keeps the deterministic branch
+and worktree because that exact identity becomes the product writer.
+
+The compact `danio_writer_claim_result` records the transport observation,
+reconciliation status, push attempt count, retry flag, budget-consumed flag,
+push-timeout, process-tree termination, and fresh-readiness facts, cleanup and preservation facts,
+fixture-equivalence use, owner identity, base, candidate, staged tree, and
+observed `origin/main`. Exit `0` means only `WRITER_CLAIM_ACCEPTED`; every
+other code exits `1`.
+
+If push process-tree and redirected-stream termination cannot be confirmed,
+the result is immediately `PUSH_OUTCOME_UNKNOWN`. The invoker performs no
+fetch, retry, rejection classification, or cleanup while that process may still
+be able to reach the remote.
+
+| Fresh evidence | Code | Required disposition |
+| --- | --- | --- |
+| `origin/main` is the exact candidate and local `main` fast-forwards cleanly | `WRITER_CLAIM_ACCEPTED` | Preserve the accepted branch/worktree |
+| Candidate is reachable but `origin/main` advanced, or accepted local alignment is unsafe | `REMOTE_MOVED` | Preserve everything and stop |
+| Fresh history proves candidate absent | `WRITER_CLAIM_LOST` | Remove only the exact clean rejected branch/worktree |
+| Fetch or reachability remains unprovable | `PUSH_OUTCOME_UNKNOWN` | Preserve everything; no retry or cleanup |
+
+Definite-rejection cleanup rechecks the candidate parent, owner token, claim
+revision, exact worktree registry entry, branch tip, worktree branch and
+commit, reparse status, and clean status. It refreshes remote candidate absence
+immediately before removal, confirms the worktree registry stayed unchanged,
+and prepares an expected-old-object ref deletion before removing the registered
+worktree. The prepared ref lock prevents branch movement during removal; the
+transaction commits only after normal worktree removal succeeds. Any mismatch
+aborts before cleanup and fails closed. If the prepared transaction fails after
+worktree removal, the exact candidate ref and clean worktree are restored and
+verified. An unprovable restoration is reported as
+`REJECTION_CLEANUP_PARTIAL` with recovery required, never as preservation.
+
+The five transport injections are exactly `accepted`, `rejected`,
+`unknown_accepted`, `unknown_not_accepted`, and `unknown_unresolved`. They are
+rejected unless `DANIO_AUTONOMY_TEST_MODE=1` and the repository is an ordinary
+clone below the system temp root with exactly one identical, reparse-free local
+bare fetch and push URL in the same fixture.
+The two-clone fixture may use a second physical clone only after proving both
+clones share that bare remote and the exact base tree and state blob. This
+fixture-only equivalence never weakens production repository-root identity.
+
+Windows long-path operation is process-local. Git receives ephemeral
+`core.longpaths=true`; the Docs child uses a temporary free `subst` drive and
+targets dependency validation at that alias while using the short source
+checkout for the Dart executable cache. The mapping and isolated temp root are
+removed in `finally`. Task 8 proved the real deterministic saved-project
+worktree at a 313-character tracked path with PowerShell extended-path access,
+Flutter, offline Gradle, and the Docs profile without renaming the project or
+changing persistent machine or Git configuration.
 
 ## Ledger Parsing
 

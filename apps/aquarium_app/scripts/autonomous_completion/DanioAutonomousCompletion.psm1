@@ -3087,6 +3087,184 @@ function New-DanioWriterClaimPlan {
     -NextRunState $nextRunState
 }
 
+function Test-DanioWriterClaimPlan {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)]$Plan,
+    [Parameter(Mandatory = $true)]$CurrentState,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$ExpectedBaseCommit,
+    [Parameter(Mandatory = $true)][string]$ExpectedBaseTreeHash,
+    [switch]$AllowDisposableRepositoryRootOverride
+  )
+
+  $planFields = @(
+    "document_type",
+    "schema_version",
+    "planned_at_utc",
+    "valid",
+    "code",
+    "details",
+    "mutations_performed",
+    "run_id",
+    "work_unit_id",
+    "task_id",
+    "expected_state_revision",
+    "owner_token_sha256",
+    "branch_name",
+    "worktree_id",
+    "worktree_path",
+    "base_commit",
+    "state_path",
+    "next_run_state"
+  )
+  $planSet = Test-DanioExactPropertySet `
+    -Value $Plan `
+    -Allowed $planFields `
+    -Required $planFields
+  if (-not $planSet.valid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "CLAIM_PLAN_INVALID" `
+      -Details $planSet.details
+  }
+
+  $shapeValid = (
+    [string]$Plan.document_type -ceq "danio_writer_claim_plan" -and
+    (Test-DanioInteger -Value $Plan.schema_version) -and
+    [int64]$Plan.schema_version -eq 1 -and
+    (Test-DanioStrictUtc -Value $Plan.planned_at_utc) -and
+    (Test-DanioBoolean -Value $Plan.valid) -and
+    [bool]$Plan.valid -and
+    [string]$Plan.code -ceq "CLAIM_PLAN_VALID" -and
+    $Plan.details -is [System.Array] -and
+    (Test-DanioBoolean -Value $Plan.mutations_performed) -and
+    -not [bool]$Plan.mutations_performed -and
+    (Test-DanioSafeIdentifier -Value $Plan.run_id) -and
+    (Test-DanioSafeIdentifier -Value $Plan.work_unit_id) -and
+    (Test-DanioSafeIdentifier -Value $Plan.task_id) -and
+    (Test-DanioInteger -Value $Plan.expected_state_revision) -and
+    [int64]$Plan.expected_state_revision -ge 1 -and
+    (Test-DanioSha256 -Value $Plan.owner_token_sha256) -and
+    $Plan.branch_name -is [string] -and
+    $Plan.branch_name -cmatch '^autonomy/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+/[0-9a-f]{12}$' -and
+    (Test-DanioSafeIdentifier -Value $Plan.worktree_id) -and
+    (Test-DanioAbsoluteWindowsPath -Value $Plan.worktree_path) -and
+    (Test-DanioGitOid -Value $Plan.base_commit) -and
+    [string]$Plan.state_path -ceq $script:DanioRunStatePath -and
+    $null -ne $Plan.next_run_state
+  )
+  if ($shapeValid) {
+    foreach ($detail in @($Plan.details)) {
+      if ($detail -isnot [string] -or [string]::IsNullOrWhiteSpace([string]$detail)) {
+        $shapeValid = $false
+      }
+    }
+  }
+  if (-not $shapeValid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "CLAIM_PLAN_INVALID" `
+      -Details @("Writer claim plan shape is invalid.")
+  }
+
+  $currentValidation = Test-DanioRunState -State $CurrentState
+  if (-not $currentValidation.valid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code ([string]$currentValidation.code) `
+      -Details $currentValidation.details
+  }
+  $candidateValidation = Test-DanioRunState -State $Plan.next_run_state
+  if (-not $candidateValidation.valid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code ([string]$candidateValidation.code) `
+      -Details $candidateValidation.details
+  }
+  $transitionValidation = Test-DanioRunStateTransition `
+    -PreviousState $CurrentState `
+    -CandidateState $Plan.next_run_state
+  if (-not $transitionValidation.valid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code ([string]$transitionValidation.code) `
+      -Details $transitionValidation.details
+  }
+
+  $normalizedRepositoryRoot = ConvertTo-DanioForwardSlashPath -Path $RepositoryRoot
+  $authorizedRepositoryRoot = ConvertTo-DanioForwardSlashPath `
+    -Path ([string]$CurrentState.authorization.repository_root)
+  if (
+    -not $AllowDisposableRepositoryRootOverride -and
+    -not [string]::Equals(
+      $normalizedRepositoryRoot,
+      $authorizedRepositoryRoot,
+      [StringComparison]::OrdinalIgnoreCase
+    )
+  ) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "REPO_ROOT_INVALID" `
+      -Details @("Writer claim repository root does not match durable authorization.")
+  }
+
+  $runId = [string]$CurrentState.run_id
+  $workUnitId = [string]$CurrentState.cursor.work_unit_id
+  $expectedRevision = [int64]$CurrentState.state_revision
+  $expectedToken = Get-DanioOwnerToken `
+    -RunId $runId `
+    -WorkUnitId $workUnitId `
+    -TaskId ([string]$Plan.task_id) `
+    -ExpectedRevision $expectedRevision
+  $token12 = $expectedToken.Substring(0, 12)
+  $expectedBranch = "autonomy/$runId/$workUnitId/$token12"
+  $expectedWorktreeId = "$runId-$workUnitId-$token12"
+  $savedProjectRoot = ConvertTo-DanioForwardSlashPath `
+    -Path ([string]$CurrentState.authorization.saved_project_root)
+  $expectedWorktreePath = "$savedProjectRoot/.codex-worktrees/$expectedWorktreeId"
+  $owner = $Plan.next_run_state.owner
+
+  $identityValid = (
+    [string]$Plan.run_id -ceq $runId -and
+    [string]$Plan.work_unit_id -ceq $workUnitId -and
+    [int64]$Plan.expected_state_revision -eq $expectedRevision -and
+    [string]$Plan.owner_token_sha256 -ceq $expectedToken -and
+    [string]$Plan.branch_name -ceq $expectedBranch -and
+    [string]$Plan.worktree_id -ceq $expectedWorktreeId -and
+    [string]$Plan.worktree_path -ceq $expectedWorktreePath -and
+    [string]$Plan.base_commit -ceq $ExpectedBaseCommit -and
+    [string]$owner.task_id -ceq [string]$Plan.task_id -and
+    [string]$owner.token_sha256 -ceq $expectedToken -and
+    [int64]$owner.claim_revision -eq $expectedRevision -and
+    [string]$owner.claim_parent_commit -ceq $ExpectedBaseCommit -and
+    [string]$owner.claim_staged_tree_hash -ceq $ExpectedBaseTreeHash -and
+    [string]$owner.branch_name -ceq $expectedBranch -and
+    [string]$owner.worktree_id -ceq $expectedWorktreeId -and
+    [string]$owner.worktree_path -ceq $expectedWorktreePath -and
+    [string]$owner.claimed_at_utc -ceq [string]$Plan.planned_at_utc -and
+    [string]$Plan.next_run_state.transition.occurred_at_utc -ceq
+      [string]$Plan.planned_at_utc -and
+    [int64]$Plan.next_run_state.budget.total_approved_units -eq
+      [int64]$CurrentState.budget.total_approved_units -and
+    [int64]$Plan.next_run_state.budget.consumed_units -eq
+      [int64]$CurrentState.budget.consumed_units -and
+    [int64]$Plan.next_run_state.budget.remaining_units_including_current -eq
+      [int64]$CurrentState.budget.remaining_units_including_current
+  )
+  if (-not $identityValid) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "CLAIM_PLAN_INVALID" `
+      -Details @("Writer claim plan identity, base, owner, or budget is invalid.")
+  }
+
+  return New-DanioValidationResult `
+    -Valid $true `
+    -Code "CLAIM_PLAN_VALID" `
+    -Details @()
+}
+
 Export-ModuleMember -Function @(
   "Resolve-DanioRepositoryRoot",
   "Get-DanioRepositoryObservation",
