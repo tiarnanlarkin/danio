@@ -217,10 +217,32 @@ new_autonomous_handoff_prompt.ps1:
   PromptKind: Launch | Successor
   RunStateJson: required JSON string
   ReadinessReportJson: required JSON string
-  TaskCapabilitiesJson: required JSON string describing list/read/create
-    availability without claiming runner incompatibility
-  SavedProjectJson: required JSON string containing exact project ID and root
+  TaskCapabilitiesJson: required strict JSON object with exactly the boolean
+    properties list_threads, read_thread, and create_thread.project_target;
+    these report live task-tool schema availability without claiming runner
+    incompatibility
+  SavedProjectJson: required strict JSON object with exactly project_id and
+    root; both are null when identity is unavailable, otherwise project_id is
+    a nonempty string and root is an absolute forward-slash Windows path;
+    mixed null/non-null identity is invalid
   RepositoryRoot: optional absolute string
+
+  Launch readiness binding: intent Launch; a generated fallback is allowed
+    while ineligible, but explicit_launch_task_capable is true only when the
+    report is eligible and fresh, the committed runner manifest authorizes
+    launch, and the exact live ready state is clean and aligned
+  Successor readiness binding: intent Claim; a generated fallback is allowed
+    while ineligible, but automatic_successor_capable is true only when the
+    report is eligible and fresh, the committed runner manifest authorizes
+    launch, and the exact live handoff_ready state is clean and aligned
+
+  Output: the handoff prompt report records accepted, code, the observed mode,
+    nullable eligible state_mode/title/marker/prompt values, independent runner
+    and selected task capability booleans, checks, and mutations_performed:
+    false. Kind/state mismatch or malformed strict input returns accepted:
+    false, a stable code, null generated fields, at least one failed check, and
+    exit 1. A valid kind/state fallback returns accepted: true, the complete
+    prompt, honest false capability checks, and exit 0 without state change.
 
 run_autonomous_completion_rehearsal.ps1:
   SynchronizationReceiptJson: required JSON string
@@ -1627,6 +1649,7 @@ git commit -m "feat: close autonomous units safely"
 **Files:**
 
 - Create: `apps/aquarium_app/scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1`
+- Modify: `apps/aquarium_app/docs/agent/autonomous_completion/schemas/handoff_prompt_report.schema.json`
 - Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md`
 - Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
@@ -1639,10 +1662,30 @@ git commit -m "feat: close autonomous units safely"
   schemas; PowerShell never pretends to create tasks.
 - Output separates `runner_compatible` from
   `explicit_launch_task_capable` and `automatic_successor_capable`.
-- `PromptKind Launch` is valid only for a launch-authorized `ready` state and
-  uses marker `<run_id>/launch/0`; it is not a successor.
-- `PromptKind Successor` is valid only for pushed aligned `handoff_ready` and
-  uses marker `<run_id>/<handoff_generation>`.
+- `TaskCapabilitiesJson` and `SavedProjectJson` use the strict property sets
+  defined by the stable interface above; unknown fields or wrong types reject
+  the request without mutation. All-false task capabilities or an all-null
+  saved-project identity are valid fallback inputs that keep the selected
+  capability false and preserve the complete prompt.
+- `Launch` consumes a `Launch` readiness report. `Successor` consumes a
+  `Claim` readiness report. Positive capability additionally requires a report
+  no older than 120 seconds, the exact committed live state bytes matching the
+  supplied state, clean `HEAD == main == origin/main`, the checked-out branch
+  `main`, exact repository/project binding, positive remaining budget, and a
+  launch-authorized compatible runner manifest. Missing live state during
+  bootstrap still permits deterministic fallback prompt generation, but both
+  operational task capabilities remain false.
+- `PromptKind Launch` renders only from `ready` and uses marker
+  `<run_id>/launch/0`; it is not a successor. Its capability remains false
+  until the state is launch-authorized and live-bound.
+- `PromptKind Successor` renders only from `handoff_ready` and uses marker
+  `<run_id>/<handoff_generation>`. Its capability remains false until that
+  state is live, pushed, and aligned.
+- The report schema represents both outcomes. A kind/state mismatch or
+  malformed strict input is `accepted: false`, includes the actual observed
+  mode when parseable, nulls generated fields, emits a stable failure code,
+  and exits `1`. A valid kind/state request is `accepted: true` and exits `0`
+  even when capability is false and only a paste-ready fallback is possible.
 
 - [ ] **Step 1: Add failing prompt/capability tests**
 
@@ -1779,6 +1822,7 @@ git commit -m "test: gate autonomous completion workflow"
 **Files:**
 
 - Create: `apps/aquarium_app/scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1`
+- Modify: `apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1`
 - Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md`
 - Modify: `apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
@@ -1865,10 +1909,13 @@ Update `runner_compatibility.json` to set `authorizes_launch: true` and add:
 
 The validator must load that report from `report_commit`, verify path/blob/hash,
 require every mutation flag false, and reject a working-tree-only report. Run
-all autonomy suites and Docs, increment `manifest_revision`, then commit:
+all autonomy suites and Docs, increment `manifest_revision`, then commit. The
+Task 12 module change must replace the bootstrap-only unconditional rejection
+of `authorizes_launch: true` with this exact committed rehearsal-proof
+validation; no other launch path is accepted:
 
 ```powershell
-git add apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json apps/aquarium_app/test/scripts
+git add apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1 apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json apps/aquarium_app/test/scripts
 git commit -m "chore: authorize autonomous phone launch"
 ```
 
