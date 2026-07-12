@@ -295,26 +295,31 @@ Last updated: 2026-07-12 in the Task 8 closeout tree; live Git state remains the
 - Plan scope: Task 8 only from
   `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
 - Clean parent input: `a0fd00c7373fd733a07aa115fb47d5da1c1242bb`.
-- Implementation commit: `723e89b4d8aee1ce9632f9105ab632907786f0af`.
+- Implementation commits: `723e89b4d8aee1ce9632f9105ab632907786f0af`
+  and corrective commit `559303e6c86d75a20118efd6ef748a858aecdaca`.
 - Result:
   - the exact staged run-state transition is validated before and after the
     Docs gate, committed with required verification trailers, and offered by
     at most one normal non-force `HEAD:main` push;
   - the production push endpoint is captured and canonicalized once, then used
-    unchanged for bounded noninteractive push, reconciliation fetch, and final
-    rejection proof;
+    unchanged for bounded noninteractive push and reconciliation fetch; only
+    the exact target-ref porcelain record captured from standard output can
+    prove rejection, while standard error remains diagnostic-only;
   - accepted, rejected, `unknown_accepted`, `unknown_not_accepted`,
     `unknown_unresolved`, `REMOTE_MOVED`, unconfirmed termination, and partial
     cleanup recovery all fail closed without decrementing the unit budget;
   - exact rejection cleanup holds a prepared CAS ref lock across worktree
     removal and restores the exact clean candidate identity if the transaction
     fails after removal;
+  - ambiguous completed transport failure, candidate absence without rejection
+    proof, and any pre-existing deterministic writer identity preserve
+    artifacts and fail closed without a blind retry or inferred quiescence;
   - the disposable two-clone race proves exactly one fast-forward winner and a
     `WRITER_CLAIM_LOST` loser from the same base revision;
   - operational launch, operational automatic chaining, product work, and live
     run state remain disabled.
 - Two repository-read-only reviewers found no remaining critical or important
-  findings on the final 43-scenario implementation.
+  findings on the final 46-scenario implementation.
 - Scope remained workflow scripts/tests/docs only. No app product behavior,
   Android runtime, Figma, installed skill, account, paid/cloud/provider,
   store/deploy, operational task, or external state changed.
@@ -356,12 +361,17 @@ WF-2026-07-11-012:
 
 - Task 8 RED: the disposable writer-claim fixture failed because
   `invoke_autonomous_writer_claim.ps1` was absent.
-- Final Task 8 GREEN passed 43 disposable scenarios, including all five
-  transport results, one real-push unconfirmed-termination path, immutable
-  relative-endpoint capture, exact rejection, accepted-local-alignment safety,
-  post-removal identity restoration, and the physical two-clone race. Exactly
-  one candidate won, the loser returned `WRITER_CLAIM_LOST`, and neither claim
-  decremented budget.
+- Review RED reproduced three late fail-closed gaps: ambiguous completed push
+  failure was over-classified as rejection, a pre-existing identity with a
+  process whose command line omitted the worktree was reused, and an exact
+  rejection-looking standard-error line was accepted as porcelain proof.
+- Final Task 8 GREEN passed 46 disposable scenarios, including all five
+  transport results, one real-push unconfirmed-termination path, ambiguous
+  completed failure, standard-error spoof rejection, pre-existing CWD-only
+  identity, immutable relative-endpoint capture, exact rejection,
+  accepted-local-alignment safety, post-removal identity restoration, and the
+  physical two-clone race. Exactly one candidate won, the loser returned
+  `WRITER_CLAIM_LOST`, and neither claim decremented budget.
 - The PowerShell behavior suite passed all 15 allowed transitions over 27
   ledger rows. The autonomous Dart contract suite passed 17 tests. PowerShell
   parser checks, ASCII validation, and `git diff --check` passed.
@@ -372,9 +382,10 @@ WF-2026-07-11-012:
   ephemeral short drive alias; no persistent Git or machine setting changed.
 - Review-driven RED/GREEN closed unconfirmed process-tree termination,
   interactive/unbounded fetch, push/fetch endpoint drift, relative endpoint
-  ambiguity, stale cleanup identity, ref-lock ordering, and post-removal
-  restoration. Two final repository-read-only reviews reported no critical or
-  important findings.
+  ambiguity, stale cleanup identity, ref-lock ordering, post-removal
+  restoration, ambiguous nonzero transport, pre-existing identity reuse, and
+  standard-output rejection provenance. Two final repository-read-only reviews
+  reported no critical or important findings on the corrected bytes.
 - The final normal actual-length Docs profile passed 40 focused tests,
   dependency validation, custom lint, and Flutter analysis. Clean-worktree
   branch/main Docs profiles remain mandatory live closeout checks. No Full,
