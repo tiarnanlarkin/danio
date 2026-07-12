@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
-Status: WF-2026-07-11-012 CAS writer-claim closeout checkpoint; setup unit 6 is next after live Git closeout is verified
-Last updated: 2026-07-12 in the Task 8 closeout tree; live Git state remains the final merge/push authority
+Status: WF-2026-07-11-012 is durably closed; setup unit 6 chaining is stopped on an ADB-held cleanup residue
+Last updated: 2026-07-12 in the cleanup-stop handoff tree; live Git and process state remain the final authority
 
 ## Branch
 
@@ -18,6 +18,8 @@ Last updated: 2026-07-12 in the Task 8 closeout tree; live Git state remains the
   - `main...origin/main` is `0 0`.
   - The WF-2026-07-11-012 temporary workflow branch is deleted after its
     verified fast-forward merge.
+  - The exact unregistered actual-length proof residue named below is absent;
+    do not satisfy this condition by taking ADB ownership from this workflow.
 
 ## Completed Product Slice
 
@@ -321,8 +323,21 @@ Last updated: 2026-07-12 in the Task 8 closeout tree; live Git state remains the
 - Two repository-read-only reviewers found no remaining critical or important
   findings on the final 46-scenario implementation.
 - Scope remained workflow scripts/tests/docs only. No app product behavior,
-  Android runtime, Figma, installed skill, account, paid/cloud/provider,
-  store/deploy, operational task, or external state changed.
+  direct ADB/emulator command, Android runtime ownership, Figma, installed
+  skill, account, paid/cloud/provider, store/deploy, operational task, or
+  external-service state was changed.
+- Cleanup stop:
+  - the registered correction worktree and safely merged Task 8 branch were
+    removed;
+  - the old 313-character proof worktree is no longer registered with Git, but
+    its physical residue remains at
+    `C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\.codex-worktrees\danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-5566cc56fcd3`;
+  - read-only process inspection proved `adb.exe` PID `41564`, started at
+    `2026-07-12T02:33:54+01:00` as `adb -L tcp:5037 fork-server server`, holds
+    `apps\aquarium_app` there as its current directory;
+  - this unit did not query, stop, restart, or otherwise take ownership of that
+    ADB server. The residue cannot be safely deleted until its runtime owner
+    releases it, so no setup unit 6 task was created.
 
 ## Autonomous Chain Authorization
 
@@ -387,11 +402,11 @@ WF-2026-07-11-012:
   standard-output rejection provenance. Two final repository-read-only reviews
   reported no critical or important findings on the corrected bytes.
 - The final normal actual-length Docs profile passed 40 focused tests,
-  dependency validation, custom lint, and Flutter analysis. Clean-worktree
-  branch/main Docs profiles remain mandatory live closeout checks. No Full,
-  Android, ADB, emulator, live-preview runtime, Figma, installed-skill,
-  cloud/account, provider, store/deploy, or external gate is required for this
-  workflow-only slice.
+  dependency validation, custom lint, and Flutter analysis. The corrected
+  branch and fast-forwarded `main` clean-worktree Docs profiles also passed at
+  `964fbea08fd29ccca140b94eedbfbb1861fbade2`. No Full, Android, ADB, emulator,
+  live-preview runtime, Figma, installed-skill, cloud/account, provider,
+  store/deploy, or external gate was required for this workflow-only slice.
 
 WF-2026-07-11-011:
 
@@ -772,8 +787,10 @@ DS-2026-07-05-044:
   WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 or
   WF-2026-07-11-007, WF-2026-07-11-008, WF-2026-07-11-009, or
   WF-2026-07-11-010. WF-2026-07-11-011 is durably closed.
-  WF-2026-07-11-012 has no content blocker; its budget transition and successor
-  authorization require the clean pushed closeout stated above.
+  WF-2026-07-11-012 has no content blocker and is durably merged, pushed, clean,
+  and aligned. Setup unit 6 chaining is stopped because the required temporary
+  cleanup did not finish: the exact unregistered actual-length residue remains
+  held by ADB PID `41564`, and this workflow is not authorized to control it.
 - Product implementation remains deliberately blocked while workflow setup is
   fail-closed. Task 1 resolved the known baseline `AUTHORITY_CONFLICT`; Tasks
   2-5 now provide strict contracts, pure readiness, deterministic claim
@@ -806,10 +823,19 @@ DS-2026-07-05-044:
 
 ## Next Action
 
-Create or reuse exactly one saved-project local task for setup unit 6 with
-marker `danio-autonomy-bootstrap-2026-07-11/6`. The task has 14 sequential
-units remaining including itself and must use the plan's Inline Execution
-model: one writing coordinator and repository-read-only auditors.
+Do not create setup unit 6 yet. First coordinate with the current Android
+runtime owner so ADB PID `41564` exits through its owning workflow; do not stop,
+restart, query, or otherwise take ownership of ADB from this workflow. Then
+remove only this exact unregistered residue after re-proving containment and
+Git non-registration:
+
+`C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\.codex-worktrees\danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-5566cc56fcd3`
+
+Re-run clean/aligned `main` checks and confirm only the canonical `main`
+worktree remains. Then create or reuse exactly one saved-project local task for
+setup unit 6 with marker `danio-autonomy-bootstrap-2026-07-11/6`. The task has
+14 sequential units remaining including itself and must use the plan's Inline
+Execution model: one writing coordinator and repository-read-only auditors.
 
 The setup task must load `$danio-autonomous-slice-runner`,
 `$verified-slice-runner`, and `superpowers:executing-plans`; rebuild live Git
