@@ -298,7 +298,36 @@ if (-not (Test-Path -LiteralPath $claimPlannerScriptPath -PathType Leaf)) {
   throw "Expected claim planner wrapper is missing: $claimPlannerScriptPath"
 }
 
-Import-Module -Name $modulePath -Force
+$module = Import-Module -Name $modulePath -Force -PassThru
+
+function Test-PrivateEvidenceManifest {
+  param(
+    [Parameter(Mandatory = $true)]$Manifest,
+    [Parameter(Mandatory = $true)][string]$ManifestPath,
+    [Parameter(Mandatory = $true)]$PreviousState,
+    [Parameter(Mandatory = $true)]$CandidateState,
+    [Parameter(Mandatory = $true)][string]$ParentCommit,
+    [object[]]$ArtifactObservations = @()
+  )
+
+  return & $module {
+    param(
+      $ManifestValue,
+      $ManifestPathValue,
+      $PreviousStateValue,
+      $CandidateStateValue,
+      $ParentCommitValue,
+      $ArtifactObservationValues
+    )
+    Test-DanioEvidenceManifest `
+      -Manifest $ManifestValue `
+      -ManifestPath $ManifestPathValue `
+      -PreviousState $PreviousStateValue `
+      -CandidateState $CandidateStateValue `
+      -ParentCommit $ParentCommitValue `
+      -ArtifactObservations @($ArtifactObservationValues)
+  } $Manifest $ManifestPath $PreviousState $CandidateState $ParentCommit $ArtifactObservations
+}
 
 $resolvedRoot = Resolve-DanioRepositoryRoot -RepositoryRoot $repoRoot
 Assert-Equal -Actual $resolvedRoot -Expected $repoRoot -Message "Repository root resolution failed."
@@ -452,12 +481,13 @@ foreach ($fixture in @($inactive, $ready, $active, $handoffReady, $finalizing, $
   Assert-True -Condition $stateValidation.valid -Message "Fixture '$($fixture.mode)' should validate: $($stateValidation.details -join '; ')"
 }
 
-$normalizedRepoRoot = $repoRoot.Replace("\", "/")
+$authorizedRepoRoot = [string]$ready.authorization.repository_root
+$checkoutRepoRoot = $repoRoot.Replace("\", "/")
 $invocationNonce = "0123456789abcdef0123456789abcdef"
 $observationCommit = ("a" * 40)
 $receiptAt120 = New-DanioSynchronizationReceipt `
   -InvocationNonce $invocationNonce `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -ExitCode 0 `
   -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
   -OriginMainCommit $observationCommit `
@@ -466,7 +496,7 @@ $receiptAt120 = New-DanioSynchronizationReceipt `
 $receiptAt120Validation = Test-DanioSynchronizationReceipt `
   -Receipt $receiptAt120 `
   -ExpectedInvocationNonce $invocationNonce `
-  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedRepositoryRoot $authorizedRepoRoot `
   -ExpectedOriginMainCommit $observationCommit `
   -ExpectedAhead 0 `
   -ExpectedBehind 0 `
@@ -478,7 +508,7 @@ Assert-Equal -Actual $receiptAt120Validation.code -Expected "SYNC_RECEIPT_VALID"
 $receiptAt121Validation = Test-DanioSynchronizationReceipt `
   -Receipt $receiptAt120 `
   -ExpectedInvocationNonce $invocationNonce `
-  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedRepositoryRoot $authorizedRepoRoot `
   -ExpectedOriginMainCommit $observationCommit `
   -ExpectedAhead 0 `
   -ExpectedBehind 0 `
@@ -491,7 +521,7 @@ $futureReceipt.completed_at_utc = "2026-07-11T12:02:01.0000000Z"
 $futureReceiptValidation = Test-DanioSynchronizationReceipt `
   -Receipt $futureReceipt `
   -ExpectedInvocationNonce $invocationNonce `
-  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedRepositoryRoot $authorizedRepoRoot `
   -ExpectedOriginMainCommit $observationCommit `
   -ExpectedAhead 0 `
   -ExpectedBehind 0 `
@@ -510,7 +540,7 @@ foreach ($receiptMutation in @(
   $mutatedReceiptValidation = Test-DanioSynchronizationReceipt `
     -Receipt $mutatedReceipt `
     -ExpectedInvocationNonce $invocationNonce `
-    -ExpectedRepositoryRoot $normalizedRepoRoot `
+    -ExpectedRepositoryRoot $authorizedRepoRoot `
     -ExpectedOriginMainCommit $observationCommit `
     -ExpectedAhead 0 `
     -ExpectedBehind 0 `
@@ -523,7 +553,7 @@ foreach ($receiptMutation in @(
 }
 
 $repositoryObservation = New-TestRepositoryObservation `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -Commit $observationCommit
 $authorityValid = New-TestValidationResult -Valid $true -Code "AUTHORITY_VALID"
 $runnerValid = New-TestValidationResult -Valid $true -Code "RUNNER_COMPATIBLE"
@@ -532,7 +562,7 @@ $claimReadinessParameters = @{
   Intent = "Claim"
   SynchronizationReceipt = $claimReceipt
   ExpectedInvocationNonce = $invocationNonce
-  ExpectedRepositoryRoot = $normalizedRepoRoot
+  ExpectedRepositoryRoot = $authorizedRepoRoot
   RepositoryObservation = $repositoryObservation
   State = $ready
   AuthorityValidation = $authorityValid
@@ -558,7 +588,7 @@ $aheadObservation = Copy-JsonValue -Value $repositoryObservation
 $aheadObservation.ahead = 1
 $aheadReceipt = New-DanioSynchronizationReceipt `
   -InvocationNonce $invocationNonce `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -ExitCode 0 `
   -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
   -OriginMainCommit $observationCommit `
@@ -574,7 +604,7 @@ $behindObservation = Copy-JsonValue -Value $repositoryObservation
 $behindObservation.behind = 1
 $behindReceipt = New-DanioSynchronizationReceipt `
   -InvocationNonce $invocationNonce `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -ExitCode 0 `
   -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
   -OriginMainCommit $observationCommit `
@@ -596,7 +626,7 @@ Assert-Equal -Actual $dirty.stop_reason_code -Expected "DIRTY_UNOWNED" -Message 
 
 $foreignObservation = Copy-JsonValue -Value $repositoryObservation
 $foreignObservation.ownership_clear = $false
-$foreignObservation.worktrees = @($normalizedRepoRoot, "C:/foreign/worktree")
+$foreignObservation.worktrees = @($authorizedRepoRoot, "C:/foreign/worktree")
 $foreignParameters = @{} + $claimReadinessParameters
 $foreignParameters.RepositoryObservation = $foreignObservation
 $foreign = Test-DanioAutonomousReadiness @foreignParameters
@@ -724,7 +754,7 @@ try {
     -Actual ([Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")) `
     -Expected "sentinel" `
     -Message "Repository observation did not restore the prior optional-lock value."
-  Assert-Equal -Actual $liveObservation.repository_root -Expected $normalizedRepoRoot -Message "Live repository observation root mismatch."
+  Assert-Equal -Actual $liveObservation.repository_root -Expected $checkoutRepoRoot -Message "Live repository observation root mismatch."
 
   [Environment]::SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", $null, "Process")
   [void](Get-DanioRepositoryObservation -RepositoryRoot $repoRoot)
@@ -835,6 +865,7 @@ $preclaimStopFromHandoff = New-TransitionCandidate -PreviousState $handoffReady 
 $closeout = New-TransitionCandidate -PreviousState $active -ToMode "handoff_ready" -Action "closeout" -Consume
 $paused = New-TransitionCandidate -PreviousState $active -ToMode "paused" -Action "pause" -Consume
 $stopped = New-TransitionCandidate -PreviousState $active -ToMode "stopped" -Action "stop" -Consume -ReasonCode "BASELINE_FAILED"
+$stopped.recovery = New-TestRecovery -Owner $active.owner
 
 $rcActive = Copy-JsonValue -Value $active
 $rcActive.cursor.phase = "7-final-phone-candidate"
@@ -860,13 +891,30 @@ $finalize.last_verified_checkpoint.product_commit = ("1" * 40)
 $finalize.last_verified_checkpoint.evidence_manifest_path =
   "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$("1" * 40).json"
 $finalize.last_verified_checkpoint.verified_at_utc = "2026-07-11T12:08:30.0000000Z"
+$finalize.transition.occurred_at_utc = "2026-07-11T12:08:45.0000000Z"
 $terminalComplete = New-TransitionCandidate -PreviousState $finalize -ToMode "complete" -Action "complete"
 $finalizationStop = New-TransitionCandidate -PreviousState $finalize -ToMode "stopped" -Action "finalization_stop" -ReasonCode "FINALIZATION_FAILED"
 $finalizationStop.recovery = New-TestRecovery -Owner $finalize.owner
 $resumePaused = New-TransitionCandidate -PreviousState $paused -ToMode "ready" -Action "resume"
 $resumeStopped = New-TransitionCandidate -PreviousState $stopped -ToMode "ready" -Action "resume"
-$handoffAdmin = New-TransitionCandidate -PreviousState $handoffReady -ToMode "handoff_ready" -Action "administrative_sync" -Administrative
-$completeAdmin = New-TransitionCandidate -PreviousState $complete -ToMode "complete" -Action "administrative_sync" -Administrative
+$handoffPending = Copy-JsonValue -Value $handoffReady
+$handoffPending.control_surface_sync.status = "pending"
+$handoffPending.control_surface_sync.target_commit = "f10b6021e083ba745fc2abf254f7ca91093d703e"
+$handoffAdmin = New-TransitionCandidate -PreviousState $handoffPending -ToMode "handoff_ready" -Action "administrative_sync" -Administrative
+$handoffAdmin.control_surface_sync.status = "synced"
+$handoffAdmin.control_surface_sync.figma_file_id = "figma-fixture"
+$handoffAdmin.control_surface_sync.figma_node_ids = @("1:2")
+$handoffAdmin.control_surface_sync.attempted_at_utc = "2026-07-11T12:10:00.0000000Z"
+$handoffAdmin.control_surface_sync.evidence_sha256 = ("a" * 64)
+$completePending = Copy-JsonValue -Value $complete
+$completePending.control_surface_sync.status = "pending"
+$completePending.control_surface_sync.target_commit = "f10b6021e083ba745fc2abf254f7ca91093d703e"
+$completeAdmin = New-TransitionCandidate -PreviousState $completePending -ToMode "complete" -Action "administrative_sync" -Administrative
+$completeAdmin.control_surface_sync.status = "failed"
+$completeAdmin.control_surface_sync.figma_file_id = "figma-fixture"
+$completeAdmin.control_surface_sync.figma_node_ids = @("1:2")
+$completeAdmin.control_surface_sync.attempted_at_utc = "2026-07-11T12:10:00.0000000Z"
+$completeAdmin.control_surface_sync.failure_code = "FIGMA_SYNC_FAILED"
 $launch = New-TransitionCandidate -PreviousState $inactive -ToMode "ready" -Action "launch"
 $launch.budget.consumed_units = [int]$inactive.budget.consumed_units + 1
 $launch.budget.remaining_units_including_current = [int]$inactive.budget.remaining_units_including_current - 1
@@ -897,8 +945,8 @@ $allowedTransitions = @(
   [pscustomobject]@{ Previous = $finalize; Candidate = $finalizationStop; LeaseRelease = $finalizationStopRelease; FinalizationScope = $false },
   [pscustomobject]@{ Previous = $paused; Candidate = $resumePaused; LeaseRelease = $null; FinalizationScope = $false },
   [pscustomobject]@{ Previous = $stopped; Candidate = $resumeStopped; LeaseRelease = $null; FinalizationScope = $false },
-  [pscustomobject]@{ Previous = $handoffReady; Candidate = $handoffAdmin; LeaseRelease = $null; FinalizationScope = $false },
-  [pscustomobject]@{ Previous = $complete; Candidate = $completeAdmin; LeaseRelease = $null; FinalizationScope = $false }
+  [pscustomobject]@{ Previous = $handoffPending; Candidate = $handoffAdmin; LeaseRelease = $null; FinalizationScope = $false },
+  [pscustomobject]@{ Previous = $completePending; Candidate = $completeAdmin; LeaseRelease = $null; FinalizationScope = $false }
 )
 
 foreach ($pair in $allowedTransitions) {
@@ -953,6 +1001,14 @@ $stopPendingResult = Test-DanioRunStateTransition -PreviousState $active -Candid
 Assert-Equal -Actual $stopPendingResult.code -Expected "STOP_PENDING" -Message "Unsafe release did not retain the active lease."
 Assert-Equal -Actual $active.mode -Expected "active" -Message "Pure validation mutated the active state."
 Assert-Equal -Actual $active.budget.current_charge.status -Expected "pending" -Message "STOP_PENDING mutated the pending charge."
+
+$foreignRecoveryStop = Copy-JsonValue -Value $stopped
+$foreignRecoveryStop.recovery.branch_name = "autonomy/foreign/run/token"
+$foreignRecoveryStopResult = Test-DanioRunStateTransition `
+  -PreviousState $active `
+  -CandidateState $foreignRecoveryStop `
+  -LeaseRelease $stoppedRelease
+Assert-Equal -Actual $foreignRecoveryStopResult.code -Expected "RECOVERY_INVALID" -Message "Stopped recovery accepted a foreign owner branch."
 
 foreach ($unprovenExit in @($closeout, $paused)) {
   $unprovenExitResult = Test-DanioRunStateTransition `
@@ -1105,8 +1161,236 @@ Assert-True -Condition (-not $nullCandidateResult.valid) -Message "Null transiti
 
 $badAdmin = Copy-JsonValue -Value $handoffAdmin
 $badAdmin.cursor.work_unit_id = "DCL-DR-099-forbidden-change"
-$badAdminResult = Test-DanioRunStateTransition -PreviousState $handoffReady -CandidateState $badAdmin
+$badAdminResult = Test-DanioRunStateTransition -PreviousState $handoffPending -CandidateState $badAdmin
 Assert-Equal -Actual $badAdminResult.code -Expected "ADMINISTRATIVE_CHANGE_FORBIDDEN" -Message "Administrative update changed product cursor."
+
+foreach ($protectedMutation in @(
+  [pscustomobject]@{ Name = "run"; Expected = "TRANSITION_SCOPE_INVALID"; Apply = { param($value) $value.run_id = "alternate-danio-run" } },
+  [pscustomobject]@{ Name = "project-root"; Expected = "TRANSITION_SCOPE_INVALID"; Apply = { param($value) $value.authorization.saved_project_root = "D:/Alternate Danio"; $value.authorization.repository_root = "D:/Alternate Danio/repo" } },
+  [pscustomobject]@{ Name = "authority"; Expected = "AUTHORITY_CONFLICT"; Apply = { param($value) $value.authority.finish_map.commit = ("0" * 40) } },
+  [pscustomobject]@{ Name = "recovery"; Expected = "TRANSITION_SCOPE_INVALID"; Apply = { param($value) $value.recovery = New-TestRecovery -Owner $active.owner } },
+  [pscustomobject]@{ Name = "stop-reason"; Expected = "TRANSITION_SCOPE_INVALID"; Apply = { param($value) $value.stop_reason_code = "HISTORY_REWRITE" } },
+  [pscustomobject]@{ Name = "control-target"; Expected = "TRANSITION_SCOPE_INVALID"; Apply = { param($value) $value.control_surface_sync.status = "pending"; $value.control_surface_sync.target_commit = ("9" * 40) } }
+)) {
+  $mutatedCloseout = Copy-JsonValue -Value $closeout
+  & $protectedMutation.Apply $mutatedCloseout
+  $mutatedResult = Test-DanioRunStateTransition `
+    -PreviousState $active `
+    -CandidateState $mutatedCloseout `
+    -LeaseRelease $closeoutRelease
+  Assert-Equal `
+    -Actual $mutatedResult.code `
+    -Expected $protectedMutation.Expected `
+    -Message "Task 9 closeout accepted protected $($protectedMutation.Name) drift."
+}
+
+$pauseCursorSwap = Copy-JsonValue -Value $paused
+$pauseCursorSwap.cursor.work_unit_id = "DCL-DR-099-forbidden"
+$pauseCursorSwapResult = Test-DanioRunStateTransition -PreviousState $active -CandidateState $pauseCursorSwap -LeaseRelease $pauseRelease
+Assert-Equal -Actual $pauseCursorSwapResult.code -Expected "TRANSITION_SCOPE_INVALID" -Message "Paused closeout replaced the authorized cursor."
+
+$finalizeOwnerSwap = Copy-JsonValue -Value $finalize
+$finalizeOwnerSwap.owner.claimed_at_utc = "2026-07-11T12:00:01.0000000Z"
+$finalizeOwnerSwapResult = Test-DanioRunStateTransition `
+  -PreviousState $rcActive `
+  -CandidateState $finalizeOwnerSwap `
+  -LedgerRows $finalizationRows `
+  -ActivePhaseLedgerIds $activePhaseLedgerIds
+Assert-Equal -Actual $finalizeOwnerSwapResult.code -Expected "OWNER_TOKEN_INVALID" -Message "Finalization rewrote retained-owner provenance."
+
+$terminalSchedule = Copy-JsonValue -Value $terminalComplete
+$terminalSchedule.control_surface_sync.status = "pending"
+$terminalSchedule.control_surface_sync.target_commit = [string]$terminalSchedule.last_verified_checkpoint.product_commit
+$terminalScheduleResult = Test-DanioRunStateTransition -PreviousState $finalize -CandidateState $terminalSchedule -LeaseRelease $completeRelease
+Assert-True -Condition $terminalScheduleResult.valid -Message "Terminal completion could not schedule its verified visual target."
+
+$laterNonvisualCheckpoint = Copy-JsonValue -Value $terminalComplete
+$laterNonvisualCheckpoint.control_surface_sync.status = "synced"
+$laterNonvisualCheckpoint.control_surface_sync.target_commit = ("1" * 40)
+$laterNonvisualCheckpoint.control_surface_sync.figma_file_id = "figma-fixture"
+$laterNonvisualCheckpoint.control_surface_sync.figma_node_ids = @("1:2")
+$laterNonvisualCheckpoint.control_surface_sync.attempted_at_utc = "2026-07-11T12:09:45.0000000Z"
+$laterNonvisualCheckpoint.control_surface_sync.evidence_sha256 = ("a" * 64)
+$laterNonvisualValidation = Test-DanioRunState -State $laterNonvisualCheckpoint
+Assert-True -Condition $laterNonvisualValidation.valid -Message "A later nonvisual checkpoint invalidated an earlier synced visual target."
+
+$adminTargetSwap = Copy-JsonValue -Value $handoffAdmin
+$adminTargetSwap.control_surface_sync.target_commit = ("b" * 40)
+$adminTargetSwapResult = Test-DanioRunStateTransition -PreviousState $handoffPending -CandidateState $adminTargetSwap
+Assert-Equal -Actual $adminTargetSwapResult.code -Expected "ADMINISTRATIVE_CHANGE_FORBIDDEN" -Message "Administrative sync replaced the pending visual target."
+
+$falseBudgetStop = Copy-JsonValue -Value $stopped
+$falseBudgetStop.transition.reason_code = "BUDGET_EXHAUSTED"
+$falseBudgetStop.stop_reason_code = "BUDGET_EXHAUSTED"
+$falseBudgetStopResult = Test-DanioRunStateTransition -PreviousState $active -CandidateState $falseBudgetStop -LeaseRelease $stoppedRelease
+Assert-Equal -Actual $falseBudgetStopResult.code -Expected "BUDGET_EXHAUSTED" -Message "Budget-exhausted stop was accepted with positive remaining budget."
+
+$closeoutProductCommit = [string]$closeout.last_verified_checkpoint.product_commit
+$closeoutManifestPath = [string]$closeout.last_verified_checkpoint.evidence_manifest_path
+$closeoutManifest = [pscustomobject]@{
+  schema_version = 1
+  product_commit = $closeoutProductCommit
+  work_unit_id = [string]$active.cursor.work_unit_id
+  ledger_row_ids = @([string]$active.cursor.ledger_row_ids[0])
+  commands = @(
+    [pscustomobject]@{
+      command = "focused local gate"
+      exit_code = 0
+      started_at_utc = "2026-07-11T12:07:00.0000000Z"
+      completed_at_utc = "2026-07-11T12:08:00.0000000Z"
+    }
+  )
+  environment = [pscustomobject]@{
+    platform = "windows"
+    device_id = $null
+  }
+  artifacts = @()
+  checks = @(
+    [pscustomobject]@{
+      code = "FOCUSED"
+      status = "pass"
+      command_indexes = @(0)
+      artifact_indexes = @()
+    }
+  )
+  overall_status = "pass"
+}
+$closeoutEvidenceValidation = Test-PrivateEvidenceManifest `
+  -Manifest $closeoutManifest `
+  -ManifestPath $closeoutManifestPath `
+  -PreviousState $active `
+  -CandidateState $closeout `
+  -ParentCommit ("3" * 40)
+Assert-True `
+  -Condition $closeoutEvidenceValidation.valid `
+  -Message "Valid owned-cursor evidence should pass: $($closeoutEvidenceValidation.code) $($closeoutEvidenceValidation.details -join '; ')"
+
+$wrongFilenameEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $closeoutManifest `
+  -ManifestPath "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$('4' * 40).json" `
+  -PreviousState $active `
+  -CandidateState $closeout `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $wrongFilenameEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Manifest filename was not bound to product commit."
+
+$outOfRangeCheckManifest = Copy-JsonValue -Value $closeoutManifest
+$outOfRangeCheckManifest.checks[0].command_indexes = @(1)
+$outOfRangeEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $outOfRangeCheckManifest `
+  -ManifestPath $closeoutManifestPath `
+  -PreviousState $active `
+  -CandidateState $closeout `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $outOfRangeEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Out-of-range command index was accepted."
+
+$futureCommandManifest = Copy-JsonValue -Value $closeoutManifest
+$futureCommandManifest.commands[0].completed_at_utc = "2026-07-11T12:09:30.0000000Z"
+$futureCommandEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $futureCommandManifest `
+  -ManifestPath $closeoutManifestPath `
+  -PreviousState $active `
+  -CandidateState $closeout `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $futureCommandEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Command completed after checkpoint verification."
+
+$artifactManifest = Copy-JsonValue -Value $closeoutManifest
+$artifactManifest.artifacts = @(
+  [pscustomobject]@{
+    kind = "proof"
+    path = "apps/aquarium_app/docs/agent/autonomous_completion/evidence/proof.txt"
+    sha256 = ("a" * 64)
+  }
+)
+$artifactManifest.checks[0].artifact_indexes = @(0)
+$artifactMismatch = Test-PrivateEvidenceManifest `
+  -Manifest $artifactManifest `
+  -ManifestPath $closeoutManifestPath `
+  -PreviousState $active `
+  -CandidateState $closeout `
+  -ParentCommit ("3" * 40) `
+  -ArtifactObservations @(
+    [pscustomobject]@{
+      path = "apps/aquarium_app/docs/agent/autonomous_completion/evidence/proof.txt"
+      exists_at_product_commit = $true
+      sha256 = ("b" * 64)
+    }
+  )
+Assert-Equal -Actual $artifactMismatch.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Artifact hash mismatch was accepted."
+
+$terminalManifest = Copy-JsonValue -Value $closeoutManifest
+$terminalManifest.product_commit = [string]$terminalComplete.last_verified_checkpoint.product_commit
+$terminalManifest.work_unit_id = [string]$finalize.cursor.work_unit_id
+$terminalManifest.ledger_row_ids = @([string]$finalize.cursor.ledger_row_ids[0])
+$terminalManifest.checks = @(
+  "FULL",
+  "ANDROID_PREP",
+  "CONTENT",
+  "VISUAL",
+  "PRODUCT_TRUTH",
+  "PHONE_QA"
+) | ForEach-Object {
+  [pscustomobject]@{
+    code = $_
+    status = "pass"
+    command_indexes = @(0)
+    artifact_indexes = @()
+  }
+}
+$terminalManifest.commands[0].started_at_utc = "2026-07-11T12:08:50.0000000Z"
+$terminalManifest.commands[0].completed_at_utc = "2026-07-11T12:09:00.0000000Z"
+$terminalManifestPath = [string]$terminalComplete.last_verified_checkpoint.evidence_manifest_path
+$terminalEvidenceValidation = Test-PrivateEvidenceManifest `
+  -Manifest $terminalManifest `
+  -ManifestPath $terminalManifestPath `
+  -PreviousState $finalize `
+  -CandidateState $terminalComplete `
+  -ParentCommit ("3" * 40)
+Assert-True `
+  -Condition $terminalEvidenceValidation.valid `
+  -Message "Valid terminal evidence should pass: $($terminalEvidenceValidation.code) $($terminalEvidenceValidation.details -join '; ')"
+
+$staleTerminalManifest = Copy-JsonValue -Value $terminalManifest
+$staleTerminalManifest.commands[0].started_at_utc = "2026-07-11T12:08:00.0000000Z"
+$staleTerminalEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $staleTerminalManifest `
+  -ManifestPath $terminalManifestPath `
+  -PreviousState $finalize `
+  -CandidateState $terminalComplete `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $staleTerminalEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Terminal evidence predating finalization was accepted."
+
+$currentCursorHistoricalManifest = Copy-JsonValue -Value $terminalManifest
+$currentCursorHistoricalManifest.product_commit = [string]$finalize.last_verified_checkpoint.product_commit
+$currentCursorHistoricalManifest.work_unit_id = [string]$finalize.cursor.work_unit_id
+$currentCursorHistoricalManifest.ledger_row_ids = @([string]$finalize.cursor.ledger_row_ids[0])
+$currentCursorHistoricalPath = [string]$finalize.last_verified_checkpoint.evidence_manifest_path
+$currentCursorHistoricalEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $currentCursorHistoricalManifest `
+  -ManifestPath $currentCursorHistoricalPath `
+  -PreviousState $rcActive `
+  -CandidateState $finalize `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $currentCursorHistoricalEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Finalize accepted historical evidence rebound to the current DCL-RC cursor."
+
+$longCheckCodeManifest = Copy-JsonValue -Value $terminalManifest
+$longCheckCodeManifest.checks[0].code = ("A" * 65)
+$longCheckCodeEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $longCheckCodeManifest `
+  -ManifestPath $terminalManifestPath `
+  -PreviousState $finalize `
+  -CandidateState $terminalComplete `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $longCheckCodeEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Runtime evidence accepted a check code longer than the schema cap."
+
+$missingPhoneQaManifest = Copy-JsonValue -Value $terminalManifest
+$missingPhoneQaManifest.checks = @($missingPhoneQaManifest.checks | Where-Object { $_.code -cne "PHONE_QA" })
+$missingPhoneQaEvidence = Test-PrivateEvidenceManifest `
+  -Manifest $missingPhoneQaManifest `
+  -ManifestPath $terminalManifestPath `
+  -PreviousState $finalize `
+  -CandidateState $terminalComplete `
+  -ParentCommit ("3" * 40)
+Assert-Equal -Actual $missingPhoneQaEvidence.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Terminal evidence omitted PHONE_QA."
 
 $completionRows = @(Copy-JsonValue -Value $ledgerRows)
 $finalProductCommit = ("2" * 40)
@@ -1157,11 +1441,11 @@ $repositoryObservation = [pscustomobject]@{
   clean = $true
 }
 $finalizationRepositoryObservation = New-TestRepositoryObservation `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -Commit $evidenceLedgerParentCommit
 $finalizationReceipt = New-DanioSynchronizationReceipt `
   -InvocationNonce $invocationNonce `
-  -RepositoryRoot $normalizedRepoRoot `
+  -RepositoryRoot $authorizedRepoRoot `
   -ExitCode 0 `
   -CompletedAtUtc "2026-07-11T12:10:00.0000000Z" `
   -OriginMainCommit $evidenceLedgerParentCommit `
@@ -1171,7 +1455,7 @@ $finalizationReadinessParameters = @{
   Intent = "Finalization"
   SynchronizationReceipt = $finalizationReceipt
   ExpectedInvocationNonce = $invocationNonce
-  ExpectedRepositoryRoot = $normalizedRepoRoot
+  ExpectedRepositoryRoot = $authorizedRepoRoot
   RepositoryObservation = $finalizationRepositoryObservation
   State = $finalize
   AuthorityValidation = $authorityValid

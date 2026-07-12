@@ -102,7 +102,9 @@ function Test-GitRefExists {
 function Get-RepositorySnapshot {
   param([Parameter(Mandatory = $true)][string]$RepositoryRoot)
 
-  $indexPath = Join-Path $RepositoryRoot ".git/index"
+  $indexPath = Invoke-Git `
+    -RepositoryRoot $RepositoryRoot `
+    -GitArguments @("rev-parse", "--path-format=absolute", "--git-path", "index")
   return [pscustomobject]@{
     refs = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("show-ref")
     index_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $indexPath).Hash
@@ -184,6 +186,57 @@ function Invoke-Readiness {
   Assert-Equal -Actual $output.Count -Expected 1 -Message "Readiness wrapper emitted more than one stdout object."
   $report = $output[0] | ConvertFrom-Json
   Assert-Equal -Actual $report.eligible -Expected ($exitCode -eq 0) -Message "Readiness JSON and exit code disagreed."
+  return $report
+}
+
+function Invoke-FinalizationReadiness {
+  param(
+    [Parameter(Mandatory = $true)][string]$ScriptPath,
+    [Parameter(Mandatory = $true)]$Fixture,
+    [Parameter(Mandatory = $true)][string]$InvocationNonce,
+    [Parameter(Mandatory = $true)]$Receipt,
+    [AllowNull()]$LeaseRelease = $null
+  )
+
+  $receiptJson = $Receipt | ConvertTo-Json -Depth 100 -Compress
+  $receiptBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($receiptJson))
+  $leaseJson = if ($null -eq $LeaseRelease) {
+    ""
+  } else {
+    $LeaseRelease | ConvertTo-Json -Depth 20 -Compress
+  }
+  $leaseBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($leaseJson))
+  $escapedScriptPath = $ScriptPath.Replace("'", "''")
+  $escapedRepositoryRoot = ([string]$Fixture.clone).Replace("'", "''")
+  $escapedEvidencePath = ([string]$Fixture.manifest_path).Replace("'", "''")
+  $escapedNonce = $InvocationNonce.Replace("'", "''")
+  $childCommand = @"
+`$receiptJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$receiptBase64'))
+`$leaseJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$leaseBase64'))
+`$parameters = @{
+  Intent = 'Finalization'
+  SynchronizationReceiptJson = `$receiptJson
+  ExpectedInvocationNonce = '$escapedNonce'
+  RepositoryRoot = '$escapedRepositoryRoot'
+  EvidenceManifestPath = '$escapedEvidencePath'
+}
+if (-not [string]::IsNullOrWhiteSpace(`$leaseJson)) {
+  `$parameters.LeaseReleaseJson = `$leaseJson
+}
+& '$escapedScriptPath' @parameters
+"@
+  $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($childCommand))
+  $output = @(& powershell `
+    -NoProfile `
+    -NonInteractive `
+    -ExecutionPolicy Bypass `
+    -EncodedCommand $encoded `
+    2>$null)
+  $exitCode = $LASTEXITCODE
+  Assert-True -Condition (@(0, 1) -contains $exitCode) -Message "Finalization readiness returned unsupported exit code."
+  Assert-Equal -Actual $output.Count -Expected 1 -Message "Finalization readiness emitted more than one stdout object."
+  $report = $output[0] | ConvertFrom-Json
+  Assert-Equal -Actual $report.eligible -Expected ($exitCode -eq 0) -Message "Finalization readiness disagrees with exit code."
   return $report
 }
 
@@ -554,7 +607,9 @@ function Invoke-TransitionValidation {
     [Parameter(Mandatory = $true)][string]$Source,
     [AllowNull()][string]$ExpectedParentCommit = $null,
     [AllowNull()][string]$ExpectedStagedTreeHash = $null,
-    [string]$Commit = "HEAD"
+    [string]$Commit = "HEAD",
+    [AllowNull()][string]$EvidenceManifestPath = $null,
+    [AllowNull()][string]$LeaseReleaseJson = $null
   )
 
   $arguments = @(
@@ -576,6 +631,12 @@ function Invoke-TransitionValidation {
   }
   if (-not [string]::IsNullOrWhiteSpace($ExpectedStagedTreeHash)) {
     $arguments += @("-ExpectedStagedTreeHash", $ExpectedStagedTreeHash)
+  }
+  if (-not [string]::IsNullOrWhiteSpace($EvidenceManifestPath)) {
+    $arguments += @("-EvidenceManifestPath", $EvidenceManifestPath)
+  }
+  if (-not [string]::IsNullOrWhiteSpace($LeaseReleaseJson)) {
+    $arguments += @("-LeaseReleaseJson", $LeaseReleaseJson)
   }
   $output = @(& powershell @arguments 2>$null)
   $exitCode = $LASTEXITCODE
@@ -618,6 +679,675 @@ function Write-FixtureScript {
   )
 }
 
+function Get-TransitionLedgerContent {
+  param(
+    [ValidateSet("ordinary", "rc_open", "rc_closed")]
+    [string]$Mode,
+    [AllowNull()][string]$EvidenceText = $null
+  )
+
+  $rows = switch ($Mode) {
+    "ordinary" {
+      @(
+        "| DCL-DR-001 | Fixture closeout row | fixture | proof | IMPLEMENT | closed | data | none | verified |",
+        "| DCL-DR-002 | Fixture next row | fixture | pending | IMPLEMENT | open | data | none | verified |"
+      ) -join "`n"
+    }
+    "rc_open" {
+      @(
+        "| DCL-DR-001 | Prior verified row | fixture | proof | IMPLEMENT | closed | data | none | verified |",
+        "| DCL-RC-001 | Final phone candidate | fixture | pending | IMPLEMENT | open | release | none | terminal proof |"
+      ) -join "`n"
+    }
+    "rc_closed" {
+      @(
+        "| DCL-DR-001 | Prior verified row | fixture | proof | IMPLEMENT | closed | data | none | verified |",
+        "| DCL-RC-001 | Final phone candidate | fixture | $EvidenceText | IMPLEMENT | closed | release | none | terminal proof |"
+      ) -join "`n"
+    }
+  }
+  return @"
+# Fixture closure ledger
+
+## Active Findings
+
+| ID | Finding | How Found | Evidence | Disposition | Closure State | Lane | User Input | Done Condition |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+$rows
+
+## Closed, Accepted, Or Superseded Findings
+
+| ID | Finding | Superseding Evidence | Disposition | Closure State | Rule |
+| --- | --- | --- | --- | --- | --- |
+"@
+}
+
+function Set-TransitionFixtureLocation {
+  param(
+    [Parameter(Mandatory = $true)]$State,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$SavedProjectRoot
+  )
+
+  $normalizedRepositoryRoot = $RepositoryRoot.Replace("\", "/").TrimEnd("/")
+  $normalizedSavedProjectRoot = $SavedProjectRoot.Replace("\", "/").TrimEnd("/")
+  $State.authorization.repository_root = $normalizedRepositoryRoot
+  $State.authorization.saved_project_root = $normalizedSavedProjectRoot
+  if ($null -ne $State.owner) {
+    $State.owner.worktree_path = "$normalizedSavedProjectRoot/.codex-worktrees/$($State.owner.worktree_id)"
+  }
+  return $State
+}
+
+function Set-RcOwnerIdentity {
+  param(
+    [Parameter(Mandatory = $true)]$State,
+    [Parameter(Mandatory = $true)][string]$SavedProjectRoot
+  )
+
+  $identity = Get-ExpectedWriterIdentity `
+    -RunId ([string]$State.run_id) `
+    -WorkUnitId ([string]$State.cursor.work_unit_id) `
+    -TaskId ([string]$State.owner.task_id) `
+    -ExpectedStateRevision ([int64]$State.owner.claim_revision) `
+    -SavedProjectRoot $SavedProjectRoot
+  $State.owner.token_sha256 = $identity.token_sha256
+  $State.owner.branch_name = $identity.branch_name
+  $State.owner.worktree_id = $identity.worktree_id
+  $State.owner.worktree_path = $identity.worktree_path
+  return $State
+}
+
+function Set-TransitionFixtureAuthority {
+  param(
+    [Parameter(Mandatory = $true)]$State,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$Commit
+  )
+
+  foreach ($property in @($State.authority.PSObject.Properties)) {
+    $property.Value.commit = $Commit
+    $property.Value.blob_oid = Invoke-Git `
+      -RepositoryRoot $RepositoryRoot `
+      -GitArguments @("rev-parse", "$Commit`:$($property.Value.path)")
+  }
+  return $State
+}
+
+function Commit-TransitionFixtureState {
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$StatePath,
+    [Parameter(Mandatory = $true)]$State,
+    [Parameter(Mandatory = $true)][string]$Subject,
+    [AllowNull()][string]$EvidenceManifestPath = $null
+  )
+
+  Write-FixtureJson -Path (Join-Path $RepositoryRoot $StatePath) -Value $State
+  [void](Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("add", "--", $StatePath))
+  $tree = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("write-tree")
+  $trailerLines = @(
+    "Danio-State-Tree: $tree",
+    "Danio-State-Validation: pass",
+    "Danio-Docs-Profile: pass",
+    "Danio-Verified-At: 2026-07-11T12:01:30.0000000Z"
+  )
+  if (-not [string]::IsNullOrWhiteSpace($EvidenceManifestPath)) {
+    $trailerLines += "Danio-Evidence-Manifest: $EvidenceManifestPath"
+  }
+  [void](Invoke-Git `
+    -RepositoryRoot $RepositoryRoot `
+    -GitArguments @("commit", "-m", $Subject, "-m", ($trailerLines -join "`n")))
+  return Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("rev-parse", "HEAD")
+}
+
+function New-TransitionEvidenceManifest {
+  param(
+    [Parameter(Mandatory = $true)][string]$ProductCommit,
+    [Parameter(Mandatory = $true)][string]$WorkUnitId,
+    [Parameter(Mandatory = $true)][string]$LedgerRowId,
+    [string]$ArtifactPath,
+    [string]$ArtifactSha256,
+    [switch]$Terminal,
+    [string]$StartedAtUtc = "2026-07-11T12:05:00.0000000Z",
+    [string]$CompletedAtUtc = "2026-07-11T12:06:00.0000000Z"
+  )
+
+  $codes = if ($Terminal) {
+    @("FULL", "ANDROID_PREP", "CONTENT", "VISUAL", "PRODUCT_TRUTH", "PHONE_QA")
+  } else {
+    @("FOCUSED")
+  }
+  $checks = @(
+    $codes | ForEach-Object {
+      $artifactIndexes = @()
+      if (-not [string]::IsNullOrWhiteSpace($ArtifactPath)) {
+        $artifactIndexes = @(0)
+      }
+      [pscustomobject]@{
+        code = $_
+        status = "pass"
+        command_indexes = @(0)
+        artifact_indexes = $artifactIndexes
+      }
+    }
+  )
+  $artifacts = @()
+  if (-not [string]::IsNullOrWhiteSpace($ArtifactPath)) {
+    $artifacts = @(
+      [pscustomobject]@{
+        kind = "fixture-proof"
+        path = $ArtifactPath
+        sha256 = $ArtifactSha256
+      }
+    )
+  }
+  return [pscustomobject]@{
+    schema_version = 1
+    product_commit = $ProductCommit
+    work_unit_id = $WorkUnitId
+    ledger_row_ids = @($LedgerRowId)
+    commands = @(
+      [pscustomobject]@{
+        command = "fixture local gate"
+        exit_code = 0
+        started_at_utc = $StartedAtUtc
+        completed_at_utc = $CompletedAtUtc
+      }
+    )
+    environment = [pscustomobject]@{
+      platform = "windows"
+      device_id = $null
+    }
+    artifacts = $artifacts
+    checks = $checks
+    overall_status = "pass"
+  }
+}
+
+function New-TransitionTransactionFixture {
+  param(
+    [Parameter(Mandatory = $true)][string]$Name,
+    [Parameter(Mandatory = $true)][string]$FixtureRoot,
+    [Parameter(Mandatory = $true)][string]$SourceAppRoot,
+    [ValidateSet("closeout", "pause", "stop", "finalize", "complete", "finalization_stop")]
+    [string]$Action,
+    [switch]$LastBudgetUnit,
+    [switch]$FailDocsProfile
+  )
+
+  $root = Join-Path $FixtureRoot "tt-$Name"
+  $remote = Join-Path $root "remote.git"
+  $seed = Join-Path $root "seed"
+  $clone = Join-Path $root "clone"
+  $stateRelativePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
+  $ledgerRelativePath = "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
+  $handoffRelativePath = "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
+  $sliceLogRelativePath = "apps/aquarium_app/docs/agent/SLICE_LOG.md"
+  $gateRelativePath = "apps/aquarium_app/scripts/quality_gates/run_local_quality_gate.ps1"
+  $evidenceRoot = "apps/aquarium_app/docs/agent/autonomous_completion/evidence"
+  $isRc = @("finalize", "complete", "finalization_stop") -ccontains $Action
+
+  New-Item -ItemType Directory -Force -Path $root | Out-Null
+  [void](Invoke-GitWithoutRepository -GitArguments @("init", "--bare", $remote))
+  [void](Invoke-GitWithoutRepository -GitArguments @("init", $seed))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("checkout", "-b", "main"))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("config", "user.name", "Danio Transition Fixture"))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("config", "user.email", "transition@example.invalid"))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("config", "core.autocrlf", "false"))
+
+  Write-FixtureScript -Path (Join-Path $seed $handoffRelativePath) -Content "fixture handoff`n"
+  Write-FixtureScript -Path (Join-Path $seed $sliceLogRelativePath) -Content "fixture slice log`n"
+  $gateExit = if ($FailDocsProfile) { 1 } else { 0 }
+  Write-FixtureScript -Path (Join-Path $seed $gateRelativePath) -Content @"
+[CmdletBinding()]
+param([string]`$Profile)
+if (`$Profile -cne "Docs") { exit 1 }
+Write-Output "Disposable Docs profile executed."
+exit $gateExit
+"@
+  foreach ($relativePath in @(
+    "docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md",
+    "docs/agent/FINISH_MAP.md",
+    "docs/agent/QUALITY_LADDER.md",
+    "docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md",
+    "docs/agent/DEVICE_OWNERSHIP.md",
+    "docs/agent/autonomous_completion/runner_compatibility.json"
+  )) {
+    $sourcePath = Join-Path $SourceAppRoot $relativePath
+    $destinationPath = Join-Path $seed "apps/aquarium_app/$relativePath"
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destinationPath) | Out-Null
+    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
+  }
+
+  $ledgerMode = if ($isRc) { "rc_open" } else { "ordinary" }
+  Write-FixtureScript `
+    -Path (Join-Path $seed $ledgerRelativePath) `
+    -Content (Get-TransitionLedgerContent -Mode $ledgerMode)
+  $historicalArtifactPath = "apps/aquarium_app/docs/agent/autonomous_completion/product-proof.txt"
+  Write-FixtureScript -Path (Join-Path $seed $historicalArtifactPath) -Content "historical product proof`n"
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "apps/aquarium_app"))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: authority and product base"))
+  $historicalProductCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+  $historicalArtifactSha256 = (Get-FileHash `
+    -Algorithm SHA256 `
+    -LiteralPath (Join-Path $seed $historicalArtifactPath)).Hash.ToLowerInvariant()
+
+  $historicalManifestPath = $null
+  if ($isRc) {
+    $historicalManifestPath = "$evidenceRoot/$historicalProductCommit.json"
+    $historicalManifest = New-TransitionEvidenceManifest `
+      -ProductCommit $historicalProductCommit `
+      -WorkUnitId "DCL-DR-001-prior" `
+      -LedgerRowId "DCL-DR-001" `
+      -ArtifactPath $historicalArtifactPath `
+      -ArtifactSha256 $historicalArtifactSha256 `
+      -StartedAtUtc "2026-07-11T11:50:00.0000000Z" `
+      -CompletedAtUtc "2026-07-11T11:51:00.0000000Z"
+    Write-FixtureJson -Path (Join-Path $seed $historicalManifestPath) -Value $historicalManifest
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "--", $historicalManifestPath))
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: historical evidence checkpoint"))
+  }
+  $authoritySnapshotCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+
+  $readyState = Get-Content -Raw -LiteralPath (
+    Join-Path $SourceAppRoot "test/scripts/fixtures/autonomous_completion/ready_run_state.json"
+  ) | ConvertFrom-Json
+  $readyState = Set-TransitionFixtureLocation `
+    -State $readyState `
+    -RepositoryRoot $clone `
+    -SavedProjectRoot $root
+  if ($isRc) {
+    $readyState.cursor.phase = "7-final-phone-candidate"
+    $readyState.cursor.work_unit_id = "DCL-RC-001-final-candidate"
+    $readyState.cursor.ledger_row_ids = @("DCL-RC-001")
+    $readyState.last_verified_checkpoint = [pscustomobject]@{
+      product_commit = $historicalProductCommit
+      evidence_manifest_path = $historicalManifestPath
+      verified_at_utc = "2026-07-11T11:55:00.0000000Z"
+    }
+  } else {
+    $readyState.cursor.phase = "1-data-resilience"
+    $readyState.cursor.work_unit_id = "DCL-DR-001-fixture"
+    $readyState.cursor.ledger_row_ids = @("DCL-DR-001")
+    $readyState.last_verified_checkpoint = $null
+  }
+  $readyState.budget.current_charge.work_unit_id = $null
+  $readyState.budget.current_charge.status = "none"
+  $readyState.budget.current_charge.claimed_revision = $null
+  $readyState.budget.current_charge.consumed_revision = $null
+  if ($LastBudgetUnit) {
+    $readyState.budget.consumed_units = 19
+    $readyState.budget.remaining_units_including_current = 1
+  }
+  $readyState.transition.occurred_at_utc = "2026-07-11T11:59:00.0000000Z"
+  $readyState = Set-TransitionFixtureAuthority `
+    -State $readyState `
+    -RepositoryRoot $seed `
+    -Commit $authoritySnapshotCommit
+  Write-FixtureJson -Path (Join-Path $seed $stateRelativePath) -Value $readyState
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "--", $stateRelativePath))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: ready state parent"))
+  $readyCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+  $readyTree = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "$readyCommit^{tree}")
+
+  $activeState = $readyState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $activeState.state_revision = [int64]$readyState.state_revision + 1
+  $activeState.mode = "active"
+  $activeState.transition = [pscustomobject]@{
+    action = "claim"
+    from_mode = "ready"
+    to_mode = "active"
+    parent_state_revision = [int64]$readyState.state_revision
+    work_unit_id = [string]$readyState.cursor.work_unit_id
+    reason_code = $null
+    occurred_at_utc = "2026-07-11T12:01:00.0000000Z"
+  }
+  $ownerTaskId = "task-transition-fixture"
+  $ownerIdentity = Get-ExpectedWriterIdentity `
+    -RunId ([string]$activeState.run_id) `
+    -WorkUnitId ([string]$activeState.cursor.work_unit_id) `
+    -TaskId $ownerTaskId `
+    -ExpectedStateRevision ([int64]$readyState.state_revision) `
+    -SavedProjectRoot $root
+  $activeState.owner = [pscustomobject][ordered]@{
+    task_id = $ownerTaskId
+    token_sha256 = $ownerIdentity.token_sha256
+    claim_revision = [int64]$readyState.state_revision
+    claim_parent_commit = $readyCommit
+    claim_staged_tree_hash = $readyTree
+    branch_name = $ownerIdentity.branch_name
+    worktree_id = $ownerIdentity.worktree_id
+    worktree_path = $ownerIdentity.worktree_path
+    claimed_at_utc = "2026-07-11T12:01:00.0000000Z"
+    writer_lease_released = $false
+    android_lease_released = $false
+  }
+  $activeState.budget.current_charge.work_unit_id = [string]$activeState.cursor.work_unit_id
+  $activeState.budget.current_charge.status = "pending"
+  $activeState.budget.current_charge.claimed_revision = [int64]$readyState.state_revision
+  $activeState.budget.current_charge.consumed_revision = $null
+  $activeCommit = Commit-TransitionFixtureState `
+    -RepositoryRoot $seed `
+    -StatePath $stateRelativePath `
+    -State $activeState `
+    -Subject "fixture: typed writer claim"
+
+  $previousState = $activeState
+  $previousStateCommit = $activeCommit
+  if (@("complete", "finalization_stop") -ccontains $Action) {
+    $finalizingState = $activeState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+    $finalizingState.state_revision = [int64]$activeState.state_revision + 1
+    $finalizingState.mode = "finalizing"
+    $finalizingState.transition = [pscustomobject]@{
+      action = "finalize"
+      from_mode = "active"
+      to_mode = "finalizing"
+      parent_state_revision = [int64]$activeState.state_revision
+      work_unit_id = [string]$activeState.cursor.work_unit_id
+      reason_code = $null
+      occurred_at_utc = "2026-07-11T12:02:00.0000000Z"
+    }
+    $finalizingState.budget.consumed_units = [int64]$activeState.budget.consumed_units + 1
+    $finalizingState.budget.remaining_units_including_current = [int64]$activeState.budget.remaining_units_including_current - 1
+    $finalizingState.budget.current_charge.status = "consumed"
+    $finalizingState.budget.current_charge.consumed_revision = [int64]$finalizingState.state_revision
+    $finalizingState = Set-TransitionFixtureAuthority `
+      -State $finalizingState `
+      -RepositoryRoot $seed `
+      -Commit $activeCommit
+    $previousStateCommit = Commit-TransitionFixtureState `
+      -RepositoryRoot $seed `
+      -StatePath $stateRelativePath `
+      -State $finalizingState `
+      -Subject "fixture: typed finalization entry" `
+      -EvidenceManifestPath $historicalManifestPath
+    $previousState = $finalizingState
+  }
+
+  $productCommit = $historicalProductCommit
+  $manifestPath = $historicalManifestPath
+  if (
+    @("closeout", "pause") -ccontains $Action -or
+    ($Action -ceq "stop" -and $LastBudgetUnit)
+  ) {
+    $productArtifactPath = "apps/aquarium_app/docs/agent/autonomous_completion/current-proof.txt"
+    Write-FixtureScript -Path (Join-Path $seed $productArtifactPath) -Content "current product proof`n"
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "--", $productArtifactPath))
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: owned product checkpoint"))
+    $productCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+    $productArtifactSha256 = (Get-FileHash `
+      -Algorithm SHA256 `
+      -LiteralPath (Join-Path $seed $productArtifactPath)).Hash.ToLowerInvariant()
+    $manifestPath = "$evidenceRoot/$productCommit.json"
+    $manifest = New-TransitionEvidenceManifest `
+      -ProductCommit $productCommit `
+      -WorkUnitId ([string]$activeState.cursor.work_unit_id) `
+      -LedgerRowId "DCL-DR-001" `
+      -ArtifactPath $productArtifactPath `
+      -ArtifactSha256 $productArtifactSha256
+    Write-FixtureJson -Path (Join-Path $seed $manifestPath) -Value $manifest
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "--", $manifestPath))
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: owned evidence manifest"))
+  } elseif ($Action -ceq "complete") {
+    $terminalArtifactPath = "apps/aquarium_app/docs/agent/autonomous_completion/final-proof.txt"
+    Write-FixtureScript -Path (Join-Path $seed $terminalArtifactPath) -Content "terminal product proof`n"
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "--", $terminalArtifactPath))
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: terminal product checkpoint"))
+    $productCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+    $terminalArtifactSha256 = (Get-FileHash `
+      -Algorithm SHA256 `
+      -LiteralPath (Join-Path $seed $terminalArtifactPath)).Hash.ToLowerInvariant()
+    $manifestPath = "$evidenceRoot/$productCommit.json"
+    $terminalManifest = New-TransitionEvidenceManifest `
+      -ProductCommit $productCommit `
+      -WorkUnitId ([string]$previousState.cursor.work_unit_id) `
+      -LedgerRowId "DCL-RC-001" `
+      -ArtifactPath $terminalArtifactPath `
+      -ArtifactSha256 $terminalArtifactSha256 `
+      -Terminal `
+      -StartedAtUtc "2026-07-11T12:05:00.0000000Z" `
+      -CompletedAtUtc "2026-07-11T12:06:00.0000000Z"
+    Write-FixtureJson -Path (Join-Path $seed $manifestPath) -Value $terminalManifest
+    $rcEvidence = "Final evidence manifest $manifestPath for product $productCommit"
+    Write-FixtureScript `
+      -Path (Join-Path $seed $ledgerRelativePath) `
+      -Content (Get-TransitionLedgerContent -Mode "rc_closed" -EvidenceText $rcEvidence)
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "apps/aquarium_app"))
+    [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: terminal evidence and ledger checkpoint"))
+  }
+  $evidenceCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("remote", "add", "origin", $remote))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("push", "-u", "origin", "main"))
+  [void](Invoke-Git -RepositoryRoot $remote -GitArguments @("symbolic-ref", "HEAD", "refs/heads/main"))
+  [void](Invoke-GitWithoutRepository -GitArguments @("-c", "core.autocrlf=false", "clone", $remote, $clone))
+  [void](Invoke-Git -RepositoryRoot $clone -GitArguments @("config", "user.name", "Danio Transition Clone"))
+  [void](Invoke-Git -RepositoryRoot $clone -GitArguments @("config", "user.email", "transition-clone@example.invalid"))
+  [void](Invoke-Git -RepositoryRoot $clone -GitArguments @("config", "core.autocrlf", "false"))
+
+  New-Item -ItemType Directory -Force -Path (Split-Path -Parent ([string]$previousState.owner.worktree_path)) | Out-Null
+  [void](Invoke-Git -RepositoryRoot $clone -GitArguments @(
+    "worktree", "add", "-b", [string]$previousState.owner.branch_name,
+    [string]$previousState.owner.worktree_path, $previousStateCommit
+  ))
+  $ownerExistedBeforeCleanup = (
+    (Test-Path -LiteralPath ([string]$previousState.owner.worktree_path) -PathType Container) -and
+    (Test-GitRefExists -RepositoryRoot $clone -RefName "refs/heads/$($previousState.owner.branch_name)")
+  )
+  $ownerCheckpointAligned = (
+    (Invoke-Git -RepositoryRoot $clone -GitArguments @("rev-parse", "HEAD")) -ceq $evidenceCommit -and
+    (Invoke-Git -RepositoryRoot $clone -GitArguments @("rev-parse", "origin/main")) -ceq $evidenceCommit -and
+    $ownerExistedBeforeCleanup
+  )
+  $ownerCleanupPerformed = $false
+  if ($Action -cne "finalize") {
+    [void](Invoke-Git -RepositoryRoot $clone -GitArguments @(
+      "worktree", "remove", "--", [string]$previousState.owner.worktree_path
+    ))
+    [void](Invoke-Git -RepositoryRoot $clone -GitArguments @(
+      "branch", "-d", "--", [string]$previousState.owner.branch_name
+    ))
+    $ownerCleanupPerformed = $true
+  }
+  [IO.File]::AppendAllText((Join-Path $clone $handoffRelativePath), "closeout update`n")
+  [IO.File]::AppendAllText((Join-Path $clone $sliceLogRelativePath), "slice update`n")
+
+  $candidateState = $previousState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $candidateState.state_revision = [int64]$previousState.state_revision + 1
+  $candidateState.transition = [pscustomobject]@{
+    action = $Action
+    from_mode = [string]$previousState.mode
+    to_mode = switch ($Action) {
+      "closeout" { "handoff_ready" }
+      "pause" { "paused" }
+      "stop" { "stopped" }
+      "finalize" { "finalizing" }
+      "complete" { "complete" }
+      "finalization_stop" { "stopped" }
+    }
+    parent_state_revision = [int64]$previousState.state_revision
+    work_unit_id = [string]$previousState.cursor.work_unit_id
+    reason_code = if (@("stop", "finalization_stop") -ccontains $Action) {
+      if ($Action -ceq "stop") {
+        if ($LastBudgetUnit) { "BUDGET_EXHAUSTED" } else { "BASELINE_FAILED" }
+      } else {
+        "FINALIZATION_FAILED"
+      }
+    } else {
+      $null
+    }
+    occurred_at_utc = "2026-07-11T12:10:00.0000000Z"
+  }
+  $candidateState.mode = [string]$candidateState.transition.to_mode
+  $candidateState.stop_reason_code = $candidateState.transition.reason_code
+  if (@("closeout", "pause", "stop", "finalize") -ccontains $Action) {
+    $candidateState.budget.consumed_units = [int64]$previousState.budget.consumed_units + 1
+    $candidateState.budget.remaining_units_including_current = [int64]$previousState.budget.remaining_units_including_current - 1
+    $candidateState.budget.current_charge.status = "consumed"
+    $candidateState.budget.current_charge.consumed_revision = [int64]$candidateState.state_revision
+  }
+  if ($Action -ceq "closeout") {
+    $candidateState.handoff_generation = [int64]$previousState.handoff_generation + 1
+    $candidateState.cursor.work_unit_id = "DCL-DR-002-next"
+    $candidateState.cursor.ledger_row_ids = @("DCL-DR-002")
+  }
+  if (@("closeout", "pause", "stop", "complete", "finalization_stop") -ccontains $Action) {
+    $candidateState.owner = $null
+  }
+  if (
+    @("closeout", "pause") -ccontains $Action -or
+    ($Action -ceq "stop" -and $LastBudgetUnit)
+  ) {
+    $candidateState.last_verified_checkpoint = [pscustomobject]@{
+      product_commit = $productCommit
+      evidence_manifest_path = $manifestPath
+      verified_at_utc = "2026-07-11T12:09:00.0000000Z"
+    }
+  } elseif ($Action -ceq "complete") {
+    $candidateState.last_verified_checkpoint = [pscustomobject]@{
+      product_commit = $productCommit
+      evidence_manifest_path = $manifestPath
+      verified_at_utc = "2026-07-11T12:09:00.0000000Z"
+    }
+  } elseif ($Action -ceq "stop") {
+    $candidateState.last_verified_checkpoint = $null
+  } else {
+    $candidateState.last_verified_checkpoint = $previousState.last_verified_checkpoint
+  }
+  if (@("stop", "finalization_stop") -ccontains $Action) {
+    $candidateState.recovery = [pscustomobject]@{
+      branch_name = [string]$previousState.owner.branch_name
+      worktree_path = [string]$previousState.owner.worktree_path
+      dirty_paths = @()
+      relevant_processes = @()
+      commands = @("Reconcile the exact stopped owner before resuming.")
+      last_clean_commit = $historicalProductCommit
+    }
+  } else {
+    $candidateState.recovery = $null
+  }
+  $candidateState = Set-TransitionFixtureAuthority `
+    -State $candidateState `
+    -RepositoryRoot $clone `
+    -Commit $evidenceCommit
+
+  $releaseActions = @("closeout", "pause", "stop", "complete", "finalization_stop")
+  $leaseRelease = if ($releaseActions -ccontains $Action) {
+    [pscustomobject]@{
+      owner_token = [string]$previousState.owner.token_sha256
+      android_released = $true
+      processes_released = $true
+    }
+  } else {
+    $null
+  }
+  return [pscustomobject]@{
+    root = $root
+    remote = $remote
+    seed = $seed
+    clone = $clone
+    state_path = $stateRelativePath
+    handoff_path = $handoffRelativePath
+    slice_log_path = $sliceLogRelativePath
+    previous_state = $previousState
+    candidate_state = $candidateState
+    product_commit = $productCommit
+    historical_product_commit = $historicalProductCommit
+    historical_artifact_path = $historicalArtifactPath
+    historical_artifact_sha256 = $historicalArtifactSha256
+    evidence_commit = $evidenceCommit
+    manifest_path = if ($Action -ceq "stop" -and -not $LastBudgetUnit) { $null } else { $manifestPath }
+    lease_release = $leaseRelease
+    owner_state_commit = $previousStateCommit
+    owner_existed_before_cleanup = $ownerExistedBeforeCleanup
+    owner_checkpoint_aligned = $ownerCheckpointAligned
+    owner_cleanup_performed = $ownerCleanupPerformed
+  }
+}
+
+function Update-TransitionFixtureEvidenceParent {
+  param([Parameter(Mandatory = $true)]$Fixture)
+
+  $newParent = Invoke-Git -RepositoryRoot $Fixture.clone -GitArguments @("rev-parse", "HEAD")
+  [void](Invoke-Git -RepositoryRoot $Fixture.clone -GitArguments @("push", "origin", "main"))
+  $Fixture.evidence_commit = $newParent
+  $Fixture.candidate_state = Set-TransitionFixtureAuthority `
+    -State $Fixture.candidate_state `
+    -RepositoryRoot $Fixture.clone `
+    -Commit $newParent
+  return $Fixture
+}
+
+function Invoke-CompletionTransition {
+  param(
+    [Parameter(Mandatory = $true)][string]$ScriptPath,
+    [Parameter(Mandatory = $true)]$Fixture,
+    [Parameter(Mandatory = $true)][string]$TestTransportOutcome,
+    [AllowNull()][string]$GitShimDirectory = $null,
+    [hashtable]$ChildEnvironment = @{}
+  )
+
+  $stateJson = $Fixture.candidate_state | ConvertTo-Json -Depth 100 -Compress
+  $stateBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($stateJson))
+  $leaseJson = if ($null -eq $Fixture.lease_release) {
+    ""
+  } else {
+    $Fixture.lease_release | ConvertTo-Json -Depth 20 -Compress
+  }
+  $leaseBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($leaseJson))
+  $escapedScriptPath = $ScriptPath.Replace("'", "''")
+  $escapedRoot = ([string]$Fixture.clone).Replace("'", "''")
+  $escapedEvidence = ([string]$Fixture.manifest_path).Replace("'", "''")
+  $escapedOutcome = $TestTransportOutcome.Replace("'", "''")
+  $childCommand = @"
+`$env:DANIO_AUTONOMY_TEST_MODE = '1'
+`$stateJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$stateBase64'))
+`$leaseJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$leaseBase64'))
+`$parameters = @{
+  NextRunStateJson = `$stateJson
+  ExpectedStateRevision = [int64]$($Fixture.previous_state.state_revision)
+  ExpectedOriginMainCommit = '$($Fixture.evidence_commit)'
+  RepositoryRoot = '$escapedRoot'
+  TestTransportOutcome = '$escapedOutcome'
+}
+if (-not [string]::IsNullOrWhiteSpace('$escapedEvidence')) {
+  `$parameters.EvidenceManifestPath = '$escapedEvidence'
+}
+if (-not [string]::IsNullOrWhiteSpace(`$leaseJson)) {
+  `$parameters.LeaseReleaseJson = `$leaseJson
+}
+& '$escapedScriptPath' @parameters
+"@
+  if (-not [string]::IsNullOrWhiteSpace($GitShimDirectory)) {
+    $escapedGitShimDirectory = $GitShimDirectory.Replace("'", "''")
+    $childCommand = "`$env:PATH = '$escapedGitShimDirectory;' + `$env:PATH`n$childCommand"
+  }
+  foreach ($key in @($ChildEnvironment.Keys | Sort-Object)) {
+    if ([string]$key -cnotmatch '^[A-Z][A-Z0-9_]*$') {
+      throw "Unsafe fixture environment key: $key"
+    }
+    $escapedValue = ([string]$ChildEnvironment[$key]).Replace("'", "''")
+    $childCommand = "[Environment]::SetEnvironmentVariable('$key', '$escapedValue', 'Process')`n$childCommand"
+  }
+  $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($childCommand))
+  $output = @(& powershell `
+    -NoProfile `
+    -NonInteractive `
+    -ExecutionPolicy Bypass `
+    -EncodedCommand $encoded `
+    2>$null)
+  $exitCode = $LASTEXITCODE
+  Assert-True -Condition (@(0, 1) -contains $exitCode) -Message "Completion transition returned unsupported exit code."
+  Assert-Equal -Actual $output.Count -Expected 1 -Message "Completion transition emitted more than one stdout object."
+  $result = $output[0] | ConvertFrom-Json
+  Assert-Equal -Actual $result.accepted -Expected ($exitCode -eq 0) -Message "Transition result disagrees with exit code."
+  return [pscustomobject]@{
+    exit_code = $exitCode
+    result = $result
+  }
+}
+
 function Assert-ReadinessNoMutation {
   param(
     [Parameter(Mandatory = $true)][string]$SyncScriptPath,
@@ -654,6 +1384,7 @@ $readinessScriptPath = Join-Path $appRoot "scripts/autonomous_completion/check_a
 $transitionScriptPath = Join-Path $appRoot "scripts/autonomous_completion/validate_autonomous_completion_transition.ps1"
 $claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan_autonomous_writer_claim.ps1"
 $claimInvokerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1"
+$transitionCommitScriptPath = Join-Path $appRoot "scripts/autonomous_completion/commit_autonomous_completion_transition.ps1"
 
 if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
   throw "Expected synchronization wrapper is missing: $syncScriptPath"
@@ -669,6 +1400,9 @@ if (-not (Test-Path -LiteralPath $claimPlannerScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $claimInvokerScriptPath -PathType Leaf)) {
   throw "Expected writer claim mutation entry point is missing: $claimInvokerScriptPath"
+}
+if (-not (Test-Path -LiteralPath $transitionCommitScriptPath -PathType Leaf)) {
+  throw "Expected transition mutation entry point is missing: $transitionCommitScriptPath"
 }
 Import-Module -Name (Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1") -Force
 
@@ -716,6 +1450,23 @@ try {
   [void](Invoke-GitWithoutRepository -GitArguments @("clone", $remoteRoot, $cloneTwoRoot))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("config", "user.name", "Danio Fixture Two"))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("config", "user.email", "danio-fixture-two@example.invalid"))
+
+  $linkedSnapshotRoot = Join-Path $tempRoot "linked-snapshot"
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @(
+    "worktree",
+    "add",
+    "-b",
+    "fixture-linked-snapshot",
+    $linkedSnapshotRoot,
+    "main"
+  ))
+  $linkedSnapshot = Get-RepositorySnapshot -RepositoryRoot $linkedSnapshotRoot
+  Assert-Equal `
+    -Actual $linkedSnapshot.status `
+    -Expected "" `
+    -Message "Linked-worktree snapshot should observe a clean checkout."
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("worktree", "remove", $linkedSnapshotRoot))
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("branch", "-D", "fixture-linked-snapshot"))
 
   Assert-ReadinessNoMutation `
     -SyncScriptPath $syncScriptPath `
@@ -866,12 +1617,17 @@ try {
     -After $afterAuthorityObservation `
     -Scenario "authority movement observation"
   Assert-True `
-    -Condition (-not $authorityAfterAdvance.authority_validation.valid) `
-    -Message "Authority validation accepted a program blob that moved on origin/main."
+    -Condition $authorityAfterAdvance.authority_validation.valid `
+    -Message "Immutable authority snapshot was invalidated by a later canonical output."
+  $unreachableAuthorityState = $authorityState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $unreachableAuthorityState.authority.phone_completion_program.commit = ("f" * 40)
+  $unreachableAuthority = Get-DanioRepositoryObservation `
+    -RepositoryRoot $cloneOneRoot `
+    -State $unreachableAuthorityState
   Assert-Equal `
-    -Actual $authorityAfterAdvance.authority_validation.code `
+    -Actual $unreachableAuthority.authority_validation.code `
     -Expected "AUTHORITY_CONFLICT" `
-    -Message "Authority movement returned the wrong validation code."
+    -Message "Unreachable authority snapshot returned the wrong validation code."
 
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("config", "user.name", "Danio Fixture One"))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("config", "user.email", "danio-fixture-one@example.invalid"))
@@ -2288,11 +3044,614 @@ exit `$code
     -AfterState $raceState `
     -Scenario "two-clone writer race"
 
+  $closeoutFixture = New-TransitionTransactionFixture `
+    -Name "closeout-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $closeoutInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $closeoutFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True `
+    -Condition $closeoutInvocation.result.accepted `
+    -Message "Ordinary closeout was not accepted: $($closeoutInvocation.result | ConvertTo-Json -Depth 20 -Compress)"
+  Assert-Equal -Actual $closeoutInvocation.result.code -Expected "TRANSITION_COMMITTED" -Message "Ordinary closeout result code mismatch."
+  Assert-Equal -Actual $closeoutInvocation.result.push_attempt_count -Expected 1 -Message "Ordinary closeout did not attempt exactly one push."
+  Assert-Equal -Actual $closeoutInvocation.result.retry_performed -Expected $false -Message "Ordinary closeout retried its push."
+  Assert-Equal -Actual $closeoutInvocation.result.candidate_charge_consumed -Expected $true -Message "Ordinary closeout did not consume its candidate charge."
+  Assert-Equal -Actual $closeoutInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Ordinary closeout charge was not proven durable."
+  Assert-Equal -Actual $closeoutInvocation.result.owner_released -Expected $true -Message "Ordinary closeout retained its owner."
+  Assert-Equal -Actual $closeoutInvocation.result.owned_cleanup_proven -Expected $true -Message "Ordinary closeout cleanup was unproven."
+  Assert-Equal -Actual $closeoutFixture.owner_existed_before_cleanup -Expected $true -Message "Ordinary closeout never held its exact physical owner."
+  Assert-Equal -Actual $closeoutFixture.owner_checkpoint_aligned -Expected $true -Message "Evidence checkpoint was not aligned while the owner remained active."
+  Assert-Equal -Actual $closeoutFixture.owner_cleanup_performed -Expected $true -Message "Ordinary closeout did not perform phase-two owner cleanup."
+  $expectedTransitionFields = @(
+    "document_type", "schema_version", "completed_at_utc", "accepted", "code", "details",
+    "transition_action", "from_mode", "to_mode", "run_id", "work_unit_id",
+    "expected_state_revision", "candidate_state_revision", "evidence_manifest_path",
+    "owner_token_sha256", "mutations_performed", "push_attempted", "push_attempt_count",
+    "push_timed_out", "push_termination_confirmed", "push_rejection_proven", "retry_performed",
+    "reconciliation_status", "candidate_charge_consumed", "durable_charge_consumption_proven",
+    "owner_retained", "owner_released", "owned_cleanup_proven", "artifacts_preserved",
+    "candidate_commit", "staged_tree_hash", "origin_main_commit", "test_transport_outcome"
+  )
+  $observedTransitionFields = @($closeoutInvocation.result.PSObject.Properties | ForEach-Object { $_.Name })
+  Assert-Equal -Actual $observedTransitionFields.Count -Expected $expectedTransitionFields.Count -Message "Transition result field count drifted."
+  Assert-Equal `
+    -Actual @($observedTransitionFields | Where-Object { $expectedTransitionFields -cnotcontains $_ }).Count `
+    -Expected 0 `
+    -Message "Transition result contains unknown fields."
+  $closeoutParent = Invoke-Git -RepositoryRoot $closeoutFixture.clone -GitArguments @("rev-parse", "$($closeoutInvocation.result.candidate_commit)^")
+  Assert-Equal -Actual $closeoutParent -Expected $closeoutFixture.evidence_commit -Message "State closeout did not follow the evidence checkpoint."
+  $closeoutRemoteState = Read-RemoteRunState -RepositoryRoot $closeoutFixture.clone -StatePath $closeoutFixture.state_path
+  Assert-Equal -Actual $closeoutRemoteState.mode -Expected "handoff_ready" -Message "Ordinary closeout did not reach handoff_ready."
+  Assert-Equal -Actual $closeoutRemoteState.budget.consumed_units -Expected ([int64]$closeoutFixture.previous_state.budget.consumed_units + 1) -Message "Ordinary closeout did not consume exactly once."
+  Assert-Equal -Actual $closeoutRemoteState.handoff_generation -Expected ([int64]$closeoutFixture.previous_state.handoff_generation + 1) -Message "Ordinary closeout did not advance generation once."
+  $closeoutParentState = Invoke-Git -RepositoryRoot $closeoutFixture.clone -GitArguments @("show", "$($closeoutFixture.evidence_commit):$($closeoutFixture.state_path)") | ConvertFrom-Json
+  Assert-Equal -Actual $closeoutParentState.mode -Expected "active" -Message "Evidence checkpoint released ownership too early."
+
+  $pauseFixture = New-TransitionTransactionFixture `
+    -Name "pause-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "pause"
+  $pauseInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $pauseFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $pauseInvocation.result.accepted -Message "Paused closeout was not accepted."
+  $pauseState = Read-RemoteRunState -RepositoryRoot $pauseFixture.clone -StatePath $pauseFixture.state_path
+  Assert-Equal -Actual $pauseState.mode -Expected "paused" -Message "Paused closeout mode mismatch."
+  Assert-Equal -Actual $pauseState.budget.consumed_units -Expected ([int64]$pauseFixture.previous_state.budget.consumed_units + 1) -Message "Paused closeout did not consume once."
+  Assert-Equal -Actual $pauseFixture.owner_existed_before_cleanup -Expected $true -Message "Paused closeout never held its exact physical owner."
+  Assert-Equal -Actual $pauseFixture.owner_cleanup_performed -Expected $true -Message "Paused closeout did not clean its exact owner."
+
+  $lastUnitFixture = New-TransitionTransactionFixture `
+    -Name "last-budget-stop" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "stop" `
+    -LastBudgetUnit
+  $lastUnitInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $lastUnitFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $lastUnitInvocation.result.accepted -Message "Budget-one normal closeout stop was not accepted."
+  $lastUnitState = Read-RemoteRunState -RepositoryRoot $lastUnitFixture.clone -StatePath $lastUnitFixture.state_path
+  Assert-Equal -Actual $lastUnitState.mode -Expected "stopped" -Message "Budget-one closeout did not stop."
+  Assert-Equal -Actual $lastUnitState.budget.remaining_units_including_current -Expected 0 -Message "Budget-one stop did not reach zero."
+  Assert-Equal -Actual $lastUnitState.budget.consumed_units -Expected 20 -Message "Budget-one stop did not consume exactly once."
+  Assert-Equal -Actual $lastUnitState.handoff_generation -Expected $lastUnitFixture.previous_state.handoff_generation -Message "Budget-one stop exposed a successor generation."
+  Assert-Equal -Actual $lastUnitState.transition.reason_code -Expected "BUDGET_EXHAUSTED" -Message "Budget-one normal closeout used the wrong stop reason."
+  Assert-Equal -Actual $lastUnitState.last_verified_checkpoint.evidence_manifest_path -Expected $lastUnitFixture.manifest_path -Message "Budget-one normal closeout did not advance evidence."
+  $lastUnitMessage = Invoke-Git -RepositoryRoot $lastUnitFixture.clone -GitArguments @("log", "-1", "--format=%B", $lastUnitInvocation.result.candidate_commit)
+  Assert-True -Condition ($lastUnitMessage -match "(?m)^Danio-Evidence-Manifest: $([regex]::Escape($lastUnitFixture.manifest_path))$") -Message "Budget-one evidence trailer is not path-exact."
+
+  $emergencyFixture = New-TransitionTransactionFixture `
+    -Name "emergency-stop-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "stop"
+  $emergencyInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $emergencyFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $emergencyInvocation.result.accepted -Message "Emergency stopped closeout was not accepted."
+  $emergencyState = Read-RemoteRunState -RepositoryRoot $emergencyFixture.clone -StatePath $emergencyFixture.state_path
+  Assert-Equal -Actual $emergencyState.mode -Expected "stopped" -Message "Emergency closeout did not stop."
+  Assert-Equal -Actual $emergencyState.last_verified_checkpoint -Expected $null -Message "Emergency closeout invented a checkpoint."
+  $emergencyMessage = Invoke-Git -RepositoryRoot $emergencyFixture.clone -GitArguments @("log", "-1", "--format=%B", $emergencyInvocation.result.candidate_commit)
+  Assert-True -Condition ($emergencyMessage -match '(?m)^Danio-Evidence-Manifest: none$') -Message "Emergency null-manifest trailer is missing."
+
+  $unsafeFixture = New-TransitionTransactionFixture `
+    -Name "unsafe-release" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "stop"
+  $unsafeOwnerRoot = Split-Path -Parent ([string]$unsafeFixture.previous_state.owner.worktree_path)
+  New-Item -ItemType Directory -Force -Path $unsafeOwnerRoot | Out-Null
+  [void](Invoke-Git -RepositoryRoot $unsafeFixture.clone -GitArguments @(
+    "worktree", "add", "-b", [string]$unsafeFixture.previous_state.owner.branch_name,
+    [string]$unsafeFixture.previous_state.owner.worktree_path, [string]$unsafeFixture.evidence_commit
+  ))
+  $unsafeBefore = Get-RepositorySnapshot -RepositoryRoot $unsafeFixture.clone
+  $unsafeInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $unsafeFixture `
+    -TestTransportOutcome "accepted"
+  $unsafeAfter = Get-RepositorySnapshot -RepositoryRoot $unsafeFixture.clone
+  Assert-SnapshotEqual -Before $unsafeBefore -After $unsafeAfter -Scenario "unsafe lease release"
+  Assert-Equal -Actual $unsafeInvocation.result.code -Expected "STOP_PENDING" -Message "Unsafe release did not return STOP_PENDING."
+  Assert-Equal -Actual $unsafeInvocation.result.mutations_performed -Expected $false -Message "STOP_PENDING mutated candidate state."
+  Assert-Equal -Actual $unsafeInvocation.result.candidate_commit -Expected $null -Message "STOP_PENDING created a candidate commit."
+  Assert-Equal -Actual $unsafeInvocation.result.owner_retained -Expected $true -Message "STOP_PENDING lost durable owner retention."
+  Assert-Equal -Actual $unsafeInvocation.result.owner_released -Expected $false -Message "STOP_PENDING claimed durable owner release."
+  [void](Invoke-Git -RepositoryRoot $unsafeFixture.clone -GitArguments @("worktree", "remove", [string]$unsafeFixture.previous_state.owner.worktree_path))
+  [void](Invoke-Git -RepositoryRoot $unsafeFixture.clone -GitArguments @("branch", "-D", [string]$unsafeFixture.previous_state.owner.branch_name))
+
+  $finalizeFixture = New-TransitionTransactionFixture `
+    -Name "finalize-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "finalize"
+  $finalizeInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $finalizeFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $finalizeInvocation.result.accepted -Message "active to finalizing was not accepted."
+  Assert-Equal -Actual $finalizeInvocation.result.candidate_charge_consumed -Expected $true -Message "Finalization entry did not consume once."
+  Assert-Equal -Actual $finalizeInvocation.result.owner_retained -Expected $true -Message "Finalization entry released its owner."
+  Assert-Equal -Actual $finalizeInvocation.result.owned_cleanup_proven -Expected $false -Message "Finalization entry claimed cleanup."
+  Assert-Equal -Actual $finalizeFixture.owner_existed_before_cleanup -Expected $true -Message "Finalization entry lacked its exact physical owner."
+  Assert-Equal -Actual $finalizeFixture.owner_checkpoint_aligned -Expected $true -Message "Finalization evidence parent was not aligned with the retained owner."
+  Assert-Equal -Actual $finalizeFixture.owner_cleanup_performed -Expected $false -Message "Finalization entry cleaned its retained owner."
+  $finalizingState = Read-RemoteRunState -RepositoryRoot $finalizeFixture.clone -StatePath $finalizeFixture.state_path
+  Assert-Equal -Actual $finalizingState.mode -Expected "finalizing" -Message "Finalization entry mode mismatch."
+  Assert-Equal -Actual (Invoke-Git -RepositoryRoot $finalizeFixture.previous_state.owner.worktree_path -GitArguments @("rev-parse", "HEAD")) -Expected $finalizeInvocation.result.candidate_commit -Message "Retained owner did not fast-forward to finalizing state."
+  $revalidatedFinalize = Invoke-TransitionValidation `
+    -ScriptPath $transitionScriptPath `
+    -RepositoryRoot $finalizeFixture.clone `
+    -Source "Committed" `
+    -ExpectedParentCommit $finalizeFixture.evidence_commit `
+    -ExpectedStagedTreeHash $finalizeInvocation.result.staged_tree_hash `
+    -Commit $finalizeInvocation.result.candidate_commit `
+    -EvidenceManifestPath $finalizeFixture.manifest_path
+  Assert-True -Condition $revalidatedFinalize.valid -Message "Committed finalize did not revalidate after retained-owner alignment."
+
+  $completeFixture = New-TransitionTransactionFixture `
+    -Name "complete-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "complete"
+  [void](Invoke-Git -RepositoryRoot $completeFixture.clone -GitArguments @(
+    "restore", "--", $completeFixture.handoff_path, $completeFixture.slice_log_path
+  ))
+  $finalizationNonce = "abcdef0123456789abcdef0123456789"
+  $finalizationReceipt = Invoke-Synchronization `
+    -ScriptPath $syncScriptPath `
+    -RepositoryRoot $completeFixture.clone `
+    -InvocationNonce $finalizationNonce
+  $finalizationReadiness = Invoke-FinalizationReadiness `
+    -ScriptPath $readinessScriptPath `
+    -Fixture $completeFixture `
+    -InvocationNonce $finalizationNonce `
+    -Receipt $finalizationReceipt `
+    -LeaseRelease $completeFixture.lease_release
+  Assert-True `
+    -Condition $finalizationReadiness.eligible `
+    -Message "Committed final evidence and exact release proof were not Finalization-ready: $($finalizationReadiness | ConvertTo-Json -Depth 20 -Compress)"
+  $wrongFinalizationRelease = $completeFixture.lease_release | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+  $wrongFinalizationRelease.owner_token = ("0" * 64)
+  $wrongOwnerReadiness = Invoke-FinalizationReadiness `
+    -ScriptPath $readinessScriptPath `
+    -Fixture $completeFixture `
+    -InvocationNonce $finalizationNonce `
+    -Receipt $finalizationReceipt `
+    -LeaseRelease $wrongFinalizationRelease
+  Assert-Equal -Actual $wrongOwnerReadiness.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Wrong-owner Finalization proof did not fail closed."
+  $missingReleaseReadiness = Invoke-FinalizationReadiness `
+    -ScriptPath $readinessScriptPath `
+    -Fixture $completeFixture `
+    -InvocationNonce $finalizationNonce `
+    -Receipt $finalizationReceipt `
+    -LeaseRelease $null
+  Assert-Equal -Actual $missingReleaseReadiness.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Missing Finalization release proof did not fail closed."
+  [IO.File]::AppendAllText((Join-Path $completeFixture.clone $completeFixture.handoff_path), "closeout update`n")
+  [IO.File]::AppendAllText((Join-Path $completeFixture.clone $completeFixture.slice_log_path), "slice update`n")
+  $completeInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $completeFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $completeInvocation.result.accepted -Message "finalizing to complete was not accepted."
+  Assert-Equal -Actual $completeInvocation.result.candidate_charge_consumed -Expected $false -Message "Terminal completion charged twice."
+  Assert-Equal -Actual $completeInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Previously consumed finalization charge was not proven."
+  Assert-Equal -Actual $completeInvocation.result.owner_released -Expected $true -Message "Terminal completion retained its owner."
+  Assert-Equal -Actual $completeFixture.owner_existed_before_cleanup -Expected $true -Message "Terminal completion never held its exact owner before cleanup."
+  Assert-Equal -Actual $completeFixture.owner_cleanup_performed -Expected $true -Message "Terminal completion did not clean its exact owner."
+  $completeState = Read-RemoteRunState -RepositoryRoot $completeFixture.clone -StatePath $completeFixture.state_path
+  Assert-Equal -Actual $completeState.mode -Expected "complete" -Message "Terminal completion mode mismatch."
+  Assert-Equal -Actual $completeState.budget.consumed_units -Expected $completeFixture.previous_state.budget.consumed_units -Message "Terminal completion consumed a second unit."
+
+  $rejectedCompleteFixture = New-TransitionTransactionFixture `
+    -Name "complete-rejected" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "complete"
+  $rejectedCompleteInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $rejectedCompleteFixture `
+    -TestTransportOutcome "rejected"
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.code -Expected "REMOTE_MOVED" -Message "Rejected terminal transition classification mismatch."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.candidate_charge_consumed -Expected $false -Message "Rejected terminal transition charged twice."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Rejected terminal transition lost prior charge proof."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.push_attempt_count -Expected 0 -Message "Injected rejection attempted a push."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.retry_performed -Expected $false -Message "Rejected terminal transition retried."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.owner_retained -Expected $true -Message "Rejected terminal transition did not preserve durable owner truth."
+  Assert-Equal -Actual $rejectedCompleteInvocation.result.owner_released -Expected $false -Message "Rejected terminal transition claimed durable owner release."
+  Assert-True -Condition (-not [string]::IsNullOrWhiteSpace([string]$rejectedCompleteInvocation.result.candidate_commit)) -Message "Rejected terminal candidate was not preserved."
+  $rejectedRemoteState = Read-RemoteRunState -RepositoryRoot $rejectedCompleteFixture.clone -StatePath $rejectedCompleteFixture.state_path
+  Assert-Equal -Actual $rejectedRemoteState.mode -Expected "finalizing" -Message "Rejected terminal candidate reached origin/main."
+  $rejectedLocalState = Invoke-Git -RepositoryRoot $rejectedCompleteFixture.clone -GitArguments @("show", "$($rejectedCompleteInvocation.result.candidate_commit):$($rejectedCompleteFixture.state_path)") | ConvertFrom-Json
+  Assert-Equal -Actual $rejectedLocalState.mode -Expected "complete" -Message "Rejected terminal candidate artifact is missing."
+
+  $finalizationStopFixture = New-TransitionTransactionFixture `
+    -Name "finalization-stop-accepted" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "finalization_stop"
+  $finalizationStopInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $finalizationStopFixture `
+    -TestTransportOutcome "accepted"
+  Assert-True -Condition $finalizationStopInvocation.result.accepted -Message "Finalization failure stop was not accepted."
+  Assert-Equal -Actual $finalizationStopInvocation.result.candidate_charge_consumed -Expected $false -Message "Finalization failure consumed a second unit."
+  Assert-Equal -Actual $finalizationStopInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Finalization failure lost the prior consumed charge."
+  Assert-Equal -Actual $finalizationStopInvocation.result.owner_released -Expected $true -Message "Finalization failure retained durable ownership."
+  $finalizationStoppedState = Read-RemoteRunState -RepositoryRoot $finalizationStopFixture.clone -StatePath $finalizationStopFixture.state_path
+  Assert-Equal -Actual $finalizationStoppedState.mode -Expected "stopped" -Message "Finalization failure did not stop."
+  Assert-Equal -Actual $finalizationStoppedState.last_verified_checkpoint.evidence_manifest_path -Expected $finalizationStopFixture.manifest_path -Message "Finalization failure did not preserve historical evidence."
+  $finalizationStopMessage = Invoke-Git -RepositoryRoot $finalizationStopFixture.clone -GitArguments @("log", "-1", "--format=%B", $finalizationStopInvocation.result.candidate_commit)
+  Assert-True -Condition ($finalizationStopMessage -match "(?m)^Danio-Evidence-Manifest: $([regex]::Escape($finalizationStopFixture.manifest_path))$") -Message "Finalization failure trailer did not preserve exact historical evidence."
+
+  $docsFailureFixture = New-TransitionTransactionFixture `
+    -Name "docs-profile-failure" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout" `
+    -FailDocsProfile
+  $docsFailureInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $docsFailureFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $docsFailureInvocation.result.code -Expected "DOCS_PROFILE_FAILED" -Message "Failing Docs profile returned the wrong stable code."
+  Assert-Equal -Actual $docsFailureInvocation.result.push_attempted -Expected $false -Message "Failing Docs profile attempted a push."
+  Assert-Equal -Actual $docsFailureInvocation.result.candidate_commit -Expected $null -Message "Failing Docs profile created a commit."
+  Assert-Equal -Actual $docsFailureInvocation.result.artifacts_preserved -Expected $true -Message "Failing Docs profile discarded staged recovery artifacts."
+  Assert-Equal -Actual (Invoke-Git -RepositoryRoot $docsFailureFixture.clone -GitArguments @("rev-parse", "HEAD")) -Expected $docsFailureFixture.evidence_commit -Message "Failing Docs profile moved local HEAD."
+  Assert-Equal -Actual (Invoke-Git -RepositoryRoot $docsFailureFixture.clone -GitArguments @("rev-parse", "origin/main")) -Expected $docsFailureFixture.evidence_commit -Message "Failing Docs profile moved origin/main."
+  $docsFailureStagedPaths = @((Invoke-Git -RepositoryRoot $docsFailureFixture.clone -GitArguments @("diff", "--cached", "--name-only", "--")) -split "`r?`n")
+  Assert-Equal -Actual $docsFailureStagedPaths.Count -Expected 3 -Message "Failing Docs profile did not preserve the exact staged recovery scope."
+  foreach ($expectedStagedPath in @($docsFailureFixture.state_path, $docsFailureFixture.handoff_path, $docsFailureFixture.slice_log_path)) {
+    Assert-True -Condition ($docsFailureStagedPaths -ccontains $expectedStagedPath) -Message "Failing Docs profile lost staged path '$expectedStagedPath'."
+  }
+  $docsFailureIndexedState = Invoke-Git -RepositoryRoot $docsFailureFixture.clone -GitArguments @("show", ":$($docsFailureFixture.state_path)") | ConvertFrom-Json
+  Assert-Equal -Actual $docsFailureIndexedState.transition.action -Expected "closeout" -Message "Failing Docs profile did not preserve candidate state in the index."
+
+  $missingManifestFixture = New-TransitionTransactionFixture `
+    -Name "missing-manifest" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  [void](Invoke-Git -RepositoryRoot $missingManifestFixture.clone -GitArguments @("rm", "--", $missingManifestFixture.manifest_path))
+  [void](Invoke-Git -RepositoryRoot $missingManifestFixture.clone -GitArguments @("commit", "-m", "fixture: remove transition manifest"))
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $missingManifestFixture)
+  $missingManifestInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $missingManifestFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $missingManifestInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Missing committed manifest escaped its stable evidence code."
+
+  $malformedManifestFixture = New-TransitionTransactionFixture `
+    -Name "malformed-manifest" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  Write-FixtureScript -Path (Join-Path $malformedManifestFixture.clone $malformedManifestFixture.manifest_path) -Content "{"
+  [void](Invoke-Git -RepositoryRoot $malformedManifestFixture.clone -GitArguments @("add", "--", $malformedManifestFixture.manifest_path))
+  [void](Invoke-Git -RepositoryRoot $malformedManifestFixture.clone -GitArguments @("commit", "-m", "fixture: corrupt transition manifest"))
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $malformedManifestFixture)
+  $malformedManifestInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $malformedManifestFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $malformedManifestInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Malformed committed manifest escaped its stable evidence code."
+
+  $unsafeArtifactFixture = New-TransitionTransactionFixture `
+    -Name "unsafe-artifact-path" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $unsafeArtifactManifest = Invoke-Git `
+    -RepositoryRoot $unsafeArtifactFixture.clone `
+    -GitArguments @("show", "HEAD:$($unsafeArtifactFixture.manifest_path)") | ConvertFrom-Json
+  $unsafeArtifactManifest.artifacts[0].path = "apps/aquarium_app/docs/agent/autonomous_completion/proof;unsafe.txt"
+  Write-FixtureJson `
+    -Path (Join-Path $unsafeArtifactFixture.clone $unsafeArtifactFixture.manifest_path) `
+    -Value $unsafeArtifactManifest
+  [void](Invoke-Git -RepositoryRoot $unsafeArtifactFixture.clone -GitArguments @("add", "--", $unsafeArtifactFixture.manifest_path))
+  [void](Invoke-Git -RepositoryRoot $unsafeArtifactFixture.clone -GitArguments @("commit", "-m", "fixture: inject unsafe artifact path"))
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $unsafeArtifactFixture)
+  $unsafeArtifactInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $unsafeArtifactFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $unsafeArtifactInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Unsafe artifact path reached transition probing."
+
+  $preOwnerProductFixture = New-TransitionTransactionFixture `
+    -Name "pre-owner-product" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $preOwnerManifest = Invoke-Git -RepositoryRoot $preOwnerProductFixture.clone -GitArguments @("show", "HEAD:$($preOwnerProductFixture.manifest_path)") | ConvertFrom-Json
+  $oldPreOwnerManifestPath = [string]$preOwnerProductFixture.manifest_path
+  $preOwnerManifest.product_commit = [string]$preOwnerProductFixture.historical_product_commit
+  $preOwnerManifest.artifacts[0].path = [string]$preOwnerProductFixture.historical_artifact_path
+  $preOwnerManifest.artifacts[0].sha256 = [string]$preOwnerProductFixture.historical_artifact_sha256
+  $preOwnerManifestPath = "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$($preOwnerProductFixture.historical_product_commit).json"
+  Remove-Item -LiteralPath (Join-Path $preOwnerProductFixture.clone $oldPreOwnerManifestPath)
+  Write-FixtureJson -Path (Join-Path $preOwnerProductFixture.clone $preOwnerManifestPath) -Value $preOwnerManifest
+  [void](Invoke-Git -RepositoryRoot $preOwnerProductFixture.clone -GitArguments @("add", "-A", "apps/aquarium_app/docs/agent/autonomous_completion/evidence"))
+  [void](Invoke-Git -RepositoryRoot $preOwnerProductFixture.clone -GitArguments @("commit", "-m", "fixture: reuse pre-owner product proof"))
+  $preOwnerProductFixture.product_commit = [string]$preOwnerProductFixture.historical_product_commit
+  $preOwnerProductFixture.manifest_path = $preOwnerManifestPath
+  $preOwnerProductFixture.candidate_state.last_verified_checkpoint.product_commit = [string]$preOwnerProductFixture.historical_product_commit
+  $preOwnerProductFixture.candidate_state.last_verified_checkpoint.evidence_manifest_path = $preOwnerManifestPath
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $preOwnerProductFixture)
+  $preOwnerProductInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $preOwnerProductFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $preOwnerProductInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Pre-owner product evidence was accepted as a new owned checkpoint."
+
+  $unreachableProductFixture = New-TransitionTransactionFixture `
+    -Name "unreachable-product" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $sideWorktree = Join-Path $unreachableProductFixture.root "invalid-side-worktree"
+  [void](Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("worktree", "add", "-b", "invalid-side-proof", $sideWorktree, $unreachableProductFixture.product_commit))
+  [void](Invoke-Git -RepositoryRoot $sideWorktree -GitArguments @("commit", "--allow-empty", "-m", "fixture: unreachable product proof"))
+  $sideProductCommit = Invoke-Git -RepositoryRoot $sideWorktree -GitArguments @("rev-parse", "HEAD")
+  [void](Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("worktree", "remove", "--", $sideWorktree))
+  [void](Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("branch", "-D", "invalid-side-proof"))
+  $unreachableManifest = Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("show", "HEAD:$($unreachableProductFixture.manifest_path)") | ConvertFrom-Json
+  $oldUnreachableManifestPath = [string]$unreachableProductFixture.manifest_path
+  $unreachableManifest.product_commit = $sideProductCommit
+  $unreachableManifestPath = "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$sideProductCommit.json"
+  Remove-Item -LiteralPath (Join-Path $unreachableProductFixture.clone $oldUnreachableManifestPath)
+  Write-FixtureJson -Path (Join-Path $unreachableProductFixture.clone $unreachableManifestPath) -Value $unreachableManifest
+  [void](Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("add", "-A", "apps/aquarium_app/docs/agent/autonomous_completion/evidence"))
+  [void](Invoke-Git -RepositoryRoot $unreachableProductFixture.clone -GitArguments @("commit", "-m", "fixture: reference unreachable product proof"))
+  $unreachableProductFixture.product_commit = $sideProductCommit
+  $unreachableProductFixture.manifest_path = $unreachableManifestPath
+  $unreachableProductFixture.candidate_state.last_verified_checkpoint.product_commit = $sideProductCommit
+  $unreachableProductFixture.candidate_state.last_verified_checkpoint.evidence_manifest_path = $unreachableManifestPath
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $unreachableProductFixture)
+  $unreachableProductInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $unreachableProductFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $unreachableProductInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Locally present unreachable product commit was accepted."
+
+  $tamperedParentFixture = New-TransitionTransactionFixture `
+    -Name "tampered-parent-state" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  [void](Invoke-Git -RepositoryRoot $tamperedParentFixture.clone -GitArguments @("restore", "--", $tamperedParentFixture.handoff_path, $tamperedParentFixture.slice_log_path))
+  $tamperedParentState = $tamperedParentFixture.previous_state | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $tamperedParentState.repeated_failure = [pscustomobject]@{
+    signature = ("a" * 64)
+    attempt_count = 1
+    last_failed_at_utc = "2026-07-11T12:05:00.0000000Z"
+  }
+  Write-FixtureJson -Path (Join-Path $tamperedParentFixture.clone $tamperedParentFixture.state_path) -Value $tamperedParentState
+  [void](Invoke-Git -RepositoryRoot $tamperedParentFixture.clone -GitArguments @("add", "--", $tamperedParentFixture.state_path))
+  [void](Invoke-Git -RepositoryRoot $tamperedParentFixture.clone -GitArguments @("commit", "-m", "fixture: tamper state without revision"))
+  [void](Update-TransitionFixtureEvidenceParent -Fixture $tamperedParentFixture)
+  [IO.File]::AppendAllText((Join-Path $tamperedParentFixture.clone $tamperedParentFixture.handoff_path), "closeout update`n")
+  [IO.File]::AppendAllText((Join-Path $tamperedParentFixture.clone $tamperedParentFixture.slice_log_path), "slice update`n")
+  $tamperedParentInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $tamperedParentFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $tamperedParentInvocation.result.code -Expected "PARENT_STATE_PROVENANCE_INVALID" -Message "Same-revision parent-state tamper bypassed provenance."
+
+  $wrongClaimBindingFixture = New-TransitionTransactionFixture `
+    -Name "wrong-claim-binding" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $originalActiveCommit = [string]$wrongClaimBindingFixture.owner_state_commit
+  $originalEvidenceCommit = [string]$wrongClaimBindingFixture.evidence_commit
+  $readyParentCommit = Invoke-Git `
+    -RepositoryRoot $wrongClaimBindingFixture.clone `
+    -GitArguments @("rev-parse", "$originalActiveCommit^")
+  $laterFixtureCommits = @(
+    (Invoke-Git `
+      -RepositoryRoot $wrongClaimBindingFixture.clone `
+      -GitArguments @("rev-list", "--reverse", "$originalActiveCommit..$originalEvidenceCommit")) -split "`r?`n" |
+      Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+  )
+  $wrongClaimState = Invoke-Git `
+    -RepositoryRoot $wrongClaimBindingFixture.clone `
+    -GitArguments @("show", "$originalActiveCommit`:$($wrongClaimBindingFixture.state_path)") | ConvertFrom-Json
+  $wrongClaimState.owner.claim_parent_commit = ("f" * 40)
+  [void](Invoke-Git -RepositoryRoot $wrongClaimBindingFixture.clone -GitArguments @("reset", "--hard", $readyParentCommit))
+  $wrongClaimCommit = Commit-TransitionFixtureState `
+    -RepositoryRoot $wrongClaimBindingFixture.clone `
+    -StatePath $wrongClaimBindingFixture.state_path `
+    -State $wrongClaimState `
+    -Subject "fixture: typed claim with wrong parent binding"
+  foreach ($laterFixtureCommit in $laterFixtureCommits) {
+    [void](Invoke-Git -RepositoryRoot $wrongClaimBindingFixture.clone -GitArguments @("cherry-pick", $laterFixtureCommit))
+  }
+  [void](Invoke-Git -RepositoryRoot $wrongClaimBindingFixture.clone -GitArguments @("push", "--force", "origin", "main"))
+  $wrongClaimBindingFixture.owner_state_commit = $wrongClaimCommit
+  $wrongClaimBindingFixture.evidence_commit = Invoke-Git `
+    -RepositoryRoot $wrongClaimBindingFixture.clone `
+    -GitArguments @("rev-parse", "HEAD")
+  $wrongClaimBindingFixture.candidate_state = Set-TransitionFixtureAuthority `
+    -State $wrongClaimBindingFixture.candidate_state `
+    -RepositoryRoot $wrongClaimBindingFixture.clone `
+    -Commit $wrongClaimBindingFixture.evidence_commit
+  [IO.File]::AppendAllText((Join-Path $wrongClaimBindingFixture.clone $wrongClaimBindingFixture.handoff_path), "closeout update`n")
+  [IO.File]::AppendAllText((Join-Path $wrongClaimBindingFixture.clone $wrongClaimBindingFixture.slice_log_path), "slice update`n")
+  $wrongClaimBindingInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $wrongClaimBindingFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $wrongClaimBindingInvocation.result.code -Expected "PARENT_STATE_PROVENANCE_INVALID" -Message "Wrong claim parent binding bypassed provenance."
+  Assert-Equal -Actual $wrongClaimBindingInvocation.result.mutations_performed -Expected $false -Message "Wrong claim parent binding mutated transition state."
+
+  $pathScopeFixture = New-TransitionTransactionFixture `
+    -Name "transition-path-scope" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  Write-FixtureJson -Path (Join-Path $pathScopeFixture.clone $pathScopeFixture.state_path) -Value $pathScopeFixture.candidate_state
+  $foreignTransitionPath = "apps/aquarium_app/docs/agent/autonomous_completion/forbidden-product.txt"
+  Write-FixtureScript -Path (Join-Path $pathScopeFixture.clone $foreignTransitionPath) -Content "forbidden transition payload`n"
+  [void](Invoke-Git -RepositoryRoot $pathScopeFixture.clone -GitArguments @("add", "--", $pathScopeFixture.state_path, $pathScopeFixture.handoff_path, $pathScopeFixture.slice_log_path, $foreignTransitionPath))
+  $pathScopeTree = Invoke-Git -RepositoryRoot $pathScopeFixture.clone -GitArguments @("write-tree")
+  $pathScopeLeaseJson = $pathScopeFixture.lease_release | ConvertTo-Json -Compress
+  $pathScopeReport = Invoke-TransitionValidation `
+    -ScriptPath $transitionScriptPath `
+    -RepositoryRoot $pathScopeFixture.clone `
+    -Source "Staged" `
+    -ExpectedParentCommit $pathScopeFixture.evidence_commit `
+    -ExpectedStagedTreeHash $pathScopeTree `
+    -EvidenceManifestPath $pathScopeFixture.manifest_path `
+    -LeaseReleaseJson $pathScopeLeaseJson
+  Assert-Equal -Actual $pathScopeReport.code -Expected "TRANSITION_SCOPE_INVALID" -Message "Transition validator accepted a co-committed product path."
+
+  $dirtyFinalizeFixture = New-TransitionTransactionFixture `
+    -Name "dirty-retained-owner" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "finalize"
+  Write-FixtureScript -Path (Join-Path $dirtyFinalizeFixture.previous_state.owner.worktree_path "dirty-owner.txt") -Content "dirty owner`n"
+  $dirtyFinalizeInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $dirtyFinalizeFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $dirtyFinalizeInvocation.result.code -Expected "STOP_PENDING" -Message "Dirty retained finalization owner did not fail closed."
+  Assert-Equal -Actual $dirtyFinalizeInvocation.result.mutations_performed -Expected $false -Message "Dirty retained owner mutated finalization state."
+
+  $wrongReleaseFixture = New-TransitionTransactionFixture `
+    -Name "wrong-release-owner" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $wrongReleaseFixture.lease_release.owner_token = ("0" * 64)
+  $wrongReleaseInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $wrongReleaseFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $wrongReleaseInvocation.result.code -Expected "LEASE_RELEASE_INVALID" -Message "Wrong-owner release proof escaped its stable code."
+  Assert-Equal -Actual $wrongReleaseInvocation.result.mutations_performed -Expected $false -Message "Wrong-owner release proof mutated state."
+
+  $badRecoveryFixture = New-TransitionTransactionFixture `
+    -Name "missing-recovery-commit" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "stop"
+  $badRecoveryFixture.candidate_state.recovery.last_clean_commit = ("f" * 40)
+  $badRecoveryInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $badRecoveryFixture `
+    -TestTransportOutcome "accepted"
+  Assert-Equal -Actual $badRecoveryInvocation.result.code -Expected "EVIDENCE_MANIFEST_INVALID" -Message "Nonexistent recovery commit escaped evidence validation."
+
+  $remoteAdvancedFixture = New-TransitionTransactionFixture `
+    -Name "remote-advanced-state" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $remoteAdvancedShimRoot = Join-Path $remoteAdvancedFixture.root "git-shim"
+  $remoteAdvancedShim = @"
+`$captured = @(`$args)
+& '$fixtureRealGit' @args
+`$code = `$LASTEXITCODE
+if (
+  `$code -eq 0 -and
+  @(`$captured | Where-Object { `$_ -ceq 'push' }).Count -eq 1 -and
+  @(`$captured | Where-Object { `$_ -cmatch '^[0-9a-f]{40}:refs/heads/main$' }).Count -eq 1
+) {
+  & '$fixtureRealGit' -c core.longpaths=true -C `$env:DANIO_ADVANCE_ROOT fetch --prune origin main
+  if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }
+  & '$fixtureRealGit' -c core.longpaths=true -C `$env:DANIO_ADVANCE_ROOT merge --ff-only origin/main
+  if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }
+  & '$fixtureRealGit' -c core.longpaths=true -C `$env:DANIO_ADVANCE_ROOT commit --allow-empty -m 'fixture: advance accepted transition'
+  if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }
+  & '$fixtureRealGit' -c core.longpaths=true -C `$env:DANIO_ADVANCE_ROOT push origin HEAD:main
+  if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }
+}
+exit `$code
+"@
+  Write-FixtureScript -Path (Join-Path $remoteAdvancedShimRoot "git.ps1") -Content $remoteAdvancedShim
+  $remoteAdvancedInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $remoteAdvancedFixture `
+    -TestTransportOutcome "unknown_accepted" `
+    -GitShimDirectory $remoteAdvancedShimRoot `
+    -ChildEnvironment @{ DANIO_ADVANCE_ROOT = $remoteAdvancedFixture.seed }
+  Assert-Equal -Actual $remoteAdvancedInvocation.result.code -Expected "REMOTE_MOVED" -Message "Remote-advanced transition classification mismatch."
+  Assert-Equal -Actual $remoteAdvancedInvocation.result.reconciliation_status -Expected "remote_moved" -Message "Remote-advanced transition reconciliation mismatch."
+  Assert-Equal -Actual $remoteAdvancedInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Remote-advanced transition lost durable charge proof."
+  Assert-Equal -Actual $remoteAdvancedInvocation.result.owner_retained -Expected $false -Message "Remote-advanced closeout overclaimed owner retention."
+  Assert-Equal -Actual $remoteAdvancedInvocation.result.owner_released -Expected $true -Message "Remote-advanced closeout lost proven owner release."
+
+  $localAlignmentFixture = New-TransitionTransactionFixture `
+    -Name "local-alignment-state" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $localAlignmentShimRoot = Join-Path $localAlignmentFixture.root "git-shim"
+  $localAlignmentShim = @"
+`$captured = @(`$args)
+& '$fixtureRealGit' @args
+`$code = `$LASTEXITCODE
+if (
+  `$code -eq 0 -and
+  @(`$captured | Where-Object { `$_ -ceq 'push' }).Count -eq 1 -and
+  @(`$captured | Where-Object { `$_ -cmatch '^[0-9a-f]{40}:refs/heads/main$' }).Count -eq 1
+) {
+  [IO.File]::WriteAllText(
+    (Join-Path `$env:DANIO_DIRTY_ROOT 'alignment-race.txt'),
+    'preserve local alignment dirt',
+    (New-Object Text.UTF8Encoding(`$false))
+  )
+}
+exit `$code
+"@
+  Write-FixtureScript -Path (Join-Path $localAlignmentShimRoot "git.ps1") -Content $localAlignmentShim
+  $localAlignmentInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $localAlignmentFixture `
+    -TestTransportOutcome "unknown_accepted" `
+    -GitShimDirectory $localAlignmentShimRoot `
+    -ChildEnvironment @{ DANIO_DIRTY_ROOT = $localAlignmentFixture.clone }
+  Assert-Equal -Actual $localAlignmentInvocation.result.code -Expected "REMOTE_MOVED" -Message "Local-alignment transition classification mismatch."
+  Assert-Equal -Actual $localAlignmentInvocation.result.reconciliation_status -Expected "local_alignment_failed" -Message "Local-alignment transition reconciliation mismatch."
+  Assert-Equal -Actual $localAlignmentInvocation.result.durable_charge_consumption_proven -Expected $true -Message "Local-alignment failure lost durable charge proof."
+  Assert-Equal -Actual $localAlignmentInvocation.result.owner_retained -Expected $false -Message "Local-alignment closeout overclaimed owner retention."
+  Assert-Equal -Actual $localAlignmentInvocation.result.owner_released -Expected $true -Message "Local-alignment closeout lost proven owner release."
+  Assert-True -Condition (Test-Path -LiteralPath (Join-Path $localAlignmentFixture.clone "alignment-race.txt") -PathType Leaf) -Message "Local-alignment failure removed unrelated dirt."
+
+  $unknownFixture = New-TransitionTransactionFixture `
+    -Name "unknown-state-push" `
+    -FixtureRoot $tempRoot `
+    -SourceAppRoot $appRoot `
+    -Action "closeout"
+  $unknownInvocation = Invoke-CompletionTransition `
+    -ScriptPath $transitionCommitScriptPath `
+    -Fixture $unknownFixture `
+    -TestTransportOutcome "unknown_unresolved"
+  Assert-Equal -Actual $unknownInvocation.result.code -Expected "PUSH_OUTCOME_UNKNOWN" -Message "Unknown state push did not fail closed."
+  Assert-Equal -Actual $unknownInvocation.result.push_attempt_count -Expected 1 -Message "Unknown state push count mismatch."
+  Assert-Equal -Actual $unknownInvocation.result.retry_performed -Expected $false -Message "Unknown state push retried."
+  Assert-Equal -Actual $unknownInvocation.result.artifacts_preserved -Expected $true -Message "Unknown state push discarded artifacts."
+  Assert-Equal -Actual $unknownInvocation.result.owner_retained -Expected $null -Message "Unknown release push overclaimed durable owner retention."
+  Assert-Equal -Actual $unknownInvocation.result.owner_released -Expected $null -Message "Unknown release push overclaimed durable owner release."
+  Assert-True -Condition (-not [string]::IsNullOrWhiteSpace([string]$unknownInvocation.result.candidate_commit)) -Message "Unknown state candidate was not preserved."
+
   [pscustomobject]@{
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 46
+    scenarios = 71
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {

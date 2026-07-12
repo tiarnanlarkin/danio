@@ -170,13 +170,22 @@ check_autonomous_completion_readiness.ps1:
   RepositoryRoot: optional absolute string
   MaxReceiptAgeSeconds: integer, default 120
   RuntimeRequired: optional switch
+  EvidenceManifestPath: optional repository-relative path; required only for
+    Finalization and loaded from the aligned HEAD checkpoint
+  LeaseReleaseJson: optional compact JSON; required only for Finalization and
+    limited to exact owner-token, Android-release, and process-release proof
 
 validate_autonomous_completion_transition.ps1:
   Source: Staged | Committed
   RepositoryRoot: optional absolute string
   ExpectedParentCommit: optional 40-character Git object ID
-  ExpectedStagedTreeHash: optional Git tree object ID
+  ExpectedStagedTreeHash: required Git tree object ID for Source=Staged;
+    optional comparison input for Source=Committed
   Commit: Git revision string, default HEAD
+  EvidenceManifestPath: optional repository-relative path; validation always
+    loads it from the exact parent commit, never from the candidate tree
+  LeaseReleaseJson: optional compact JSON; required for owner-releasing
+    transitions and rejected for transitions that retain or have no owner
 
 plan_autonomous_writer_claim.ps1:
   ReadinessReportJson: required JSON string
@@ -197,7 +206,10 @@ commit_autonomous_completion_transition.ps1:
   ExpectedStateRevision: required positive integer
   ExpectedOriginMainCommit: required 40-character Git object ID
   EvidenceManifestPath: optional repository-relative path; required for
-    closeout, pause, stop, finalize, finalization_stop, and complete
+    closeout, pause, finalize, and complete; historical-only or null for stop
+    and finalization_stop under Task 9's emergency-stop rules
+  LeaseReleaseJson: optional compact JSON; required for closeout, pause, stop,
+    finalization_stop, and complete
   RepositoryRoot: optional absolute string
   TestTransportOutcome: same fixture-only contract as writer claim
 
@@ -228,6 +240,12 @@ Only `sync_autonomous_completion.ps1`,
 `commit_autonomous_completion_transition.ps1` may mutate Git. The first only
 updates remote-tracking refs. The other two remain disabled until their fixture
 race and unknown-outcome tests pass.
+
+`commit_autonomous_completion_transition.ps1` owns exactly one state or
+terminal commit push. The evidence checkpoint is a separate already committed,
+pushed, and aligned parent while the owner remains active/finalizing. The
+transition command never creates or pushes the evidence checkpoint and its
+`push_attempt_count` is therefore at most one.
 
 ## Execution Unit Map
 
@@ -1276,13 +1294,28 @@ git commit -m "feat: enforce autonomous writer claims"
 
 ### Task 9: Implement Evidence Checkpoints, Closeout, And Finalization
 
+**Approved correction (2026-07-12):** The user authorized a narrow Task 9
+contract correction after read-only review proved that the existing public
+transition validator omitted the lease/finalization inputs required by the
+pure guard and the Finalization readiness wrapper always supplied null evidence
+and cleanup. Task 9 owns the exact wrapper, schema, and static-contract changes
+below so implementation cannot bypass or duplicate those public interfaces.
+The pure module's exported function list remains unchanged.
+
 **Files:**
 
 - Create: `apps/aquarium_app/scripts/autonomous_completion/commit_autonomous_completion_transition.ps1`
 - Modify: `apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1`
+- Modify: `apps/aquarium_app/scripts/autonomous_completion/check_autonomous_completion_readiness.ps1`
+- Modify: `apps/aquarium_app/scripts/autonomous_completion/validate_autonomous_completion_transition.ps1`
+- Modify: `apps/aquarium_app/docs/agent/autonomous_completion/schemas/evidence_manifest.schema.json`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_git_fixture_test.ps1`
+- Modify: `apps/aquarium_app/test/scripts/autonomous_completion_script_test.dart`
 - Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md`
+- Modify: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`
+- Modify at closeout only: `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
+- Modify at closeout only: `apps/aquarium_app/docs/agent/SLICE_LOG.md`
 
 **Interfaces:**
 
@@ -1291,8 +1324,116 @@ git commit -m "feat: enforce autonomous writer claims"
 - Owned branch/worktree cleanup occurs only after that checkpoint is aligned.
 - State closeout then consumes the pending unit once and releases ownership.
 - DCL-RC uses `active -> finalizing -> complete`, never direct completion.
+- The linked-worktree test harness uses the fixture's canonical authorized
+  repository root for synthetic readiness and resolves the index through
+  `git rev-parse --path-format=absolute --git-path index`; it never assumes
+  `<worktree>/.git/index`.
+- `LeaseReleaseJson` has exactly these fields:
 
-- [ ] **Step 1: Add failing closeout/finalization tests**
+```json
+{
+  "owner_token": "64-lowercase-hex",
+  "android_released": true,
+  "processes_released": true
+}
+```
+
+  The token must match the exact previous owner. The transition validator
+  derives branch/worktree/writer release from the retained owner identity plus
+  current Git registration, ref, and filesystem observations. Caller JSON
+  cannot name or claim removal of a different branch or worktree.
+- The validator loads the ledger and evidence manifest from the exact parent
+  commit (`HEAD` for staged validation, `Commit^` for committed validation).
+  Caller-supplied ledger rows, active-scope IDs, normalized completion checks,
+  cleanup identity, or checkpoint commit are forbidden.
+- A new evidence checkpoint is owned by the current durable lease: the exact
+  product commit and its manifest commit must be strict descendants of the
+  typed `claim`/`finalize` state transition that established the parent owner,
+  and both must be ancestors of the candidate parent. Reusing a pre-owner,
+  side-branch, or merely local object is forbidden.
+- The last commit that changed the parent run-state path must itself be the
+  typed `claim` or `finalize` transition, with exact transition-only path scope,
+  tree, trailers, and historical manifest proof. The run-state bytes must stay
+  unchanged from that commit through the evidence parent.
+- Task 9 transition path scope is exact: the run-state path is required and
+  only `ACTIVE_HANDOFF.md` and `SLICE_LOG.md` may accompany it for launch or
+  closeout bookkeeping. Product paths never belong in a state transition.
+- Task 9 derives the candidate authority snapshot from the exact parent commit.
+  Each reference binds the canonical path, exact reachable commit, and exact
+  blob bytes; it need not equal the newest `origin/main` blob and it must not
+  create a self-reference to the candidate transition.
+- Evidence-bearing Task 9 transition commits add exactly one terminal trailer:
+
+```text
+Danio-Evidence-Manifest: <repository-relative path>
+```
+
+  An emergency `active -> stopped` transition with no historical checkpoint
+  uses `Danio-Evidence-Manifest: none`. Claim, launch, resume, and
+  administrative commits remain on the existing four-trailer contract.
+- The compact transition command result has this exact property set:
+
+```text
+document_type = danio_transition_commit_result
+schema_version
+completed_at_utc
+accepted
+code
+details
+transition_action
+from_mode
+to_mode
+run_id
+work_unit_id
+expected_state_revision
+candidate_state_revision
+evidence_manifest_path
+owner_token_sha256
+mutations_performed
+push_attempted
+push_attempt_count
+push_timed_out
+push_termination_confirmed
+push_rejection_proven
+retry_performed
+reconciliation_status
+candidate_charge_consumed
+durable_charge_consumption_proven
+owner_retained
+owner_released
+owned_cleanup_proven
+artifacts_preserved
+candidate_commit
+staged_tree_hash
+origin_main_commit
+test_transport_outcome
+```
+
+  Success is `TRANSITION_COMMITTED`. Stable fail-closed results include
+  `EVIDENCE_MANIFEST_REQUIRED`, `EVIDENCE_MANIFEST_INVALID`,
+  `LEASE_RELEASE_INVALID`, `PARENT_STATE_PROVENANCE_INVALID`, `STOP_PENDING`,
+  `FINALIZATION_SCOPE_INVALID`,
+  `COMPLETION_NOT_READY`, `TRANSITION_VALIDATION_FAILED`,
+  `DOCS_PROFILE_FAILED`, `REMOTE_MOVED`, `PUSH_OUTCOME_UNKNOWN`, and
+  `TRANSITION_TRANSACTION_INVALID`. `accepted` is true only when the exact
+  candidate is the clean aligned local and remote `main` tip.
+- A rejected or indeterminate state push preserves the candidate commit and
+  never runs claim-style branch/worktree deletion. Exact stdout porcelain
+  rejection plus fresh candidate absence returns `REMOTE_MOVED`; timeout,
+  unclassified failure, unconfirmed process-tree termination, or unprovable
+  reachability returns `PUSH_OUTCOME_UNKNOWN`. No path retries a push.
+- The transaction pushes the immutable raw candidate object ID to `main`; it
+  never pushes a moving symbolic `HEAD`. The nullable durable-charge and
+  `owner_retained`/`owner_released` fields describe the exact prior or candidate
+  transition outcome whose origin reachability is proven: `STOP_PENDING` or a
+  definite rejection may prove the aligned prior owner; an exact candidate or
+  reachable candidate ancestor may prove the candidate's charge and owner
+  effect; and local-alignment failure does not erase remote proof. They remain
+  null when reachability is ambiguous. `owned_cleanup_proven` separately
+  reports physical branch/worktree cleanup, and local alignment failure remains
+  fail closed.
+
+- [x] **Step 1: Add failing closeout/finalization tests**
 
 Cover:
 
@@ -1308,12 +1449,35 @@ finalizing failure never consumes twice
 same-mode Figma admin update changes only allowed fields
 ```
 
-- [ ] **Step 2: Run and prove RED**
+Do not duplicate the existing pure transition arithmetic. Add RED coverage for
+the newly connected boundaries:
 
-Run behavior and Git fixture suites. Expected: FAIL because the transition
-commit entry point is absent.
+```text
+linked-worktree behavior fixture uses canonical authorized repository root
+linked-worktree index snapshot resolves through git --git-path
+transition commit entry point exists and has the exact static contract
+manifest check indexes, timestamps, cursor binding, artifact blobs, and hashes
+staged and committed validator receive exact release proof
+finalize derives ledger scope from the parent commit
+complete derives terminal evidence and cleanup from the parent commit
+Finalization readiness accepts committed manifest plus exact release proof
+missing, malformed, wrong-owner, or caller-spoofed proof fails closed
+evidence trailer is terminal, unique, action-conditional, and path-exact
+evidence checkpoint precedes cleanup and state push in disposable history
+budget-one closeout selects stopped and exposes no successor eligibility
+unknown evidence/state push preserves the correct phase artifacts with no retry
+```
 
-- [ ] **Step 3: Implement evidence manifest validation**
+The Dart static contract list includes both mutation entry points,
+`invoke_autonomous_writer_claim.ps1` and
+`commit_autonomous_completion_transition.ps1`.
+
+- [x] **Step 2: Run and prove RED**
+
+Run behavior, Git fixture, and Dart script suites. Expected: FAIL because the
+transition commit entry point and corrected proof/schema interfaces are absent.
+
+- [x] **Step 3: Implement evidence manifest validation**
 
 Each real manifest requires:
 
@@ -1333,6 +1497,14 @@ Each real manifest requires:
   ],
   "environment": {"platform": "windows", "device_id": null},
   "artifacts": [],
+  "checks": [
+    {
+      "code": "FOCUSED",
+      "status": "pass",
+      "command_indexes": [0],
+      "artifact_indexes": []
+    }
+  ],
   "overall_status": "pass"
 }
 ```
@@ -1340,7 +1512,67 @@ Each real manifest requires:
 File name is the exact product commit plus `.json`. Reject manifests whose
 content commit and filename disagree.
 
-- [ ] **Step 4: Implement the two-phase closeout**
+`checks` is required and each entry has exactly `code`, `status`,
+`command_indexes`, and `artifact_indexes`. Codes use uppercase reason-code
+syntax, statuses are `pass|fail`, indexes are unique nonnegative integers, and
+each check references at least one command or artifact. Runtime validation
+bounds-checks every index, requires a passing check's commands to exit `0`, and
+requires its artifacts to exist at `product_commit` with matching exact-byte
+SHA-256. Duplicate check codes are rejected.
+
+Runtime evidence validation also requires:
+
+```text
+manifest path == evidence/<product_commit>.json
+manifest work_unit_id and ledger_row_ids == the owned cursor for a new checkpoint
+strict UTC timestamps parse semantically
+started_at_utc <= completed_at_utc <= last_verified_checkpoint.verified_at_utc
+last_verified_checkpoint.verified_at_utc <= transition.occurred_at_utc
+environment is exactly windows plus string-or-null device_id
+overall_status == pass and every command exits 0
+no duplicate artifact paths and every artifact blob/hash matches product_commit
+```
+
+For `complete`, the committed manifest must contain exactly one passing
+`FULL`, `ANDROID_PREP`, `CONTENT`, `VISUAL`, `PRODUCT_TRUTH`, and `PHONE_QA`
+check. The wrapper maps those committed checks to the existing normalized
+completion-readiness input and derives `checkpoint_commit` from the aligned
+parent `HEAD`; no caller may supply a parallel completion summary.
+
+Evidence rules by transition are exact:
+
+```text
+closeout, pause:
+  require a new owned-cursor manifest and advance last_verified_checkpoint
+stop with reason BUDGET_EXHAUSTED and post-transition remaining budget 0:
+  require a new owned-cursor manifest and advance last_verified_checkpoint;
+  do not advance generation or expose successor eligibility
+finalize:
+  require the unchanged historical candidate-parent manifest; do not claim a
+  completed DCL-RC manifest and do not advance last_verified_checkpoint
+complete:
+  require the new owned DCL-RC manifest and advance last_verified_checkpoint
+stop, finalization_stop with a historical checkpoint:
+  preserve last_verified_checkpoint byte-for-byte and validate that exact
+  historical path without rebinding it to the current cursor
+active -> stopped with no historical checkpoint:
+  require no manifest, keep last_verified_checkpoint null, require recovery,
+  and prove recovery.last_clean_commit reachable from the parent checkpoint
+finalizing -> stopped:
+  cannot use the null-manifest exception because finalizing requires a
+  historical checkpoint
+```
+
+`closeout` and `complete` may either preserve control-surface state or schedule
+`pending` for their newly verified product commit. Later nonvisual checkpoints
+may preserve an older pending target. A same-mode `administrative_sync` may
+only resolve the exact pending target to `synced` or `failed`; it cannot retarget
+Figma fields or change product, budget, cursor, owner, or recovery state.
+
+Unsafe or unproven release returns `STOP_PENDING` before writing, staging,
+charging, committing, or pushing candidate state.
+
+- [x] **Step 4: Implement the two-phase closeout**
 
 For normal units:
 
@@ -1349,6 +1581,15 @@ merge verified unit -> clean-main proof -> commit/push evidence checkpoint
 -> verify 0 0 -> remove exact owned worktree/branch -> stage state/handoff
 -> validate staged tree and post-gate dirt -> commit/push state -> verify 0 0
 ```
+
+The public staged and committed validator must pass the same derived ledger,
+evidence, release, and completion-readiness inputs in both modes. The state
+script stages only the run-state path plus existing dirty
+`ACTIVE_HANDOFF.md`/`SLICE_LOG.md` closeout updates, rejects every other dirty
+or staged path, runs the Docs profile, proves the staged tree did not move,
+commits with the five required transition trailers, validates the committed
+candidate, and attempts one bounded noninteractive normal push to one captured
+immutable endpoint.
 
 For DCL-RC:
 
@@ -1359,9 +1600,20 @@ active -> finalizing (charge consumed, owner retained)
 -> push terminal transition -> clean 0 0, no successor
 ```
 
-- [ ] **Step 5: Prove GREEN and commit**
+- [x] **Step 5: Prove GREEN and commit**
 
-Run all PowerShell suites plus Dart script tests and Docs profile. Commit:
+Run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_behavior_test.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_git_fixture_test.ps1
+flutter test test/scripts/autonomous_completion_script_test.dart --reporter compact
+flutter test test/copy/current_docs_local_truth_test.dart --reporter compact
+git diff --check
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
+```
+
+Then commit:
 
 ```powershell
 git add apps/aquarium_app/scripts/autonomous_completion apps/aquarium_app/test/scripts apps/aquarium_app/docs/agent

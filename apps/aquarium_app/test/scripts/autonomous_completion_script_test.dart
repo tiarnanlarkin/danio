@@ -40,6 +40,8 @@ const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/check_autonomous_completion_readiness.ps1',
   'scripts/autonomous_completion/validate_autonomous_completion_transition.ps1',
   'scripts/autonomous_completion/plan_autonomous_writer_claim.ps1',
+  'scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1',
+  'scripts/autonomous_completion/commit_autonomous_completion_transition.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
   'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
@@ -744,6 +746,14 @@ void main() {
         'device_id': null,
       },
       'artifacts': <Map<String, dynamic>>[],
+      'checks': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'code': 'FULL',
+          'status': 'pass',
+          'command_indexes': <int>[0],
+          'artifact_indexes': <int>[],
+        },
+      ],
       'overall_status': 'pass',
     };
     expect(validate('evidence_manifest.schema.json', evidence), isEmpty);
@@ -755,6 +765,22 @@ void main() {
       validate(
         'evidence_manifest.schema.json',
         passingManifestWithFailedCommand,
+      ),
+      isNotEmpty,
+    );
+    final evidenceWithoutChecks = copy(evidence)..remove('checks');
+    expect(
+      validate('evidence_manifest.schema.json', evidenceWithoutChecks),
+      isNotEmpty,
+    );
+    final evidenceWithUnknownCheckField = copy(evidence);
+    ((evidenceWithUnknownCheckField['checks'] as List<dynamic>).first
+            as Map<String, dynamic>)['caller_claimed_pass'] =
+        true;
+    expect(
+      validate(
+        'evidence_manifest.schema.json',
+        evidenceWithUnknownCheckField,
       ),
       isNotEmpty,
     );
@@ -1253,6 +1279,107 @@ void main() {
       ).hasMatch(source),
       isFalse,
       reason: 'create_thread invocation',
+    );
+  });
+
+  test('Task 9 transition surfaces carry exact evidence and release inputs', () {
+    final readiness = File(
+      'scripts/autonomous_completion/check_autonomous_completion_readiness.ps1',
+    ).readAsStringSync();
+    final validator = File(
+      'scripts/autonomous_completion/validate_autonomous_completion_transition.ps1',
+    ).readAsStringSync();
+    final transaction = File(
+      'scripts/autonomous_completion/commit_autonomous_completion_transition.ps1',
+    ).readAsStringSync();
+
+    for (final source in <String>[readiness, validator]) {
+      expect(source, contains(r'$EvidenceManifestPath'));
+      expect(source, contains(r'$LeaseReleaseJson'));
+      expect(
+        source,
+        contains("-cnotmatch '^[A-Za-z0-9._/-]+\$'"),
+        reason: 'unsafe artifact paths must be rejected before Git probing',
+      );
+    }
+    expect(validator, isNot(contains('"write-tree"')));
+    expect(validator, contains('precomputed tree hash'));
+    expect(validator, contains('"diff", "--cached", "--quiet"'));
+    for (final parameter in <String>[
+      'NextRunStateJson',
+      'ExpectedStateRevision',
+      'ExpectedOriginMainCommit',
+      'EvidenceManifestPath',
+      'LeaseReleaseJson',
+      'RepositoryRoot',
+      'TestTransportOutcome',
+    ]) {
+      expect(transaction, contains(r'$' + parameter), reason: parameter);
+    }
+    for (final resultField in <String>[
+      'document_type',
+      'schema_version',
+      'completed_at_utc',
+      'accepted',
+      'code',
+      'details',
+      'transition_action',
+      'from_mode',
+      'to_mode',
+      'run_id',
+      'work_unit_id',
+      'expected_state_revision',
+      'candidate_state_revision',
+      'evidence_manifest_path',
+      'owner_token_sha256',
+      'mutations_performed',
+      'push_attempted',
+      'push_attempt_count',
+      'push_timed_out',
+      'push_termination_confirmed',
+      'push_rejection_proven',
+      'retry_performed',
+      'reconciliation_status',
+      'candidate_charge_consumed',
+      'durable_charge_consumption_proven',
+      'owner_retained',
+      'owner_released',
+      'owned_cleanup_proven',
+      'artifacts_preserved',
+      'candidate_commit',
+      'staged_tree_hash',
+      'origin_main_commit',
+      'test_transport_outcome',
+    ]) {
+      expect(
+        transaction,
+        contains(RegExp('\\b$resultField\\s*=')),
+        reason: resultField,
+      );
+    }
+    expect(transaction, contains('danio_transition_commit_result'));
+    expect(transaction, contains('TRANSITION_COMMITTED'));
+    expect(transaction, contains('Danio-Evidence-Manifest'));
+    expect(transaction, contains('PUSH_OUTCOME_UNKNOWN'));
+    expect(transaction, contains('REMOTE_MOVED'));
+    expect(transaction, contains('STOP_PENDING'));
+    expect(transaction, isNot(contains('git push --force')));
+  });
+
+  test('evidence schema binds named checks to commands and artifacts', () {
+    final schema = _readJson('$_schemaRoot/evidence_manifest.schema.json');
+    final required = (schema['required'] as List<dynamic>).cast<String>();
+    expect(required, contains('checks'));
+    final properties = schema['properties'] as Map<String, dynamic>;
+    final checks = properties['checks'] as Map<String, dynamic>;
+    final checkReference = checks['items'] as Map<String, dynamic>;
+    expect(checkReference[r'$ref'], '#/\$defs/check_result');
+    final definitions = schema[r'$defs'] as Map<String, dynamic>;
+    final check = definitions['check_result'] as Map<String, dynamic>;
+    expect(check['additionalProperties'], isFalse);
+    expect(
+      (check['required'] as List<dynamic>).cast<String>().toSet(),
+      <String>{'code', 'status', 'command_indexes', 'artifact_indexes'},
     );
   });
 

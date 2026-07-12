@@ -12,6 +12,7 @@
     "commands",
     "environment",
     "artifacts",
+    "checks",
     "overall_status"
   ],
   "properties": {
@@ -37,6 +38,11 @@
       "type": "array",
       "items": { "$ref": "#/$defs/artifact" }
     },
+    "checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/check_result" },
+      "minItems": 1
+    },
     "overall_status": { "type": "string", "enum": ["pass", "fail"] }
   },
   "allOf": [
@@ -50,6 +56,11 @@
           "commands": {
             "items": {
               "properties": { "exit_code": { "const": 0 } }
+            }
+          },
+          "checks": {
+            "items": {
+              "properties": { "status": { "const": "pass" } }
             }
           }
         }
@@ -112,6 +123,39 @@
         "path": { "$ref": "#/$defs/repo_path" },
         "sha256": { "$ref": "#/$defs/sha256" }
       }
+    },
+    "check_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "status", "command_indexes", "artifact_indexes"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{0,63}$"
+        },
+        "status": { "type": "string", "enum": ["pass", "fail"] },
+        "command_indexes": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "uniqueItems": true
+        },
+        "artifact_indexes": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": ["command_indexes", "artifact_indexes"],
+            "properties": {
+              "command_indexes": { "maxItems": 0 },
+              "artifact_indexes": { "maxItems": 0 }
+            }
+          }
+        }
+      ]
     }
   }
 }

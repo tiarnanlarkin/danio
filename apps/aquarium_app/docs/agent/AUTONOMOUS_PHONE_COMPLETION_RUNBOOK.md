@@ -35,9 +35,11 @@ owns category status and quality-bar summaries.
 
 `RUNNER_COMPATIBLE` is now the expected compatibility result for the reviewed
 installed bytes. Launch remains blocked by `authorizes_launch: false`; the
-Task 8 writer-claim transaction does not implement closeout, prove task-tool
-successor capability, authorize operational chaining, or create live state.
-Those responsibilities remain with Tasks 9 through 13.
+Task 8 writer-claim transaction does not authorize operational chaining or
+create live state. Task 9 implements and fixture-proves evidence validation,
+closeout, finalization, and exactly-once charging, but does not activate them.
+Task-tool successor capability, rehearsal, and activation remain with Tasks 10
+through 13.
 
 ## Machine Contract Inventory
 
@@ -149,7 +151,9 @@ Only these transition/action pairs are allowed:
 
 Every durable transition increments `state_revision` by exactly one. A
 same-mode administrative transition may change only transition metadata,
-`state_revision`, and `control_surface_sync`.
+`state_revision`, the parent-derived authority snapshot, and
+`control_surface_sync`. It may only resolve the exact previously pending visual
+target to `synced` or `failed`; it cannot retarget Figma administration fields.
 
 An absent live-state path is valid only for Launch readiness. The inactive
 fixture is the conceptual parent, Task 13 stages revision 1, and activation
@@ -323,6 +327,75 @@ are proven by normalized inputs:
 
 The guard does not require the candidate state already to be `complete`.
 
+## Evidence Checkpoint And State Closeout
+
+The product/workflow commit and its evidence manifest are a separate committed,
+pushed, clean, aligned parent checkpoint while durable ownership is still
+`active` or `finalizing`. The state transaction does not create or push that
+checkpoint. It verifies a fresh `origin/main` observation before mutation, then
+owns at most one normal non-force state push and never retries it.
+
+A new checkpoint belongs to the current lease only when its exact product
+commit and manifest commit are strict descendants of the typed `claim` or
+`finalize` transition that established that owner and are both ancestors of the
+candidate parent. A pre-owner commit, unreachable side object, or merely local
+object cannot satisfy this proof. The last commit that changed the parent state
+must be that typed owner transition with exact path scope, tree, trailers, and
+historical evidence, and the state bytes must remain unchanged through the
+evidence parent.
+
+For owner-releasing transitions, `LeaseReleaseJson` contains exactly
+`owner_token`, `android_released`, and `processes_released`. The validator binds
+the token to the previous owner and derives branch, worktree registration,
+worktree-path, and writer release from live Git and filesystem observations.
+Unsafe or ambiguous release returns `STOP_PENDING` before state write, stage,
+charge, commit, or push. `finalize` retains the exact owner and rejects release
+JSON.
+
+Both staged and committed transition validation load the ledger and manifest
+from the exact candidate parent. A caller cannot supply ledger rows, completion
+checks, cleanup identity, or a checkpoint commit. Evidence-bearing transition
+commits add one terminal trailer:
+
+```text
+Danio-Evidence-Manifest: <repository-relative manifest path>
+```
+
+Only an emergency `active -> stopped` transition with no historical checkpoint
+uses `Danio-Evidence-Manifest: none`; it must preserve a null checkpoint and
+prove the recorded recovery commit is reachable from the parent. Historical
+stop and finalization-stop paths preserve and validate their existing manifest.
+A budget-exhausted normal closeout instead uses `stop` with reason
+`BUDGET_EXHAUSTED`, exact post-charge budget zero, and a fresh owned-cursor
+checkpoint; it creates no successor and does not advance handoff generation.
+
+The staged validator requires the caller-precomputed candidate tree object ID
+and verifies the index against it without writing a tree. Task 9 state commits
+must include the run-state path and may additionally include only
+`ACTIVE_HANDOFF.md` and `SLICE_LOG.md` for launch/closeout bookkeeping. Product
+paths are rejected. Candidate authority is rebuilt from the exact parent:
+canonical path, reachable snapshot commit, and exact blob bytes are binding,
+without requiring current-origin blob equality or creating candidate
+self-reference.
+
+The state transaction stages the run-state path and only already-dirty
+`ACTIVE_HANDOFF.md` or `SLICE_LOG.md` closeout updates. It rejects every other
+staged, unstaged, or untracked path, validates the staged tree, runs the Docs
+profile, proves the tree did not move, validates the committed candidate, and
+then performs its single bounded push of the immutable raw candidate object ID
+to `main`, never a moving symbolic `HEAD`. Exact rejection plus fresh candidate
+absence returns `REMOTE_MOVED`; timeout, unclassified failure, unconfirmed
+process-tree termination, or unprovable reachability returns
+`PUSH_OUTCOME_UNKNOWN`. Both preserve the candidate and evidence artifacts.
+Nullable durable-charge and `owner_retained`/`owner_released` fields report the
+exact prior or candidate transition effect whose origin reachability is proven.
+`STOP_PENDING` or definite rejection may prove the aligned prior owner; an
+exact candidate or reachable candidate ancestor may prove the candidate charge
+and owner effect; and local-alignment failure does not erase remote proof. The
+fields remain null when reachability is ambiguous. `owned_cleanup_proven`
+separately reports physical cleanup. Local alignment failure remains fail closed
+and preserves artifacts.
+
 ## Runner Compatibility
 
 `apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json`
@@ -342,8 +415,17 @@ capability separately and do not fabricate runner incompatibility.
 Evidence manifests are named by the exact product commit plus `.json`. The
 filename and `product_commit` field must match. Each command record includes
 only the command, exit code, and strict UTC start and completion timestamps.
-Environment identity, durable artifacts, and overall status are manifest-level
-fields.
+Environment identity, durable artifacts, named checks, and overall status are
+manifest-level fields. Every check has exactly `code`, `status`,
+`command_indexes`, and `artifact_indexes`; indexes are unique, bounded, and
+refer to the committed commands or exact-byte artifact hashes. Passing terminal
+evidence contains exactly one `FULL`, `ANDROID_PREP`, `CONTENT`, `VISUAL`,
+`PRODUCT_TRUTH`, and `PHONE_QA` check.
+
+`closeout` and `complete` may preserve control-surface state or schedule
+`pending` against their newly verified product commit. A later nonvisual
+checkpoint may preserve the older target. Administrative sync can only resolve
+that exact pending target to `synced` or `failed`.
 
 The no-product-change rehearsal records before/after observations and proves
 all repository-file, index, local-ref, remote-ref, worktree, task, Android,
