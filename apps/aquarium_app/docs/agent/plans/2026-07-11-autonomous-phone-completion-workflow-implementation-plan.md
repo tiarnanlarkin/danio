@@ -1005,9 +1005,9 @@ git commit -m "feat: validate autonomous writer claims"
 **Approved correction (2026-07-12):** Task 6 also owns the existing
 compatibility validator, runbook/bootstrap truth tests, and its Dart contract
 test so the manifest pin is validated against installed bytes rather than
-trusted as self-asserted evidence. Proof of `automatic_successor_capable` is deferred to
-Task 10, which owns task-tool capability inspection; Task 6 does not change
-that readiness field.
+trusted as self-asserted evidence. Proof of `automatic_successor_capable` is
+deferred to Task 10, which owns task-tool capability inspection; Task 6 does
+not change that readiness field.
 
 **Files outside the product repository:**
 
@@ -1023,7 +1023,9 @@ that readiness field.
 
 - Modify: `apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json`
 - Modify: `apps/aquarium_app/docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md`
+- Modify: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`
 - Modify: `apps/aquarium_app/scripts/autonomous_completion/DanioAutonomousCompletion.psm1`
+- Modify: `apps/aquarium_app/test/copy/current_docs_local_truth_test.dart`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_behavior_test.ps1`
 - Modify: `apps/aquarium_app/test/scripts/autonomous_completion_script_test.dart`
 
