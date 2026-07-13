@@ -4020,6 +4020,149 @@ function Test-DanioWriterClaimPlan {
     -Details @()
 }
 
+function Test-DanioRehearsalObservation {
+  [CmdletBinding()]
+  param([Parameter(Mandatory = $true)][AllowNull()]$Observation)
+
+  $fields = @(
+    "status_sha256",
+    "index_tree",
+    "local_refs_sha256",
+    "remote_refs_sha256",
+    "worktrees_sha256"
+  )
+  $propertySet = Test-DanioExactPropertySet `
+    -Value $Observation `
+    -Allowed $fields `
+    -Required $fields
+  return (
+    $propertySet.valid -and
+    (Test-DanioSha256 -Value $Observation.status_sha256) -and
+    (Test-DanioGitOid -Value $Observation.index_tree) -and
+    (Test-DanioSha256 -Value $Observation.local_refs_sha256) -and
+    (Test-DanioSha256 -Value $Observation.remote_refs_sha256) -and
+    (Test-DanioSha256 -Value $Observation.worktrees_sha256)
+  )
+}
+
+function Test-DanioRehearsalPreview {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][AllowNull()]$Preview,
+    [Parameter(Mandatory = $true)][string]$ExpectedCode
+  )
+
+  $fields = @("eligible", "code", "mutations_performed")
+  $propertySet = Test-DanioExactPropertySet `
+    -Value $Preview `
+    -Allowed $fields `
+    -Required $fields
+  return (
+    $propertySet.valid -and
+    (Test-DanioBoolean -Value $Preview.eligible) -and
+    -not [bool]$Preview.eligible -and
+    (Test-DanioExactString -Value $Preview.code -Expected $ExpectedCode) -and
+    (Test-DanioBoolean -Value $Preview.mutations_performed) -and
+    -not [bool]$Preview.mutations_performed
+  )
+}
+
+function New-DanioRehearsalReport {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$RehearsalRunId,
+    [Parameter(Mandatory = $true)][string]$TaskId,
+    [Parameter(Mandatory = $true)][string]$CreatedAtUtc,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$BaseCommit,
+    [Parameter(Mandatory = $true)][int64]$ProposedAutonomousUnits,
+    [Parameter(Mandatory = $true)][string]$ProposedWorkUnitId,
+    [Parameter(Mandatory = $true)][string[]]$ProposedLedgerRowIds,
+    [Parameter(Mandatory = $true)]$Before,
+    [Parameter(Mandatory = $true)]$After,
+    [Parameter(Mandatory = $true)]$LaunchPreview,
+    [Parameter(Mandatory = $true)]$ClaimPreview,
+    [Parameter(Mandatory = $true)]$CloseoutPreview
+  )
+
+  $normalizedRoot = ConvertTo-DanioForwardSlashPath -Path $RepositoryRoot
+  if (
+    -not (Test-DanioSafeIdentifier -Value $RehearsalRunId) -or
+    -not (Test-DanioSafeIdentifier -Value $TaskId) -or
+    -not (Test-DanioStrictUtc -Value $CreatedAtUtc) -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $normalizedRoot) -or
+    -not (Test-DanioGitOid -Value $BaseCommit) -or
+    $ProposedAutonomousUnits -lt 1 -or
+    -not (Test-DanioSafeIdentifier -Value $ProposedWorkUnitId) -or
+    $ProposedLedgerRowIds.Count -lt 1
+  ) {
+    throw "REHEARSAL_INPUT_INVALID: rehearsal identity, time, root, commit, budget, or work unit is invalid."
+  }
+
+  $seenLedgerRows = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+  foreach ($ledgerRowId in @($ProposedLedgerRowIds)) {
+    if (
+      $ledgerRowId -isnot [string] -or
+      $ledgerRowId -cnotmatch '^DCL-[A-Z0-9]+-[0-9]{3}$' -or
+      -not $seenLedgerRows.Add($ledgerRowId)
+    ) {
+      throw "REHEARSAL_INPUT_INVALID: proposed ledger rows are malformed or duplicated."
+    }
+  }
+
+  if (
+    -not (Test-DanioRehearsalObservation -Observation $Before) -or
+    -not (Test-DanioRehearsalObservation -Observation $After)
+  ) {
+    throw "REHEARSAL_OBSERVATION_INVALID: before or after observation is malformed."
+  }
+  if ((ConvertTo-DanioCanonicalJson -Value $Before) -cne (ConvertTo-DanioCanonicalJson -Value $After)) {
+    throw "REHEARSAL_OBSERVATION_CHANGED: before and after repository observations differ."
+  }
+
+  if (
+    -not (Test-DanioRehearsalPreview -Preview $LaunchPreview -ExpectedCode "LAUNCH_NOT_AUTHORIZED") -or
+    -not (Test-DanioRehearsalPreview -Preview $ClaimPreview -ExpectedCode "AUTHORITY_CONFLICT") -or
+    -not (Test-DanioRehearsalPreview -Preview $CloseoutPreview -ExpectedCode "AUTHORITY_CONFLICT")
+  ) {
+    throw "REHEARSAL_PREVIEW_INVALID: Launch, Claim, or Closeout did not return the required no-mutation blocking code."
+  }
+
+  return [pscustomobject][ordered]@{
+    document_type = "danio_autonomous_completion_rehearsal_report"
+    schema_version = 1
+    rehearsal_run_id = $RehearsalRunId
+    task_id = $TaskId
+    created_at_utc = $CreatedAtUtc
+    repository_root = $normalizedRoot
+    base_commit = $BaseCommit
+    proposed = [pscustomobject][ordered]@{
+      autonomous_units = $ProposedAutonomousUnits
+      work_unit_id = $ProposedWorkUnitId
+      ledger_row_ids = @($ProposedLedgerRowIds)
+    }
+    before = Copy-DanioJsonValue -Value $Before
+    after = Copy-DanioJsonValue -Value $After
+    previews = [pscustomobject][ordered]@{
+      launch = Copy-DanioJsonValue -Value $LaunchPreview
+      claim = Copy-DanioJsonValue -Value $ClaimPreview
+      closeout = Copy-DanioJsonValue -Value $CloseoutPreview
+    }
+    mutations = [pscustomobject][ordered]@{
+      repository_files = $false
+      index = $false
+      local_refs = $false
+      remote_refs = $false
+      worktrees = $false
+      successor_tasks = $false
+      android_runtime = $false
+      figma = $false
+      external_services = $false
+    }
+    overall_status = "pass"
+  }
+}
+
 Export-ModuleMember -Function @(
   "Resolve-DanioRepositoryRoot",
   "Get-DanioRepositoryObservation",
@@ -4032,5 +4175,6 @@ Export-ModuleMember -Function @(
   "Test-DanioRunStateTransition",
   "Test-DanioCompletionReadiness",
   "Test-DanioAutonomousReadiness",
-  "New-DanioWriterClaimPlan"
+  "New-DanioWriterClaimPlan",
+  "New-DanioRehearsalReport"
 )

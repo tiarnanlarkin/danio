@@ -341,6 +341,7 @@ $readinessScriptPath = Join-Path $appRoot "scripts/autonomous_completion/check_a
 $transitionScriptPath = Join-Path $appRoot "scripts/autonomous_completion/validate_autonomous_completion_transition.ps1"
 $claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan_autonomous_writer_claim.ps1"
 $handoffScriptPath = Join-Path $appRoot "scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1"
+$rehearsalScriptPath = Join-Path $appRoot "scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1"
 $fixtureRoot = Join-Path $testRoot "fixtures/autonomous_completion"
 $ledgerPath = Join-Path $appRoot "docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
 $ledgerHashBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
@@ -362,6 +363,9 @@ if (-not (Test-Path -LiteralPath $claimPlannerScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $handoffScriptPath -PathType Leaf)) {
   throw "Expected Task 10 handoff generator is missing: $handoffScriptPath"
+}
+if (-not (Test-Path -LiteralPath $rehearsalScriptPath -PathType Leaf)) {
+  throw "Expected Task 12 rehearsal entry point is missing: $rehearsalScriptPath"
 }
 
 $module = Import-Module -Name $modulePath -Force -PassThru
@@ -756,6 +760,100 @@ Assert-Equal -Actual $forgedRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE
 
 $currentRunnerValidation = Test-DanioRunnerCompatibility -Manifest $runnerManifest
 Assert-Equal -Actual $currentRunnerValidation.code -Expected "RUNNER_COMPATIBLE" -Message "Reviewed installed runner contracts did not validate."
+
+$rehearsalObservation = [pscustomobject][ordered]@{
+  status_sha256 = ("1" * 64)
+  index_tree = ("2" * 40)
+  local_refs_sha256 = ("3" * 64)
+  remote_refs_sha256 = ("4" * 64)
+  worktrees_sha256 = ("5" * 64)
+}
+$launchPreview = [pscustomobject][ordered]@{
+  eligible = $false
+  code = "LAUNCH_NOT_AUTHORIZED"
+  mutations_performed = $false
+}
+$claimPreview = [pscustomobject][ordered]@{
+  eligible = $false
+  code = "AUTHORITY_CONFLICT"
+  mutations_performed = $false
+}
+$closeoutPreview = Copy-JsonValue -Value $claimPreview
+$rehearsalReport = New-DanioRehearsalReport `
+  -RehearsalRunId "danio-rehearsal-fixture" `
+  -TaskId "task-fixture-001" `
+  -CreatedAtUtc "2026-07-13T12:00:00.0000000Z" `
+  -RepositoryRoot $checkoutRepoRoot `
+  -BaseCommit ("6" * 40) `
+  -ProposedAutonomousUnits 12 `
+  -ProposedWorkUnitId "WF-2026-07-11-015" `
+  -ProposedLedgerRowIds @("DCL-DR-001") `
+  -Before $rehearsalObservation `
+  -After (Copy-JsonValue -Value $rehearsalObservation) `
+  -LaunchPreview $launchPreview `
+  -ClaimPreview $claimPreview `
+  -CloseoutPreview $closeoutPreview
+Assert-Equal -Actual $rehearsalReport.overall_status -Expected "pass" -Message "Valid zero-side-effect rehearsal did not pass."
+Assert-Equal -Actual $rehearsalReport.previews.launch.code -Expected "LAUNCH_NOT_AUTHORIZED" -Message "Launch preview code mismatch."
+Assert-Equal -Actual $rehearsalReport.previews.claim.code -Expected "AUTHORITY_CONFLICT" -Message "Claim preview code mismatch."
+Assert-Equal -Actual $rehearsalReport.previews.closeout.code -Expected "AUTHORITY_CONFLICT" -Message "Closeout preview code mismatch."
+foreach ($mutation in @(
+  "repository_files",
+  "index",
+  "local_refs",
+  "remote_refs",
+  "worktrees",
+  "successor_tasks",
+  "android_runtime",
+  "figma",
+  "external_services"
+)) {
+  Assert-Equal -Actual $rehearsalReport.mutations.$mutation -Expected $false -Message "Rehearsal mutation '$mutation' was not false."
+}
+
+$changedObservation = Copy-JsonValue -Value $rehearsalObservation
+$changedObservation.local_refs_sha256 = ("7" * 64)
+Assert-ThrowsLike `
+  -Action {
+    New-DanioRehearsalReport `
+      -RehearsalRunId "danio-rehearsal-fixture" `
+      -TaskId "task-fixture-001" `
+      -CreatedAtUtc "2026-07-13T12:00:00.0000000Z" `
+      -RepositoryRoot $checkoutRepoRoot `
+      -BaseCommit ("6" * 40) `
+      -ProposedAutonomousUnits 12 `
+      -ProposedWorkUnitId "WF-2026-07-11-015" `
+      -ProposedLedgerRowIds @("DCL-DR-001") `
+      -Before $rehearsalObservation `
+      -After $changedObservation `
+      -LaunchPreview $launchPreview `
+      -ClaimPreview $claimPreview `
+      -CloseoutPreview $closeoutPreview
+  } `
+  -ExpectedPattern "REHEARSAL_OBSERVATION_CHANGED" `
+  -Message "Changed before/after observations were accepted."
+
+$wrongLaunchPreview = Copy-JsonValue -Value $launchPreview
+$wrongLaunchPreview.code = "RUNNER_INCOMPATIBLE"
+Assert-ThrowsLike `
+  -Action {
+    New-DanioRehearsalReport `
+      -RehearsalRunId "danio-rehearsal-fixture" `
+      -TaskId "task-fixture-001" `
+      -CreatedAtUtc "2026-07-13T12:00:00.0000000Z" `
+      -RepositoryRoot $checkoutRepoRoot `
+      -BaseCommit ("6" * 40) `
+      -ProposedAutonomousUnits 12 `
+      -ProposedWorkUnitId "WF-2026-07-11-015" `
+      -ProposedLedgerRowIds @("DCL-DR-001") `
+      -Before $rehearsalObservation `
+      -After (Copy-JsonValue -Value $rehearsalObservation) `
+      -LaunchPreview $wrongLaunchPreview `
+      -ClaimPreview $claimPreview `
+      -CloseoutPreview $closeoutPreview
+  } `
+  -ExpectedPattern "REHEARSAL_PREVIEW_INVALID" `
+  -Message "Wrong Launch preview code was accepted."
 
 $prematureLaunchManifest = Copy-JsonValue -Value $runnerManifest
 $prematureLaunchManifest.authorizes_launch = $true

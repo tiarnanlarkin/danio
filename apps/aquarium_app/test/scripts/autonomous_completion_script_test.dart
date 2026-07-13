@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 const _contractRoot = 'docs/agent/autonomous_completion';
 const _schemaRoot = '$_contractRoot/schemas';
 const _fixtureRoot = 'test/scripts/fixtures/autonomous_completion';
+const _rehearsalReportPath = '$_contractRoot/rehearsal-2026-07-13.json';
 
 const _schemaPaths = <String>[
   '$_schemaRoot/run_state.schema.json',
@@ -32,6 +33,7 @@ const _fixturePaths = <String>[
 const _otherContractPaths = <String>[
   'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
   '$_contractRoot/runner_compatibility.json',
+  _rehearsalReportPath,
 ];
 
 const _implementedPowerShellPaths = <String>[
@@ -43,6 +45,7 @@ const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1',
   'scripts/autonomous_completion/commit_autonomous_completion_transition.ps1',
   'scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1',
+  'scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
   'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
@@ -606,6 +609,14 @@ void main() {
       typedSkill['contract_sha256'] = '1' * 64;
     }
     expect(validate(compatibilityPath, compatibleWithPins), isEmpty);
+
+    final rehearsalSchema = '$_schemaRoot/rehearsal_report.schema.json';
+    final rehearsal = _readJson(_rehearsalReportPath);
+    expect(
+      validate(rehearsalSchema, rehearsal),
+      isEmpty,
+      reason: _rehearsalReportPath,
+    );
 
     final active = _readJson(_fixturePaths[2]);
     final owner = active['owner'] as Map<String, dynamic>;
@@ -1474,6 +1485,106 @@ void main() {
     );
   });
 
+  test('rehearsal entry point is preview-only and zero-side-effect', () {
+    const path =
+        'scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1';
+    final source = File(path).readAsStringSync();
+
+    for (final parameter in <String>[
+      'SynchronizationReceiptJson',
+      'ExpectedInvocationNonce',
+      'RehearsalRunId',
+      'TaskId',
+      'ProposedAutonomousUnits',
+      'ProposedWorkUnitId',
+      'ProposedLedgerRowIds',
+      'RepositoryRoot',
+      'WorktreeRoot',
+      'RuntimeRequired',
+    ]) {
+      expect(source, contains(r'$' + parameter), reason: parameter);
+    }
+    for (final forbidden in <String>[
+      'invoke_autonomous_writer_claim.ps1',
+      'commit_autonomous_completion_transition.ps1',
+      'new_autonomous_handoff_prompt.ps1',
+      'Set-Content',
+      'Add-Content',
+      'Out-File',
+      'New-Item',
+      'Remove-Item',
+      'Start-Process',
+      'Invoke-RestMethod',
+      'Invoke-WebRequest',
+      'create_thread',
+      'send_message_to_thread',
+      'fork_thread',
+      'adb ',
+      'flutter ',
+      'figma',
+    ]) {
+      expect(source, isNot(contains(forbidden)), reason: forbidden);
+    }
+    expect(source, contains('New-DanioRehearsalReport'));
+    expect(source, contains('LAUNCH_NOT_AUTHORIZED'));
+    expect(source, contains('AUTHORITY_CONFLICT'));
+    expect(source, contains('Get-FileContentSha256'));
+    expect(source, contains('ls-files'));
+    expect(source, contains('--cached'));
+    expect(source, contains('--others'));
+    expect(source, contains('--exclude-standard'));
+    expect(source, contains('--git-path'));
+    expect(source, contains('index_sha256'));
+    expect(source, contains('for-each-ref'));
+    expect(source, contains('"refs"'));
+    expect(source, isNot(contains('"refs/heads"')));
+  });
+
+  test('durable rehearsal report proves exact no-mutation semantics', () {
+    final report = _readJson(_rehearsalReportPath);
+    expect(report['document_type'], 'danio_autonomous_completion_rehearsal_report');
+    expect(report['schema_version'], 1);
+    expect(report['task_id'], '019f58f9-fbeb-74c0-9d76-9b9fcc048b49');
+    expect(report['base_commit'], '6de2ec029b21ccb436ca931c1d60dfcd8c2fa064');
+    expect(report['before'], report['after']);
+    expect(report['overall_status'], 'pass');
+
+    final previews = report['previews'] as Map<String, dynamic>;
+    expect(
+      (previews['launch'] as Map<String, dynamic>)['code'],
+      'LAUNCH_NOT_AUTHORIZED',
+    );
+    expect(
+      (previews['claim'] as Map<String, dynamic>)['code'],
+      'AUTHORITY_CONFLICT',
+    );
+    expect(
+      (previews['closeout'] as Map<String, dynamic>)['code'],
+      'AUTHORITY_CONFLICT',
+    );
+    for (final preview in previews.values.cast<Map<String, dynamic>>()) {
+      expect(preview['eligible'], isFalse);
+      expect(preview['mutations_performed'], isFalse);
+    }
+
+    final mutations = report['mutations'] as Map<String, dynamic>;
+    expect(
+      mutations.keys.toSet(),
+      <String>{
+        'repository_files',
+        'index',
+        'local_refs',
+        'remote_refs',
+        'worktrees',
+        'successor_tasks',
+        'android_runtime',
+        'figma',
+        'external_services',
+      },
+    );
+    expect(mutations.values.every((value) => value == false), isTrue);
+  });
+
   test('pure PowerShell module exposes the Task 5 validation surface', () {
     final source = File(_implementedPowerShellPaths.first).readAsStringSync();
 
@@ -1493,13 +1604,10 @@ void main() {
       'Test-DanioSynchronizationReceipt',
       'Test-DanioAutonomousReadiness',
       'New-DanioWriterClaimPlan',
+      'New-DanioRehearsalReport',
     ]) {
       expect(source, contains('function $functionName'));
       expect(source, contains('"$functionName"'));
-    }
-
-    for (final laterFunction in <String>['New-DanioRehearsalReport']) {
-      expect(source, isNot(contains('function $laterFunction')));
     }
 
     for (final mutation in <String>[

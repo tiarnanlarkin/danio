@@ -1,7 +1,7 @@
 # Danio Autonomous Phone Completion Runbook
 
-Status: Installed runner contracts pinned; launch and operational chaining
-remain disabled
+Status: No-product rehearsal proof recorded; launch and operational chaining
+remain disabled until committed-proof authorization
 Created: 2026-07-11
 Scope: Android phone complete-local workflow coordination only
 
@@ -22,6 +22,10 @@ owns category status and quality-bar summaries.
 - Automatic operational successor creation is disabled.
 - `runner_compatible` is `true` for the reviewed installed bytes.
 - `authorizes_launch` is `false`.
+- Task 12's durable rehearsal report is
+  `apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json`.
+  The report is proof input only; it cannot authorize launch from its own
+  containing commit.
 - Installed runner hashes and compatibility-contract hashes are pinned to the
   independently reviewed exact bytes in `runner_compatibility.json`.
 - No operational run-state file exists. Only Task 13 may create
@@ -38,8 +42,10 @@ installed bytes. Launch remains blocked by `authorizes_launch: false`; the
 Task 8 writer-claim transaction does not authorize operational chaining or
 create live state. Task 9 implements and fixture-proves evidence validation,
 closeout, finalization, and exactly-once charging, but does not activate them.
-Task-tool successor capability, rehearsal, and activation remain with Tasks 10
-through 13.
+Task-tool capability is implemented by Tasks 10-11. Task 12 records the
+no-side-effect rehearsal in one commit and changes launch authorization only in
+a later commit that pins those already committed bytes. Task 13 alone creates
+live run state and performs Launch readiness.
 
 ## Machine Contract Inventory
 
@@ -432,6 +438,30 @@ all repository-file, index, local-ref, remote-ref, worktree, task, Android,
 Figma, and external-service mutation flags are false. Rehearsal output does not
 authorize launch. A later commit must pin and verify the committed report before
 authorization can change.
+
+`run_autonomous_completion_rehearsal.ps1` consumes a fresh receipt produced by
+the synchronization wrapper. It does not fetch itself. `RepositoryRoot` names
+the clean aligned canonical `main` checkout; optional `WorktreeRoot` identifies
+the one coordinator-owned setup worktree so its unchanged dirty implementation
+state is included in the before/after observation without being misclassified
+as a foreign writer.
+
+The observation hashes the status, staged entries, and HEAD identity of every
+registered worktree, records the canonical HEAD tree, and separately hashes
+local refs, remote-tracking refs, and the worktree registry. The report is
+accepted only when all before/after values are byte-for-byte equal. Launch is
+then previewed as `LAUNCH_NOT_AUTHORIZED` after every non-authorization
+prerequisite passes. With live state still absent, Claim and Closeout both
+preview `AUTHORITY_CONFLICT`. All three previews set
+`mutations_performed: false`.
+
+The coordinator creates the dated durable JSON only after the external script
+exits. Before launch authorization can change, compatibility validation must
+load the exact report blob from its named containing commit, hash the raw blob
+bytes, require the declared lowercase SHA-256, validate the strict report
+shape and semantics, and require all nine mutation flags false. A working-tree
+copy, unreachable commit, wrong path/blob/hash, changed observation, or any
+non-false flag is `RUNNER_INCOMPATIBLE`.
 
 ## Handoff Boundary
 

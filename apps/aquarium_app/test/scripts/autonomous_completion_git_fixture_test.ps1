@@ -105,11 +105,34 @@ function Get-RepositorySnapshot {
   $indexPath = Invoke-Git `
     -RepositoryRoot $RepositoryRoot `
     -GitArguments @("rev-parse", "--path-format=absolute", "--git-path", "index")
+  $paths = @(
+    Invoke-Git `
+      -RepositoryRoot $RepositoryRoot `
+      -GitArguments @("ls-files", "--cached", "--others", "--exclude-standard") |
+      ForEach-Object { $_ -split "`n" } |
+      Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+  )
+  [Array]::Sort($paths, [StringComparer]::Ordinal)
+  $fileBytes = @(
+    foreach ($path in $paths) {
+      $candidate = [IO.Path]::GetFullPath((Join-Path $RepositoryRoot $path))
+      $requiredPrefix = [IO.Path]::GetFullPath($RepositoryRoot).TrimEnd("\", "/") + [IO.Path]::DirectorySeparatorChar
+      if (-not $candidate.StartsWith($requiredPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Fixture path escaped repository root: $path"
+      }
+      if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+        "$path missing"
+      } else {
+        "$path $((Get-FileHash -Algorithm SHA256 -LiteralPath $candidate).Hash.ToLowerInvariant())"
+      }
+    }
+  )
   return [pscustomobject]@{
     refs = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("show-ref")
     index_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $indexPath).Hash
     worktrees = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("worktree", "list", "--porcelain")
     status = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("--no-optional-locks", "status", "--short", "-uall")
+    files = $fileBytes -join "`n"
   }
 }
 
@@ -120,7 +143,7 @@ function Assert-SnapshotEqual {
     [Parameter(Mandatory = $true)][string]$Scenario
   )
 
-  foreach ($field in @("refs", "index_sha256", "worktrees", "status")) {
+  foreach ($field in @("refs", "index_sha256", "worktrees", "status", "files")) {
     Assert-Equal `
       -Actual $After.$field `
       -Expected $Before.$field `
@@ -187,6 +210,45 @@ function Invoke-Readiness {
   $report = $output[0] | ConvertFrom-Json
   Assert-Equal -Actual $report.eligible -Expected ($exitCode -eq 0) -Message "Readiness JSON and exit code disagreed."
   return $report
+}
+
+function Invoke-Rehearsal {
+  param(
+    [Parameter(Mandatory = $true)][string]$ScriptPath,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$InvocationNonce,
+    [Parameter(Mandatory = $true)]$Receipt
+  )
+
+  $receiptJson = $Receipt | ConvertTo-Json -Depth 100 -Compress
+  $receiptBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($receiptJson))
+  $escapedScript = $ScriptPath.Replace("'", "''")
+  $escapedRoot = $RepositoryRoot.Replace("'", "''")
+  $childCommand = @"
+`$receiptJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$receiptBase64'))
+& '$escapedScript' ``
+  -SynchronizationReceiptJson `$receiptJson ``
+  -ExpectedInvocationNonce '$InvocationNonce' ``
+  -RehearsalRunId 'fixture-rehearsal-001' ``
+  -TaskId 'task-fixture-001' ``
+  -ProposedAutonomousUnits 12 ``
+  -ProposedWorkUnitId 'WF-2026-07-11-015' ``
+  -ProposedLedgerRowIds @('DCL-DR-001') ``
+  -RepositoryRoot '$escapedRoot'
+"@
+  $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($childCommand))
+  $output = @(& powershell `
+    -NoProfile `
+    -NonInteractive `
+    -ExecutionPolicy Bypass `
+    -EncodedCommand $encodedCommand `
+    2>$null)
+  Assert-Equal `
+    -Actual $LASTEXITCODE `
+    -Expected 0 `
+    -Message "Rehearsal rejected a valid zero-side-effect fixture: $($output -join '; ')"
+  Assert-Equal -Actual $output.Count -Expected 1 -Message "Rehearsal emitted more than one stdout object."
+  return $output[0] | ConvertFrom-Json
 }
 
 function Invoke-HandoffPromptGenerator {
@@ -1424,6 +1486,7 @@ $claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan
 $claimInvokerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1"
 $transitionCommitScriptPath = Join-Path $appRoot "scripts/autonomous_completion/commit_autonomous_completion_transition.ps1"
 $handoffScriptPath = Join-Path $appRoot "scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1"
+$rehearsalScriptPath = Join-Path $appRoot "scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1"
 
 if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
   throw "Expected synchronization wrapper is missing: $syncScriptPath"
@@ -1445,6 +1508,9 @@ if (-not (Test-Path -LiteralPath $transitionCommitScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $handoffScriptPath -PathType Leaf)) {
   throw "Expected handoff prompt entry point is missing: $handoffScriptPath"
+}
+if (-not (Test-Path -LiteralPath $rehearsalScriptPath -PathType Leaf)) {
+  throw "Expected rehearsal entry point is missing: $rehearsalScriptPath"
 }
 Import-Module -Name (Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1") -Force
 
@@ -1509,6 +1575,36 @@ try {
     -Message "Linked-worktree snapshot should observe a clean checkout."
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("worktree", "remove", $linkedSnapshotRoot))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("branch", "-D", "fixture-linked-snapshot"))
+
+  $rehearsalReceipt = Invoke-Synchronization `
+    -ScriptPath $syncScriptPath `
+    -RepositoryRoot $cloneOneRoot `
+    -InvocationNonce $invocationNonce
+  $rehearsalBefore = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  $rehearsalReport = Invoke-Rehearsal `
+    -ScriptPath $rehearsalScriptPath `
+    -RepositoryRoot $cloneOneRoot `
+    -InvocationNonce $invocationNonce `
+    -Receipt $rehearsalReceipt
+  $rehearsalAfter = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  Assert-SnapshotEqual -Before $rehearsalBefore -After $rehearsalAfter -Scenario "Task 12 rehearsal"
+  Assert-Equal -Actual $rehearsalReport.overall_status -Expected "pass" -Message "Rehearsal report did not pass."
+  Assert-Equal -Actual $rehearsalReport.previews.launch.code -Expected "LAUNCH_NOT_AUTHORIZED" -Message "Rehearsal launch code mismatch."
+  Assert-Equal -Actual $rehearsalReport.previews.claim.code -Expected "AUTHORITY_CONFLICT" -Message "Rehearsal claim code mismatch."
+  Assert-Equal -Actual $rehearsalReport.previews.closeout.code -Expected "AUTHORITY_CONFLICT" -Message "Rehearsal closeout code mismatch."
+  foreach ($mutation in @(
+    "repository_files",
+    "index",
+    "local_refs",
+    "remote_refs",
+    "worktrees",
+    "successor_tasks",
+    "android_runtime",
+    "figma",
+    "external_services"
+  )) {
+    Assert-Equal -Actual $rehearsalReport.mutations.$mutation -Expected $false -Message "Rehearsal mutation '$mutation' was not false."
+  }
 
   Assert-ReadinessNoMutation `
     -SyncScriptPath $syncScriptPath `
@@ -3734,7 +3830,7 @@ exit `$code
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 72
+    scenarios = 73
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {
