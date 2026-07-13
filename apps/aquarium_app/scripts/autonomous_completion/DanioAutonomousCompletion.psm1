@@ -4,6 +4,87 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function ConvertFrom-DanioStrictJson {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$Json,
+    [string]$FailureCode = "INVALID_JSON"
+  )
+
+  $contexts = New-Object System.Collections.ArrayList
+  for ($index = 0; $index -lt $Json.Length; $index += 1) {
+    $character = $Json[$index]
+    if ($character -eq '{') {
+      $keys = [System.Collections.Generic.HashSet[string]]::new(
+        [StringComparer]::Ordinal
+      )
+      [void]$contexts.Add([pscustomobject]@{ kind = "object"; keys = $keys })
+      continue
+    }
+    if ($character -eq '[') {
+      [void]$contexts.Add([pscustomobject]@{ kind = "array"; keys = $null })
+      continue
+    }
+    if ($character -eq '}' -or $character -eq ']') {
+      if ($contexts.Count -gt 0) {
+        $contexts.RemoveAt($contexts.Count - 1)
+      }
+      continue
+    }
+    if ($character -ne '"') {
+      continue
+    }
+
+    $stringStart = $index
+    $index += 1
+    while ($index -lt $Json.Length) {
+      if ($Json[$index] -eq '\') {
+        $index += 2
+        continue
+      }
+      if ($Json[$index] -eq '"') {
+        break
+      }
+      $index += 1
+    }
+    if ($index -ge $Json.Length) {
+      break
+    }
+    $lookahead = $index + 1
+    while ($lookahead -lt $Json.Length -and [char]::IsWhiteSpace($Json[$lookahead])) {
+      $lookahead += 1
+    }
+    if (
+      $lookahead -ge $Json.Length -or
+      $Json[$lookahead] -ne ':' -or
+      $contexts.Count -eq 0 -or
+      [string]$contexts[$contexts.Count - 1].kind -cne "object"
+    ) {
+      continue
+    }
+
+    $rawPropertyName = $Json.Substring($stringStart, $index - $stringStart + 1)
+    try {
+      $propertyName = [string]($rawPropertyName | ConvertFrom-Json -ErrorAction Stop)
+    } catch {
+      break
+    }
+    if (-not $contexts[$contexts.Count - 1].keys.Add($propertyName)) {
+      throw "$FailureCode`: duplicate JSON property '$propertyName' is forbidden."
+    }
+  }
+
+  try {
+    $parsed = $Json | ConvertFrom-Json -ErrorAction Stop
+  } catch {
+    throw "$FailureCode`: JSON is malformed."
+  }
+  if ($null -eq $parsed) {
+    throw "$FailureCode`: JSON root must be non-null."
+  }
+  return $parsed
+}
+
 $script:DanioModes = @(
   "inactive",
   "ready",
@@ -4404,6 +4485,7 @@ function New-DanioRehearsalReport {
 }
 
 Export-ModuleMember -Function @(
+  "ConvertFrom-DanioStrictJson",
   "Resolve-DanioRepositoryRoot",
   "Get-DanioRepositoryObservation",
   "Read-DanioLedgerClosureRows",

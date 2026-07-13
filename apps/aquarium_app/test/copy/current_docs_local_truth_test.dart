@@ -550,7 +550,17 @@ void main() {
     expect(consumed, lessThanOrEqualTo(total));
     expect(remaining, greaterThanOrEqualTo(0));
     expect(budget['authorization_id'], 'danio-phone-complete-local-2026-07-11');
-    expect(budget['operational_state_path'], isNull);
+    const liveStatePath =
+        'docs/agent/autonomous_completion/phone_completion_run_state.json';
+    const liveStateRepositoryPath =
+        'apps/aquarium_app/docs/agent/autonomous_completion/'
+        'phone_completion_run_state.json';
+    final liveStateExists = _exists(liveStatePath);
+    if (liveStateExists) {
+      expect(budget['operational_state_path'], liveStateRepositoryPath);
+    } else {
+      expect(budget['operational_state_path'], isNull);
+    }
     final sliceLog = _source('docs/agent/SLICE_LOG.md');
     expect(
       RegExp(
@@ -568,16 +578,87 @@ void main() {
       1,
       reason: 'The latest consumed unit must be recorded exactly once',
     );
+    if (liveStateExists) {
+      final liveState =
+          jsonDecode(_source(liveStatePath)) as Map<String, dynamic>;
+      final transition = liveState['transition'] as Map<String, dynamic>;
+      final authorization = liveState['authorization'] as Map<String, dynamic>;
+      final cursor = liveState['cursor'] as Map<String, dynamic>;
+      final liveBudget = liveState['budget'] as Map<String, dynamic>;
+      final currentCharge =
+          liveBudget['current_charge'] as Map<String, dynamic>;
+      final stateRevision = liveState['state_revision'] as int;
+      final mode = liveState['mode'] as String;
+      expect(liveState['document_type'], 'danio_phone_completion_run_state');
+      expect(liveState['run_id'], 'danio-phone-complete-local-2026-07-11');
+      expect(stateRevision, greaterThanOrEqualTo(1));
+      expect(transition['parent_state_revision'], stateRevision - 1);
+      expect(transition['to_mode'], mode);
+      expect(authorization['authorization_id'], isA<String>());
+      expect(
+        (authorization['authorization_id'] as String),
+        isNotEmpty,
+      );
+      expect(
+        authorization['repository_root'],
+        'C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project/repo',
+      );
+      final liveTotal = liveBudget['total_approved_units'] as int;
+      final liveConsumed = liveBudget['consumed_units'] as int;
+      final liveRemaining =
+          liveBudget['remaining_units_including_current'] as int;
+      expect(liveConsumed + liveRemaining, liveTotal);
+      expect(liveTotal, greaterThanOrEqualTo(total));
+      expect(liveConsumed, greaterThanOrEqualTo(consumed));
+      expect(total, 20);
+      expect(consumed, 10);
+      expect(remaining, 10);
+      expect(lastClosedUnitId, 'WF-2026-07-11-016');
+      final normalizedHandoff = handoff.toLowerCase();
+      expect(normalizedHandoff, contains('historical bootstrap'));
+      expect(normalizedHandoff, contains('sole accounting authority'));
+      if (stateRevision == 1) {
+        expect(authorization['authorization_id'], budget['authorization_id']);
+        expect(liveTotal, total);
+        expect(mode, 'ready');
+        expect(transition['action'], 'launch');
+        expect(transition['from_mode'], 'inactive');
+        expect(transition['work_unit_id'], 'WF-2026-07-11-activation');
+        expect(currentCharge['status'], 'none');
+        expect(currentCharge['work_unit_id'], isNull);
+        expect(currentCharge['claimed_revision'], isNull);
+        expect(currentCharge['consumed_revision'], isNull);
+        expect(liveState['owner'], isNull);
+        expect(liveState['handoff_generation'], 0);
+        expect(cursor['phase'], '1-data-resilience');
+        expect(cursor['work_unit_id'], 'DCL-DR-001-restore-matrix-audit');
+        expect(cursor['ledger_row_ids'], <String>['DCL-DR-001']);
+        expect(liveConsumed, consumed);
+        expect(liveRemaining, remaining);
+      } else {
+        expect(transition['action'], isNot('launch'));
+        if (<String>{'active', 'finalizing'}.contains(mode)) {
+          expect(liveState['owner'], isNotNull);
+        } else {
+          expect(liveState['owner'], isNull);
+        }
+      }
+    }
 
     final chainPrompt = _source(
       'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
     );
-    const disabledStatus =
-        'Status: Bootstrap handoff only; automatic successor creation disabled until\n'
-        'runner compatibility, single-writer enforcement, readiness validation, and\n'
-        'the no-product-change rehearsal pass.';
-    expect(chainPrompt, contains(disabledStatus));
+    const currentBootstrapStatus =
+        'Status: Committed rehearsal authorizes the explicit Task 13 activation path;\n'
+        'automatic operational successors remain state-, readiness-, generator-, and\n'
+        'duplicate-safety-gated.';
+    expect(chainPrompt, contains(currentBootstrapStatus));
     expect(chainPrompt, isNot(contains('Status: Active successor prompt')));
+    expect(chainPrompt, contains('`authorizes_launch: true`'));
+    expect(
+      chainPrompt,
+      isNot(contains('`authorizes_launch: false` and no live run state exists')),
+    );
     final danioRunnerIndex = chainPrompt.indexOf(
       r'$danio-autonomous-slice-runner',
     );
@@ -613,6 +694,7 @@ void main() {
       'Autonomy pure state/readiness change',
       'Autonomy Git mutation/claim/closeout change',
       'Autonomy no-product rehearsal',
+      'test/scripts/autonomous_completion_activation_fixture_test.ps1',
       'test/scripts/autonomous_completion_git_fixture_test.ps1',
       'disposable Git fixture suite',
       'clean-main Docs profile',
@@ -635,7 +717,24 @@ void main() {
       runbook,
       contains('product_complete := run_state.mode == "complete"'),
     );
-    expect(runbook, contains('Only Task 13 may create'));
+    expect(
+      runbook,
+      contains('When the live path is absent, Task 13 alone may create it.'),
+    );
+    expect(
+      runbook,
+      contains(
+        'Before activation, automatic operational successor creation remains '
+        'disabled.',
+      ),
+    );
+    expect(
+      runbook,
+      contains(
+        'Once present, the committed live run state is the sole operational '
+        'accounting authority.',
+      ),
+    );
     expect(
       runbook,
       contains(
@@ -661,12 +760,5 @@ void main() {
           '79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b',
       'report_commit': 'ecbeffc2aa7a6f831c06d39ca110309e84e43702',
     });
-    expect(
-      _exists(
-        'docs/agent/autonomous_completion/phone_completion_run_state.json',
-      ),
-      isFalse,
-      reason: 'Task 13 alone creates operational run state',
-    );
   });
 }

@@ -154,7 +154,10 @@ try {
   $state = $null
   if (Test-Path -LiteralPath $statePath -PathType Leaf) {
     try {
-      $state = Get-Content -Raw -LiteralPath $statePath | ConvertFrom-Json
+      $stateJson = Get-Content -Raw -LiteralPath $statePath
+      $state = ConvertFrom-DanioStrictJson `
+        -Json $stateJson `
+        -FailureCode "STATE_BLOB_INVALID"
     } catch {
       $state = [pscustomobject]@{
         malformed_state = $true

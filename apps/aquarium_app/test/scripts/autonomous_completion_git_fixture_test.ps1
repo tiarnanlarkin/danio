@@ -507,6 +507,7 @@ function New-ClaimTransactionFixture {
   $cloneOne = Join-Path $root "clone-one"
   $cloneTwo = Join-Path $root "clone-two"
   $statePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
+  $handoffPath = "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
   $gatePath = "apps/aquarium_app/scripts/quality_gates/run_local_quality_gate.ps1"
 
   New-Item -ItemType Directory -Force -Path $root | Out-Null
@@ -520,7 +521,24 @@ function New-ClaimTransactionFixture {
   $readyState = Get-Content -Raw -LiteralPath $readyFixturePath | ConvertFrom-Json
   $readyState.authorization.saved_project_root = $root.Replace("\", "/")
   $readyState.authorization.repository_root = $cloneOne.Replace("\", "/")
-  Write-FixtureJson -Path (Join-Path $seed $statePath) -Value $readyState
+  foreach ($relativePath in @(
+    "docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md",
+    "docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md",
+    "docs/agent/FINISH_MAP.md",
+    "docs/agent/QUALITY_LADDER.md",
+    "docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md",
+    "docs/agent/DEVICE_OWNERSHIP.md"
+  )) {
+    $sourcePath = Join-Path $SourceAppRoot $relativePath
+    $destinationPath = Join-Path $seed "apps/aquarium_app/$relativePath"
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destinationPath) | Out-Null
+    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
+  }
+  Write-ActivationParentFiles `
+    -RepositoryRoot $seed `
+    -SourceAppRoot $SourceAppRoot `
+    -AuthorizedRepositoryRoot $cloneOne `
+    -SavedProjectRoot $root
 
   $gateScript = @'
 [CmdletBinding()]
@@ -545,7 +563,13 @@ exit 0
   )
 
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "apps/aquarium_app"))
-  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: seed claim transaction"))
+  [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("commit", "-m", "fixture: seed claim authority"))
+  $claimAuthorityCommit = Invoke-Git -RepositoryRoot $seed -GitArguments @("rev-parse", "HEAD")
+  $claimActivation = Commit-VerifiedActivationFixture `
+    -RepositoryRoot $seed `
+    -ReadyState $readyState `
+    -AuthorityCommit $claimAuthorityCommit
+  $readyState = $claimActivation.state
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("remote", "add", "origin", $remote))
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("push", "-u", "origin", "main"))
   [void](Invoke-Git -RepositoryRoot $remote -GitArguments @("symbolic-ref", "HEAD", "refs/heads/main"))
@@ -779,6 +803,186 @@ function Write-FixtureScript {
   )
 }
 
+function Get-ActivationBootstrapFixture {
+  param([switch]$Activated)
+
+  $statePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
+  return [pscustomobject][ordered]@{
+    document_type = "danio_autonomy_bootstrap_budget"
+    schema_version = 1
+    authorization_id = "danio-phone-complete-local-2026-07-11"
+    total_approved_units = 20
+    consumed_units = if ($Activated) { 2 } else { 1 }
+    remaining_units_including_current = if ($Activated) { 18 } else { 19 }
+    last_closed_unit_id = if ($Activated) {
+      "WF-2026-07-11-008"
+    } else {
+      "WF-2026-07-11-007"
+    }
+    operational_state_path = if ($Activated) { $statePath } else { $null }
+  }
+}
+
+function Get-BootstrapActivationParentHandoffContent {
+  $fence = '```'
+  $bootstrap = Get-ActivationBootstrapFixture
+  return @(
+    "# Fixture active handoff",
+    "",
+    "Status: Task 12 fixture proof is complete and Task 13 is pending.",
+    "Last updated: before fixture activation.",
+    "",
+    "## Branch",
+    "",
+    "- Fixture branch state before activation.",
+    "",
+    "## Autonomous Chain Authorization",
+    "",
+    "This block is the bootstrap budget record until Task 13 activation.",
+    "",
+    "${fence}json",
+    ($bootstrap | ConvertTo-Json -Depth 20),
+    $fence,
+    "",
+    "## Blockers",
+    "",
+    "- Task 13 activation remains pending.",
+    "",
+    "## Next Action",
+    "",
+    "Run the exact fixture activation transaction.",
+    ""
+  ) -join "`n"
+}
+
+function Get-HistoricalActivationHandoffContent {
+  $fence = '```'
+  $bootstrap = Get-ActivationBootstrapFixture -Activated
+  return @(
+    "# Fixture active handoff",
+    "",
+    "Status: Task 13 activation is complete; committed live run state is ready for the explicit launch handoff.",
+    "Last updated: 2026-07-13 in this activation commit; live Git and committed run state remain the final authority.",
+    "",
+    "## Branch",
+    "",
+    '- Source-of-truth branch: `main`.',
+    '- This handoff becomes authoritative only with its containing activation commit on clean, pushed, aligned `main`.',
+    "- Only the canonical repository worktree may remain registered at durable closeout.",
+    "",
+    "## Autonomous Chain Authorization",
+    "",
+    "This historical bootstrap record is superseded by live run state as the sole accounting authority.",
+    "",
+    "${fence}json",
+    ($bootstrap | ConvertTo-Json -Depth 20),
+    $fence,
+    "",
+    "## Blockers",
+    "",
+    "- No activation blocker is recorded in this candidate.",
+    "- Product work remains forbidden in the Task 13 setup task.",
+    "",
+    "## Next Action",
+    "",
+    'After the activation commit is on clean, pushed, aligned `main`, use the duplicate-safe launch marker to create or reuse exactly one saved-project local first product task.',
+    'The new task must synchronize, pass Claim readiness, and win `ready -> active` before auditing `DCL-DR-001`. Do not start product work in this setup task.',
+    ""
+  ) -join "`n"
+}
+
+function Get-ActivationSliceLogContent {
+  param([switch]$Activated)
+
+  $parent = @"
+# Fixture slice log
+
+| Slice ID | Date | Goal | Files | Checks / evidence | Result | Commit | Follow-ups |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| WF-2026-07-11-007 | 2026-07-11 | fixture bootstrap | files | checks | closed | commit | next |
+"@
+  if (-not $Activated) {
+    return $parent
+  }
+  $activationRow = "| WF-2026-07-11-008 | 2026-07-13 | Activate autonomous phone completion | live state, handoff, slice log | staged validator, Docs, clean alignment | ready | this activation commit | Create or reuse the explicit launch task; no product work here |"
+  return "$($parent.TrimEnd())`n$activationRow`n"
+}
+
+function Write-ActivationParentFiles {
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$SourceAppRoot,
+    [Parameter(Mandatory = $true)][string]$AuthorizedRepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$SavedProjectRoot
+  )
+
+  $inactiveRelativePath = "apps/aquarium_app/test/scripts/fixtures/autonomous_completion/inactive_run_state.json"
+  $inactive = Get-Content `
+    -Raw `
+    -LiteralPath (Join-Path $SourceAppRoot "test/scripts/fixtures/autonomous_completion/inactive_run_state.json") |
+    ConvertFrom-Json
+  $inactive.authorization.repository_root = $AuthorizedRepositoryRoot.Replace("\", "/")
+  $inactive.authorization.saved_project_root = $SavedProjectRoot.Replace("\", "/")
+  Write-FixtureJson -Path (Join-Path $RepositoryRoot $inactiveRelativePath) -Value $inactive
+  Write-FixtureScript `
+    -Path (Join-Path $RepositoryRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md") `
+    -Content (Get-BootstrapActivationParentHandoffContent)
+  Write-FixtureScript `
+    -Path (Join-Path $RepositoryRoot "apps/aquarium_app/docs/agent/SLICE_LOG.md") `
+    -Content (Get-ActivationSliceLogContent)
+}
+
+function Commit-VerifiedActivationFixture {
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)]$ReadyState,
+    [Parameter(Mandatory = $true)][string]$AuthorityCommit
+  )
+
+  $statePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
+  $ready = $ReadyState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $ready = Set-TransitionFixtureAuthority `
+    -State $ready `
+    -RepositoryRoot $RepositoryRoot `
+    -Commit $AuthorityCommit
+  Write-FixtureJson -Path (Join-Path $RepositoryRoot $statePath) -Value $ready
+  Write-FixtureScript `
+    -Path (Join-Path $RepositoryRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md") `
+    -Content (Get-HistoricalActivationHandoffContent)
+  Write-FixtureScript `
+    -Path (Join-Path $RepositoryRoot "apps/aquarium_app/docs/agent/SLICE_LOG.md") `
+    -Content (Get-ActivationSliceLogContent -Activated)
+  [void](Invoke-Git `
+    -RepositoryRoot $RepositoryRoot `
+    -GitArguments @(
+      "add",
+      $statePath,
+      "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md",
+      "apps/aquarium_app/docs/agent/SLICE_LOG.md"
+    ))
+  $tree = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("write-tree")
+  $trailers = @(
+    "Danio-State-Tree: $tree",
+    "Danio-State-Validation: pass",
+    "Danio-Docs-Profile: pass",
+    "Danio-Verified-At: 2026-07-13T12:05:00.0000000Z"
+  ) -join "`n"
+  [void](Invoke-Git `
+    -RepositoryRoot $RepositoryRoot `
+    -GitArguments @(
+      "commit",
+      "-m",
+      "chore: activate autonomous phone completion",
+      "-m",
+      $trailers
+    ))
+  return [pscustomobject]@{
+    state = $ready
+    commit = Invoke-Git -RepositoryRoot $RepositoryRoot -GitArguments @("rev-parse", "HEAD")
+    tree = $tree
+  }
+}
+
 function Get-TransitionLedgerContent {
   param(
     [ValidateSet("ordinary", "rc_open", "rc_closed")]
@@ -996,8 +1200,6 @@ function New-TransitionTransactionFixture {
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("config", "user.email", "transition@example.invalid"))
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("config", "core.autocrlf", "false"))
 
-  Write-FixtureScript -Path (Join-Path $seed $handoffRelativePath) -Content "fixture handoff`n"
-  Write-FixtureScript -Path (Join-Path $seed $sliceLogRelativePath) -Content "fixture slice log`n"
   $gateExit = if ($FailDocsProfile) { 1 } else { 0 }
   Write-FixtureScript -Path (Join-Path $seed $gateRelativePath) -Content @"
 [CmdletBinding()]
@@ -1036,6 +1238,11 @@ exit $gateExit
   Write-FixtureScript `
     -Path (Join-Path $seed $ledgerRelativePath) `
     -Content (Get-TransitionLedgerContent -Mode $ledgerMode)
+  Write-ActivationParentFiles `
+    -RepositoryRoot $seed `
+    -SourceAppRoot $SourceAppRoot `
+    -AuthorizedRepositoryRoot $clone `
+    -SavedProjectRoot $root
   $historicalArtifactPath = "apps/aquarium_app/docs/agent/autonomous_completion/product-proof.txt"
   Write-FixtureScript -Path (Join-Path $seed $historicalArtifactPath) -Content "historical product proof`n"
   [void](Invoke-Git -RepositoryRoot $seed -GitArguments @("add", "apps/aquarium_app"))
@@ -1069,6 +1276,11 @@ exit $gateExit
     -State $readyState `
     -RepositoryRoot $clone `
     -SavedProjectRoot $root
+  $activationFixture = Commit-VerifiedActivationFixture `
+    -RepositoryRoot $seed `
+    -ReadyState $readyState `
+    -AuthorityCommit $authoritySnapshotCommit
+  $readyState = $activationFixture.state
   if ($isRc) {
     $readyState.cursor.phase = "7-final-phone-candidate"
     $readyState.cursor.work_unit_id = "DCL-RC-001-final-candidate"
@@ -1821,6 +2033,11 @@ try {
   $seedRunnerManifest.authorizes_launch = $false
   $seedRunnerManifest.launch_proof = $null
   Write-FixtureJson -Path $seedRunnerManifestPath -Value $seedRunnerManifest
+  Write-ActivationParentFiles `
+    -RepositoryRoot $seedRoot `
+    -SourceAppRoot $appRoot `
+    -AuthorizedRepositoryRoot $cloneOneRoot `
+    -SavedProjectRoot $tempRoot
 
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("add", "apps/aquarium_app"))
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("commit", "-m", "fixture: seed Danio authority"))
@@ -2049,9 +2266,14 @@ try {
   $readyState.authorization.repository_root = $cloneOneRoot.Replace("\", "/")
   $cloneOneStatePath = Join-Path $cloneOneRoot $stateRelativePath
   $cloneTwoStatePath = Join-Path $cloneTwoRoot $stateRelativePath
-  Write-FixtureJson -Path $cloneTwoStatePath -Value $readyState
-  [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("add", $stateRelativePath))
-  [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("commit", "-m", "fixture: add ready run state"))
+  $mainActivationParent = Invoke-Git `
+    -RepositoryRoot $cloneTwoRoot `
+    -GitArguments @("rev-parse", "HEAD")
+  $mainActivation = Commit-VerifiedActivationFixture `
+    -RepositoryRoot $cloneTwoRoot `
+    -ReadyState $readyState `
+    -AuthorityCommit $mainActivationParent
+  $readyState = $mainActivation.state
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("push", "origin", "main"))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("fetch", "--prune"))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("merge", "--ff-only", "origin/main"))

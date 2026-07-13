@@ -138,6 +138,7 @@ removes its verified temporary path in `finally`.
 ```powershell
 flutter test test/scripts/autonomous_completion_script_test.dart --reporter compact
 powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_behavior_test.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_activation_fixture_test.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_completion_git_fixture_test.ps1
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs -RequireCleanWorktree
@@ -145,8 +146,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File test/scripts/autonomous_comp
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep
 ```
 
-The disposable Git fixture command is tier-selected proof, not part of the
-normal Docs or Full gate. It must remain isolated and self-cleaning.
+The activation fixture is the focused Task 13 absent-state transaction proof.
+Both disposable Git fixture commands are tier-selected proof, not part of the
+normal Docs or Full gate. They must remain isolated and self-cleaning.
 
 ## Dependabot PR Checks
 

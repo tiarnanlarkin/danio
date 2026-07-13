@@ -370,6 +370,17 @@ if (-not (Test-Path -LiteralPath $rehearsalScriptPath -PathType Leaf)) {
 
 $module = Import-Module -Name $modulePath -Force -PassThru
 
+foreach ($invalidPresentStateJson in @("   ", "null")) {
+  Assert-ThrowsLike `
+    -Action {
+      ConvertFrom-DanioStrictJson `
+        -Json $invalidPresentStateJson `
+        -FailureCode "STATE_BLOB_INVALID" | Out-Null
+    } `
+    -ExpectedPattern "STATE_BLOB_INVALID" `
+    -Message "A present whitespace/null live-state payload was treated as absent."
+}
+
 function Test-PrivateEvidenceManifest {
   param(
     [Parameter(Mandatory = $true)]$Manifest,

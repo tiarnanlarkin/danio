@@ -1,7 +1,7 @@
 # Danio Autonomous Phone Completion Runbook
 
-Status: Committed rehearsal proof authorizes launch; the live operational run
-remains inactive until Task 13
+Status: Committed rehearsal proof authorizes launch; committed live state, when
+present, determines the operational mode
 Created: 2026-07-11
 Scope: Android phone complete-local workflow coordination only
 
@@ -19,7 +19,9 @@ owns category status and quality-bar summaries.
 
 ## Current Bootstrap State
 
-- Automatic operational successor creation is disabled.
+- Before activation, automatic operational successor creation remains disabled.
+  The explicit first product task and every later successor remain separately
+  state-, readiness-, generator-, and duplicate-safety-gated.
 - `runner_compatible` is `true` for the reviewed installed bytes.
 - `authorizes_launch` is `true` only through the exact committed proof pinned
   by manifest revision 3.
@@ -30,25 +32,29 @@ owns category status and quality-bar summaries.
   and containing commit `ecbeffc2aa7a6f831c06d39ca110309e84e43702`.
 - Installed runner hashes and compatibility-contract hashes are pinned to the
   independently reviewed exact bytes in `runner_compatibility.json`.
-- No operational run-state file exists. Only Task 13 may create
+- When the live path is absent, Task 13 alone may create it.
+  The path is
   `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`.
 - The JSON files under
   `apps/aquarium_app/test/scripts/fixtures/autonomous_completion/` are
   normative test fixtures. They are not live leases, budget authority, or
   permission to perform product work.
-- Before Task 13, the bootstrap-budget block in `ACTIVE_HANDOFF.md` is the only
-  machine-readable unit counter, and it changes only at durable clean closeout.
+- Before activation, the bootstrap-budget block in `ACTIVE_HANDOFF.md` is the
+  only machine-readable unit counter, and it changes only at durable clean
+  closeout. Once present, the committed live run state is the sole operational accounting authority.
+  The bootstrap block then remains an immutable historical pointer.
 
-`RUNNER_COMPATIBLE` is now the expected compatibility result for the reviewed
-installed bytes and committed rehearsal proof. Operational launch remains
-inactive because no live run state exists; the
-Task 8 writer-claim transaction does not authorize operational chaining or
-create live state. Task 9 implements and fixture-proves evidence validation,
-closeout, finalization, and exactly-once charging, but does not activate them.
-Task-tool capability is implemented by Tasks 10-11. Task 12 recorded the
-no-side-effect rehearsal in commit `ecbeffc2` and changed launch authorization
-only in later commit `480b62cc`, which pins those already committed bytes.
-Task 13 alone creates live run state and performs Launch readiness.
+`RUNNER_COMPATIBLE` is the expected compatibility result for the reviewed
+installed bytes and committed rehearsal proof. Operational launch is inactive
+while the live path is absent. When Task 13 creates the committed revision-1
+state, that state's mode and later validated transitions determine operational
+status. The Task 8 writer-claim transaction does not itself authorize
+operational chaining or create bootstrap state. Task 9 fixture-proves evidence
+validation, closeout, finalization, and exactly-once charging. Task-tool
+capability is implemented by Tasks 10-11. Task 12 recorded the no-side-effect
+rehearsal in commit `ecbeffc2` and changed launch authorization only in later
+commit `480b62cc`, which pins those already committed bytes. Task 13 alone
+performs bootstrap creation and its Launch readiness check.
 
 ## Machine Contract Inventory
 

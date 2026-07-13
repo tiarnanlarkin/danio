@@ -7,6 +7,7 @@ const _contractRoot = 'docs/agent/autonomous_completion';
 const _schemaRoot = '$_contractRoot/schemas';
 const _fixtureRoot = 'test/scripts/fixtures/autonomous_completion';
 const _rehearsalReportPath = '$_contractRoot/rehearsal-2026-07-13.json';
+const _liveRunStatePath = '$_contractRoot/phone_completion_run_state.json';
 
 const _schemaPaths = <String>[
   '$_schemaRoot/run_state.schema.json',
@@ -47,6 +48,7 @@ const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1',
   'scripts/autonomous_completion/run_autonomous_completion_rehearsal.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
+  'test/scripts/autonomous_completion_activation_fixture_test.ps1',
   'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
 
@@ -538,6 +540,14 @@ void main() {
         reason: '$path must be ASCII-only',
       );
     }
+    final liveRunState = File(_liveRunStatePath);
+    if (liveRunState.existsSync()) {
+      expect(
+        liveRunState.readAsBytesSync().every((byte) => byte <= 0x7f),
+        isTrue,
+        reason: '$_liveRunStatePath must be ASCII-only',
+      );
+    }
   });
 
   test('machine schemas are strict draft 2020-12 contracts', () {
@@ -580,6 +590,14 @@ void main() {
     for (final path in _fixturePaths.take(6)) {
       final errors = validate(runSchema, _readJson(path));
       expect(errors, isEmpty, reason: '$path: ${errors.join('; ')}');
+    }
+    if (File(_liveRunStatePath).existsSync()) {
+      final errors = validate(runSchema, _readJson(_liveRunStatePath));
+      expect(
+        errors,
+        isEmpty,
+        reason: '$_liveRunStatePath: ${errors.join('; ')}',
+      );
     }
 
     final ready = _readJson(_fixturePaths[1]);
@@ -1450,7 +1468,7 @@ void main() {
     expect(verifiedRunner, greaterThan(danioRunner));
   });
 
-  test('normative fixtures model bootstrap modes without live state', () {
+  test('normative fixtures retain coverage across live activation', () {
     const expectedModes = <String>[
       'inactive',
       'ready',
@@ -1485,11 +1503,62 @@ void main() {
     expect(inactiveBudget['remaining_units_including_current'], 19);
     expect(inactiveCharge['status'], 'none');
 
-    expect(
-      File('$_contractRoot/phone_completion_run_state.json').existsSync(),
-      isFalse,
-      reason: 'Task 13 alone creates operational run state',
-    );
+    final liveFile = File(_liveRunStatePath);
+    if (liveFile.existsSync()) {
+      final live = _readJson(_liveRunStatePath);
+      final transition = live['transition'] as Map<String, dynamic>;
+      final liveBudget = live['budget'] as Map<String, dynamic>;
+      final liveCharge = liveBudget['current_charge'] as Map<String, dynamic>;
+      final cursor = live['cursor'] as Map<String, dynamic>;
+      final authorization = live['authorization'] as Map<String, dynamic>;
+      final stateRevision = live['state_revision'] as int;
+      final mode = live['mode'] as String;
+      final liveConsumed = liveBudget['consumed_units'] as int;
+      final liveRemaining =
+          liveBudget['remaining_units_including_current'] as int;
+      expect(live['document_type'], 'danio_phone_completion_run_state');
+      expect(live['run_id'], 'danio-phone-complete-local-2026-07-11');
+      expect(stateRevision, greaterThanOrEqualTo(1));
+      expect(transition['parent_state_revision'], stateRevision - 1);
+      expect(transition['to_mode'], mode);
+      expect(authorization['authorization_id'], isA<String>());
+      expect((authorization['authorization_id'] as String), isNotEmpty);
+      final liveTotal = liveBudget['total_approved_units'] as int;
+      expect(
+        liveConsumed + liveRemaining,
+        liveTotal,
+      );
+      expect(liveTotal, greaterThanOrEqualTo(20));
+      expect(liveConsumed, greaterThanOrEqualTo(10));
+      if (stateRevision == 1) {
+        expect(
+          authorization['authorization_id'],
+          'danio-phone-complete-local-2026-07-11',
+        );
+        expect(liveTotal, 20);
+        expect(mode, 'ready');
+        expect(transition['action'], 'launch');
+        expect(transition['from_mode'], 'inactive');
+        expect(live['owner'], isNull);
+        expect(live['handoff_generation'], 0);
+        expect(liveCharge['status'], 'none');
+        expect(liveCharge['work_unit_id'], isNull);
+        expect(liveCharge['claimed_revision'], isNull);
+        expect(liveCharge['consumed_revision'], isNull);
+        expect(liveConsumed, 10);
+        expect(liveRemaining, 10);
+        expect(cursor['phase'], '1-data-resilience');
+        expect(cursor['work_unit_id'], 'DCL-DR-001-restore-matrix-audit');
+        expect(cursor['ledger_row_ids'], <String>['DCL-DR-001']);
+      } else {
+        expect(transition['action'], isNot('launch'));
+        if (<String>{'active', 'finalizing'}.contains(mode)) {
+          expect(live['owner'], isNotNull);
+        } else {
+          expect(live['owner'], isNull);
+        }
+      }
+    }
   });
 
   test('rehearsal entry point is preview-only and zero-side-effect', () {
@@ -1549,7 +1618,10 @@ void main() {
 
   test('durable rehearsal report proves exact no-mutation semantics', () {
     final report = _readJson(_rehearsalReportPath);
-    expect(report['document_type'], 'danio_autonomous_completion_rehearsal_report');
+    expect(
+      report['document_type'],
+      'danio_autonomous_completion_rehearsal_report',
+    );
     expect(report['schema_version'], 1);
     expect(report['task_id'], '019f58f9-fbeb-74c0-9d76-9b9fcc048b49');
     expect(report['base_commit'], '6de2ec029b21ccb436ca931c1d60dfcd8c2fa064');
@@ -1599,6 +1671,7 @@ void main() {
     expect(source, contains('Set-StrictMode -Version Latest'));
     expect(source, contains(r'$ErrorActionPreference = "Stop"'));
     for (final functionName in <String>[
+      'ConvertFrom-DanioStrictJson',
       'Resolve-DanioRepositoryRoot',
       'Read-DanioLedgerClosureRows',
       'Test-DanioLedgerClosureRows',
@@ -1666,6 +1739,7 @@ void main() {
     ).readAsStringSync();
 
     expect(readiness, contains(r'-RepositoryRoot $resolvedRoot'));
+    expect(readiness, contains('ConvertFrom-DanioStrictJson'));
 
     for (final source in <String>[readiness, validator]) {
       expect(source, contains(r'$EvidenceManifestPath'));

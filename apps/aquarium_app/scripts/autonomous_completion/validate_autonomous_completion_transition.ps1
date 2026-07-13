@@ -17,6 +17,24 @@ $module = Import-Module -Name $modulePath -Force -PassThru
 $statePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
 $inactiveFixturePath = "apps/aquarium_app/test/scripts/fixtures/autonomous_completion/inactive_run_state.json"
 $ledgerPath = "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
+$activeHandoffPath = "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
+$sliceLogPath = "apps/aquarium_app/docs/agent/SLICE_LOG.md"
+$historicalBootstrapSentence = "This historical bootstrap record is superseded by live run state as the sole accounting authority."
+$activationStatusLine = "Status: Task 13 activation is complete; committed live run state is ready for the explicit launch handoff."
+$activationUpdatedLine = "Last updated: 2026-07-13 in this activation commit; live Git and committed run state remain the final authority."
+$activationBranchBody = @(
+  '- Source-of-truth branch: `main`.',
+  '- This handoff becomes authoritative only with its containing activation commit on clean, pushed, aligned `main`.',
+  '- Only the canonical repository worktree may remain registered at durable closeout.'
+) -join "`n"
+$activationBlockersBody = @(
+  "- No activation blocker is recorded in this candidate.",
+  "- Product work remains forbidden in the Task 13 setup task."
+) -join "`n"
+$activationNextActionBody = @(
+  'After the activation commit is on clean, pushed, aligned `main`, use the duplicate-safe launch marker to create or reuse exactly one saved-project local first product task.',
+  'The new task must synchronize, pass Claim readiness, and win `ready -> active` before auditing `DCL-DR-001`. Do not start product work in this setup task.'
+) -join "`n"
 
 function Format-StrictUtc {
   param([Parameter(Mandatory = $true)][DateTimeOffset]$Value)
@@ -162,11 +180,10 @@ function Read-DanioGitJsonBlob {
     }
     throw "STATE_BLOB_INVALID: state blob '$objectSpec' is missing."
   }
-  try {
-    return $probe.output | ConvertFrom-Json
-  } catch {
-    throw "STATE_BLOB_INVALID: state blob '$objectSpec' is malformed."
-  }
+  return & $module {
+    param($RawJson, $FailureCode)
+    ConvertFrom-DanioStrictJson -Json $RawJson -FailureCode $FailureCode
+  } ([string]$probe.output) "STATE_BLOB_INVALID"
 }
 
 function Read-DanioEvidenceJsonBlob {
@@ -264,24 +281,1001 @@ function Assert-DanioClaimParentBinding {
   }
 }
 
+function Test-DanioStrictInteger {
+  param($Value)
+
+  if ($null -eq $Value) {
+    return $false
+  }
+  return @(
+    [byte],
+    [sbyte],
+    [int16],
+    [uint16],
+    [int32],
+    [uint32],
+    [int64],
+    [uint64]
+  ) -contains $Value.GetType()
+}
+
+function Get-DanioBootstrapBudgetFence {
+  param(
+    [Parameter(Mandatory = $true)][string]$Content,
+    [string]$FailureCode = "BOOTSTRAP_BUDGET_INVALID"
+  )
+
+  $markerPattern = '"document_type"\s*:\s*"danio_autonomy_bootstrap_budget"'
+  $markerMatches = [regex]::Matches($Content, $markerPattern)
+  $fenceMatches = [regex]::Matches(
+    $Content,
+    '(?ms)```json[^\r\n]*\r?\n(?<json>.*?)\r?\n```[ \t]*'
+  )
+  $markedFences = @(
+    $fenceMatches | Where-Object {
+      $_.Groups["json"].Value -cmatch $markerPattern
+    }
+  )
+  if ($markerMatches.Count -ne 1 -or $markedFences.Count -ne 1) {
+    throw "$FailureCode`: exactly one unambiguous bootstrap budget fence is required."
+  }
+
+  $rawJson = [string]$markedFences[0].Groups["json"].Value
+  $value = & $module {
+    param($RawJson, $Code)
+    ConvertFrom-DanioStrictJson -Json $RawJson -FailureCode $Code
+  } $rawJson $FailureCode
+  if (
+    $null -eq $value -or
+    [string]$value.document_type -cne "danio_autonomy_bootstrap_budget"
+  ) {
+    throw "$FailureCode`: bootstrap budget marker and parsed document disagree."
+  }
+  return [pscustomobject]@{
+    value = $value
+    full_text = [string]$markedFences[0].Value
+    index = [int]$markedFences[0].Index
+    length = [int]$markedFences[0].Length
+  }
+}
+
+function Read-DanioBootstrapBudgetBlock {
+  param(
+    [Parameter(Mandatory = $true)][string]$Content,
+    [switch]$RequireAbsentOperationalState,
+    [AllowNull()][string]$ExpectedOperationalStatePath = $null,
+    [string]$FailureCode = "BOOTSTRAP_BUDGET_INVALID"
+  )
+
+  $block = (Get-DanioBootstrapBudgetFence `
+    -Content $Content `
+    -FailureCode $FailureCode).value
+  $requiredFields = @(
+    "document_type",
+    "schema_version",
+    "authorization_id",
+    "total_approved_units",
+    "consumed_units",
+    "remaining_units_including_current",
+    "last_closed_unit_id",
+    "operational_state_path"
+  )
+  $observedFields = @($block.PSObject.Properties | ForEach-Object { $_.Name })
+  if (
+    $observedFields.Count -ne $requiredFields.Count -or
+    @($requiredFields | Where-Object { $observedFields -cnotcontains $_ }).Count -ne 0 -or
+    [string]$block.document_type -cne "danio_autonomy_bootstrap_budget" -or
+    -not (Test-DanioStrictInteger -Value $block.schema_version) -or
+    [int64]$block.schema_version -ne 1 -or
+    $block.authorization_id -isnot [string] -or
+    [string]::IsNullOrWhiteSpace([string]$block.authorization_id) -or
+    -not (Test-DanioStrictInteger -Value $block.total_approved_units) -or
+    -not (Test-DanioStrictInteger -Value $block.consumed_units) -or
+    -not (Test-DanioStrictInteger -Value $block.remaining_units_including_current) -or
+    [int64]$block.total_approved_units -le 0 -or
+    [int64]$block.consumed_units -le 0 -or
+    [int64]$block.remaining_units_including_current -lt 0 -or
+    [int64]$block.consumed_units + [int64]$block.remaining_units_including_current -ne
+      [int64]$block.total_approved_units -or
+    $block.last_closed_unit_id -isnot [string] -or
+    [string]$block.last_closed_unit_id -cnotmatch '^WF-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3}$'
+  ) {
+    throw "$FailureCode`: bootstrap budget fields or arithmetic are invalid."
+  }
+  if ($RequireAbsentOperationalState) {
+    if (
+      [int64]$block.remaining_units_including_current -le 0 -or
+      $null -ne $block.operational_state_path
+    ) {
+      throw "$FailureCode`: pre-activation budget must be positive and operational state path must be null."
+    }
+  } elseif (
+    $block.operational_state_path -isnot [string] -or
+    [string]$block.operational_state_path -cne $ExpectedOperationalStatePath
+  ) {
+    throw "$FailureCode`: historical operational state path is invalid."
+  }
+  return $block
+}
+
+function Get-DanioNormalizedBootstrapFenceText {
+  param(
+    [Parameter(Mandatory = $true)][string]$Content,
+    [string]$FailureCode = "BOOTSTRAP_HANDOFF_INVALID"
+  )
+
+  $fence = Get-DanioBootstrapBudgetFence `
+    -Content $Content `
+    -FailureCode $FailureCode
+  return $fence.full_text.Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd()
+}
+
+function Test-DanioBootstrapBudgetValuesEqual {
+  param(
+    [AllowNull()]$Left,
+    [AllowNull()]$Right
+  )
+
+  if ($null -eq $Left -or $null -eq $Right) {
+    return $false
+  }
+  return (
+    [string]$Left.document_type -ceq [string]$Right.document_type -and
+    [int64]$Left.schema_version -eq [int64]$Right.schema_version -and
+    [string]$Left.authorization_id -ceq [string]$Right.authorization_id -and
+    [int64]$Left.total_approved_units -eq [int64]$Right.total_approved_units -and
+    [int64]$Left.consumed_units -eq [int64]$Right.consumed_units -and
+    [int64]$Left.remaining_units_including_current -eq
+      [int64]$Right.remaining_units_including_current -and
+    [string]$Left.last_closed_unit_id -ceq [string]$Right.last_closed_unit_id -and
+    [string]$Left.operational_state_path -ceq [string]$Right.operational_state_path
+  )
+}
+
+function Get-DanioSliceUnitCount {
+  param(
+    [Parameter(Mandatory = $true)][string]$Content,
+    [Parameter(Mandatory = $true)][string]$WorkUnitId
+  )
+
+  return [regex]::Matches(
+    $Content,
+    "(?m)^\|\s*$([regex]::Escape($WorkUnitId))\s*\|"
+  ).Count
+}
+
+function Get-DanioNextBootstrapUnitId {
+  param([Parameter(Mandatory = $true)][string]$LastClosedUnitId)
+
+  $match = [regex]::Match(
+    $LastClosedUnitId,
+    '^WF-(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2})-(?<sequence>[0-9]{3})$'
+  )
+  if (-not $match.Success) {
+    throw "BOOTSTRAP_BUDGET_INVALID: last closed unit ID is malformed."
+  }
+  $nextSequence = [int]$match.Groups["sequence"].Value + 1
+  if ($nextSequence -gt 999) {
+    throw "BOOTSTRAP_BUDGET_INVALID: bootstrap unit sequence is exhausted."
+  }
+  return "WF-$($match.Groups['date'].Value)-$($nextSequence.ToString('000'))"
+}
+
+function ConvertTo-DanioNormalizedWindowsPath {
+  param([Parameter(Mandatory = $true)][string]$Path)
+
+  return [IO.Path]::GetFullPath($Path).Replace("\", "/").TrimEnd("/")
+}
+
+function Get-DanioSelectedRepositoryIdentity {
+  param([Parameter(Mandatory = $true)][string]$Root)
+
+  $commonDirectory = Invoke-DanioGit `
+    -Root $Root `
+    -Arguments @("rev-parse", "--path-format=absolute", "--git-common-dir")
+  $normalizedCommonDirectory = ConvertTo-DanioNormalizedWindowsPath -Path $commonDirectory
+  if ([IO.Path]::GetFileName($normalizedCommonDirectory) -cne ".git") {
+    throw "BOOTSTRAP_AUTHORIZATION_INVALID: selected repository has no canonical non-bare common directory."
+  }
+  $repositoryRoot = ConvertTo-DanioNormalizedWindowsPath `
+    -Path (Split-Path -Parent $normalizedCommonDirectory)
+  $savedProjectRoot = ConvertTo-DanioNormalizedWindowsPath `
+    -Path (Split-Path -Parent $repositoryRoot)
+  return [pscustomobject]@{
+    repository_root = $repositoryRoot
+    saved_project_root = $savedProjectRoot
+  }
+}
+
+function Test-DanioOrdinaryDirectoryChain {
+  param(
+    [Parameter(Mandatory = $true)][string]$Path,
+    [Parameter(Mandatory = $true)][string]$Boundary
+  )
+
+  try {
+    $resolvedPath = [IO.Path]::GetFullPath($Path).TrimEnd("\", "/")
+    $resolvedBoundary = [IO.Path]::GetFullPath($Boundary).TrimEnd("\", "/")
+    $requiredPrefix = "$resolvedBoundary$([IO.Path]::DirectorySeparatorChar)"
+    if (-not $resolvedPath.StartsWith($requiredPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+      return $false
+    }
+    $current = Get-Item -LiteralPath $resolvedPath -Force
+    while ($null -ne $current) {
+      if (
+        -not $current.Exists -or
+        ($current.Attributes -band [IO.FileAttributes]::Directory) -eq 0 -or
+        ($current.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0
+      ) {
+        return $false
+      }
+      $currentPath = [IO.Path]::GetFullPath($current.FullName).TrimEnd("\", "/")
+      if ([string]::Equals($currentPath, $resolvedBoundary, [StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+      }
+      $current = $current.Parent
+    }
+    return $false
+  } catch {
+    return $false
+  }
+}
+
+function Test-DanioDisposableFixtureAuthorizationOverride {
+  param([Parameter(Mandatory = $true)][string]$Root)
+
+  if ($env:DANIO_AUTONOMY_TEST_MODE -cne "1") {
+    return $false
+  }
+  try {
+    $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd("\", "/")
+    $selectedRoot = [IO.Path]::GetFullPath($Root).TrimEnd("\", "/")
+    $requiredPrefix = "$tempRoot$([IO.Path]::DirectorySeparatorChar)"
+    if (
+      -not $selectedRoot.StartsWith($requiredPrefix, [StringComparison]::OrdinalIgnoreCase) -or
+      -not (Test-DanioOrdinaryDirectoryChain -Path $selectedRoot -Boundary $tempRoot)
+    ) {
+      return $false
+    }
+    $selectedIdentity = Get-DanioSelectedRepositoryIdentity -Root $selectedRoot
+    $canonicalRepositoryRoot = [IO.Path]::GetFullPath(
+      [string]$selectedIdentity.repository_root
+    ).TrimEnd("\", "/")
+    $commonDirectory = [IO.Path]::GetFullPath(
+      (Invoke-DanioGit `
+        -Root $selectedRoot `
+        -Arguments @("rev-parse", "--path-format=absolute", "--git-common-dir"))
+    ).TrimEnd("\", "/")
+    $expectedCommonDirectory = [IO.Path]::GetFullPath(
+      (Join-Path $canonicalRepositoryRoot ".git")
+    ).TrimEnd("\", "/")
+    if (
+      -not (Test-DanioOrdinaryDirectoryChain `
+        -Path $canonicalRepositoryRoot `
+        -Boundary $tempRoot) -or
+      -not (Test-DanioOrdinaryDirectoryChain `
+        -Path $commonDirectory `
+        -Boundary $tempRoot) -or
+      -not [string]::Equals(
+        $commonDirectory,
+        $expectedCommonDirectory,
+        [StringComparison]::OrdinalIgnoreCase
+      )
+    ) {
+      return $false
+    }
+
+    $fetchUrls = @(
+      (Invoke-DanioGit -Root $selectedRoot -Arguments @("remote", "get-url", "--all", "origin")) `
+        -split "`r?`n" |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+    $pushUrls = @(
+      (Invoke-DanioGit -Root $selectedRoot -Arguments @("remote", "get-url", "--push", "--all", "origin")) `
+        -split "`r?`n" |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+    if ($fetchUrls.Count -ne 1 -or $pushUrls.Count -ne 1) {
+      return $false
+    }
+    foreach ($url in @([string]$fetchUrls[0], [string]$pushUrls[0])) {
+      if ($url -match '^[A-Za-z][A-Za-z0-9+.-]*://' -or $url -match '^[^/\\]+@[^:]+:') {
+        return $false
+      }
+    }
+    $fetchRoot = [IO.Path]::GetFullPath($(if ([IO.Path]::IsPathRooted([string]$fetchUrls[0])) {
+      [string]$fetchUrls[0]
+    } else {
+      Join-Path $selectedRoot ([string]$fetchUrls[0])
+    })).TrimEnd("\", "/")
+    $pushRoot = [IO.Path]::GetFullPath($(if ([IO.Path]::IsPathRooted([string]$pushUrls[0])) {
+      [string]$pushUrls[0]
+    } else {
+      Join-Path $selectedRoot ([string]$pushUrls[0])
+    })).TrimEnd("\", "/")
+    if (
+      -not [string]::Equals($fetchRoot, $pushRoot, [StringComparison]::OrdinalIgnoreCase) -or
+      -not $fetchRoot.StartsWith($requiredPrefix, [StringComparison]::OrdinalIgnoreCase) -or
+      -not (Test-DanioOrdinaryDirectoryChain -Path $fetchRoot -Boundary $tempRoot)
+    ) {
+      return $false
+    }
+    if (
+      (Invoke-DanioGit -Root $fetchRoot -Arguments @("rev-parse", "--is-bare-repository")) -cne "true"
+    ) {
+      return $false
+    }
+    return $true
+  } catch {
+    return $false
+  }
+}
+
+function Get-DanioMarkdownHeadings {
+  param([Parameter(Mandatory = $true)][string]$Content)
+
+  return @(
+    [regex]::Matches($Content, '(?m)^#{1,6}\s+[^\r\n]+$') |
+      ForEach-Object { [string]$_.Value }
+  )
+}
+
+function Get-DanioMarkdownLevelTwoDocument {
+  param(
+    [Parameter(Mandatory = $true)][string]$Content,
+    [string]$FailureCode = "BOOTSTRAP_HANDOFF_INVALID"
+  )
+
+  $normalized = $Content.Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd()
+  $matches = [regex]::Matches($normalized, '(?m)^## [^\n]+$')
+  if ($matches.Count -eq 0) {
+    throw "$FailureCode`: the handoff has no level-two sections."
+  }
+  $preamble = $normalized.Substring(0, $matches[0].Index).TrimEnd()
+  $sections = @(
+    for ($index = 0; $index -lt $matches.Count; $index += 1) {
+      $bodyStart = $matches[$index].Index + $matches[$index].Length
+      $bodyEnd = if ($index + 1 -lt $matches.Count) {
+        $matches[$index + 1].Index
+      } else {
+        $normalized.Length
+      }
+      $body = $normalized.Substring($bodyStart, $bodyEnd - $bodyStart)
+      [pscustomobject]@{
+        heading = [string]$matches[$index].Value
+        body = $body.Trim([char[]]@("`n"))
+      }
+    }
+  )
+  return [pscustomobject]@{
+    preamble = $preamble
+    sections = $sections
+  }
+}
+
+function Assert-DanioExactBootstrapHandoffTransformation {
+  param(
+    [Parameter(Mandatory = $true)][string]$ParentContent,
+    [Parameter(Mandatory = $true)][string]$CandidateContent
+  )
+
+  $parentDocument = Get-DanioMarkdownLevelTwoDocument -Content $ParentContent
+  $candidateDocument = Get-DanioMarkdownLevelTwoDocument -Content $CandidateContent
+  $parentHeadings = @($parentDocument.sections | ForEach-Object { [string]$_.heading })
+  $candidateHeadings = @($candidateDocument.sections | ForEach-Object { [string]$_.heading })
+  if (-not (Test-DanioOrdinalStringArrayEqual -Left $parentHeadings -Right $candidateHeadings)) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: activation must preserve every level-two heading in order."
+  }
+
+  $parentPreambleLines = @($parentDocument.preamble -split "`n")
+  if (
+    $parentPreambleLines.Count -lt 1 -or
+    [string]$parentPreambleLines[0] -cnotmatch '^# [^#].+$'
+  ) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: parent handoff title is invalid."
+  }
+  $expectedPreamble = @(
+    [string]$parentPreambleLines[0],
+    "",
+    $activationStatusLine,
+    $activationUpdatedLine
+  ) -join "`n"
+  if ([string]$candidateDocument.preamble -cne $expectedPreamble) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: activation handoff preamble is not the exact Task 13 form."
+  }
+
+  $candidateFence = Get-DanioBootstrapBudgetFence `
+    -Content $CandidateContent `
+    -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+  $expectedAuthorizationBody = @(
+    $historicalBootstrapSentence,
+    "",
+    $candidateFence.full_text.Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd()
+  ) -join "`n"
+  for ($index = 0; $index -lt $parentDocument.sections.Count; $index += 1) {
+    $heading = [string]$parentDocument.sections[$index].heading
+    $expectedBody = switch -CaseSensitive ($heading) {
+      "## Branch" { $activationBranchBody; break }
+      "## Autonomous Chain Authorization" { $expectedAuthorizationBody; break }
+      "## Blockers" { $activationBlockersBody; break }
+      "## Next Action" { $activationNextActionBody; break }
+      default { [string]$parentDocument.sections[$index].body; break }
+    }
+    if ([string]$candidateDocument.sections[$index].body -cne $expectedBody) {
+      throw "BOOTSTRAP_HANDOFF_INVALID: section '$heading' is not the exact allowed Task 13 transformation."
+    }
+  }
+}
+
+function Test-DanioOrdinalStringArrayEqual {
+  param(
+    [Parameter(Mandatory = $true)][string[]]$Left,
+    [Parameter(Mandatory = $true)][string[]]$Right
+  )
+
+  if ($Left.Count -ne $Right.Count) {
+    return $false
+  }
+  for ($index = 0; $index -lt $Left.Count; $index += 1) {
+    if ([string]$Left[$index] -cne [string]$Right[$index]) {
+      return $false
+    }
+  }
+  return $true
+}
+
+function Assert-DanioBootstrapSliceHistory {
+  param(
+    [Parameter(Mandatory = $true)][string]$SliceLogContent,
+    [Parameter(Mandatory = $true)]$Bootstrap
+  )
+
+  $match = [regex]::Match(
+    [string]$Bootstrap.last_closed_unit_id,
+    '^WF-(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2})-(?<sequence>[0-9]{3})$'
+  )
+  if (-not $match.Success) {
+    throw "BOOTSTRAP_BUDGET_INVALID: last closed unit ID is malformed."
+  }
+  $lastSequence = [int]$match.Groups["sequence"].Value
+  $firstSequence = $lastSequence - [int64]$Bootstrap.consumed_units + 1
+  if ($firstSequence -lt 0) {
+    throw "BOOTSTRAP_BUDGET_INVALID: consumed units exceed the recorded workflow sequence."
+  }
+  foreach ($sequence in $firstSequence..$lastSequence) {
+    $workUnitId = "WF-$($match.Groups['date'].Value)-$($sequence.ToString('000'))"
+    if (
+      (Get-DanioSliceUnitCount `
+        -Content $SliceLogContent `
+        -WorkUnitId $workUnitId) -ne 1
+    ) {
+      throw "BOOTSTRAP_BUDGET_INVALID: consumed bootstrap unit '$workUnitId' is not recorded exactly once."
+    }
+  }
+}
+
+function Assert-DanioActivationCreationCommitProof {
+  param(
+    [Parameter(Mandatory = $true)][string]$Root,
+    [Parameter(Mandatory = $true)][string]$CreationCommit
+  )
+
+  try {
+    $parentLine = Invoke-DanioGit `
+      -Root $Root `
+      -Arguments @("rev-list", "--parents", "-n", "1", $CreationCommit)
+    $parentParts = @(
+      $parentLine -split '\s+' |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+    if ($parentParts.Count -ne 2 -or [string]$parentParts[0] -cne $CreationCommit) {
+      throw "state creation commit must have one exact parent."
+    }
+    $activationParent = [string]$parentParts[1]
+    $activationTree = Invoke-DanioGit `
+      -Root $Root `
+      -Arguments @("rev-parse", "$CreationCommit^{tree}")
+    $candidateState = Read-DanioGitJsonBlob `
+      -Root $Root `
+      -Revision $CreationCommit `
+      -Path $statePath
+    $candidateValidation = Test-DanioRunState -State $candidateState
+    if (-not $candidateValidation.valid) {
+      throw "activation state is invalid: $($candidateValidation.code)."
+    }
+    $changedPaths = Invoke-DanioGit `
+      -Root $Root `
+      -Arguments @(
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        $CreationCommit
+      )
+    Assert-DanioTransitionPathScope `
+      -ChangedPaths @($changedPaths -split "`r?`n") `
+      -Action ([string]$candidateState.transition.action)
+
+    $previousContextParameters = @{
+      Root = $Root
+      ParentRevision = $activationParent
+    }
+    if (Test-DanioDisposableFixtureAuthorizationOverride -Root $Root) {
+      $previousContextParameters.ExpectedAuthorization = $candidateState.authorization
+    }
+    $previousContext = Resolve-DanioPreviousStateContext @previousContextParameters
+    if ([string]$previousContext.origin -cne "bootstrap_absent") {
+      throw "state creation parent is not the absent bootstrap authority."
+    }
+    Assert-DanioBootstrapActivationOutputs `
+      -Root $Root `
+      -Context $previousContext `
+      -CandidateState $candidateState `
+      -CandidateRevision $CreationCommit
+    Assert-DanioClaimParentBinding `
+      -Root $Root `
+      -ParentCommit $activationParent `
+      -CandidateState $candidateState
+    Assert-DanioTransitionPreflight `
+      -PreviousState $previousContext.state `
+      -CandidateState $candidateState `
+      -ExpectedCandidateAuthority $previousContext.parent_authority
+    $transitionProof = Get-DanioTransitionProof `
+      -Root $Root `
+      -ParentCommit $activationParent `
+      -PreviousState $previousContext.state `
+      -CandidateState $candidateState `
+      -CandidateCommit $CreationCommit
+    $transitionValidation = Test-DanioRunStateTransition `
+      -PreviousState $previousContext.state `
+      -CandidateState $candidateState `
+      -LedgerRows @($transitionProof.ledger_rows) `
+      -ActivePhaseLedgerIds @($transitionProof.active_phase_ledger_ids) `
+      -ExpectedCandidateAuthority $previousContext.parent_authority
+    if (-not $transitionValidation.valid) {
+      throw "activation transition is invalid: $($transitionValidation.code)."
+    }
+    Assert-DanioTerminalCompletionReady `
+      -Root $Root `
+      -ParentCommit $activationParent `
+      -PreviousState $previousContext.state `
+      -CandidateState $candidateState `
+      -Proof $transitionProof
+
+    $subject = Invoke-DanioGit `
+      -Root $Root `
+      -Arguments @("log", "-1", "--format=%s", $CreationCommit)
+    if ($subject -cne "chore: activate autonomous phone completion") {
+      throw "activation commit subject is not exact."
+    }
+    $message = Invoke-DanioGit `
+      -Root $Root `
+      -Arguments @("log", "-1", "--format=%B", $CreationCommit)
+    $messageLines = @($message -split "`r?`n")
+    $lineIndex = $messageLines.Count - 1
+    while ($lineIndex -ge 0 -and [string]::IsNullOrWhiteSpace($messageLines[$lineIndex])) {
+      $lineIndex -= 1
+    }
+    $terminalTrailerLines = New-Object System.Collections.Generic.List[string]
+    while (
+      $lineIndex -ge 0 -and
+      $messageLines[$lineIndex] -cmatch '^[A-Za-z0-9-]+:\s*[^\r\n]+$'
+    ) {
+      $terminalTrailerLines.Insert(0, [string]$messageLines[$lineIndex])
+      $lineIndex -= 1
+    }
+    $trailers = @{}
+    foreach ($trailerName in @(
+      "Danio-State-Tree",
+      "Danio-State-Validation",
+      "Danio-Docs-Profile",
+      "Danio-Verified-At"
+    )) {
+      $matchingLines = @(
+        $terminalTrailerLines | Where-Object {
+          $_ -cmatch "^$([regex]::Escape($trailerName)):\s*[^\r\n]+$"
+        }
+      )
+      if ($matchingLines.Count -ne 1) {
+        throw "activation trailer '$trailerName' is not unique."
+      }
+      $trailers[$trailerName] = $matchingLines[0].Substring(
+        $matchingLines[0].IndexOf(":") + 1
+      ).Trim()
+    }
+    if (
+      @($terminalTrailerLines | Where-Object {
+        $_ -cmatch '^Danio-Evidence-Manifest:\s*[^\r\n]+$'
+      }).Count -ne 0 -or
+      [string]$trailers["Danio-State-Tree"] -cne $activationTree -or
+      [string]$trailers["Danio-State-Validation"] -cne "pass" -or
+      [string]$trailers["Danio-Docs-Profile"] -cne "pass" -or
+      -not (Test-StrictUtc -Value $trailers["Danio-Verified-At"])
+    ) {
+      throw "activation commit trailers do not match the exact tree proof."
+    }
+  } catch {
+    if ($_.Exception.Message -like "BOOTSTRAP_ACTIVATION_PROOF_INVALID:*") {
+      throw
+    }
+    throw "BOOTSTRAP_ACTIVATION_PROOF_INVALID: $($_.Exception.Message)"
+  }
+}
+
+function Resolve-DanioPreviousStateContext {
+  param(
+    [Parameter(Mandatory = $true)][string]$Root,
+    [Parameter(Mandatory = $true)][string]$ParentRevision,
+    [AllowNull()]$ExpectedAuthorization = $null
+  )
+
+  $stateEntry = Invoke-DanioGit `
+    -Root $Root `
+    -Arguments @("ls-tree", "-r", "--name-only", $ParentRevision, "--", $statePath)
+  if (-not [string]::IsNullOrWhiteSpace($stateEntry)) {
+    if ([string]$stateEntry -cne $statePath) {
+      throw "STATE_BLOB_INVALID: parent state lookup returned an unexpected path."
+    }
+    $handoffContent = Read-DanioGitTextBlob `
+      -Root $Root `
+      -Revision $ParentRevision `
+      -Path $activeHandoffPath
+    try {
+      $currentHistoricalBootstrap = Read-DanioBootstrapBudgetBlock `
+        -Content $handoffContent `
+        -ExpectedOperationalStatePath $statePath `
+        -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+      $currentHistoricalFenceText = Get-DanioNormalizedBootstrapFenceText `
+        -Content $handoffContent `
+        -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+      $stateCreationText = Invoke-DanioGit `
+        -Root $Root `
+        -Arguments @("log", "--format=%H", "--diff-filter=A", $ParentRevision, "--", $statePath)
+      $stateCreationCommits = @(
+        $stateCreationText -split "`r?`n" |
+          Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+      )
+      if ($stateCreationCommits.Count -ne 1) {
+        throw "BOOTSTRAP_HANDOFF_INVALID: live state does not have one unique creation commit."
+      }
+      Assert-DanioActivationCreationCommitProof `
+        -Root $Root `
+        -CreationCommit ([string]$stateCreationCommits[0])
+      $activationHandoffContent = Read-DanioGitTextBlob `
+        -Root $Root `
+        -Revision ([string]$stateCreationCommits[0]) `
+        -Path $activeHandoffPath
+      $anchoredHistoricalBootstrap = Read-DanioBootstrapBudgetBlock `
+        -Content $activationHandoffContent `
+        -ExpectedOperationalStatePath $statePath `
+        -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+      $anchoredHistoricalFenceText = Get-DanioNormalizedBootstrapFenceText `
+        -Content $activationHandoffContent `
+        -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+      $anchoredUnitId = [string]$anchoredHistoricalBootstrap.last_closed_unit_id
+      if (
+        -not (Test-DanioBootstrapBudgetValuesEqual `
+          -Left $currentHistoricalBootstrap `
+          -Right $anchoredHistoricalBootstrap) -or
+        $currentHistoricalFenceText -cne $anchoredHistoricalFenceText -or
+        [regex]::Matches(
+          $activationHandoffContent,
+          [regex]::Escape($historicalBootstrapSentence)
+        ).Count -ne 1 -or
+        [regex]::Matches(
+          $handoffContent,
+          [regex]::Escape($historicalBootstrapSentence)
+        ).Count -ne 1 -or
+        [regex]::Matches(
+          $activationHandoffContent,
+          [regex]::Escape($anchoredUnitId)
+        ).Count -ne 1 -or
+        [regex]::Matches(
+          $handoffContent,
+          [regex]::Escape($anchoredUnitId)
+        ).Count -ne 1
+      ) {
+        throw "BOOTSTRAP_HANDOFF_INVALID: historical activation accounting differs from its creation commit."
+      }
+      $historicalBootstrap = $anchoredHistoricalBootstrap
+      $historicalFenceText = $anchoredHistoricalFenceText
+    } catch {
+      if ($_.Exception.Message -like "BOOTSTRAP_ACTIVATION_PROOF_INVALID:*") {
+        throw
+      }
+      $historicalBootstrap = $null
+      $historicalFenceText = $null
+    }
+    return [pscustomobject]@{
+      state = Read-DanioGitJsonBlob `
+        -Root $Root `
+        -Revision $ParentRevision `
+        -Path $statePath
+      origin = "live"
+      bootstrap_budget = $historicalBootstrap
+      bootstrap_fence_text = $historicalFenceText
+      activation_closeout_unit_id = $null
+      parent_authority = $null
+      parent_slice_log_content = $null
+      parent_handoff_content = $handoffContent
+    }
+  }
+
+  $inactiveState = Read-DanioGitJsonBlob `
+    -Root $Root `
+    -Revision $ParentRevision `
+    -Path $inactiveFixturePath
+  $handoffContent = Read-DanioGitTextBlob `
+    -Root $Root `
+    -Revision $ParentRevision `
+    -Path $activeHandoffPath
+  $bootstrap = Read-DanioBootstrapBudgetBlock `
+    -Content $handoffContent `
+    -RequireAbsentOperationalState
+  if (
+    [string]$bootstrap.authorization_id -cne [string]$inactiveState.authorization.authorization_id -or
+    [string]$bootstrap.authorization_id -cne [string]$inactiveState.run_id -or
+    [int64]$bootstrap.total_approved_units -ne [int64]$inactiveState.budget.total_approved_units
+  ) {
+    throw "BOOTSTRAP_BUDGET_INVALID: bootstrap authorization or total does not match the approved run."
+  }
+  if (
+    $null -ne $ExpectedAuthorization -and
+    -not (Test-DanioDisposableFixtureAuthorizationOverride -Root $Root)
+  ) {
+    throw "BOOTSTRAP_AUTHORIZATION_INVALID: fixture authorization override is forbidden for the selected repository."
+  }
+  $selectedIdentity = if ($null -eq $ExpectedAuthorization) {
+    Get-DanioSelectedRepositoryIdentity -Root $Root
+  } else {
+    [pscustomobject]@{
+      repository_root = [string]$ExpectedAuthorization.repository_root
+      saved_project_root = [string]$ExpectedAuthorization.saved_project_root
+    }
+  }
+  if (
+    -not [string]::Equals(
+      [string]$inactiveState.authorization.repository_root,
+      [string]$selectedIdentity.repository_root,
+      [StringComparison]::OrdinalIgnoreCase
+    ) -or
+    -not [string]::Equals(
+      [string]$inactiveState.authorization.saved_project_root,
+      [string]$selectedIdentity.saved_project_root,
+      [StringComparison]::OrdinalIgnoreCase
+    )
+  ) {
+    throw "BOOTSTRAP_AUTHORIZATION_INVALID: approved authorization roots '$($inactiveState.authorization.repository_root)' and '$($inactiveState.authorization.saved_project_root)' do not match selected roots '$($selectedIdentity.repository_root)' and '$($selectedIdentity.saved_project_root)'."
+  }
+
+  $sliceLogContent = Read-DanioGitTextBlob `
+    -Root $Root `
+    -Revision $ParentRevision `
+    -Path $sliceLogPath
+  Assert-DanioBootstrapSliceHistory `
+    -SliceLogContent $sliceLogContent `
+    -Bootstrap $bootstrap
+  $activationCloseoutUnitId = Get-DanioNextBootstrapUnitId `
+    -LastClosedUnitId ([string]$bootstrap.last_closed_unit_id)
+  if (
+    (Get-DanioSliceUnitCount `
+      -Content $sliceLogContent `
+      -WorkUnitId $activationCloseoutUnitId) -ne 0
+  ) {
+    throw "BOOTSTRAP_UNIT_ALREADY_RECORDED: Task 13 closeout unit already exists in the parent log."
+  }
+
+  $syntheticState = $inactiveState | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $syntheticState.authority = Get-DanioParentAuthority `
+    -Root $Root `
+    -ParentCommit $ParentRevision
+  $syntheticState.budget.total_approved_units = [int64]$bootstrap.total_approved_units
+  $syntheticState.budget.consumed_units = [int64]$bootstrap.consumed_units
+  $syntheticState.budget.remaining_units_including_current = [int64]$bootstrap.remaining_units_including_current
+  $syntheticState.budget.current_charge.work_unit_id = $null
+  $syntheticState.budget.current_charge.status = "none"
+  $syntheticState.budget.current_charge.claimed_revision = $null
+  $syntheticState.budget.current_charge.consumed_revision = $null
+
+  return [pscustomobject]@{
+    state = $syntheticState
+    origin = "bootstrap_absent"
+    bootstrap_budget = $bootstrap
+    bootstrap_fence_text = $null
+    activation_closeout_unit_id = $activationCloseoutUnitId
+    parent_authority = $syntheticState.authority
+    parent_slice_log_content = $sliceLogContent
+    parent_handoff_content = $handoffContent
+  }
+}
+
 function Read-DanioPreviousState {
   param(
     [Parameter(Mandatory = $true)][string]$Root,
     [Parameter(Mandatory = $true)][string]$ParentRevision
   )
 
-  $previousState = Read-DanioGitJsonBlob `
+  return (Resolve-DanioPreviousStateContext `
     -Root $Root `
-    -Revision $ParentRevision `
-    -Path $statePath `
-    -AllowMissing
-  if ($null -ne $previousState) {
-    return $previousState
+    -ParentRevision $ParentRevision).state
+}
+
+function Read-DanioCandidateTextBlob {
+  param(
+    [Parameter(Mandatory = $true)][string]$Root,
+    [Parameter(Mandatory = $true)][string]$Path,
+    [switch]$Index,
+    [AllowNull()][string]$Revision = $null
+  )
+
+  $objectSpec = if ($Index) { ":$Path" } else { "$Revision`:$Path" }
+  $probe = Invoke-DanioGitProbe -Root $Root -Arguments @("show", $objectSpec)
+  if ($probe.exit_code -ne 0) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: candidate blob '$objectSpec' is missing."
   }
-  return Read-DanioGitJsonBlob `
+  return [string]$probe.output
+}
+
+function Assert-DanioBootstrapActivationOutputs {
+  param(
+    [Parameter(Mandatory = $true)][string]$Root,
+    [Parameter(Mandatory = $true)]$Context,
+    [Parameter(Mandatory = $true)]$CandidateState,
+    [switch]$Index,
+    [AllowNull()][string]$CandidateRevision = $null
+  )
+
+  if (
+    [string]$Context.origin -ceq "live" -and
+    [string]$CandidateState.transition.action -ceq "launch"
+  ) {
+    throw "LIVE_STATE_ALREADY_EXISTS: Task 13 launch requires an absent parent state path."
+  }
+  if ([string]$Context.origin -ceq "live") {
+    if ($null -eq $Context.bootstrap_budget) {
+      throw "BOOTSTRAP_HANDOFF_INVALID: a live parent is missing immutable historical activation accounting."
+    }
+    $candidateHandoffContent = Read-DanioCandidateTextBlob `
+      -Root $Root `
+      -Path $activeHandoffPath `
+      -Index:$Index `
+      -Revision $CandidateRevision
+    $candidateHistoricalBootstrap = Read-DanioBootstrapBudgetBlock `
+      -Content $candidateHandoffContent `
+      -ExpectedOperationalStatePath $statePath `
+      -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+    $candidateHistoricalFenceText = Get-DanioNormalizedBootstrapFenceText `
+      -Content $candidateHandoffContent `
+      -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+    $parentHistoricalBootstrap = $Context.bootstrap_budget
+    $historicalUnitId = [string]$parentHistoricalBootstrap.last_closed_unit_id
+    if (
+      $candidateHistoricalFenceText -cne [string]$Context.bootstrap_fence_text -or
+      [string]$candidateHistoricalBootstrap.authorization_id -cne
+        [string]$parentHistoricalBootstrap.authorization_id -or
+      [int64]$candidateHistoricalBootstrap.total_approved_units -ne
+        [int64]$parentHistoricalBootstrap.total_approved_units -or
+      [int64]$candidateHistoricalBootstrap.consumed_units -ne
+        [int64]$parentHistoricalBootstrap.consumed_units -or
+      [int64]$candidateHistoricalBootstrap.remaining_units_including_current -ne
+        [int64]$parentHistoricalBootstrap.remaining_units_including_current -or
+      [string]$candidateHistoricalBootstrap.last_closed_unit_id -cne $historicalUnitId -or
+      [regex]::Matches(
+        $candidateHandoffContent,
+        [regex]::Escape($historicalUnitId)
+      ).Count -ne 1 -or
+      [regex]::Matches(
+        $candidateHandoffContent,
+        [regex]::Escape($historicalBootstrapSentence)
+      ).Count -ne 1
+    ) {
+      throw "BOOTSTRAP_HANDOFF_INVALID: the historical activation accounting changed after launch."
+    }
+    return
+  }
+  if ([string]$Context.origin -cne "bootstrap_absent") {
+    return
+  }
+  if ([string]$CandidateState.transition.action -cne "launch") {
+    throw "LIVE_STATE_MISSING: an absent parent state permits only Task 13 launch."
+  }
+
+  $expectedCursor = [pscustomobject][ordered]@{
+    phase = "1-data-resilience"
+    work_unit_id = "DCL-DR-001-restore-matrix-audit"
+    ledger_row_ids = @("DCL-DR-001")
+  }
+  $cursorMatches = & $module {
+    param($Observed, $Expected)
+    (ConvertTo-DanioCanonicalJson -Value $Observed) -ceq
+      (ConvertTo-DanioCanonicalJson -Value $Expected)
+  } $CandidateState.cursor $expectedCursor
+  $expectedControlSurfaceSync = [pscustomobject][ordered]@{
+    status = "not_required"
+    target_commit = $null
+    figma_file_id = $null
+    figma_node_ids = @()
+    attempted_at_utc = $null
+    evidence_sha256 = $null
+    failure_code = $null
+  }
+  $controlSurfaceMatches = & $module {
+    param($Observed, $Expected)
+    (ConvertTo-DanioCanonicalJson -Value $Observed) -ceq
+      (ConvertTo-DanioCanonicalJson -Value $Expected)
+  } $CandidateState.control_surface_sync $expectedControlSurfaceSync
+  if (
+    -not $cursorMatches -or
+    -not $controlSurfaceMatches -or
+    $null -ne $CandidateState.owner -or
+    [int64]$CandidateState.handoff_generation -ne 0 -or
+    $null -ne $CandidateState.transition.reason_code -or
+    [string]$CandidateState.budget.current_charge.status -cne "none" -or
+    $null -ne $CandidateState.budget.current_charge.work_unit_id -or
+    $null -ne $CandidateState.budget.current_charge.claimed_revision -or
+    $null -ne $CandidateState.budget.current_charge.consumed_revision -or
+    $null -ne $CandidateState.last_verified_checkpoint -or
+    $null -ne $CandidateState.repeated_failure -or
+    $null -ne $CandidateState.stop_reason_code -or
+    $null -ne $CandidateState.recovery
+  ) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: initial ready state does not match the exact inactive-to-ready bootstrap defaults."
+  }
+
+  $handoffContent = Read-DanioCandidateTextBlob `
     -Root $Root `
-    -Revision $ParentRevision `
-    -Path $inactiveFixturePath
+    -Path $activeHandoffPath `
+    -Index:$Index `
+    -Revision $CandidateRevision
+  $candidateBootstrap = Read-DanioBootstrapBudgetBlock `
+    -Content $handoffContent `
+    -ExpectedOperationalStatePath $statePath `
+    -FailureCode "BOOTSTRAP_HANDOFF_INVALID"
+  $parentBootstrap = $Context.bootstrap_budget
+  $activationUnitId = [string]$Context.activation_closeout_unit_id
+  Assert-DanioExactBootstrapHandoffTransformation `
+    -ParentContent ([string]$Context.parent_handoff_content) `
+    -CandidateContent $handoffContent
+  if (
+    [string]$candidateBootstrap.authorization_id -cne [string]$parentBootstrap.authorization_id -or
+    [int64]$candidateBootstrap.total_approved_units -ne [int64]$CandidateState.budget.total_approved_units -or
+    [int64]$candidateBootstrap.consumed_units -ne [int64]$CandidateState.budget.consumed_units -or
+    [int64]$candidateBootstrap.remaining_units_including_current -ne
+      [int64]$CandidateState.budget.remaining_units_including_current -or
+    [string]$candidateBootstrap.last_closed_unit_id -cne
+      $activationUnitId -or
+    [regex]::Matches($handoffContent, [regex]::Escape($activationUnitId)).Count -ne 1 -or
+    [regex]::Matches(
+      $handoffContent,
+      [regex]::Escape($historicalBootstrapSentence)
+    ).Count -ne 1
+  ) {
+    throw "BOOTSTRAP_HANDOFF_INVALID: historical handoff accounting or preserved history does not match the activated run state."
+  }
+
+  $sliceLogContent = Read-DanioCandidateTextBlob `
+    -Root $Root `
+    -Path $sliceLogPath `
+    -Index:$Index `
+    -Revision $CandidateRevision
+  $parentSliceLog = ([string]$Context.parent_slice_log_content).Replace("`r`n", "`n").TrimEnd()
+  $candidateSliceLog = $sliceLogContent.Replace("`r`n", "`n").TrimEnd()
+  $expectedSlicePrefix = "$parentSliceLog`n"
+  $expectedActivationSliceRow = "| $activationUnitId | 2026-07-13 | Activate autonomous phone completion | live state, handoff, slice log | staged validator, Docs, clean alignment | ready | this activation commit | Create or reuse the explicit launch task; no product work here |"
+  $sliceSuffixLines = @()
+  if ($candidateSliceLog.StartsWith($expectedSlicePrefix, [StringComparison]::Ordinal)) {
+    $sliceSuffixLines = @(
+      $candidateSliceLog.Substring($expectedSlicePrefix.Length) -split "`n" |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+  }
+  if (
+    $sliceSuffixLines.Count -ne 1 -or
+    [string]$sliceSuffixLines[0] -cne $expectedActivationSliceRow -or
+    [regex]::Matches($candidateSliceLog, [regex]::Escape($activationUnitId)).Count -ne 1
+  ) {
+    throw "BOOTSTRAP_SLICE_LOG_INVALID: the exact Task 13 closeout row must appear once as the only candidate suffix."
+  }
 }
 
 function Read-DanioGitTextBlob {
@@ -665,12 +1659,13 @@ function Get-DanioLeaseProof {
     [Parameter(Mandatory = $true)]$PreviousState,
     [Parameter(Mandatory = $true)][string]$Action,
     [Parameter(Mandatory = $true)][string]$ParentCommit,
-    [AllowNull()][string]$CandidateCommit = $null
+    [AllowNull()][string]$CandidateCommit = $null,
+    [AllowNull()][string]$ReleaseJson = $null
   )
 
   $releaseActions = @("closeout", "pause", "stop", "complete", "finalization_stop")
   if ($releaseActions -cnotcontains $Action) {
-    if (-not [string]::IsNullOrWhiteSpace($LeaseReleaseJson)) {
+    if (-not [string]::IsNullOrWhiteSpace($ReleaseJson)) {
       throw "LEASE_RELEASE_INVALID: lease release JSON is forbidden for '$Action'."
     }
     $retainedOwnerProven = $false
@@ -745,11 +1740,11 @@ function Get-DanioLeaseProof {
       retained_owner_proven = $retainedOwnerProven
     }
   }
-  if ([string]::IsNullOrWhiteSpace($LeaseReleaseJson)) {
+  if ([string]::IsNullOrWhiteSpace($ReleaseJson)) {
     throw "STOP_PENDING: exact lease release proof is required."
   }
   try {
-    $supplied = $LeaseReleaseJson | ConvertFrom-Json
+    $supplied = $ReleaseJson | ConvertFrom-Json
   } catch {
     throw "LEASE_RELEASE_INVALID: lease release JSON is malformed."
   }
@@ -839,6 +1834,8 @@ function Get-DanioTransitionProof {
     [Parameter(Mandatory = $true)][string]$ParentCommit,
     [Parameter(Mandatory = $true)]$PreviousState,
     [Parameter(Mandatory = $true)]$CandidateState,
+    [AllowNull()][string]$ManifestPath = $null,
+    [AllowNull()][string]$ReleaseJson = $null,
     [AllowNull()][string]$CandidateCommit = $null,
     [AllowNull()][string]$OwningStateCommit = $null
   )
@@ -876,11 +1873,11 @@ function Get-DanioTransitionProof {
 
     $manifest = $null
     $artifactObservations = @()
-    if (-not [string]::IsNullOrWhiteSpace($EvidenceManifestPath)) {
+    if (-not [string]::IsNullOrWhiteSpace($ManifestPath)) {
       $manifest = Read-DanioEvidenceJsonBlob `
         -Root $Root `
         -Revision $ParentCommit `
-        -Path $EvidenceManifestPath
+        -Path $ManifestPath
       Assert-DanioEvidenceProbeShape -Manifest $manifest
       $productCommitProbe = Invoke-DanioGitProbe `
         -Root $Root `
@@ -914,7 +1911,7 @@ function Get-DanioTransitionProof {
           -Arguments @("merge-base", "--is-ancestor", $OwningStateCommit, [string]$manifest.product_commit)
         $manifestCommit = Invoke-DanioGit `
           -Root $Root `
-          -Arguments @("log", "-1", "--format=%H", $ParentCommit, "--", $EvidenceManifestPath)
+          -Arguments @("log", "-1", "--format=%H", $ParentCommit, "--", $ManifestPath)
         $ownedManifestProbe = Invoke-DanioGitProbe `
           -Root $Root `
           -Arguments @("merge-base", "--is-ancestor", $OwningStateCommit, $manifestCommit)
@@ -986,7 +1983,7 @@ function Get-DanioTransitionProof {
         -ParentCommit $ParentCommitValue `
         -ArtifactObservations @($ArtifactObservationValues) `
         -RecoveryObservation $RecoveryObservationValue
-    } $manifest $EvidenceManifestPath $PreviousState $CandidateState $ParentCommit $artifactObservations $recoveryObservation
+    } $manifest $ManifestPath $PreviousState $CandidateState $ParentCommit $artifactObservations $recoveryObservation
     if (-not $evidenceValidation.valid) {
       throw "$($evidenceValidation.code): $($evidenceValidation.details -join '; ')"
     }
@@ -1021,7 +2018,7 @@ function Get-DanioTransitionProof {
         }
       }
     }
-  } elseif (-not [string]::IsNullOrWhiteSpace($EvidenceManifestPath)) {
+  } elseif (-not [string]::IsNullOrWhiteSpace($ManifestPath)) {
     throw "EVIDENCE_MANIFEST_INVALID: transition '$action' cannot carry an evidence manifest."
   }
 
@@ -1030,7 +2027,8 @@ function Get-DanioTransitionProof {
     -PreviousState $PreviousState `
     -Action $action `
     -ParentCommit $ParentCommit `
-    -CandidateCommit $CandidateCommit
+    -CandidateCommit $CandidateCommit `
+    -ReleaseJson $ReleaseJson
   return [pscustomobject]@{
     evidence_validation = $evidenceValidation
     ledger_rows = @($ledgerRows)
@@ -1185,15 +2183,24 @@ try {
     Assert-DanioTransitionPathScope `
       -ChangedPaths @($stagedPathText -split "`r?`n") `
       -Action ([string]$candidateState.transition.action)
-    $previousState = Read-DanioPreviousState `
+    $previousContext = Resolve-DanioPreviousStateContext `
       -Root $resolvedRoot `
       -ParentRevision $observedParent
+    $previousState = $previousContext.state
+    Assert-DanioBootstrapActivationOutputs `
+      -Root $resolvedRoot `
+      -Context $previousContext `
+      -CandidateState $candidateState `
+      -Index
     Assert-DanioClaimParentBinding `
       -Root $resolvedRoot `
       -ParentCommit $observedParent `
       -CandidateState $candidateState
     $task9Actions = @("closeout", "pause", "stop", "finalize", "complete", "finalization_stop")
-    if (
+    if ([string]$previousContext.origin -ceq "bootstrap_absent") {
+      $expectedCandidateAuthority = $previousContext.parent_authority
+      $owningStateCommit = $null
+    } elseif (
       $task9Actions -ccontains [string]$candidateState.transition.action -and
       @("active", "finalizing") -ccontains [string]$previousState.mode
     ) {
@@ -1238,6 +2245,8 @@ try {
       -ParentCommit $observedParent `
       -PreviousState $previousState `
       -CandidateState $candidateState `
+      -ManifestPath $EvidenceManifestPath `
+      -ReleaseJson $LeaseReleaseJson `
       -OwningStateCommit $owningStateCommit
     $transitionParameters = @{
       PreviousState = $previousState
@@ -1327,15 +2336,24 @@ try {
     Assert-DanioTransitionPathScope `
       -ChangedPaths @($committedPathText -split "`r?`n") `
       -Action ([string]$candidateState.transition.action)
-    $previousState = Read-DanioPreviousState `
+    $previousContext = Resolve-DanioPreviousStateContext `
       -Root $resolvedRoot `
       -ParentRevision $observedParent
+    $previousState = $previousContext.state
+    Assert-DanioBootstrapActivationOutputs `
+      -Root $resolvedRoot `
+      -Context $previousContext `
+      -CandidateState $candidateState `
+      -CandidateRevision $commitOid
     Assert-DanioClaimParentBinding `
       -Root $resolvedRoot `
       -ParentCommit $observedParent `
       -CandidateState $candidateState
     $task9Actions = @("closeout", "pause", "stop", "finalize", "complete", "finalization_stop")
-    if (
+    if ([string]$previousContext.origin -ceq "bootstrap_absent") {
+      $expectedCandidateAuthority = $previousContext.parent_authority
+      $owningStateCommit = $null
+    } elseif (
       $task9Actions -ccontains [string]$candidateState.transition.action -and
       @("active", "finalizing") -ccontains [string]$previousState.mode
     ) {
@@ -1364,6 +2382,8 @@ try {
       -ParentCommit $observedParent `
       -PreviousState $previousState `
       -CandidateState $candidateState `
+      -ManifestPath $EvidenceManifestPath `
+      -ReleaseJson $LeaseReleaseJson `
       -CandidateCommit $commitOid `
       -OwningStateCommit $owningStateCommit
     $transitionParameters = @{
@@ -1409,6 +2429,13 @@ try {
       -Detail "Committed tree matches the expected staged tree."))
 
     $message = Invoke-DanioGit -Root $resolvedRoot -Arguments @("log", "-1", "--format=%B", $commitOid)
+    $subject = Invoke-DanioGit -Root $resolvedRoot -Arguments @("log", "-1", "--format=%s", $commitOid)
+    if (
+      [string]$candidateState.transition.action -ceq "launch" -and
+      $subject -cne "chore: activate autonomous phone completion"
+    ) {
+      throw "COMMIT_SUBJECT_INVALID: Task 13 launch requires the exact activation commit subject."
+    }
     $trailerNames = @(
       "Danio-State-Tree",
       "Danio-State-Validation",

@@ -1,8 +1,8 @@
 # Danio Autonomous Chain Handoff Prompt
 
-Status: Bootstrap handoff only; automatic successor creation disabled until
-runner compatibility, single-writer enforcement, readiness validation, and
-the no-product-change rehearsal pass.
+Status: Committed rehearsal authorizes the explicit Task 13 activation path;
+automatic operational successors remain state-, readiness-, generator-, and
+duplicate-safety-gated.
 Created: 2026-07-05
 Reconciled: 2026-07-11 for the approved autonomous phone workflow bootstrap
 
@@ -23,8 +23,9 @@ Then load and follow $verified-slice-runner underneath it.
 
 Continuation mode: autonomous chain approved
 Autonomous chain mode approved for explicit bootstrap continuation only.
-Automatic operational successor creation remains disabled until the workflow
-rehearsal and Task 13 activation pass.
+Automatic operational successor creation remains disabled in bootstrap mode.
+The explicit first product task is separately Task 13-gated, and later chaining
+remains state-, readiness-, generator-, and duplicate-safety-gated.
 
 Bootstrap marker: [danio-autonomy-bootstrap-2026-07-11/N]
 Remaining sequential setup-unit budget: [N] total, including this task. Units
@@ -113,9 +114,11 @@ create nothing and return the complete paste-ready handoff.
 ```
 
 Task 10 adds the separately validated operational launch/successor prompt
-generator and coordinator lookup algorithm. While the committed manifest keeps
-`authorizes_launch: false` and no live run state exists, its reports are
-paste-ready fallbacks with operational task capabilities false. This bootstrap
-template remains the only continuation surface before the Task 12 rehearsal
-and Task 13 activation. Task 13 activation, not this template or the generator,
-creates the live run-state authority.
+generator and coordinator lookup algorithm. Committed manifest revision 3 sets
+`authorizes_launch: true` only through the exact committed Task 12 rehearsal
+proof it pins. While no live run state exists, only the explicitly authorized
+Task 13 activation path may use that launch authority. After activation, the
+generator's Launch output and duplicate-safe lookup govern the one explicit
+first product task; later automatic successors remain live-state and readiness
+gated. This bootstrap template does not create live run-state authority or
+independently authorize an operational successor.
