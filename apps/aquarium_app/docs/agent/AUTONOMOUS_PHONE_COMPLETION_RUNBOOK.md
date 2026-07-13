@@ -1,7 +1,7 @@
 # Danio Autonomous Phone Completion Runbook
 
-Status: No-product rehearsal proof recorded; launch and operational chaining
-remain disabled until committed-proof authorization
+Status: Committed rehearsal proof authorizes launch; the live operational run
+remains inactive until Task 13
 Created: 2026-07-11
 Scope: Android phone complete-local workflow coordination only
 
@@ -21,11 +21,13 @@ owns category status and quality-bar summaries.
 
 - Automatic operational successor creation is disabled.
 - `runner_compatible` is `true` for the reviewed installed bytes.
-- `authorizes_launch` is `false`.
+- `authorizes_launch` is `true` only through the exact committed proof pinned
+  by manifest revision 3.
 - Task 12's durable rehearsal report is
   `apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json`.
-  The report is proof input only; it cannot authorize launch from its own
-  containing commit.
+  Its exact bytes are pinned by SHA-256
+  `79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b`
+  and containing commit `ecbeffc2aa7a6f831c06d39ca110309e84e43702`.
 - Installed runner hashes and compatibility-contract hashes are pinned to the
   independently reviewed exact bytes in `runner_compatibility.json`.
 - No operational run-state file exists. Only Task 13 may create
@@ -38,14 +40,15 @@ owns category status and quality-bar summaries.
   machine-readable unit counter, and it changes only at durable clean closeout.
 
 `RUNNER_COMPATIBLE` is now the expected compatibility result for the reviewed
-installed bytes. Launch remains blocked by `authorizes_launch: false`; the
+installed bytes and committed rehearsal proof. Operational launch remains
+inactive because no live run state exists; the
 Task 8 writer-claim transaction does not authorize operational chaining or
 create live state. Task 9 implements and fixture-proves evidence validation,
 closeout, finalization, and exactly-once charging, but does not activate them.
-Task-tool capability is implemented by Tasks 10-11. Task 12 records the
-no-side-effect rehearsal in one commit and changes launch authorization only in
-a later commit that pins those already committed bytes. Task 13 alone creates
-live run state and performs Launch readiness.
+Task-tool capability is implemented by Tasks 10-11. Task 12 recorded the
+no-side-effect rehearsal in commit `ecbeffc2` and changed launch authorization
+only in later commit `480b62cc`, which pins those already committed bytes.
+Task 13 alone creates live run state and performs Launch readiness.
 
 ## Machine Contract Inventory
 
