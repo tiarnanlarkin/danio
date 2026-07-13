@@ -188,7 +188,8 @@ try {
       $runnerManifest = Get-Content -Raw -LiteralPath $runnerManifestPath | ConvertFrom-Json
       Test-DanioRunnerCompatibility `
         -Manifest $runnerManifest `
-        -RequireLaunchAuthorization:($Intent -ceq "Launch" -or $Intent -ceq "Claim")
+        -RequireLaunchAuthorization:($Intent -ceq "Launch" -or $Intent -ceq "Claim") `
+        -RepositoryRoot $resolvedRoot
     } catch {
       [pscustomobject]@{
         valid = $false

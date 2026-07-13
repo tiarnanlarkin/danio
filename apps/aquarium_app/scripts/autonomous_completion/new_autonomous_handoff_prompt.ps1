@@ -423,7 +423,9 @@ try {
   $runnerManifestPath = Join-Path $resolvedRoot "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
   try {
     $runnerManifest = Get-Content -Raw -LiteralPath $runnerManifestPath | ConvertFrom-Json
-    $runnerValidation = Test-DanioRunnerCompatibility -Manifest $runnerManifest
+    $runnerValidation = Test-DanioRunnerCompatibility `
+      -Manifest $runnerManifest `
+      -RepositoryRoot $resolvedRoot
   } catch {
     $runnerValidation = [pscustomobject]@{
       valid = $false

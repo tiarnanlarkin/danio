@@ -652,8 +652,15 @@ void main() {
             )
             as Map<String, dynamic>;
     expect(compatibility['runner_compatible'], isTrue);
-    expect(compatibility['authorizes_launch'], isFalse);
-    expect(compatibility['launch_proof'], isNull);
+    expect(compatibility['manifest_revision'], 3);
+    expect(compatibility['authorizes_launch'], isTrue);
+    expect(compatibility['launch_proof'], <String, dynamic>{
+      'report_path':
+          'apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json',
+      'report_sha256':
+          '79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b',
+      'report_commit': 'ecbeffc2aa7a6f831c06d39ca110309e84e43702',
+    });
     expect(
       _exists(
         'docs/agent/autonomous_completion/phone_completion_run_state.json',

@@ -3028,11 +3028,221 @@ function Test-DanioSynchronizationReceipt {
   return New-DanioValidationResult -Valid $true -Code "SYNC_RECEIPT_VALID"
 }
 
+function Test-DanioGitAncestor {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$Ancestor,
+    [Parameter(Mandatory = $true)][string]$Descendant
+  )
+
+  $priorPreference = $ErrorActionPreference
+  try {
+    $ErrorActionPreference = "Continue"
+    [void]@(& git -c core.longpaths=true -C $RepositoryRoot merge-base --is-ancestor $Ancestor $Descendant 2>&1)
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $priorPreference
+  }
+  return $exitCode -eq 0
+}
+
+function Get-DanioGitBlobBytes {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$ObjectId
+  )
+
+  if (-not (Test-DanioGitOid -Value $ObjectId)) {
+    throw "RUNNER_INCOMPATIBLE: rehearsal blob object id is malformed."
+  }
+
+  $startInfo = New-Object Diagnostics.ProcessStartInfo
+  $startInfo.FileName = "git"
+  $startInfo.WorkingDirectory = $RepositoryRoot
+  $startInfo.Arguments = "-c core.longpaths=true cat-file blob $ObjectId"
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.RedirectStandardError = $true
+  $startInfo.EnvironmentVariables["GIT_OPTIONAL_LOCKS"] = "0"
+
+  $process = New-Object Diagnostics.Process
+  $process.StartInfo = $startInfo
+  $memory = New-Object IO.MemoryStream
+  try {
+    if (-not $process.Start()) {
+      throw "RUNNER_INCOMPATIBLE: git cat-file did not start."
+    }
+    $stderrTask = $process.StandardError.ReadToEndAsync()
+    $process.StandardOutput.BaseStream.CopyTo($memory)
+    $process.WaitForExit()
+    $stderr = $stderrTask.Result
+    if ($process.ExitCode -ne 0) {
+      throw "RUNNER_INCOMPATIBLE: git cat-file failed: $stderr"
+    }
+    return [pscustomobject]@{
+      bytes = $memory.ToArray()
+    }
+  } finally {
+    $memory.Dispose()
+    $process.Dispose()
+  }
+}
+
+function Test-DanioCommittedRehearsalProof {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)]$LaunchProof,
+    [string]$RepositoryRoot
+  )
+
+  try {
+    $proofSet = Test-DanioExactPropertySet `
+      -Value $LaunchProof `
+      -Allowed @("report_path", "report_sha256", "report_commit") `
+      -Required @("report_path", "report_sha256", "report_commit")
+    if (
+      -not $proofSet.valid -or
+      -not (Test-DanioRepoPath -Value $LaunchProof.report_path) -or
+      -not (Test-DanioSha256 -Value $LaunchProof.report_sha256) -or
+      -not (Test-DanioGitOid -Value $LaunchProof.report_commit)
+    ) {
+      return $false
+    }
+
+    $resolvedRoot = Resolve-DanioRepositoryRoot -RepositoryRoot $RepositoryRoot
+    $headCommit = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "HEAD")
+    $proofCommit = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "$($LaunchProof.report_commit)^{commit}")
+    if (
+      [string]$proofCommit -cne [string]$LaunchProof.report_commit -or
+      -not (Test-DanioGitAncestor `
+        -RepositoryRoot $resolvedRoot `
+        -Ancestor $proofCommit `
+        -Descendant $headCommit)
+    ) {
+      return $false
+    }
+
+    $changedPaths = @(ConvertTo-DanioOutputLines -Value (Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @(
+        "diff-tree",
+        "--root",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        $proofCommit,
+        "--",
+        [string]$LaunchProof.report_path
+      )))
+    if (
+      $changedPaths.Count -ne 1 -or
+      [string]$changedPaths[0] -cne [string]$LaunchProof.report_path
+    ) {
+      return $false
+    }
+
+    $blobId = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "$proofCommit`:$($LaunchProof.report_path)")
+    $blobType = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("cat-file", "-t", $blobId)
+    if (-not (Test-DanioGitOid -Value $blobId) -or $blobType -cne "blob") {
+      return $false
+    }
+
+    $blob = Get-DanioGitBlobBytes -RepositoryRoot $resolvedRoot -ObjectId $blobId
+    $sha256 = [Security.Cryptography.SHA256]::Create()
+    try {
+      $hash = $sha256.ComputeHash([byte[]]$blob.bytes)
+      $actualHash = ([BitConverter]::ToString($hash)).Replace("-", "").ToLowerInvariant()
+    } finally {
+      $sha256.Dispose()
+    }
+    if ($actualHash -cne [string]$LaunchProof.report_sha256) {
+      return $false
+    }
+
+    $strictUtf8 = New-Object Text.UTF8Encoding($false, $true)
+    $reportText = $strictUtf8.GetString([byte[]]$blob.bytes)
+    $report = $reportText | ConvertFrom-Json -ErrorAction Stop
+
+    $commonDirectory = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "--path-format=absolute", "--git-common-dir")
+    $resolvedCommonDirectory = [IO.Path]::GetFullPath($commonDirectory)
+    if ([IO.Path]::GetFileName($resolvedCommonDirectory) -cne ".git") {
+      return $false
+    }
+    $canonicalRoot = Resolve-DanioRepositoryRoot `
+      -RepositoryRoot ([IO.Directory]::GetParent($resolvedCommonDirectory).FullName)
+    $normalizedCanonicalRoot = ConvertTo-DanioForwardSlashPath -Path $canonicalRoot
+    if (
+      $report.repository_root -isnot [string] -or
+      -not [string]::Equals(
+        [string]$report.repository_root,
+        $normalizedCanonicalRoot,
+        [StringComparison]::OrdinalIgnoreCase
+      )
+    ) {
+      return $false
+    }
+
+    $baseCommit = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "$($report.base_commit)^{commit}")
+    if (
+      [string]$baseCommit -cne [string]$report.base_commit -or
+      -not (Test-DanioGitAncestor `
+        -RepositoryRoot $resolvedRoot `
+        -Ancestor $baseCommit `
+        -Descendant $proofCommit)
+    ) {
+      return $false
+    }
+    $baseTree = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-parse", "$baseCommit^{tree}")
+    if ([string]$report.before.index_tree -cne $baseTree) {
+      return $false
+    }
+
+    $rebuilt = New-DanioRehearsalReport `
+      -RehearsalRunId ([string]$report.rehearsal_run_id) `
+      -TaskId ([string]$report.task_id) `
+      -CreatedAtUtc ([string]$report.created_at_utc) `
+      -RepositoryRoot ([string]$report.repository_root) `
+      -BaseCommit ([string]$report.base_commit) `
+      -ProposedAutonomousUnits ([int64]$report.proposed.autonomous_units) `
+      -ProposedWorkUnitId ([string]$report.proposed.work_unit_id) `
+      -ProposedLedgerRowIds @($report.proposed.ledger_row_ids) `
+      -Before $report.before `
+      -After $report.after `
+      -LaunchPreview $report.previews.launch `
+      -ClaimPreview $report.previews.claim `
+      -CloseoutPreview $report.previews.closeout
+    return (
+      (ConvertTo-DanioCanonicalJson -Value $report) -ceq
+      (ConvertTo-DanioCanonicalJson -Value $rebuilt)
+    )
+  } catch {
+    return $false
+  }
+}
+
 function Test-DanioRunnerCompatibility {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory = $true)][AllowNull()]$Manifest,
-    [switch]$RequireLaunchAuthorization
+    [switch]$RequireLaunchAuthorization,
+    [string]$RepositoryRoot
   )
 
   $manifestFields = @(
@@ -3067,8 +3277,7 @@ function Test-DanioRunnerCompatibility {
     -not (Test-DanioBoolean -Value $Manifest.runner_compatible) -or
     -not (Test-DanioBoolean -Value $Manifest.authorizes_launch) -or
     -not $Manifest.runner_compatible -or
-    $Manifest.authorizes_launch -or
-    ($RequireLaunchAuthorization -and -not $Manifest.authorizes_launch) -or
+    ($Manifest.authorizes_launch -and [int64]$Manifest.manifest_revision -lt 3) -or
     (-not $Manifest.authorizes_launch -and $null -ne $Manifest.launch_proof) -or
     $Manifest.skills -isnot [System.Array] -or
     -not (Test-DanioExactStringSequence `
@@ -3270,6 +3479,25 @@ function Test-DanioRunnerCompatibility {
     ) {
       return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner compatibility sidecar is malformed or semantically incompatible.")
     }
+  }
+
+  if (
+    $Manifest.authorizes_launch -and
+    -not (Test-DanioCommittedRehearsalProof `
+      -LaunchProof $Manifest.launch_proof `
+      -RepositoryRoot $RepositoryRoot)
+  ) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "RUNNER_INCOMPATIBLE" `
+      -Details @("Committed rehearsal proof is missing, malformed, or incompatible.")
+  }
+
+  if ($RequireLaunchAuthorization -and -not $Manifest.authorizes_launch) {
+    return New-DanioValidationResult `
+      -Valid $false `
+      -Code "LAUNCH_NOT_AUTHORIZED" `
+      -Details @("Runner bytes are compatible but launch authorization remains false.")
   }
 
   return New-DanioValidationResult -Valid $true -Code "RUNNER_COMPATIBLE"
@@ -3487,8 +3715,19 @@ function Test-DanioAutonomousReadiness {
     ($RunnerValidation.PSObject.Properties.Name -ccontains "valid") -and
     [bool]$RunnerValidation.valid
   )
+  $runnerCode = if ($runnerValid) {
+    "RUNNER"
+  } elseif (
+    $null -ne $RunnerValidation -and
+    ($RunnerValidation.PSObject.Properties.Name -ccontains "code") -and
+    [string]$RunnerValidation.code -ceq "LAUNCH_NOT_AUTHORIZED"
+  ) {
+    "LAUNCH_NOT_AUTHORIZED"
+  } else {
+    "RUNNER_INCOMPATIBLE"
+  }
   $checks.Add((New-DanioReadinessCheck `
-    -Code $(if ($runnerValid) { "RUNNER" } else { "RUNNER_INCOMPATIBLE" }) `
+    -Code $runnerCode `
     -Passed $runnerValid `
     -Detail $(if ($runnerValid) { "Runner compatibility validates." } else { $RunnerValidation.details -join "; " })))
 
@@ -3515,6 +3754,7 @@ function Test-DanioAutonomousReadiness {
     "REMOTE_DIVERGED",
     "DIRTY_UNOWNED",
     "AUTHORITY_CONFLICT",
+    "LAUNCH_NOT_AUTHORIZED",
     "RUNNER_INCOMPATIBLE",
     "BUDGET_EXHAUSTED",
     "RUNTIME_OWNERSHIP_CONFLICT",

@@ -855,17 +855,61 @@ Assert-ThrowsLike `
   -ExpectedPattern "REHEARSAL_PREVIEW_INVALID" `
   -Message "Wrong Launch preview code was accepted."
 
-$prematureLaunchManifest = Copy-JsonValue -Value $runnerManifest
-$prematureLaunchManifest.authorizes_launch = $true
-$prematureLaunchManifest.launch_proof = [pscustomobject]@{
-  report_path = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-forged.json"
-  report_sha256 = ("c" * 64)
-  report_commit = ("d" * 40)
+$unauthorizedRunnerManifest = Copy-JsonValue -Value $runnerManifest
+$unauthorizedRunnerManifest.manifest_revision = 2
+$unauthorizedRunnerManifest.authorizes_launch = $false
+$unauthorizedRunnerManifest.launch_proof = $null
+$unauthorizedLaunchValidation = Test-DanioRunnerCompatibility `
+  -Manifest $unauthorizedRunnerManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $unauthorizedLaunchValidation.code -Expected "LAUNCH_NOT_AUTHORIZED" -Message "False launch authorization was misclassified as runner incompatibility."
+
+$authorizedLaunchManifest = Copy-JsonValue -Value $runnerManifest
+$authorizedLaunchManifest.manifest_revision = 3
+$authorizedLaunchManifest.authorizes_launch = $true
+$authorizedLaunchManifest.launch_proof = [pscustomobject]@{
+  report_path = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json"
+  report_sha256 = "79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b"
+  report_commit = "ecbeffc2aa7a6f831c06d39ca110309e84e43702"
 }
-$prematureLaunchValidation = Test-DanioRunnerCompatibility `
-  -Manifest $prematureLaunchManifest `
-  -RequireLaunchAuthorization
-Assert-Equal -Actual $prematureLaunchValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Launch authorization was accepted before Task 12 proof validation exists."
+$authorizedLaunchValidation = Test-DanioRunnerCompatibility `
+  -Manifest $authorizedLaunchManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $authorizedLaunchValidation.code -Expected "RUNNER_COMPATIBLE" -Message "Committed rehearsal proof did not authorize the reviewed runner."
+
+$wrongProofHashManifest = Copy-JsonValue -Value $authorizedLaunchManifest
+$wrongProofHashManifest.launch_proof.report_sha256 = ("c" * 64)
+$wrongProofHashValidation = Test-DanioRunnerCompatibility `
+  -Manifest $wrongProofHashManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $wrongProofHashValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Wrong rehearsal proof hash was accepted."
+
+$wrongProofPathManifest = Copy-JsonValue -Value $authorizedLaunchManifest
+$wrongProofPathManifest.launch_proof.report_path = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-working-tree-only.json"
+$wrongProofPathValidation = Test-DanioRunnerCompatibility `
+  -Manifest $wrongProofPathManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $wrongProofPathValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "A report absent from the proof commit was accepted."
+
+$wrongProofCommitManifest = Copy-JsonValue -Value $authorizedLaunchManifest
+$wrongProofCommitManifest.launch_proof.report_commit = "6de2ec029b21ccb436ca931c1d60dfcd8c2fa064"
+$wrongProofCommitValidation = Test-DanioRunnerCompatibility `
+  -Manifest $wrongProofCommitManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $wrongProofCommitValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "A commit that does not contain the report was accepted."
+
+$unknownProofFieldManifest = Copy-JsonValue -Value $authorizedLaunchManifest
+$unknownProofFieldManifest.launch_proof | Add-Member -NotePropertyName unexpected -NotePropertyValue $true
+$unknownProofFieldValidation = Test-DanioRunnerCompatibility `
+  -Manifest $unknownProofFieldManifest `
+  -RequireLaunchAuthorization `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $unknownProofFieldValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unknown launch proof fields were accepted."
 
 $forgedDesignManifest = Copy-JsonValue -Value $runnerManifest
 $forgedDesignManifest.design.path = "apps/aquarium_app/docs/agent/plans/forged-design.md"

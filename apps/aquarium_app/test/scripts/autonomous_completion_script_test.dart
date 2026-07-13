@@ -1105,6 +1105,7 @@ void main() {
     expect(source, isNot(contains('fork_thread')));
     expect(source, isNot(contains('send_message_to_thread')));
     expect(source, isNot(contains('Invoke-RestMethod')));
+    expect(source, contains(r'-RepositoryRoot $resolvedRoot'));
 
     final runbook = File(
       'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
@@ -1303,7 +1304,7 @@ void main() {
     );
   });
 
-  test('runner compatibility pins reviewed contracts but blocks launch', () {
+  test('runner compatibility pins reviewed contracts and committed proof', () {
     final compatibility = _readJson(
       '$_contractRoot/runner_compatibility.json',
     );
@@ -1311,10 +1312,16 @@ void main() {
 
     expect(compatibility['schema_version'], 1);
     expect(compatibility['manifest_id'], 'danio-phone-autonomy-runners');
-    expect(compatibility['manifest_revision'], 2);
-    expect(compatibility['authorizes_launch'], isFalse);
+    expect(compatibility['manifest_revision'], 3);
+    expect(compatibility['authorizes_launch'], isTrue);
     expect(compatibility['runner_compatible'], isTrue);
-    expect(compatibility['launch_proof'], isNull);
+    expect(compatibility['launch_proof'], <String, dynamic>{
+      'report_path':
+          'apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json',
+      'report_sha256':
+          '79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b',
+      'report_commit': 'ecbeffc2aa7a6f831c06d39ca110309e84e43702',
+    });
     expect(
       compatibility['runner_order'],
       <String>['danio-autonomous-slice-runner', 'verified-slice-runner'],
@@ -1610,6 +1617,14 @@ void main() {
       expect(source, contains('"$functionName"'));
     }
 
+    expect(source, contains('function Test-DanioCommittedRehearsalProof'));
+    expect(source, contains('cat-file blob'));
+    expect(source, contains('MemoryStream'));
+    expect(source, contains('BaseStream'));
+    expect(source, contains('diff-tree'));
+    expect(source, contains('merge-base'));
+    expect(source, contains('LAUNCH_NOT_AUTHORIZED'));
+
     for (final mutation in <String>[
       'git fetch',
       'git add',
@@ -1649,6 +1664,8 @@ void main() {
     final transaction = File(
       'scripts/autonomous_completion/commit_autonomous_completion_transition.ps1',
     ).readAsStringSync();
+
+    expect(readiness, contains(r'-RepositoryRoot $resolvedRoot'));
 
     for (final source in <String>[readiness, validator]) {
       expect(source, contains(r'$EvidenceManifestPath'));

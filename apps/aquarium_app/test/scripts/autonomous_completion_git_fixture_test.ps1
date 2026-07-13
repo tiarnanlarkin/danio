@@ -1019,6 +1019,18 @@ exit $gateExit
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destinationPath) | Out-Null
     Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
   }
+  $transitionRunnerManifestPath = Join-Path `
+    $seed `
+    "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
+  $transitionRunnerManifest = Get-Content `
+    -Raw `
+    -LiteralPath $transitionRunnerManifestPath | ConvertFrom-Json
+  $transitionRunnerManifest.manifest_revision = 2
+  $transitionRunnerManifest.authorizes_launch = $false
+  $transitionRunnerManifest.launch_proof = $null
+  Write-FixtureJson `
+    -Path $transitionRunnerManifestPath `
+    -Value $transitionRunnerManifest
 
   $ledgerMode = if ($isRc) { "rc_open" } else { "ordinary" }
   Write-FixtureScript `
@@ -1521,10 +1533,263 @@ $seedRoot = Join-Path $tempRoot "seed"
 $cloneOneRoot = Join-Path $tempRoot "clone-one"
 $cloneTwoRoot = Join-Path $tempRoot "clone-two"
 $foreignWorktreeRoot = Join-Path $tempRoot "foreign-worktree"
+$proofRoot = Join-Path $tempRoot "launch-proof"
+$proofRemoteRoot = Join-Path $tempRoot "launch-proof-remote.git"
 $invocationNonce = "0123456789abcdef0123456789abcdef"
 
 try {
   New-Item -ItemType Directory -Path $tempRoot | Out-Null
+  [void](Invoke-GitWithoutRepository -GitArguments @("init", $proofRoot))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("checkout", "-b", "main"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("config", "user.name", "Danio Proof Fixture"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("config", "user.email", "danio-proof@example.invalid"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("config", "core.autocrlf", "false"))
+  $proofAppRoot = Join-Path $proofRoot "apps/aquarium_app"
+  New-Item -ItemType Directory -Force -Path $proofAppRoot | Out-Null
+  [IO.File]::WriteAllText(
+    (Join-Path $proofAppRoot "proof-base.txt"),
+    "proof base",
+    (New-Object Text.UTF8Encoding($false))
+  )
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", "apps/aquarium_app/proof-base.txt"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: establish proof base"))
+  $proofBaseCommit = Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("rev-parse", "HEAD")
+  $proofBaseTree = Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("rev-parse", "HEAD^{tree}")
+  $proofObservation = [pscustomobject][ordered]@{
+    status_sha256 = ("1" * 64)
+    index_tree = $proofBaseTree
+    local_refs_sha256 = ("2" * 64)
+    remote_refs_sha256 = ("3" * 64)
+    worktrees_sha256 = ("4" * 64)
+  }
+  $proofLaunchPreview = [pscustomobject][ordered]@{
+    eligible = $false
+    code = "LAUNCH_NOT_AUTHORIZED"
+    mutations_performed = $false
+  }
+  $proofAuthorityPreview = [pscustomobject][ordered]@{
+    eligible = $false
+    code = "AUTHORITY_CONFLICT"
+    mutations_performed = $false
+  }
+  $proofReport = New-DanioRehearsalReport `
+    -RehearsalRunId "fixture-committed-rehearsal" `
+    -TaskId "fixture-task-001" `
+    -CreatedAtUtc "2026-07-13T12:00:00.0000000Z" `
+    -RepositoryRoot ($proofRoot.Replace("\", "/")) `
+    -BaseCommit $proofBaseCommit `
+    -ProposedAutonomousUnits 12 `
+    -ProposedWorkUnitId "WF-2026-07-11-015" `
+    -ProposedLedgerRowIds @("DCL-DR-001") `
+    -Before $proofObservation `
+    -After ($proofObservation | ConvertTo-Json -Depth 100 | ConvertFrom-Json) `
+    -LaunchPreview $proofLaunchPreview `
+    -ClaimPreview $proofAuthorityPreview `
+    -CloseoutPreview ($proofAuthorityPreview | ConvertTo-Json -Depth 100 | ConvertFrom-Json)
+  $proofReportRelativePath = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-proof.json"
+  $proofReportPath = Join-Path $proofRoot $proofReportRelativePath
+  Write-FixtureJson -Path $proofReportPath -Value $proofReport
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", $proofReportRelativePath))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: commit valid rehearsal proof"))
+  $proofCommit = Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("rev-parse", "HEAD")
+  $proofReportSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofReportPath).Hash.ToLowerInvariant()
+  $sourceRunnerManifest = Get-Content -Raw -LiteralPath (
+    Join-Path $appRoot "docs/agent/autonomous_completion/runner_compatibility.json"
+  ) | ConvertFrom-Json
+  $authorizedProofManifest = $sourceRunnerManifest | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $authorizedProofManifest.manifest_revision = 3
+  $authorizedProofManifest.authorizes_launch = $true
+  $authorizedProofManifest.launch_proof = [pscustomobject]@{
+    report_path = $proofReportRelativePath
+    report_sha256 = $proofReportSha256
+    report_commit = $proofCommit
+  }
+  $validProofValidation = Test-DanioRunnerCompatibility `
+    -Manifest $authorizedProofManifest `
+    -RequireLaunchAuthorization `
+    -RepositoryRoot $proofRoot
+  Assert-Equal -Actual $validProofValidation.code -Expected "RUNNER_COMPATIBLE" -Message "Valid committed rehearsal proof was rejected."
+
+  [IO.File]::WriteAllText(
+    $proofReportPath,
+    "working tree tamper",
+    (New-Object Text.UTF8Encoding($false))
+  )
+  $committedBlobValidation = Test-DanioRunnerCompatibility `
+    -Manifest $authorizedProofManifest `
+    -RequireLaunchAuthorization `
+    -RepositoryRoot $proofRoot
+  Assert-Equal -Actual $committedBlobValidation.code -Expected "RUNNER_COMPATIBLE" -Message "Working-tree tamper displaced committed rehearsal proof bytes."
+  [void](Invoke-Git `
+    -RepositoryRoot $proofRoot `
+    -GitArguments @("restore", "--source", $proofCommit, "--", $proofReportRelativePath))
+
+  [IO.File]::WriteAllText(
+    (Join-Path $proofAppRoot "unrelated.txt"),
+    "unrelated",
+    (New-Object Text.UTF8Encoding($false))
+  )
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", "apps/aquarium_app/unrelated.txt"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: unrelated commit"))
+  $unrelatedCommit = Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("rev-parse", "HEAD")
+  $nonContainingManifest = $authorizedProofManifest | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $nonContainingManifest.launch_proof.report_commit = $unrelatedCommit
+  $nonContainingValidation = Test-DanioRunnerCompatibility `
+    -Manifest $nonContainingManifest `
+    -RequireLaunchAuthorization `
+    -RepositoryRoot $proofRoot
+  Assert-Equal -Actual $nonContainingValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "An unrelated commit was accepted as the containing report commit."
+
+  $workingOnlyRelativePath = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-working-tree-only.json"
+  $workingOnlyPath = Join-Path $proofRoot $workingOnlyRelativePath
+  Write-FixtureJson -Path $workingOnlyPath -Value $proofReport
+  $workingOnlyManifest = $authorizedProofManifest | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $workingOnlyManifest.launch_proof.report_path = $workingOnlyRelativePath
+  $workingOnlyManifest.launch_proof.report_sha256 = (
+    Get-FileHash -Algorithm SHA256 -LiteralPath $workingOnlyPath
+  ).Hash.ToLowerInvariant()
+  $workingOnlyManifest.launch_proof.report_commit = $unrelatedCommit
+  $workingOnlyValidation = Test-DanioRunnerCompatibility `
+    -Manifest $workingOnlyManifest `
+    -RequireLaunchAuthorization `
+    -RepositoryRoot $proofRoot
+  Assert-Equal -Actual $workingOnlyValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Working-tree-only rehearsal proof was accepted."
+  Remove-Item -LiteralPath $workingOnlyPath -Force
+
+  $tamperedReports = @(
+    @{
+      Name = "changed-observation"
+      Mutate = {
+        param($Report)
+        $Report.after.local_refs_sha256 = ("5" * 64)
+      }
+    },
+    @{
+      Name = "wrong-launch-code"
+      Mutate = {
+        param($Report)
+        $Report.previews.launch.code = "RUNNER_INCOMPATIBLE"
+      }
+    },
+    @{
+      Name = "wrong-claim-code"
+      Mutate = {
+        param($Report)
+        $Report.previews.claim.code = "RUNNER_INCOMPATIBLE"
+      }
+    },
+    @{
+      Name = "wrong-closeout-code"
+      Mutate = {
+        param($Report)
+        $Report.previews.closeout.code = "RUNNER_INCOMPATIBLE"
+      }
+    }
+  )
+  foreach ($tamperedCase in $tamperedReports) {
+    $tamperedReport = $proofReport | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+    & $tamperedCase.Mutate $tamperedReport
+    $tamperedRelativePath = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-$($tamperedCase.Name).json"
+    $tamperedPath = Join-Path $proofRoot $tamperedRelativePath
+    Write-FixtureJson -Path $tamperedPath -Value $tamperedReport
+    [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", $tamperedRelativePath))
+    [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: $($tamperedCase.Name)"))
+    $tamperedManifest = $authorizedProofManifest | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+    $tamperedManifest.launch_proof.report_path = $tamperedRelativePath
+    $tamperedManifest.launch_proof.report_sha256 = (
+      Get-FileHash -Algorithm SHA256 -LiteralPath $tamperedPath
+    ).Hash.ToLowerInvariant()
+    $tamperedManifest.launch_proof.report_commit = Invoke-Git `
+      -RepositoryRoot $proofRoot `
+      -GitArguments @("rev-parse", "HEAD")
+    $tamperedValidation = Test-DanioRunnerCompatibility `
+      -Manifest $tamperedManifest `
+      -RequireLaunchAuthorization `
+      -RepositoryRoot $proofRoot
+    Assert-Equal `
+      -Actual $tamperedValidation.code `
+      -Expected "RUNNER_INCOMPATIBLE" `
+      -Message "Tampered rehearsal proof '$($tamperedCase.Name)' was accepted."
+  }
+
+  foreach ($mutationName in @(
+    "repository_files",
+    "index",
+    "local_refs",
+    "remote_refs",
+    "worktrees",
+    "successor_tasks",
+    "android_runtime",
+    "figma",
+    "external_services"
+  )) {
+    $tamperedReport = $proofReport | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+    $tamperedReport.mutations.$mutationName = $true
+    $tamperedRelativePath = "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-true-$($mutationName.Replace('_', '-')).json"
+    $tamperedPath = Join-Path $proofRoot $tamperedRelativePath
+    Write-FixtureJson -Path $tamperedPath -Value $tamperedReport
+    [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", $tamperedRelativePath))
+    [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: true mutation $mutationName"))
+    $tamperedManifest = $authorizedProofManifest | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+    $tamperedManifest.launch_proof.report_path = $tamperedRelativePath
+    $tamperedManifest.launch_proof.report_sha256 = (
+      Get-FileHash -Algorithm SHA256 -LiteralPath $tamperedPath
+    ).Hash.ToLowerInvariant()
+    $tamperedManifest.launch_proof.report_commit = Invoke-Git `
+      -RepositoryRoot $proofRoot `
+      -GitArguments @("rev-parse", "HEAD")
+    $tamperedValidation = Test-DanioRunnerCompatibility `
+      -Manifest $tamperedManifest `
+      -RequireLaunchAuthorization `
+      -RepositoryRoot $proofRoot
+    Assert-Equal `
+      -Actual $tamperedValidation.code `
+      -Expected "RUNNER_INCOMPATIBLE" `
+      -Message "True mutation flag '$mutationName' was accepted."
+  }
+
+  foreach ($relativePath in @(
+    "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md",
+    "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md",
+    "apps/aquarium_app/docs/agent/FINISH_MAP.md",
+    "apps/aquarium_app/docs/agent/QUALITY_LADDER.md",
+    "apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md",
+    "apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md",
+    "apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md",
+    "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
+  )) {
+    $sourcePath = Join-Path $repoRoot $relativePath
+    $destinationPath = Join-Path $proofRoot $relativePath
+    $destinationDirectory = Split-Path -Parent $destinationPath
+    New-Item -ItemType Directory -Force -Path $destinationDirectory | Out-Null
+    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+  }
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("add", "apps/aquarium_app"))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("commit", "-m", "fixture: authorized manifest without proof object"))
+  [void](Invoke-GitWithoutRepository -GitArguments @("init", "--bare", $proofRemoteRoot))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("remote", "add", "origin", $proofRemoteRoot))
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("push", "-u", "origin", "main"))
+  [void](Invoke-Git -RepositoryRoot $proofRemoteRoot -GitArguments @("symbolic-ref", "HEAD", "refs/heads/main"))
+  $rootBindingReceipt = Invoke-Synchronization `
+    -ScriptPath $syncScriptPath `
+    -RepositoryRoot $proofRoot `
+    -InvocationNonce $invocationNonce
+  $rootBindingBefore = Get-RepositorySnapshot -RepositoryRoot $proofRoot
+  $rootBindingReport = Invoke-Readiness `
+    -ScriptPath $readinessScriptPath `
+    -RepositoryRoot $proofRoot `
+    -InvocationNonce $invocationNonce `
+    -Receipt $rootBindingReceipt
+  $rootBindingAfter = Get-RepositorySnapshot -RepositoryRoot $proofRoot
+  Assert-SnapshotEqual `
+    -Before $rootBindingBefore `
+    -After $rootBindingAfter `
+    -Scenario "target-repository launch proof binding"
+  Assert-Equal `
+    -Actual $rootBindingReport.stop_reason_code `
+    -Expected "RUNNER_INCOMPATIBLE" `
+    -Message "Readiness inherited authorization from the module checkout instead of the target repository."
+
   [void](Invoke-GitWithoutRepository -GitArguments @("init", "--bare", $remoteRoot))
   [void](Invoke-GitWithoutRepository -GitArguments @("init", $seedRoot))
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("checkout", "-b", "main"))
@@ -1548,6 +1813,14 @@ try {
     New-Item -ItemType Directory -Force -Path $destinationDirectory | Out-Null
     Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
   }
+  $seedRunnerManifestPath = Join-Path `
+    $seedRoot `
+    "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
+  $seedRunnerManifest = Get-Content -Raw -LiteralPath $seedRunnerManifestPath | ConvertFrom-Json
+  $seedRunnerManifest.manifest_revision = 2
+  $seedRunnerManifest.authorizes_launch = $false
+  $seedRunnerManifest.launch_proof = $null
+  Write-FixtureJson -Path $seedRunnerManifestPath -Value $seedRunnerManifest
 
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("add", "apps/aquarium_app"))
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("commit", "-m", "fixture: seed Danio authority"))
@@ -1611,7 +1884,7 @@ try {
     -ReadinessScriptPath $readinessScriptPath `
     -RepositoryRoot $cloneOneRoot `
     -InvocationNonce $invocationNonce `
-    -ExpectedStopReason "RUNNER_INCOMPATIBLE" `
+    -ExpectedStopReason "LAUNCH_NOT_AUTHORIZED" `
     -Scenario "clean launch-blocked fixture"
 
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("switch", "-c", "fixture-wrong-source"))
@@ -3830,7 +4103,7 @@ exit `$code
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 73
+    scenarios = 91
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {

@@ -1,10 +1,14 @@
 {
   "schema_version": 1,
   "manifest_id": "danio-phone-autonomy-runners",
-  "manifest_revision": 2,
-  "authorizes_launch": false,
+  "manifest_revision": 3,
+  "authorizes_launch": true,
   "runner_compatible": true,
-  "launch_proof": null,
+  "launch_proof": {
+    "report_path": "apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json",
+    "report_sha256": "79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b",
+    "report_commit": "ecbeffc2aa7a6f831c06d39ca110309e84e43702"
+  },
   "design": {
     "path": "apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md",
     "commit": "81be4c93444cfd47a80cf47730cbc76e9b8464ff",

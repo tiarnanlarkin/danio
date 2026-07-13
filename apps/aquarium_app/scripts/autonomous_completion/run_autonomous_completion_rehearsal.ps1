@@ -282,7 +282,9 @@ try {
   if ($runnerManifest.authorizes_launch -isnot [bool] -or [bool]$runnerManifest.authorizes_launch) {
     throw "REHEARSAL_PREVIEW_INVALID: rehearsal requires the committed false launch bit."
   }
-  $runnerValidation = Test-DanioRunnerCompatibility -Manifest $runnerManifest
+  $runnerValidation = Test-DanioRunnerCompatibility `
+    -Manifest $runnerManifest `
+    -RepositoryRoot $resolvedRoot
   if (-not $runnerValidation.valid) {
     throw "RUNNER_INCOMPATIBLE: $($runnerValidation.details -join '; ')"
   }
