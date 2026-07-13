@@ -132,7 +132,8 @@
           "marker": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/launch/0$"
-          }
+          },
+          "automatic_successor_capable": { "const": false }
         }
       }
     },
@@ -151,7 +152,20 @@
           "marker": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[1-9][0-9]*$"
-          }
+          },
+          "explicit_launch_task_capable": { "const": false }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["runner_compatible"],
+        "properties": { "runner_compatible": { "const": false } }
+      },
+      "then": {
+        "properties": {
+          "explicit_launch_task_capable": { "const": false },
+          "automatic_successor_capable": { "const": false }
         }
       }
     }

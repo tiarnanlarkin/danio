@@ -702,6 +702,63 @@ void main() {
       isNotEmpty,
     );
 
+    final handoff = <String, dynamic>{
+      'document_type': 'danio_handoff_prompt_report',
+      'schema_version': 1,
+      'prompt_kind': 'Launch',
+      'generated_at_utc': '2026-07-11T12:00:00.0000000Z',
+      'accepted': true,
+      'code': 'HANDOFF_PROMPT_GENERATED',
+      'observed_state_mode': 'ready',
+      'state_mode': 'ready',
+      'title': 'Launch [fixture-run/launch/0]',
+      'marker': 'fixture-run/launch/0',
+      'prompt': 'Continue fixture-run/launch/0',
+      'runner_compatible': true,
+      'explicit_launch_task_capable': true,
+      'automatic_successor_capable': false,
+      'mutations_performed': false,
+      'checks': <Map<String, dynamic>>[passCheck],
+    };
+    expect(validate('handoff_prompt_report.schema.json', handoff), isEmpty);
+    final launchWithSuccessorCapability = copy(handoff)
+      ..['automatic_successor_capable'] = true;
+    expect(
+      validate(
+        'handoff_prompt_report.schema.json',
+        launchWithSuccessorCapability,
+      ),
+      isNotEmpty,
+    );
+    final successor = copy(handoff)
+      ..['prompt_kind'] = 'Successor'
+      ..['observed_state_mode'] = 'handoff_ready'
+      ..['state_mode'] = 'handoff_ready'
+      ..['title'] = 'Successor [fixture-run/1]'
+      ..['marker'] = 'fixture-run/1'
+      ..['prompt'] = 'Continue fixture-run/1'
+      ..['explicit_launch_task_capable'] = false
+      ..['automatic_successor_capable'] = true;
+    expect(validate('handoff_prompt_report.schema.json', successor), isEmpty);
+    final successorWithLaunchCapability = copy(successor)
+      ..['explicit_launch_task_capable'] = true;
+    expect(
+      validate(
+        'handoff_prompt_report.schema.json',
+        successorWithLaunchCapability,
+      ),
+      isNotEmpty,
+    );
+    final incompatibleWithCapability = copy(successor)
+      ..['runner_compatible'] = false;
+    expect(
+      validate(
+        'handoff_prompt_report.schema.json',
+        incompatibleWithCapability,
+      ),
+      isNotEmpty,
+    );
+
     final transition = <String, dynamic>{
       'document_type': 'danio_transition_validation_report',
       'schema_version': 1,
@@ -989,8 +1046,8 @@ void main() {
       contains('"state_mode":{"const":"handoff_ready"}'),
     );
     final handoffDefinitions = handoff[r'$defs'] as Map<String, dynamic>;
-    final taskCapabilities = handoffDefinitions['task_capabilities']
-        as Map<String, dynamic>;
+    final taskCapabilities =
+        handoffDefinitions['task_capabilities'] as Map<String, dynamic>;
     expect(taskCapabilities['additionalProperties'], isFalse);
     expect(
       (taskCapabilities['required'] as List<dynamic>).cast<String>().toSet(),
@@ -1000,8 +1057,8 @@ void main() {
         'create_thread.project_target',
       },
     );
-    final savedProject = handoffDefinitions['saved_project']
-        as Map<String, dynamic>;
+    final savedProject =
+        handoffDefinitions['saved_project'] as Map<String, dynamic>;
     expect(savedProject['additionalProperties'], isFalse);
     expect(
       (savedProject['required'] as List<dynamic>).cast<String>().toSet(),
@@ -1065,6 +1122,7 @@ void main() {
     final checklist = File(
       'docs/agent/TESTING_CHECKLIST.md',
     ).readAsStringSync();
+    final checklistFlat = checklist.replaceAll(RegExp(r'\s+'), ' ');
 
     expect(gate, contains('Invoke-AutonomousCompletionTests'));
     expect(
@@ -1098,6 +1156,61 @@ void main() {
     ]) {
       expect(quality, contains(tier), reason: tier);
       expect(checklist, contains(tier), reason: tier);
+    }
+
+    final qualityMappings = <String, List<String>>{
+      'Autonomy authority/schema change': <String>[
+        'Docs truth',
+        'autonomous script contract',
+        '-Profile Docs',
+      ],
+      'Autonomy pure state/readiness change': <String>[
+        'PowerShell behavior suite',
+        'disposable Git fixture suite',
+        '-Profile Docs',
+      ],
+      'Autonomy Git mutation/claim/closeout change': <String>[
+        'Race and disposable Git fixtures',
+        '-Profile Docs',
+        '-RequireCleanWorktree',
+      ],
+      'Autonomy no-product rehearsal': <String>[
+        'All autonomous Dart, behavior, and disposable Git fixture suites',
+        '-Profile Docs -RequireCleanWorktree',
+      ],
+      'Phone release candidate': <String>[
+        '-Profile Full',
+        '-Profile AndroidPrep',
+        'evidence manifest',
+        'phone QA',
+      ],
+    };
+    for (final entry in qualityMappings.entries) {
+      final row = quality
+          .split(RegExp(r'\r?\n'))
+          .singleWhere((line) => line.startsWith('| ${entry.key} |'));
+      for (final requirement in entry.value) {
+        expect(
+          row,
+          contains(requirement),
+          reason: '${entry.key}: $requirement',
+        );
+      }
+    }
+
+    for (final mapping in <String>[
+      'Autonomy authority/schema change:** run docs truth, the autonomous '
+          'script contract, and the Docs profile.',
+      'Autonomy pure state/readiness change:** run the behavior suite, the '
+          'disposable Git fixture suite, and the Docs profile.',
+      'Autonomy Git mutation/claim/closeout change:** run race/disposable Git '
+          'fixtures, the Docs profile, and the clean-main Docs profile.',
+      'Autonomy no-product rehearsal:** run all autonomous suites and the Docs '
+          'profile with `-RequireCleanWorktree`',
+      'Phone release candidate:** run Full, AndroidPrep, validate the evidence '
+          'manifest, and complete affected phone QA.',
+    ]) {
+      expect(checklistFlat, contains(mapping), reason: mapping);
     }
   });
 

@@ -69,6 +69,18 @@ function Test-Boolean {
   return $null -ne $Value -and $Value.GetType() -eq [bool]
 }
 
+function Test-JsonIntegerOne {
+  param($Value)
+
+  if ($null -eq $Value) {
+    return $false
+  }
+  return (
+    @([int], [int64]) -contains $Value.GetType() -and
+    [int64]$Value -eq 1
+  )
+}
+
 function ConvertTo-ForwardSlashPath {
   param([Parameter(Mandatory = $true)][string]$Path)
 
@@ -139,6 +151,28 @@ function Invoke-ReadOnlyGit {
   }
 }
 
+function Get-GitBlobObjectId {
+  param(
+    [Parameter(Mandatory = $true)][byte[]]$Content,
+    [Parameter(Mandatory = $true)][ValidateSet("sha1", "sha256")][string]$ObjectFormat
+  )
+
+  $header = [Text.Encoding]::ASCII.GetBytes("blob $($Content.Length)`0")
+  $objectBytes = New-Object byte[] ($header.Length + $Content.Length)
+  [Buffer]::BlockCopy($header, 0, $objectBytes, 0, $header.Length)
+  [Buffer]::BlockCopy($Content, 0, $objectBytes, $header.Length, $Content.Length)
+  $algorithm = if ($ObjectFormat -ceq "sha1") {
+    [Security.Cryptography.SHA1]::Create()
+  } else {
+    [Security.Cryptography.SHA256]::Create()
+  }
+  try {
+    return ([BitConverter]::ToString($algorithm.ComputeHash($objectBytes))).Replace("-", "").ToLowerInvariant()
+  } finally {
+    $algorithm.Dispose()
+  }
+}
+
 function Test-LiveStateBinding {
   param(
     [Parameter(Mandatory = $true)][string]$Root,
@@ -156,8 +190,9 @@ function Test-LiveStateBinding {
   $head = Invoke-ReadOnlyGit -Root $Root -Arguments @("rev-parse", "HEAD")
   $main = Invoke-ReadOnlyGit -Root $Root -Arguments @("rev-parse", "main")
   $origin = Invoke-ReadOnlyGit -Root $Root -Arguments @("rev-parse", "origin/main")
+  $objectFormat = Invoke-ReadOnlyGit -Root $Root -Arguments @("rev-parse", "--show-object-format")
   $status = Invoke-ReadOnlyGit -Root $Root -Arguments @("--no-optional-locks", "status", "--short", "-uall")
-  foreach ($probe in @($branch, $head, $main, $origin, $status)) {
+  foreach ($probe in @($branch, $head, $main, $origin, $objectFormat, $status)) {
     if ($probe.exit_code -ne 0) {
       return $false
     }
@@ -175,14 +210,20 @@ function Test-LiveStateBinding {
   if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) {
     return $false
   }
-  $workingState = Get-Content -Raw -LiteralPath $statePath
-  if ($workingState.Trim() -cne $SuppliedStateJson.Trim()) {
+  if (@("sha1", "sha256") -cnotcontains $objectFormat.output) {
     return $false
   }
-  $committedState = Invoke-ReadOnlyGit -Root $Root -Arguments @("show", "HEAD`:$stateRelativePath")
+  $workingBytes = [IO.File]::ReadAllBytes($statePath)
+  $suppliedBytes = (New-Object Text.UTF8Encoding($false, $true)).GetBytes($SuppliedStateJson)
+  $workingObjectId = Get-GitBlobObjectId -Content $workingBytes -ObjectFormat $objectFormat.output
+  $suppliedObjectId = Get-GitBlobObjectId -Content $suppliedBytes -ObjectFormat $objectFormat.output
+  if ($workingObjectId -cne $suppliedObjectId) {
+    return $false
+  }
+  $committedObject = Invoke-ReadOnlyGit -Root $Root -Arguments @("rev-parse", "HEAD`:$stateRelativePath")
   return (
-    $committedState.exit_code -eq 0 -and
-    $committedState.output.Trim() -ceq $SuppliedStateJson.Trim()
+    $committedObject.exit_code -eq 0 -and
+    $committedObject.output -ceq $suppliedObjectId
   )
 }
 
@@ -254,8 +295,18 @@ try {
   } catch {
     throw "RUN_STATE_INVALID: run-state JSON is malformed."
   }
-  if ($state.PSObject.Properties.Name -ccontains "mode") {
-    $observedMode = [string]$state.mode
+  if (
+    $state.PSObject.Properties.Name -ccontains "mode" -and
+    $state.mode -is [string] -and
+    @("inactive", "ready", "active", "handoff_ready", "paused", "stopped", "finalizing", "complete") -ccontains $state.mode
+  ) {
+    $observedMode = $state.mode
+  }
+  if (
+    $state.PSObject.Properties.Name -cnotcontains "mode" -or
+    $state.mode -isnot [string]
+  ) {
+    throw "RUN_STATE_INVALID: state mode must be a string."
   }
   $stateValidation = Test-DanioRunState -State $state
   if (-not $stateValidation.valid) {
@@ -289,21 +340,27 @@ try {
   }
   $expectedIntent = if ($PromptKind -ceq "Launch") { "Launch" } else { "Claim" }
   if (
-    [string]$readiness.document_type -cne "danio_readiness_report" -or
-    [int64]$readiness.schema_version -ne 1 -or
-    [string]$readiness.intent -cne $expectedIntent -or
+    $readiness.document_type -isnot [string] -or
+    $readiness.document_type -cne "danio_readiness_report" -or
+    -not (Test-JsonIntegerOne -Value $readiness.schema_version) -or
+    $readiness.intent -isnot [string] -or
+    $readiness.intent -cne $expectedIntent -or
     -not (Test-StrictUtc -Value $readiness.checked_at_utc) -or
     -not (Test-Boolean -Value $readiness.eligible) -or
-    @($readiness.checks).Count -lt 1
+    $readiness.checks -isnot [System.Array] -or
+    $readiness.checks.Count -lt 1
   ) {
     throw "READINESS_REPORT_INVALID: readiness shape or intent is invalid."
   }
-  foreach ($check in @($readiness.checks)) {
+  foreach ($check in $readiness.checks) {
     if (
       -not (Test-ExactProperties -Value $check -Expected @("code", "status", "detail")) -or
-      [string]$check.code -cnotmatch '^[A-Z][A-Z0-9_]*$' -or
-      @("pass", "fail") -cnotcontains [string]$check.status -or
-      [string]::IsNullOrWhiteSpace([string]$check.detail)
+      $check.code -isnot [string] -or
+      $check.code -cnotmatch '^[A-Z][A-Z0-9_]*$' -or
+      $check.status -isnot [string] -or
+      @("pass", "fail") -cnotcontains $check.status -or
+      $check.detail -isnot [string] -or
+      [string]::IsNullOrWhiteSpace($check.detail)
     ) {
       throw "READINESS_REPORT_INVALID: readiness checks are invalid."
     }
@@ -312,7 +369,7 @@ try {
     [bool]$readiness.eligible -and
     (
       $null -ne $readiness.stop_reason_code -or
-      @($readiness.checks | Where-Object { [string]$_.status -cne "pass" }).Count -gt 0
+      @($readiness.checks | Where-Object { $_.status -cne "pass" }).Count -gt 0
     )
   ) {
     throw "READINESS_REPORT_INVALID: eligible readiness is contradictory."
@@ -320,8 +377,9 @@ try {
   if (
     -not [bool]$readiness.eligible -and
     (
-      [string]$readiness.stop_reason_code -cnotmatch '^[A-Z][A-Z0-9_]*$' -or
-      @($readiness.checks | Where-Object { [string]$_.status -ceq "fail" }).Count -lt 1
+      $readiness.stop_reason_code -isnot [string] -or
+      $readiness.stop_reason_code -cnotmatch '^[A-Z][A-Z0-9_]*$' -or
+      @($readiness.checks | Where-Object { $_.status -ceq "fail" }).Count -lt 1
     )
   ) {
     throw "READINESS_REPORT_INVALID: ineligible readiness is contradictory."

@@ -2071,6 +2071,61 @@ Assert-Equal -Actual $wrongStateReport.code -Expected "PROMPT_KIND_STATE_INVALID
 Assert-Equal -Actual $wrongStateReport.observed_state_mode -Expected "active" -Message "Invalid state rejection lost the observed mode."
 Assert-True -Condition ($null -eq $wrongStateReport.prompt) -Message "Invalid state rejection fabricated a prompt."
 
+$unknownModeState = Copy-JsonValue -Value $ready
+$unknownModeState.mode = "future_mode"
+$unknownModeResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Launch" `
+  -RunStateJson ($unknownModeState | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($launchReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $unknownModeResult.exit_code -Expected 1 -Message "Unknown state mode was accepted."
+$unknownModeReport = $unknownModeResult.stdout | ConvertFrom-Json
+Assert-Equal -Actual $unknownModeReport.observed_state_mode -Expected $null -Message "Unknown state mode escaped the rejection schema."
+
+$wrongTypeModeState = Copy-JsonValue -Value $ready
+$wrongTypeModeState.mode = @("ready")
+$wrongTypeModeResult = Invoke-HandoffPromptGenerator `
+  -ScriptPath $handoffScriptPath `
+  -PromptKind "Launch" `
+  -RunStateJson ($wrongTypeModeState | ConvertTo-Json -Depth 100 -Compress) `
+  -ReadinessReportJson ($launchReadiness | ConvertTo-Json -Depth 100 -Compress) `
+  -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+  -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+  -RepositoryRoot $repoRoot
+Assert-Equal -Actual $wrongTypeModeResult.exit_code -Expected 1 -Message "Collection state mode was accepted."
+$wrongTypeModeReport = $wrongTypeModeResult.stdout | ConvertFrom-Json
+Assert-Equal -Actual $wrongTypeModeReport.observed_state_mode -Expected $null -Message "Wrong-typed state mode escaped the rejection schema."
+
+$stringVersionReadiness = Copy-JsonValue -Value $launchReadiness
+$stringVersionReadiness.schema_version = "1"
+$booleanVersionReadiness = Copy-JsonValue -Value $launchReadiness
+$booleanVersionReadiness.schema_version = $true
+$objectChecksReadiness = Copy-JsonValue -Value $launchReadiness
+$objectChecksReadiness.checks = $objectChecksReadiness.checks[0]
+$numericDetailReadiness = Copy-JsonValue -Value $launchReadiness
+$numericDetailReadiness.checks[0].detail = 1
+foreach ($invalidReadiness in @(
+  [pscustomobject]@{ Name = "string schema version"; Value = $stringVersionReadiness },
+  [pscustomobject]@{ Name = "boolean schema version"; Value = $booleanVersionReadiness },
+  [pscustomobject]@{ Name = "object checks"; Value = $objectChecksReadiness },
+  [pscustomobject]@{ Name = "numeric check detail"; Value = $numericDetailReadiness }
+)) {
+  $invalidReadinessResult = Invoke-HandoffPromptGenerator `
+    -ScriptPath $handoffScriptPath `
+    -PromptKind "Launch" `
+    -RunStateJson ($ready | ConvertTo-Json -Depth 100 -Compress) `
+    -ReadinessReportJson ($invalidReadiness.Value | ConvertTo-Json -Depth 100 -Compress) `
+    -TaskCapabilitiesJson ($fullTaskCapabilities | ConvertTo-Json -Depth 10 -Compress) `
+    -SavedProjectJson ($exactSavedProject | ConvertTo-Json -Depth 10 -Compress) `
+    -RepositoryRoot $repoRoot
+  Assert-Equal -Actual $invalidReadinessResult.exit_code -Expected 1 -Message "Malformed readiness was accepted: $($invalidReadiness.Name)."
+  $invalidReadinessReport = $invalidReadinessResult.stdout | ConvertFrom-Json
+  Assert-Equal -Actual $invalidReadinessReport.code -Expected "READINESS_REPORT_INVALID" -Message "Malformed readiness returned the wrong code: $($invalidReadiness.Name)."
+}
+
 $ledgerHashAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
 Assert-Equal -Actual $ledgerHashAfter -Expected $ledgerHashBefore -Message "Pure behavior tests changed the ledger."
 

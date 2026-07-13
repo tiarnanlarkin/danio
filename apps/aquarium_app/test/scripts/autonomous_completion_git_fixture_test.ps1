@@ -189,6 +189,44 @@ function Invoke-Readiness {
   return $report
 }
 
+function Invoke-HandoffPromptGenerator {
+  param(
+    [Parameter(Mandatory = $true)][string]$ScriptPath,
+    [Parameter(Mandatory = $true)][string]$PromptKind,
+    [Parameter(Mandatory = $true)][string]$RunStateJson,
+    [Parameter(Mandatory = $true)][string]$ReadinessReportJson,
+    [Parameter(Mandatory = $true)][string]$TaskCapabilitiesJson,
+    [Parameter(Mandatory = $true)][string]$SavedProjectJson,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot
+  )
+
+  $encodedState = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RunStateJson))
+  $encodedReadiness = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($ReadinessReportJson))
+  $encodedCapabilities = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($TaskCapabilitiesJson))
+  $encodedProject = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($SavedProjectJson))
+  $escapedScript = $ScriptPath.Replace("'", "''")
+  $escapedRoot = $RepositoryRoot.Replace("'", "''")
+  $childCommand = @"
+& '$escapedScript' ``
+  -PromptKind '$PromptKind' ``
+  -RunStateJson ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$encodedState'))) ``
+  -ReadinessReportJson ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$encodedReadiness'))) ``
+  -TaskCapabilitiesJson ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$encodedCapabilities'))) ``
+  -SavedProjectJson ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$encodedProject'))) ``
+  -RepositoryRoot '$escapedRoot'
+"@
+  $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($childCommand))
+  $output = @(& powershell `
+    -NoProfile `
+    -NonInteractive `
+    -ExecutionPolicy Bypass `
+    -EncodedCommand $encodedCommand `
+    2>$null)
+  Assert-Equal -Actual $LASTEXITCODE -Expected 0 -Message "Handoff binding fixture generation failed."
+  Assert-Equal -Actual $output.Count -Expected 1 -Message "Handoff binding fixture emitted multiple reports."
+  return $output[0] | ConvertFrom-Json
+}
+
 function Invoke-FinalizationReadiness {
   param(
     [Parameter(Mandatory = $true)][string]$ScriptPath,
@@ -1385,6 +1423,7 @@ $transitionScriptPath = Join-Path $appRoot "scripts/autonomous_completion/valida
 $claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan_autonomous_writer_claim.ps1"
 $claimInvokerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1"
 $transitionCommitScriptPath = Join-Path $appRoot "scripts/autonomous_completion/commit_autonomous_completion_transition.ps1"
+$handoffScriptPath = Join-Path $appRoot "scripts/autonomous_completion/new_autonomous_handoff_prompt.ps1"
 
 if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
   throw "Expected synchronization wrapper is missing: $syncScriptPath"
@@ -1403,6 +1442,9 @@ if (-not (Test-Path -LiteralPath $claimInvokerScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $transitionCommitScriptPath -PathType Leaf)) {
   throw "Expected transition mutation entry point is missing: $transitionCommitScriptPath"
+}
+if (-not (Test-Path -LiteralPath $handoffScriptPath -PathType Leaf)) {
+  throw "Expected handoff prompt entry point is missing: $handoffScriptPath"
 }
 Import-Module -Name (Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1") -Force
 
@@ -1446,7 +1488,7 @@ try {
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("remote", "add", "origin", $remoteRoot))
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("push", "-u", "origin", "main"))
   [void](Invoke-Git -RepositoryRoot $remoteRoot -GitArguments @("symbolic-ref", "HEAD", "refs/heads/main"))
-  [void](Invoke-GitWithoutRepository -GitArguments @("clone", $remoteRoot, $cloneOneRoot))
+  [void](Invoke-GitWithoutRepository -GitArguments @("clone", "-c", "core.autocrlf=false", $remoteRoot, $cloneOneRoot))
   [void](Invoke-GitWithoutRepository -GitArguments @("clone", $remoteRoot, $cloneTwoRoot))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("config", "user.name", "Danio Fixture Two"))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("config", "user.email", "danio-fixture-two@example.invalid"))
@@ -1636,6 +1678,7 @@ try {
   $readyState = Get-Content -Raw -LiteralPath $readyFixturePath | ConvertFrom-Json
   $readyState.authorization.saved_project_root = $tempRoot.Replace("\", "/")
   $readyState.authorization.repository_root = $cloneOneRoot.Replace("\", "/")
+  $cloneOneStatePath = Join-Path $cloneOneRoot $stateRelativePath
   $cloneTwoStatePath = Join-Path $cloneTwoRoot $stateRelativePath
   Write-FixtureJson -Path $cloneTwoStatePath -Value $readyState
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("add", $stateRelativePath))
@@ -1662,6 +1705,47 @@ try {
       }
     )
   }
+  $bindingReadiness = $claimReadiness | ConvertTo-Json -Depth 20 | ConvertFrom-Json
+  $bindingReadiness.intent = "Launch"
+  $bindingReadiness.checked_at_utc = [DateTimeOffset]::UtcNow.ToString(
+    "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    [Globalization.CultureInfo]::InvariantCulture
+  )
+  $bindingCapabilities = [pscustomobject][ordered]@{
+    list_threads = $true
+    read_thread = $true
+    "create_thread.project_target" = $true
+  }
+  $bindingProject = [pscustomobject][ordered]@{
+    project_id = "fixture-project"
+    root = $tempRoot.Replace("\", "/")
+  }
+  $exactStateJson = Get-Content -Raw -LiteralPath $cloneOneStatePath
+  $bindingBefore = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  $exactBindingReport = Invoke-HandoffPromptGenerator `
+    -ScriptPath $handoffScriptPath `
+    -PromptKind "Launch" `
+    -RunStateJson $exactStateJson `
+    -ReadinessReportJson ($bindingReadiness | ConvertTo-Json -Depth 20 -Compress) `
+    -TaskCapabilitiesJson ($bindingCapabilities | ConvertTo-Json -Compress) `
+    -SavedProjectJson ($bindingProject | ConvertTo-Json -Compress) `
+    -RepositoryRoot $cloneOneRoot
+  $exactBindingCheck = @($exactBindingReport.checks | Where-Object { $_.code -ceq "LIVE_STATE_BOUND" })
+  Assert-Equal -Actual $exactBindingCheck.Count -Expected 1 -Message "Exact binding report lost its live-state check."
+  Assert-Equal -Actual $exactBindingCheck[0].status -Expected "pass" -Message "Exact committed live-state bytes were not accepted."
+  $whitespaceBindingReport = Invoke-HandoffPromptGenerator `
+    -ScriptPath $handoffScriptPath `
+    -PromptKind "Launch" `
+    -RunStateJson (" " + $exactStateJson) `
+    -ReadinessReportJson ($bindingReadiness | ConvertTo-Json -Depth 20 -Compress) `
+    -TaskCapabilitiesJson ($bindingCapabilities | ConvertTo-Json -Compress) `
+    -SavedProjectJson ($bindingProject | ConvertTo-Json -Compress) `
+    -RepositoryRoot $cloneOneRoot
+  $whitespaceBindingCheck = @($whitespaceBindingReport.checks | Where-Object { $_.code -ceq "LIVE_STATE_BOUND" })
+  Assert-Equal -Actual $whitespaceBindingCheck.Count -Expected 1 -Message "Whitespace binding report lost its live-state check."
+  Assert-Equal -Actual $whitespaceBindingCheck[0].status -Expected "fail" -Message "Whitespace-different supplied state passed exact live-state binding."
+  $bindingAfter = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  Assert-SnapshotEqual -Before $bindingBefore -After $bindingAfter -Scenario "handoff exact-byte binding"
   $claimIdentity = Get-ExpectedWriterIdentity `
     -RunId ([string]$readyState.run_id) `
     -WorkUnitId ([string]$readyState.cursor.work_unit_id) `
@@ -1913,7 +1997,6 @@ exit `$LASTEXITCODE
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("worktree", "remove", $wrongCommitIdentity.worktree_path))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("branch", "-D", $wrongCommitIdentity.branch_name))
 
-  $cloneOneStatePath = Join-Path $cloneOneRoot $stateRelativePath
   Write-FixtureJson -Path $cloneOneStatePath -Value $absentPlan.next_run_state
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("add", $stateRelativePath))
   $claimStagedTree = Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("write-tree")
@@ -3651,7 +3734,7 @@ exit `$code
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 71
+    scenarios = 72
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {

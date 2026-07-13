@@ -600,6 +600,12 @@ void main() {
       'Autonomy pure state/readiness change',
       'Autonomy Git mutation/claim/closeout change',
       'Autonomy no-product rehearsal',
+      'Docs truth; autonomous script contract',
+      'PowerShell behavior suite; disposable Git fixture suite',
+      'Race and disposable Git fixtures',
+      'All autonomous Dart, behavior, and disposable Git fixture suites',
+      'evidence manifest; affected phone QA',
+      '-RequireCleanWorktree',
       'automatic successor creation disabled',
     ]);
     _expectContainsAll('docs/agent/TESTING_CHECKLIST.md', [
@@ -608,6 +614,12 @@ void main() {
       'Autonomy Git mutation/claim/closeout change',
       'Autonomy no-product rehearsal',
       'test/scripts/autonomous_completion_git_fixture_test.ps1',
+      'disposable Git fixture suite',
+      'clean-main Docs profile',
+      '-RequireCleanWorktree',
+      '-Profile Full',
+      '-Profile AndroidPrep',
+      'validate the evidence',
     ]);
 
     final runbook = _source(

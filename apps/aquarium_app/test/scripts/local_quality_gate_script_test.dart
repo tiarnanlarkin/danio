@@ -282,6 +282,14 @@ void main() {
       source,
       contains('test/scripts/autonomous_completion_script_test.dart'),
     );
+    final focusedTests = RegExp(
+      r'\[string\[\]\]\$FocusedTests = @\(([\s\S]*?)\n  \),',
+    ).firstMatch(normalized);
+    expect(focusedTests, isNotNull, reason: r'$FocusedTests block');
+    expect(
+      focusedTests!.group(1),
+      contains('test/scripts/autonomous_completion_script_test.dart'),
+    );
     expect(
       normalized,
       contains(
@@ -301,6 +309,16 @@ void main() {
       hasLength(3),
       reason: 'one function plus Docs and Full invocations',
     );
+    final docsProfile = RegExp(
+      r'  "Docs" \{\n([\s\S]*?)\n  \}\n  "Full" \{',
+    ).firstMatch(normalized);
+    final fullProfile = RegExp(
+      r'  "Full" \{\n([\s\S]*?)\n  \}\n  "Visual" \{',
+    ).firstMatch(normalized);
+    expect(docsProfile, isNotNull, reason: 'Docs profile block');
+    expect(fullProfile, isNotNull, reason: 'Full profile block');
+    expect(docsProfile!.group(1), contains('Invoke-AutonomousCompletionTests'));
+    expect(fullProfile!.group(1), contains('Invoke-AutonomousCompletionTests'));
     expect(
       source,
       isNot(contains('autonomous_completion_git_fixture_test.ps1')),
