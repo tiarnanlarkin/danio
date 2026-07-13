@@ -1199,16 +1199,26 @@ void main() {
     }
 
     for (final mapping in <String>[
-      'Autonomy authority/schema change:** run docs truth, the autonomous '
-          'script contract, and the Docs profile.',
-      'Autonomy pure state/readiness change:** run the behavior suite, the '
-          'disposable Git fixture suite, and the Docs profile.',
-      'Autonomy Git mutation/claim/closeout change:** run race/disposable Git '
-          'fixtures, the Docs profile, and the clean-main Docs profile.',
-      'Autonomy no-product rehearsal:** run all autonomous suites and the Docs '
-          'profile with `-RequireCleanWorktree`',
-      'Phone release candidate:** run Full, AndroidPrep, validate the evidence '
-          'manifest, and complete affected phone QA.',
+      <String>[
+        'Autonomy authority/schema change:** run docs truth, the autonomous ',
+        'script contract, and the Docs profile.',
+      ].join(),
+      <String>[
+        'Autonomy pure state/readiness change:** run the behavior suite, the ',
+        'disposable Git fixture suite, and the Docs profile.',
+      ].join(),
+      <String>[
+        'Autonomy Git mutation/claim/closeout change:** run race/disposable Git ',
+        'fixtures, the Docs profile, and the clean-main Docs profile.',
+      ].join(),
+      <String>[
+        'Autonomy no-product rehearsal:** run all autonomous suites and the Docs ',
+        'profile with `-RequireCleanWorktree`',
+      ].join(),
+      <String>[
+        'Phone release candidate:** run Full, AndroidPrep, validate the evidence ',
+        'manifest, and complete affected phone QA.',
+      ].join(),
     ]) {
       expect(checklistFlat, contains(mapping), reason: mapping);
     }

@@ -3086,7 +3086,7 @@ exit `$code
   Assert-Equal `
     -Actual $secondRaceInvocation.result.cleanup_performed `
     -Expected $true `
-    -Message "Two-clone race loser did not clean up its exact identity."
+    -Message "Two-clone race loser did not clean up its exact identity: $($secondRaceInvocation.result.details -join '; ')"
   Assert-Equal `
     -Actual (Test-Path -LiteralPath $secondRacePlan.worktree_path) `
     -Expected $false `
