@@ -56,6 +56,7 @@ void main() {
     'local quality gate can run focused, docs, full, and visual profiles',
     () {
       final source = File(scriptPath).readAsStringSync();
+      final normalized = source.replaceAll('\r\n', '\n');
 
       expect(
         source,
@@ -63,16 +64,12 @@ void main() {
           r'[ValidateSet("Focused", "Docs", "Full", "Visual", "AndroidPrep")]',
         ),
       );
+      expect(source, contains(r'[string[]]$FocusedTests = @()'));
       expect(source, contains('test/copy/current_docs_local_truth_test.dart'));
       expect(
         source,
-        contains('test/scripts/local_quality_gate_script_test.dart'),
+        contains('test/copy/lean_workflow_contract_test.dart'),
       );
-      expect(
-        source,
-        contains('test/scripts/external_quality_readiness_script_test.dart'),
-      );
-      expect(source, contains('test/quality/content_validation_test.dart'));
       expect(
         source,
         contains('test/quality/visual_baseline_manifest_test.dart'),
@@ -81,6 +78,13 @@ void main() {
       expect(
         source,
         contains('test/golden_tests/empty_room_scene_golden_test.dart'),
+      );
+      expect(
+        normalized,
+        contains(
+          'if (\$Profile -eq "Focused" -or \$Profile -eq "Visual") {\n'
+          '  if (\$FocusedTests.Count -eq 0) {',
+        ),
       );
     },
   );
@@ -187,6 +191,7 @@ void main() {
       dependencyValidatorConfig,
       contains('windows/flutter/ephemeral/**'),
     );
+    expect(dependencyValidatorConfig, contains('android/app/mnt/**'));
     expect(dependencyValidatorConfig, contains('danio_custom_lints'));
 
     expect(
@@ -209,11 +214,38 @@ void main() {
     expect(gateSource, contains('dart run dependency_validator'));
     expect(gateSource, contains('Invoke-DependencyValidator'));
     expect(gateSource, contains('Clear-CustomLintGeneratedOutputs'));
+    expect(gateSource, contains(r'[switch]$ResetGeneratedOutputs'));
+    expect(
+      normalizedGateSource,
+      isNot(
+        contains(
+          'function Invoke-DependencyValidator {\n'
+          '  Invoke-Step -Name "Dependency validator" -Command {\n'
+          '    Clear-CustomLintGeneratedOutputs',
+        ),
+      ),
+    );
+    final customLintFunction = RegExp(
+      r'function Invoke-CustomLint \{([\s\S]*?)\n\}',
+    ).firstMatch(normalizedGateSource);
+    final dependencyFunction = RegExp(
+      r'function Invoke-DependencyValidator \{([\s\S]*?)\n\}',
+    ).firstMatch(normalizedGateSource);
+    expect(customLintFunction, isNotNull);
+    expect(dependencyFunction, isNotNull);
+    expect(
+      customLintFunction!.group(1),
+      isNot(contains('Clear-CustomLintGeneratedOutputs')),
+    );
+    expect(
+      dependencyFunction!.group(1),
+      isNot(contains('Clear-CustomLintGeneratedOutputs')),
+    );
     expect(
       normalizedGateSource,
       contains(
-        'function Invoke-DependencyValidator {\n'
-        '  Invoke-Step -Name "Dependency validator" -Command {\n'
+        'if (\$ResetGeneratedOutputs) {\n'
+        '  Invoke-Step -Name "Reset generated outputs" -Command {\n'
         '    Clear-CustomLintGeneratedOutputs',
       ),
     );
@@ -225,6 +257,7 @@ void main() {
 
   test('generated cleanup keeps robocopy output quiet but checks failures', () {
     final source = File(scriptPath).readAsStringSync();
+    final normalized = source.replaceAll('\r\n', '\n');
 
     expect(
       source,
@@ -235,6 +268,14 @@ void main() {
     expect(source, contains(r'$robocopyExitCode = $global:LASTEXITCODE'));
     expect(source, contains(r'if ($robocopyExitCode -gt 7)'));
     expect(source, contains(r'with exit code $robocopyExitCode'));
+    expect(
+      normalized,
+      contains(
+        '    Remove-Item -LiteralPath \$resolvedPath -Force '
+        '-ErrorAction Stop\n'
+        '    \$global:LASTEXITCODE = 0',
+      ),
+    );
   });
 
   test('dependabot setup monitors free public dependency ecosystems', () {
@@ -274,26 +315,19 @@ void main() {
     expect(source, contains('PATROL_ANALYTICS_ENABLED'));
   });
 
-  test('docs and full gates include autonomous completion proof', () {
+  test('autonomous completion proof is explicit and never implicit', () {
     final source = File(scriptPath).readAsStringSync();
     final normalized = source.replaceAll('\r\n', '\n');
 
+    expect(source, contains(r'[switch]$RunAutonomyTests'));
     expect(
       source,
-      contains('test/scripts/autonomous_completion_script_test.dart'),
-    );
-    final focusedTests = RegExp(
-      r'\[string\[\]\]\$FocusedTests = @\(([\s\S]*?)\n  \),',
-    ).firstMatch(normalized);
-    expect(focusedTests, isNotNull, reason: r'$FocusedTests block');
-    expect(
-      focusedTests!.group(1),
       contains('test/scripts/autonomous_completion_script_test.dart'),
     );
     expect(
       normalized,
       contains(
-        'function Invoke-AutonomousCompletionTests {\n'
+        'function Invoke-AutonomousCompletionBehaviorTests {\n'
         '  Invoke-Step -Name "Autonomous completion behavior tests" -Command {\n'
         '    & powershell -NoProfile -ExecutionPolicy Bypass -File `\n'
         '      "test/scripts/autonomous_completion_behavior_test.ps1"\n'
@@ -304,11 +338,7 @@ void main() {
         '}',
       ),
     );
-    expect(
-      RegExp(r'\bInvoke-AutonomousCompletionTests\b').allMatches(source),
-      hasLength(3),
-      reason: 'one function plus Docs and Full invocations',
-    );
+    expect(source, contains('function Invoke-AutonomousCompletionDartTests'));
     final docsProfile = RegExp(
       r'  "Docs" \{\n([\s\S]*?)\n  \}\n  "Full" \{',
     ).firstMatch(normalized);
@@ -317,12 +347,83 @@ void main() {
     ).firstMatch(normalized);
     expect(docsProfile, isNotNull, reason: 'Docs profile block');
     expect(fullProfile, isNotNull, reason: 'Full profile block');
-    expect(docsProfile!.group(1), contains('Invoke-AutonomousCompletionTests'));
-    expect(fullProfile!.group(1), contains('Invoke-AutonomousCompletionTests'));
+    expect(
+      docsProfile!.group(1),
+      isNot(contains('Invoke-AutonomousCompletion')),
+    );
+    expect(
+      fullProfile!.group(1),
+      isNot(contains('Invoke-AutonomousCompletion')),
+    );
+    expect(
+      normalized,
+      contains(
+        'if (\$RunAutonomyTests) {\n'
+        '  if (\$Profile -ne "Full") {\n'
+        '    Invoke-AutonomousCompletionDartTests\n'
+        '  }\n'
+        '  Invoke-AutonomousCompletionBehaviorTests\n'
+        '}',
+      ),
+    );
     expect(
       source,
       isNot(contains('autonomous_completion_git_fixture_test.ps1')),
       reason: 'Git fixtures remain tier-selected disposable proof',
+    );
+  });
+
+  test('profile guards preserve PowerShell case-insensitive semantics', () {
+    final source = File(scriptPath).readAsStringSync();
+
+    expect(source, contains(r'$Profile -eq "Focused"'));
+    expect(source, contains(r'$Profile -eq "Visual"'));
+    expect(source, contains(r'$Profile -ne "Full"'));
+    expect(source, isNot(contains(r'$Profile -ceq')));
+    expect(source, isNot(contains(r'$Profile -cne')));
+  });
+
+  test('profile composition avoids duplicate work and reports timings', () {
+    final source = File(scriptPath).readAsStringSync();
+    final normalized = source.replaceAll('\r\n', '\n');
+    final docsProfile = RegExp(
+      r'  "Docs" \{\n([\s\S]*?)\n  \}\n  "Full" \{',
+    ).firstMatch(normalized)!.group(1)!;
+    final fullProfile = RegExp(
+      r'  "Full" \{\n([\s\S]*?)\n  \}\n  "Visual" \{',
+    ).firstMatch(normalized)!.group(1)!;
+    final visualProfile = RegExp(
+      r'  "Visual" \{\n([\s\S]*?)\n  \}\n  "AndroidPrep" \{',
+    ).firstMatch(normalized)!.group(1)!;
+    final androidProfile = RegExp(
+      r'  "AndroidPrep" \{\n([\s\S]*?)\n  \}\n\}',
+    ).firstMatch(normalized)!.group(1)!;
+
+    expect(docsProfile, contains('Invoke-DocsTests'));
+    expect(docsProfile, contains('Invoke-TrackedSigningCredentialGuard'));
+    expect(docsProfile, isNot(contains('Invoke-Analyze')));
+    expect(docsProfile, isNot(contains('Invoke-DependencyValidator')));
+    expect(docsProfile, isNot(contains('Invoke-CustomLint')));
+
+    expect(fullProfile, contains('Invoke-FullTests'));
+    expect(fullProfile, isNot(contains('Invoke-FocusedTests')));
+    expect(fullProfile, contains('Invoke-DependencyValidator'));
+    expect(fullProfile, contains('Invoke-CustomLint'));
+    expect(fullProfile, contains('Invoke-Analyze'));
+    expect(fullProfile, contains('Invoke-DebugApkBuild'));
+
+    expect(visualProfile, contains('Invoke-VisualTests'));
+    expect(visualProfile, contains('Invoke-Analyze'));
+    expect(visualProfile, isNot(contains('Invoke-DependencyValidator')));
+    expect(androidProfile, isNot(contains('Invoke-FocusedTests')));
+    expect(androidProfile, contains('Invoke-AndroidDeviceVisibility'));
+
+    expect(source, contains('System.Diagnostics.Stopwatch'));
+    expect(source, contains('GATE_TIMING|'));
+    expect(source, contains('GATE_TOTAL|'));
+    expect(
+      normalized.indexOf('GATE_TOTAL|'),
+      lessThan(normalized.lastIndexOf('if (\$script:Failures.Count -gt 0)')),
     );
   });
 
@@ -335,8 +436,7 @@ void main() {
       contains('scripts/quality_gates/check_tracked_signing_credentials.ps1'),
     );
     expect(
-      RegExp(r'\bInvoke-TrackedSigningCredentialGuard\b')
-          .allMatches(source),
+      RegExp(r'\bInvoke-TrackedSigningCredentialGuard\b').allMatches(source),
       hasLength(3),
       reason: 'one function plus Docs and Full invocations',
     );

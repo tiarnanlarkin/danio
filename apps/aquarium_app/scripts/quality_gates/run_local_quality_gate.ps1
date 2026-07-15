@@ -3,17 +3,11 @@ param(
   [ValidateSet("Focused", "Docs", "Full", "Visual", "AndroidPrep")]
   [string]$Profile = "Focused",
 
-  [string[]]$FocusedTests = @(
-    "test/copy/current_docs_local_truth_test.dart",
-    "test/quality/content_validation_test.dart",
-    "test/quality/visual_baseline_manifest_test.dart",
-    "test/scripts/autonomous_completion_script_test.dart",
-    "test/scripts/external_quality_readiness_script_test.dart",
-    "test/scripts/live_preview_workflow_script_test.dart",
-    "test/scripts/local_quality_gate_script_test.dart"
-  ),
+  [string[]]$FocusedTests = @(),
 
   [switch]$SkipApkBuild,
+  [switch]$RunAutonomyTests,
+  [switch]$ResetGeneratedOutputs,
   [switch]$RunAndroidSmoke,
   [switch]$RunPatrolSmoke,
   [string]$PatrolDeviceId = "",
@@ -30,12 +24,22 @@ $ErrorActionPreference = "Stop"
 
 $script:Failures = New-Object System.Collections.Generic.List[string]
 $script:Warnings = New-Object System.Collections.Generic.List[string]
+$script:GateStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 $ScriptPath = $MyInvocation.MyCommand.Path
 $QualityGateDir = Split-Path -Parent $ScriptPath
 $ScriptsDir = Split-Path -Parent $QualityGateDir
 $AppRoot = Split-Path -Parent $ScriptsDir
 $RepoRoot = (Resolve-Path -LiteralPath (Join-Path $AppRoot "..\..")).Path
+
+$DocsTests = @(
+  "test/copy/current_docs_local_truth_test.dart",
+  "test/copy/lean_workflow_contract_test.dart"
+)
+
+$VisualContractTests = @(
+  "test/quality/visual_baseline_manifest_test.dart"
+)
 
 $GoldenTests = @(
   "test/golden_tests/mc_card_golden_test.dart",
@@ -69,10 +73,14 @@ function Invoke-Step {
     [switch]$Optional
   )
 
+  $stepStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+  $stepStatus = "PASS"
+  $locationPushed = $false
   Write-Host ""
   Write-Host "==> $Name"
-  Push-Location -LiteralPath $WorkingDirectory
   try {
+    Push-Location -LiteralPath $WorkingDirectory
+    $locationPushed = $true
     $global:LASTEXITCODE = 0
     & $Command
 
@@ -84,12 +92,18 @@ function Invoke-Step {
   } catch {
     $message = "$Name - $($_.Exception.Message)"
     if ($Optional -and -not $StrictOptionalTools) {
+      $stepStatus = "WARN"
       Add-WarningMessage $message
     } else {
+      $stepStatus = "FAIL"
       Add-Failure $message
     }
   } finally {
-    Pop-Location
+    if ($locationPushed) {
+      Pop-Location
+    }
+    $stepStopwatch.Stop()
+    Write-Host "GATE_TIMING|$stepStatus|$($stepStopwatch.ElapsedMilliseconds)|$Name"
   }
 }
 
@@ -261,6 +275,7 @@ function Remove-GeneratedDirectory {
     }
 
     Remove-Item -LiteralPath $resolvedPath -Force -ErrorAction Stop
+    $global:LASTEXITCODE = 0
   }
 }
 
@@ -312,7 +327,34 @@ function Invoke-FocusedTests {
   }
 }
 
-function Invoke-AutonomousCompletionTests {
+function Invoke-DocsTests {
+  Invoke-Step -Name "Current documentation contract tests" -Command {
+    Invoke-Flutter -Arguments (@("test") + $DocsTests + @("--reporter", "compact"))
+  }
+}
+
+function Invoke-VisualTests {
+  $visualTests = @(
+    $FocusedTests + $VisualContractTests + $GoldenTests |
+      Select-Object -Unique
+  )
+  Invoke-Step -Name "Focused visual tests" -Command {
+    Invoke-Flutter -Arguments (@("test") + $visualTests + @("--reporter", "compact"))
+  }
+}
+
+function Invoke-AutonomousCompletionDartTests {
+  Invoke-Step -Name "Autonomous completion Dart contract" -Command {
+    Invoke-Flutter -Arguments @(
+      "test",
+      "test/scripts/autonomous_completion_script_test.dart",
+      "--reporter",
+      "compact"
+    )
+  }
+}
+
+function Invoke-AutonomousCompletionBehaviorTests {
   Invoke-Step -Name "Autonomous completion behavior tests" -Command {
     & powershell -NoProfile -ExecutionPolicy Bypass -File `
       "test/scripts/autonomous_completion_behavior_test.ps1"
@@ -336,7 +378,6 @@ function Invoke-Analyze {
 
 function Invoke-CustomLint {
   Invoke-Step -Name "Danio custom lint" -Command {
-    Clear-CustomLintGeneratedOutputs
     $lintRoot = New-CustomLintWorkingRoot
     try {
       Push-Location -LiteralPath $lintRoot
@@ -364,7 +405,6 @@ function Invoke-TrackedSigningCredentialGuard {
 
 function Invoke-DependencyValidator {
   Invoke-Step -Name "Dependency validator" -Command {
-    Clear-CustomLintGeneratedOutputs
     & dart run dependency_validator
     if ($global:LASTEXITCODE -ne 0) {
       throw "dart run dependency_validator failed with exit code $global:LASTEXITCODE"
@@ -380,12 +420,6 @@ function Invoke-DebugApkBuild {
 
   Invoke-Step -Name "Debug APK build" -Command {
     Invoke-Flutter -Arguments @("build", "apk", "--debug", "--target", "lib/main.dart")
-  }
-}
-
-function Invoke-GoldenTests {
-  Invoke-Step -Name "Focused golden tests" -Command {
-    Invoke-Flutter -Arguments (@("test") + $GoldenTests + @("--reporter", "compact"))
   }
 }
 
@@ -510,6 +544,12 @@ Write-Host "Profile: $Profile"
 Write-Host "Repo root: $RepoRoot"
 Write-Host "App root: $AppRoot"
 
+if ($Profile -eq "Focused" -or $Profile -eq "Visual") {
+  if ($FocusedTests.Count -eq 0) {
+    Add-Failure "$Profile requires at least one explicit -FocusedTests path."
+  }
+}
+
 Invoke-Step -Name "Worktree visibility" -WorkingDirectory $RepoRoot -Command {
   $dirtyStatus = & git status --short -uall
   if ($global:LASTEXITCODE -ne 0) {
@@ -533,21 +573,24 @@ Invoke-Step -Name "Whitespace diff check" -WorkingDirectory $RepoRoot -Command {
   }
 }
 
+if ($ResetGeneratedOutputs) {
+  Invoke-Step -Name "Reset generated outputs" -Command {
+    Clear-CustomLintGeneratedOutputs
+  }
+}
+
 switch ($Profile) {
   "Focused" {
-    Invoke-FocusedTests
+    if ($FocusedTests.Count -gt 0) {
+      Invoke-FocusedTests
+      Invoke-Analyze
+    }
   }
   "Docs" {
-    Invoke-FocusedTests
-    Invoke-AutonomousCompletionTests
+    Invoke-DocsTests
     Invoke-TrackedSigningCredentialGuard
-    Invoke-DependencyValidator
-    Invoke-CustomLint
-    Invoke-Analyze
   }
   "Full" {
-    Invoke-FocusedTests
-    Invoke-AutonomousCompletionTests
     Invoke-TrackedSigningCredentialGuard
     Invoke-DependencyValidator
     Invoke-CustomLint
@@ -556,20 +599,25 @@ switch ($Profile) {
     Invoke-DebugApkBuild
   }
   "Visual" {
-    Invoke-FocusedTests
-    Invoke-DependencyValidator
-    Invoke-CustomLint
-    Invoke-GoldenTests
-    Invoke-Analyze
+    if ($FocusedTests.Count -gt 0) {
+      Invoke-VisualTests
+      Invoke-Analyze
+    }
   }
   "AndroidPrep" {
-    Invoke-FocusedTests
     Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-Analyze
     Invoke-DebugApkBuild
     Invoke-AndroidDeviceVisibility
   }
+}
+
+if ($RunAutonomyTests) {
+  if ($Profile -ne "Full") {
+    Invoke-AutonomousCompletionDartTests
+  }
+  Invoke-AutonomousCompletionBehaviorTests
 }
 
 Invoke-AndroidSmoke
@@ -583,6 +631,10 @@ if ($script:Warnings.Count -gt 0) {
     Write-Host "- $warning"
   }
 }
+
+$script:GateStopwatch.Stop()
+$totalStatus = if ($script:Failures.Count -gt 0) { "FAIL" } else { "PASS" }
+Write-Host "GATE_TOTAL|$totalStatus|$($script:GateStopwatch.ElapsedMilliseconds)|$Profile"
 
 if ($script:Failures.Count -gt 0) {
   Write-Host "Failures:"

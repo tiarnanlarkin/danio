@@ -3,6 +3,7 @@
 # The local analyzer plugin is consumed through analyzer/custom_lint config
 # rather than normal Dart imports, so it needs an explicit ignore.
 exclude:
+  - android/app/mnt/**
   - build/**
   - ios/Flutter/ephemeral/**
   - linux/flutter/ephemeral/**

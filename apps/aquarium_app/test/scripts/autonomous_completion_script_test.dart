@@ -1154,7 +1154,9 @@ void main() {
     ).readAsStringSync();
     final checklistFlat = checklist.replaceAll(RegExp(r'\s+'), ' ');
 
-    expect(gate, contains('Invoke-AutonomousCompletionTests'));
+    expect(gate, contains(r'[switch]$RunAutonomyTests'));
+    expect(gate, contains('Invoke-AutonomousCompletionDartTests'));
+    expect(gate, contains('Invoke-AutonomousCompletionBehaviorTests'));
     expect(
       gate,
       contains('test/scripts/autonomous_completion_script_test.dart'),
