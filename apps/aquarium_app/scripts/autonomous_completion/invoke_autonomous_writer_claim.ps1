@@ -796,15 +796,31 @@ function Invoke-FreshClaimReadiness {
     throw "CLAIM_READINESS_INVALID: fresh synchronization failed."
   }
   $receiptJson = [string]$syncOutput[0]
+  $receiptBase64 = [Convert]::ToBase64String(
+    [Text.Encoding]::UTF8.GetBytes($receiptJson)
+  )
+  $escapedReadinessScript = $readinessScript.Replace("'", "''")
+  $escapedRoot = $Root.Replace("'", "''")
+  $escapedNonce = $nonce.Replace("'", "''")
+  $childCommand = @"
+`$receiptJson = [Text.Encoding]::UTF8.GetString(
+  [Convert]::FromBase64String('$receiptBase64')
+)
+& '$escapedReadinessScript' ``
+  -Intent 'Claim' ``
+  -SynchronizationReceiptJson `$receiptJson ``
+  -ExpectedInvocationNonce '$escapedNonce' ``
+  -RepositoryRoot '$escapedRoot'
+"@
+  $encodedCommand = [Convert]::ToBase64String(
+    [Text.Encoding]::Unicode.GetBytes($childCommand)
+  )
   $readinessOutput = @(& powershell.exe `
+    -NoLogo `
     -NoProfile `
     -NonInteractive `
     -ExecutionPolicy Bypass `
-    -File $readinessScript `
-    -Intent "Claim" `
-    -SynchronizationReceiptJson $receiptJson `
-    -ExpectedInvocationNonce $nonce `
-    -RepositoryRoot $Root `
+    -EncodedCommand $encodedCommand `
     2>$null)
   if ($LASTEXITCODE -ne 0 -or $readinessOutput.Count -ne 1) {
     throw "CLAIM_READINESS_INVALID: fresh Claim readiness failed."

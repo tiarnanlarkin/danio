@@ -2002,6 +2002,99 @@ try {
     -Expected "RUNNER_INCOMPATIBLE" `
     -Message "Readiness inherited authorization from the module checkout instead of the target repository."
 
+  $proofRunnerManifestPath = Join-Path `
+    $proofRoot `
+    "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
+  Write-FixtureJson -Path $proofRunnerManifestPath -Value $authorizedProofManifest
+  [void](Invoke-Git `
+    -RepositoryRoot $proofRoot `
+    -GitArguments @(
+      "add",
+      "apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json"
+    ))
+  [void](Invoke-Git `
+    -RepositoryRoot $proofRoot `
+    -GitArguments @("commit", "-m", "fixture: authorize launch proof"))
+  $proofAuthorityCommit = Invoke-Git `
+    -RepositoryRoot $proofRoot `
+    -GitArguments @("rev-parse", "HEAD")
+  $proofReadyState = Get-Content `
+    -Raw `
+    -LiteralPath (Join-Path $appRoot "test/scripts/fixtures/autonomous_completion/ready_run_state.json") |
+    ConvertFrom-Json
+  $proofReadyState.authorization.saved_project_root = $tempRoot.Replace("\", "/")
+  $proofReadyState.authorization.repository_root = $proofRoot.Replace("\", "/")
+  $proofActivation = Commit-VerifiedActivationFixture `
+    -RepositoryRoot $proofRoot `
+    -ReadyState $proofReadyState `
+    -AuthorityCommit $proofAuthorityCommit
+  [void](Invoke-Git -RepositoryRoot $proofRoot -GitArguments @("push", "origin", "main"))
+  $proofClaimReadiness = [pscustomobject]@{
+    document_type = "danio_readiness_report"
+    schema_version = 1
+    intent = "Claim"
+    checked_at_utc = "2026-07-15T12:00:00.0000000Z"
+    eligible = $true
+    stop_reason_code = $null
+    checks = @(
+      [pscustomobject]@{
+        code = "CLAIM_READY"
+        status = "pass"
+        detail = "Disposable authorized proof repository is ready."
+      }
+    )
+  }
+  $proofClaimPlan = Invoke-ClaimPlanner `
+    -ScriptPath $claimPlannerScriptPath `
+    -RepositoryRoot $proofRoot `
+    -ReadinessReport $proofClaimReadiness `
+    -TaskId "task-fresh-readiness" `
+    -ExpectedStateRevision ([int64]$proofActivation.state.state_revision) `
+    -WorktreeRoot (Join-Path $tempRoot ".codex-worktrees")
+  Assert-True `
+    -Condition $proofClaimPlan.valid `
+    -Message "Authorized proof claim plan was rejected: $($proofClaimPlan.details -join '; ')"
+  $staleProofClaimPlan = $proofClaimPlan | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+  $staleProofClaimPlan.base_commit = ("f" * 40)
+  $freshReadinessInvocation = Invoke-WriterClaim `
+    -ScriptPath $claimInvokerScriptPath `
+    -RepositoryRoot $proofRoot `
+    -ClaimPlan $staleProofClaimPlan `
+    -TestTransportOutcome " " `
+    -EnableTestMode $false
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.exit_code `
+    -Expected 1 `
+    -Message "Production freshness transport accepted a deliberately stale plan."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.code `
+    -Expected "CLAIM_BASE_MOVED" `
+    -Message "Production freshness transport did not preserve and validate receipt JSON before the stale-plan guard."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.fresh_readiness_revalidated `
+    -Expected $true `
+    -Message "Production freshness transport did not record successful Claim readiness."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.transport_result `
+    -Expected "actual" `
+    -Message "Production freshness transport was misclassified as fixture transport."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.test_transport_outcome `
+    -Expected $null `
+    -Message "Production freshness transport retained a fixture outcome."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.mutations_performed `
+    -Expected $false `
+    -Message "Production freshness transport mutated the disposable fixture."
+  Assert-Equal `
+    -Actual $freshReadinessInvocation.result.push_attempted `
+    -Expected $false `
+    -Message "Production freshness transport attempted a push."
+  Assert-Equal `
+    -Actual (Test-Path -LiteralPath $proofClaimPlan.worktree_path) `
+    -Expected $false `
+    -Message "Production freshness transport created a writer worktree before rejecting the stale plan."
+
   [void](Invoke-GitWithoutRepository -GitArguments @("init", "--bare", $remoteRoot))
   [void](Invoke-GitWithoutRepository -GitArguments @("init", $seedRoot))
   [void](Invoke-Git -RepositoryRoot $seedRoot -GitArguments @("checkout", "-b", "main"))
@@ -4325,7 +4418,7 @@ exit `$code
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 91
+    scenarios = 92
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {

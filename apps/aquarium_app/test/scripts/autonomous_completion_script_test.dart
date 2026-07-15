@@ -1814,6 +1814,26 @@ void main() {
     expect(transaction, isNot(contains('git push --force')));
   });
 
+  test(
+    'writer claim revalidates receipt JSON through an encoded child command',
+    () {
+      final source = File(
+        'scripts/autonomous_completion/invoke_autonomous_writer_claim.ps1',
+      ).readAsStringSync();
+      final start = source.indexOf('function Invoke-FreshClaimReadiness');
+      final end = source.indexOf('function Get-FreeSubstDrive', start);
+
+      expect(start, greaterThanOrEqualTo(0));
+      expect(end, greaterThan(start));
+      final freshReadiness = source.substring(start, end);
+
+      expect(freshReadiness, contains(r'$receiptBase64'));
+      expect(freshReadiness, contains('FromBase64String'));
+      expect(freshReadiness, contains(r'-EncodedCommand $encodedCommand'));
+      expect(freshReadiness, isNot(contains(r'-File $readinessScript')));
+    },
+  );
+
   test('evidence schema binds named checks to commands and artifacts', () {
     final schema = _readJson('$_schemaRoot/evidence_manifest.schema.json');
     final required = (schema['required'] as List<dynamic>).cast<String>();

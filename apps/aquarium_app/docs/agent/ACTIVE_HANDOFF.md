@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
-Status: Task 13 activation is complete; committed live run state is ready for the explicit launch handoff.
-Last updated: 2026-07-13 in this activation commit; live Git and committed run state remain the final authority.
+Status: Task 13 activation remains intact; WF-2026-07-11-017 repairs the launch claim's JSON transport while the committed live run state stays ready and uncharged.
+Last updated: 2026-07-15 in the WF-2026-07-11-017 repair candidate; live Git and committed run state remain the final authority.
 
 ## Branch
 
@@ -875,6 +875,28 @@ DS-2026-07-05-044:
 - `git diff --check`, docs guard, Docs profile, branch clean-worktree Full, and
   clean-main Full gate passed before DS-044 was pushed.
 
+## Claim Readiness Transport Repair
+
+- Slice: `WF-2026-07-11-017`, Claim Readiness JSON Transport Repair.
+- The first sole-invoker claim attempt stopped fail-closed with
+  `CLAIM_READINESS_INVALID`; it reported no mutation, no push, and no budget
+  consumption.
+- Root cause: `Invoke-FreshClaimReadiness` passed a valid synchronization
+  receipt as raw JSON through a nested Windows PowerShell `-File` argument,
+  which stripped the JSON quoting before readiness parsed it.
+- The invoker now preserves the receipt as UTF-8 Base64 inside a UTF-16LE
+  encoded child command, matching the repository's existing safe JSON
+  transport pattern.
+- RED/GREEN covered the encoded-command contract. The full autonomous Dart
+  contract file passed 24 tests, and the full disposable Git fixture passed 92
+  scenarios. Its new authorized production-freshness case reached a deliberate
+  stale-plan guard with freshness revalidated, no mutation, and no push.
+- Two repository-read-only audits found no implementation defect. Their test
+  coverage concern was resolved by the behavioral disposable scenario.
+- No app behavior, live run state, budget, Android runtime, Figma, installed
+  skill, account, cloud/provider, premium, store/deploy, public-release, iOS,
+  or successor-task state changed in this repair.
+
 ## Device And Preview State
 
 - `QA-2026-07-11-001` used the dedicated `danio_api36` phone emulator on
@@ -936,10 +958,15 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No activation blocker is recorded in this candidate.
-- Product work remains forbidden in the Task 13 setup task.
+- No activation or repair blocker is recorded in this candidate.
+- Product audit remains forbidden until the current launch task wins the
+  committed `ready -> active` writer claim.
 
 ## Next Action
 
-After the activation commit is on clean, pushed, aligned `main`, use the duplicate-safe launch marker to create or reuse exactly one saved-project local first product task.
-The new task must synchronize, pass Claim readiness, and win `ready -> active` before auditing `DCL-DR-001`. Do not start product work in this setup task.
+After the WF-2026-07-11-017 repair is on clean, pushed, aligned `main`, the
+existing unique `/launch/0` task must freshly synchronize and retry the same
+revision-1 `ready -> active` CAS claim exactly once. Do not create a duplicate
+task and do not charge budget during claim transfer. If accepted, begin the
+read-only `DCL-DR-001` restore-matrix audit in the deterministic writer
+worktree.
