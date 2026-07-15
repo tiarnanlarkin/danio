@@ -245,9 +245,18 @@ void main() {
     ]);
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
       'DCL-DR-001',
+      'DCL-DR-001-F2',
       'remains `open`',
-      'unstarted',
+      'unimplemented',
     ]);
+    _expectContainsAll(
+      'docs/agent/DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md',
+      [
+        'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
+        'DCL-DR-001-F1',
+        'DCL-DR-001-F2',
+      ],
+    );
   });
 
   test('accepted phone product-depth boundaries are recorded', () {
@@ -277,8 +286,7 @@ void main() {
       'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
       'docs/agent/FINISH_MAP.md',
       'docs/agent/COMPLETE_LOCAL_FORECAST.md',
-      'docs/agent/plans/'
-          '2026-07-11-phone-complete-local-completion-program.md',
+      'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
       'docs/agent/PERFORMANCE_TARGETS.md',
       'docs/design/BASELINES.md',
       'docs/agent/ACTIVE_HANDOFF.md',
@@ -517,10 +525,10 @@ void main() {
       'DCL-RC-001',
     );
     expect(program, contains('Roadmap authority lock - E0'));
-    expect(program, contains('DCL-DR-001'));
+    expect(program, contains('DCL-DR-001-F2'));
     expect(program, contains('next manual task'));
     expect(program, contains('open'));
-    expect(program, contains('unstarted'));
+    expect(program, contains('unimplemented'));
     expect(programFlat, contains('current lean Verified Slice contract'));
     expect(program, isNot(contains('tablet portion of `DCL-PERF-001`')));
 
@@ -597,7 +605,7 @@ void main() {
         contains('DCL-DR-001'),
         contains('next manual'),
         contains('open'),
-        contains('unstarted'),
+        contains('unimplemented'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
       ),
@@ -608,7 +616,7 @@ void main() {
         contains('DCL-DR-001'),
         contains('next manual'),
         contains('open'),
-        contains('unstarted'),
+        contains('unimplemented'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
       ),
@@ -673,9 +681,10 @@ void main() {
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
       'manual lean workflow',
       'DCL-DR-001',
+      'DCL-DR-001-F2',
       'remains `open`',
-      'unstarted',
-      'Hard pause',
+      'unimplemented',
+      'Next manual action',
       'Never create an automatic successor task.',
     ]);
     _expectContainsAll('docs/agent/autonomous_completion/README.md', [
@@ -684,9 +693,10 @@ void main() {
       'reconciliation plan',
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
-      'WF-2026-07-15-019',
+      'DR-2026-07-16-001',
       'DCL-DR-001',
-      'open and unstarted',
+      'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
+      'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
     ]);
   });
 }

@@ -7,9 +7,9 @@
 > This is the current and only ordered phone completion authority. It preserves
 > seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
-> is the next manual task, remains `open` and unstarted, and begins only in a
-> new manual epoch after E0 is clean, pushed, and aligned. Execution and gate
-> mechanics defer to the current lean Verified Slice contract.
+> remains `open` and is advanced: `DCL-DR-001-F1` is locally fixed, while
+> `DCL-DR-001-F2` is the next manual task and remains unimplemented. Execution
+> and gate mechanics defer to the current lean Verified Slice contract.
 
 **Goal:** Finish Danio as a polished, resilient, local-first Android phone app
 while keeping tablet and external product lanes explicitly parked.
@@ -144,14 +144,15 @@ block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
 
 **Actions:**
 
-- [ ] Enumerate export, preview, confirm, cancel, success, no-tank, invalid ZIP,
+- [x] Enumerate export, preview, confirm, cancel, success, no-tank, invalid ZIP,
   malformed backup, partial-write, rollback, photo-cleanup, and user-visible
   failure paths from source.
-- [ ] Map every path to an existing named test and the state-matrix evidence.
-- [ ] Add a new ledger finding before code if a distinct false-success,
-  rollback, or error-replacement boundary is found.
-- [ ] For each real gap, write the focused failing test first, prove RED for
-  that boundary, implement the smallest fix, then prove GREEN.
+- [x] Map every path to current named test evidence or explicitly record the
+  absence of direct evidence in the state matrix.
+- [x] Record the selected `DCL-DR-001-F1` error-replacement boundary in the
+  matrix before code.
+- [x] For the single selected F1 gap, write the focused failing test first,
+  prove RED for that boundary, implement the smallest fix, then prove GREEN.
 - [ ] Close `DCL-DR-001` only when the matrix has no unexplained path and the
   Full gate passes.
 
@@ -405,7 +406,8 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-After E0 is clean, pushed, and aligned, open a fresh manual `DCL-DR-001` epoch
-and perform Task 1.1 as an ordered read-only restore matrix audit. Implement
-only if that audit proves one specific current false-success, rollback,
-cleanup, or failure-feedback gap. Do not create or start that epoch from E0.
+`DCL-DR-001` remains open after `DR-2026-07-16-001`: `DCL-DR-001-F1` is locally
+fixed, while `DCL-DR-001-F2` records an unimplemented export-share false-success
+boundary. Open the exact-marker F2 epoch next and fix only that boundary
+test-first. Do not select Task 1.2, 1.3, or 1.4 until the restore matrix has no
+unexplained current path.

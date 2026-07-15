@@ -25,6 +25,36 @@ class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStore {
   }
 }
 
+class _FailingRestoreAndRollbackStore extends InMemorySharedPreferencesStore {
+  _FailingRestoreAndRollbackStore.withData(
+    super.data, {
+    required this.failOnKey,
+  }) : super.withData();
+
+  final String failOnKey;
+  var _failedWrites = 0;
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) {
+    if (key == failOnKey && _failedWrites < 2) {
+      _failedWrites += 1;
+      if (_failedWrites == 1) {
+        _throwRestoreFailure(key);
+      }
+      _throwRollbackFailure(key);
+    }
+    return super.setValue(valueType, key, value);
+  }
+
+  Never _throwRestoreFailure(String key) {
+    throw StateError('simulated restore preference write failure for $key');
+  }
+
+  Never _throwRollbackFailure(String key) {
+    throw StateError('simulated rollback preference write failure for $key');
+  }
+}
+
 void main() {
   group('SharedPreferencesBackup', () {
     setUp(() {
@@ -139,6 +169,79 @@ void main() {
         expect(prefs.getBool('use_metric'), true);
         expect(prefs.getInt('room_theme'), 3);
         expect(prefs.getString('user_openai_api_key'), 'secret');
+      },
+    );
+
+    test(
+      'restore preserves the initiating error when snapshot rollback also fails',
+      () async {
+        SharedPreferences.resetStatic();
+        SharedPreferencesStorePlatform.instance =
+            _FailingRestoreAndRollbackStore.withData({
+              'flutter.theme_mode': 2,
+              'flutter.use_metric': true,
+            }, failOnKey: 'flutter.use_metric');
+
+        Object? thrown;
+        StackTrace? thrownStackTrace;
+        try {
+          await SharedPreferencesBackup.restoreFromJson({
+            'entries': {
+              'theme_mode': 1,
+              'use_metric': false,
+            },
+          });
+        } catch (error, stackTrace) {
+          thrown = error;
+          thrownStackTrace = stackTrace;
+        }
+
+        expect(thrown, isA<SharedPreferencesRestoreException>());
+        final restoreError = thrown as SharedPreferencesRestoreException;
+        expect(
+          restoreError.toString(),
+          allOf(
+            contains('simulated restore preference write failure'),
+            contains('simulated rollback preference write failure'),
+          ),
+        );
+        expect(
+          restoreError.originalError,
+          isA<StateError>().having(
+            (error) => error.message,
+            'message',
+            contains('simulated restore preference write failure'),
+          ),
+        );
+        expect(
+          restoreError.rollbackError,
+          isA<StateError>().having(
+            (error) => error.message,
+            'message',
+            contains('simulated rollback preference write failure'),
+          ),
+        );
+        expect(
+          restoreError.originalStackTrace.toString(),
+          allOf(
+            contains('_throwRestoreFailure'),
+            isNot(contains('_throwRollbackFailure')),
+          ),
+        );
+        expect(
+          restoreError.rollbackStackTrace.toString(),
+          allOf(
+            contains('_throwRollbackFailure'),
+            isNot(contains('_throwRestoreFailure')),
+          ),
+        );
+        expect(
+          thrownStackTrace.toString(),
+          allOf(
+            contains('_throwRestoreFailure'),
+            isNot(contains('_throwRollbackFailure')),
+          ),
+        );
       },
     );
 

@@ -1,9 +1,10 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; E0 roadmap authority locked; product paused
-Updated: 2026-07-15
-Documentation epoch: `E0-2026-07-15-020`
-Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
+Status: manual lean workflow; Phase 1 data resilience in progress
+Updated: 2026-07-16
+Product epoch: `DR-2026-07-16-001`
+Marker: `danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1`
+E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
 
@@ -12,10 +13,17 @@ Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - E0 locks the seven ordered phone phases and finite done conditions across the
   completion program, ledger, Finish Map, forecast, performance, and visual
   baseline authorities.
-- No Flutter application API, persisted-data schema, dependency, UI, emulator,
-  account, cloud, or release behavior changed.
-- Product work remains paused until E0 is clean, pushed,
-  aligned, and reduced to one worktree.
+- `DCL-DR-001` is advanced but remains open. Its ordered source/test matrix is
+  recorded in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
+- The audit found and fixed one error-replacement boundary: if preference
+  restore and snapshot rollback both fail, the initiating error and rollback
+  error now remain separately inspectable with their original stack traces.
+- The same audit records one later, unimplemented export-share finding: a
+  dismissed or unavailable share can leave a visible `Last backup` timestamp
+  after the only temporary ZIP is deleted, without terminal feedback.
+- No persisted-data schema, dependency, UI, emulator, account, cloud, release,
+  or device behavior changed.
+- Phase 1 remains on `DCL-DR-001`; no later ledger row was selected.
 
 ## Frozen autonomy
 
@@ -36,12 +44,20 @@ Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 Never create an automatic successor task.
 
+The current user separately authorized one exact-marker saved-project
+continuation after a clean, pushed checkpoint. That routing permission is not
+frozen-autonomy authority and does not charge or alter the retained state.
+
 ## Product authority
 
-- `DCL-DR-001` is the next manual development task.
-- `DCL-DR-001` remains `open`, was not claimed, and is unstarted.
-- Its first action is an ordered read-only restore-matrix audit. Implement only
-  if that audit proves one specific current gap.
+- `DCL-DR-001` remains `open`. `DCL-DR-001-F1` is locally fixed with focused
+  RED/GREEN proof; `DCL-DR-001-F2` is recorded but unimplemented so this row is
+  not closed.
+- The next manual development task is the exact-marker `DCL-DR-001-F2`
+  export-share outcome slice. Start with a focused failing widget test for the
+  dismissed/unavailable share result, then make the smallest fix that prevents
+  false `Last backup` state and supplies honest terminal feedback.
+- `DCL-DR-002` remains open and unstarted but is not selected yet.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
   status. Read them only for the directly relevant row.
@@ -82,12 +98,11 @@ when the chosen task directly requires them.
 - After an identical fast-forward/push, compare tree IDs and Git alignment; do
   not rerun an identical gate.
 
-## Hard pause
+## Next manual action
 
-Stop after E0 is clean, pushed, aligned, and reduced to one worktree. Do not
-begin `DCL-DR-001` in this documentation epoch and do not create a successor
-task.
-
-Next manual action: open a fresh manual `DCL-DR-001` task and perform the
-ordered read-only restore-matrix audit; implement only if it proves one specific
-current false-success, rollback, cleanup, or failure-feedback gap.
+Open a fresh manual `DCL-DR-001-F2` task with exact marker
+`danio-dcl-dr-001-export-share-outcome-2026-07-16/1`. Prove the dismissed or
+unavailable share-result false-success boundary with one focused failing widget
+test before code, make the smallest fix, and re-audit completed-ZIP cleanup as
+directly adjacent evidence. Do not start `DCL-DR-002`, another ledger row, or a
+later phone phase in that epoch.

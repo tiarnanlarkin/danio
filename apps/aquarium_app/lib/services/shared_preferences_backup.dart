@@ -2,6 +2,25 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+class SharedPreferencesRestoreException implements Exception {
+  final Object originalError;
+  final StackTrace originalStackTrace;
+  final Object rollbackError;
+  final StackTrace rollbackStackTrace;
+
+  const SharedPreferencesRestoreException({
+    required this.originalError,
+    required this.originalStackTrace,
+    required this.rollbackError,
+    required this.rollbackStackTrace,
+  });
+
+  @override
+  String toString() =>
+      'SharedPreferencesRestoreException: preference restore failed '
+      '($originalError; rollback failed: $rollbackError)';
+}
+
 /// Exports and restores SharedPreferences data so that learning progress,
 /// gems, user profile, and other non-tank state survive data wipes or
 /// device transfers.
@@ -145,7 +164,19 @@ class SharedPreferencesBackup {
     try {
       return await _replaceExportableEntries(prefs, entries);
     } catch (error, stackTrace) {
-      await _replaceExportableEntries(prefs, previousEntries);
+      try {
+        await _replaceExportableEntries(prefs, previousEntries);
+      } catch (rollbackError, rollbackStackTrace) {
+        Error.throwWithStackTrace(
+          SharedPreferencesRestoreException(
+            originalError: error,
+            originalStackTrace: stackTrace,
+            rollbackError: rollbackError,
+            rollbackStackTrace: rollbackStackTrace,
+          ),
+          stackTrace,
+        );
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
