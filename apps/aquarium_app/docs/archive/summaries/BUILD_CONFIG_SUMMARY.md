@@ -1,18 +1,21 @@
 # Aquarium App - Release Build Configuration Summary
 
+> Historical record only. Current security clearance (2026-07-15): **NOT RELEASE-READY.** Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved.
+
+
 **Date:** February 7, 2025  
 **Version:** 1.0.0+1  
-**Package:** com.tiarnanlarkin.aquarium.aquarium_app
+**Package:** com.tiarnanlarkin.<YOUR_KEY_ALIAS>.<YOUR_KEY_ALIAS>_app
 
 ---
 
 ## ✅ Completed Tasks
 
 ### 1. Release Keystore Generation
-- **Location:** `android/app/aquarium-release.jks`
+- **Location:** `android/app/<YOUR_KEY_ALIAS>-release.jks`
 - **Algorithm:** RSA 2048-bit
 - **Validity:** 10,000 days (~27 years)
-- **Alias:** `aquarium`
+- **Alias:<YOUR_KEY_ALIAS>
 - **Certificate:** CN=Tiarnan Larkin, OU=Development, O=Aquarium App, L=Dublin, ST=Leinster, C=IE
 - **Status:** ✅ Generated successfully
 - **Credentials:** Saved to `/mnt/c/Users/larki/Documents/Aquarium App Dev/KEYSTORE_INFO.txt`
@@ -22,10 +25,10 @@
 - **Purpose:** Stores signing credentials for Gradle build
 - **Contents:**
   ```properties
-  storePassword=<stored securely>
-  keyPassword=<stored securely>
-  keyAlias=aquarium
-  storeFile=aquarium-release.jks
+  storePassword=<YOUR_STORE_PASSWORD>
+  keyPassword=<YOUR_KEY_PASSWORD>
+  keyAlias=<YOUR_KEY_ALIAS>
+  storeFile=<YOUR_KEY_ALIAS>-release.jks
   ```
 - **Status:** ✅ Created and configured
 - **Git Status:** ✅ Added to .gitignore
@@ -86,7 +89,7 @@
 
 ### Future Builds (After Initial Setup)
 ```bash
-cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app"
+cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/<YOUR_KEY_ALIAS>_app"
 
 # Update version in pubspec.yaml first!
 # Increment version code for each Play Store release
@@ -151,13 +154,13 @@ Before uploading AAB to Play Store:
 ### If build fails:
 1. Check JAVA_HOME is set correctly in gradle.properties
 2. Ensure key.properties exists and has correct paths
-3. Verify keystore file exists at android/app/aquarium-release.jks
+3. Verify keystore file exists at android/app/<YOUR_KEY_ALIAS>-release.jks
 4. Clean build: `flutter clean && flutter pub get`
 
 ### If signing fails:
 1. Verify keystore passwords in key.properties
 2. Check keystore file permissions
-3. Test keystore: `keytool -list -v -keystore android/app/aquarium-release.jks`
+3. Test keystore: `keytool -list -v -keystore android/app/<YOUR_KEY_ALIAS>-release.jks`
 
 ### Future Updates:
 Always use the same keystore and credentials. If lost, you cannot update the app on Google Play Store!

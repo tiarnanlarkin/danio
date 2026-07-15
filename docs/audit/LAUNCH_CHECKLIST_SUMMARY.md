@@ -1,5 +1,8 @@
 # 🚀 Launch Checklist - Quick Reference
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical summary is not release approval.
+
 **Status:** 75% Complete | **Blockers:** 2 | **Time to Launch:** 3-5 days
 
 ---
@@ -16,7 +19,7 @@
 **Quick Setup:**
 ```bash
 # Create GitHub repo, enable Pages, push privacy-policy.md
-# URL: https://yourusername.github.io/aquarium-privacy/
+# URL: https://yourusername.github.io/<REDACTED_SIGNING_VALUE>-privacy/
 ```
 
 ---
@@ -164,7 +167,7 @@ Answer questionnaire:
 
 **⚠️ BACKUP THESE FILES NOW:**
 
-1. `android/app/aquarium-release.jks` (keystore)
+1. `android/app/<REDACTED_SIGNING_VALUE>-release.jks` (keystore)
 2. `android/key.properties` (passwords)
 3. Root: `KEYSTORE_INFO.txt` (details)
 

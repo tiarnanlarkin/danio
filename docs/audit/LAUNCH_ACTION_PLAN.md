@@ -1,5 +1,8 @@
 # 🎯 Launch Action Plan - Step-by-Step
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical plan is not approval to launch.
+
 **Goal:** Take Aquarium Hobbyist from 75% → 100% launch-ready  
 **Timeline:** 3-5 days  
 **Estimated Effort:** 3 hours of work + 2-3 days testing
@@ -16,15 +19,15 @@
 
 **Steps:**
 1. **Create a new GitHub repository:**
-   - Name: `aquarium-privacy`
+   - Name: `<REDACTED_SIGNING_VALUE>-privacy`
    - Visibility: Public
    - Initialize with README: No
 
 2. **Upload privacy policy:**
    ```bash
    cd /tmp
-   git clone https://github.com/YOUR_USERNAME/aquarium-privacy.git
-   cd aquarium-privacy
+   git clone https://github.com/YOUR_USERNAME/<REDACTED_SIGNING_VALUE>-privacy.git
+   cd <REDACTED_SIGNING_VALUE>-privacy
    
    # Copy privacy policy
    cp "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/legal/privacy-policy.md" ./index.md
@@ -43,12 +46,12 @@
 
 4. **Get URL:**
    - Wait 1-2 minutes for deployment
-   - URL: `https://YOUR_USERNAME.github.io/aquarium-privacy/`
+   - URL: `https://YOUR_USERNAME.github.io/<REDACTED_SIGNING_VALUE>-privacy/`
    - Test URL in browser — should show privacy policy
 
 5. **Save URL:**
    ```bash
-   echo "Privacy Policy URL: https://YOUR_USERNAME.github.io/aquarium-privacy/" >> "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/audit/STORE_LISTING_URLS.txt"
+   echo "Privacy Policy URL: https://YOUR_USERNAME.github.io/<REDACTED_SIGNING_VALUE>-privacy/" >> "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/audit/STORE_LISTING_URLS.txt"
    ```
 
 **Option B: Simple HTML Page (Alternative)**
@@ -93,7 +96,7 @@ If you have the original design file (PSD, Figma, etc.):
 sudo apt install imagemagick
 
 # Upscale existing xxxhdpi icon
-cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/android/app/src/main/res/mipmap-xxxhdpi/"
+cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/<REDACTED_SIGNING_VALUE>_app/android/app/src/main/res/mipmap-xxxhdpi/"
 
 convert ic_launcher.png -resize 1024x1024 -quality 100 app-icon-1024.png
 
@@ -138,7 +141,7 @@ mv app-icon-1024.png "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/au
 
 2. **Navigate to project:**
    ```powershell
-   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\<REDACTED_SIGNING_VALUE>_app"
    ```
 
 3. **Clean previous builds:**
@@ -167,7 +170,7 @@ mv app-icon-1024.png "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/au
 
 8. **Copy to easy location:**
    ```powershell
-   copy "build\app\outputs\bundle\release\app-release.aab" "C:\Users\larki\Documents\Aquarium App Dev\aquarium-v1.0.0.aab"
+   copy "build\app\outputs\bundle\release\app-release.aab" "C:\Users\larki\Documents\Aquarium App Dev\<REDACTED_SIGNING_VALUE>-v1.0.0.aab"
    ```
 
 **If Build Fails:**
@@ -201,13 +204,13 @@ mv app-icon-1024.png "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/au
    ```powershell
    cd "C:\Users\larki\Documents\Aquarium App Dev"
    
-   java -jar bundletool.jar build-apks --bundle=aquarium-v1.0.0.aab --output=aquarium-v1.0.0.apks --mode=universal
+   java -jar bundletool.jar build-apks --bundle=<REDACTED_SIGNING_VALUE>-v1.0.0.aab --output=<REDACTED_SIGNING_VALUE>-v1.0.0.apks --mode=universal
    ```
 
 3. **Extract universal APK:**
    ```powershell
    # Rename .apks to .zip
-   copy aquarium-v1.0.0.apks aquarium-v1.0.0.zip
+   copy <REDACTED_SIGNING_VALUE>-v1.0.0.apks <REDACTED_SIGNING_VALUE>-v1.0.0.zip
    
    # Extract ZIP (right-click → Extract All)
    # Find universal.apk inside
@@ -224,7 +227,7 @@ mv app-icon-1024.png "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/docs/au
 **Option B: Build APK Directly (Faster for Testing)**
 
 ```powershell
-cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\<REDACTED_SIGNING_VALUE>_app"
 flutter build apk --release
 ```
 
@@ -303,7 +306,7 @@ Test these critical flows:
 
 2. **Create Project:**
    - Select platform: **Flutter**
-   - Project name: `aquarium-hobbyist`
+   - Project name: `<REDACTED_SIGNING_VALUE>-hobbyist`
    - Copy your DSN (looks like: `https://xxx@xxx.ingest.sentry.io/xxx`)
 
 3. **Add Dependency:**
@@ -317,7 +320,7 @@ Test these critical flows:
 
    Run:
    ```bash
-   cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app"
+   cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/<REDACTED_SIGNING_VALUE>_app"
    /home/tiarnanlarkin/flutter/bin/flutter pub get
    ```
 
@@ -374,7 +377,7 @@ Test these critical flows:
    We use Sentry (https://sentry.io) to detect and fix crashes, improving app stability. When the app crashes:
    
    - **What's collected:** Error message, stack trace, device model, OS version
-   - **What's NOT collected:** Personal data, aquarium data, user identity
+   - **What's NOT collected:** Personal data, <REDACTED_SIGNING_VALUE> data, user identity
    - **Purpose:** Fix bugs and improve app reliability
    - **Retention:** Error reports deleted after 90 days
    
@@ -436,7 +439,7 @@ Test these critical flows:
      - "Track your tanks like a pro"
      - "Private. Local. Powerful."
      - "Fish care made simple"
-     - "Your aquarium journal"
+     - "Your <REDACTED_SIGNING_VALUE> journal"
    - Font: Same as main but lighter weight
    - Size: 36-48pt
 
@@ -515,9 +518,9 @@ Similar process:
    - **App name:** Aquarium Hobbyist
    - **Short description:** (Choose one from `STORE_LISTING_CONTENT.md`)
      ```
-     Track your aquarium like a pro. Water tests, maintenance logs & fish care education—all private, all local.
+     Track your <REDACTED_SIGNING_VALUE> like a pro. Water tests, maintenance logs & fish care education—all private, all local.
      ```
-   - **Full description:** Copy from `docs/completed/PLAY_STORE_LAUNCH_COMPLETE.md` or `docs/planning/aquarium-app-play-store-launch.md`
+   - **Full description:** Copy from `docs/completed/PLAY_STORE_LAUNCH_COMPLETE.md` or `docs/planning/<REDACTED_SIGNING_VALUE>-app-play-store-launch.md`
 
    **Graphics:**
    - **App icon:** Upload `app-icon-1024.png`
@@ -533,7 +536,7 @@ Similar process:
 
    **Categorization:**
    - **App category:** Lifestyle
-   - **Tags:** (if asked) aquarium, fish, hobby, pets
+   - **Tags:** (if asked) <REDACTED_SIGNING_VALUE>, fish, hobby, pets
 
    **Contact details:**
    - **Email:** tiarnan.larkin@gmail.com
@@ -541,7 +544,7 @@ Similar process:
    - **Website:** (optional or GitHub repo URL)
 
    **Privacy Policy:**
-   - **Privacy policy URL:** `https://YOUR_USERNAME.github.io/aquarium-privacy/`
+   - **Privacy policy URL:** `https://YOUR_USERNAME.github.io/<REDACTED_SIGNING_VALUE>-privacy/`
 
    Click "Save"
 
@@ -555,7 +558,7 @@ Similar process:
    **Data Safety:**
    - Click "Start"
    - **Does your app collect or share user data?** NO
-   - **Explanation:** "All aquarium data is stored locally on the user's device. No personal information is collected, transmitted, or shared with third parties."
+   - **Explanation:** "All <REDACTED_SIGNING_VALUE> data is stored locally on the user's device. No personal information is collected, transmitted, or shared with third parties."
    - Complete questionnaire
    - Submit
 
@@ -613,7 +616,7 @@ Similar process:
 
 2. **Upload AAB:**
    - Click "Upload"
-   - Select: `C:\Users\larki\Documents\Aquarium App Dev\aquarium-v1.0.0.aab`
+   - Select: `C:\Users\larki\Documents\Aquarium App Dev\<REDACTED_SIGNING_VALUE>-v1.0.0.aab`
    - Wait for upload (may take 1-2 minutes)
    - Wait for processing (Google scans AAB)
 
@@ -740,7 +743,7 @@ Similar process:
 
 3. **Build New AAB:**
    ```powershell
-   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\<REDACTED_SIGNING_VALUE>_app"
    flutter clean
    flutter build appbundle --release
    ```
@@ -829,7 +832,7 @@ Similar process:
      ```
      Welcome to Aquarium Hobbyist v1.0!
      
-     Track your aquarium with ease:
+     Track your <REDACTED_SIGNING_VALUE> with ease:
      🐠 Manage multiple tanks
      💧 Log water parameters
      📊 Visualize trends

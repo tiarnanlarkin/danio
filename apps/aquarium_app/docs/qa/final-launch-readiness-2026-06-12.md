@@ -1,3 +1,6 @@
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Tracked Android signing information was removed from the current Git tip, but public history and Play key registration/use remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical evidence is not release approval.
+
 # Danio Final Launch Readiness - 2026-06-12
 
 ## Current Decision

@@ -117,6 +117,30 @@ String _normalizedLedgerIds(String value) {
 }
 
 void main() {
+  test('release documents carry the current security hold', () {
+    const marker =
+        'Current security clearance (2026-07-15): **NOT RELEASE-READY.**';
+    const releaseDocuments = [
+      'docs/qa/final-launch-readiness-2026-06-12.md',
+      'docs/LAUNCH_CHECKLIST.md',
+      '../../docs/audit/LAUNCH_STATUS_DASHBOARD.md',
+      '../../docs/audit/LAUNCH_READINESS_AUDIT.md',
+      '../../docs/completed/PLAY_STORE_LAUNCH_COMPLETE.md',
+      '../../docs/guides/RELEASE_BUILD_INSTRUCTIONS.md',
+      'docs/RELEASE_READINESS.md',
+      '../../docs/LAUNCH_CHECKLIST.md',
+      '../../docs/audit/LAUNCH_ACTION_PLAN.md',
+      '../../docs/audit/LAUNCH_CHECKLIST_SUMMARY.md',
+      '../../docs/plans/LAUNCH_NIGHT_PLAN.md',
+      'docs/play-store-readiness-audit.md',
+    ];
+
+    for (final path in releaseDocuments) {
+      final openingLines = _source(path).split('\n').take(8).join('\n');
+      expect(openingLines, contains(marker), reason: path);
+    }
+  });
+
   test('current docs describe the local-first build honestly', () {
     final staleClaims = {
       'README.md': RegExp(

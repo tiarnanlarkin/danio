@@ -351,6 +351,17 @@ function Invoke-CustomLint {
   }
 }
 
+function Invoke-TrackedSigningCredentialGuard {
+  Invoke-Step -Name "Tracked Android signing credential guard" -WorkingDirectory $RepoRoot -Command {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File `
+      (Join-Path $AppRoot "scripts/quality_gates/check_tracked_signing_credentials.ps1") `
+      -RepositoryRoot $RepoRoot
+    if ($global:LASTEXITCODE -ne 0) {
+      throw "Tracked Android signing credential guard failed."
+    }
+  }
+}
+
 function Invoke-DependencyValidator {
   Invoke-Step -Name "Dependency validator" -Command {
     Clear-CustomLintGeneratedOutputs
@@ -529,6 +540,7 @@ switch ($Profile) {
   "Docs" {
     Invoke-FocusedTests
     Invoke-AutonomousCompletionTests
+    Invoke-TrackedSigningCredentialGuard
     Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-Analyze
@@ -536,6 +548,7 @@ switch ($Profile) {
   "Full" {
     Invoke-FocusedTests
     Invoke-AutonomousCompletionTests
+    Invoke-TrackedSigningCredentialGuard
     Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-FullTests

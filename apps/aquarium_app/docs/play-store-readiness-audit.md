@@ -1,5 +1,8 @@
 # Play Store Readiness & ASO Audit — Danio
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. Older readiness findings below are historical.
+
 > **Auditor:** Aphrodite (Growth Specialist, Mount Olympus)
 > **Date:** 2026-03-29
 > **Branch:** `openclaw/stage-system`
@@ -93,23 +96,23 @@ The existing `docs/STORE_LISTING.md` is **well-crafted**. The title targets the 
 
 | Priority | Keyword | Rationale |
 |---|---|---|
-| 🔴 Must-have | `fishkeeping` | Core identity; low competition vs "aquarium" |
-| 🔴 Must-have | `aquarium` | Highest volume in category |
+| 🔴 Must-have | `fishkeeping` | Core identity; low competition vs "<REDACTED_SIGNING_VALUE>" |
+| 🔴 Must-have | `<REDACTED_SIGNING_VALUE>` | Highest volume in category |
 | 🔴 Must-have | `fish tank app` | How beginners search |
 | 🟠 High | `water parameters` | Specific, intent-rich |
 | 🟠 High | `nitrogen cycle` | Pain point for beginners; exact match in lessons |
 | 🟠 High | `fish identification` | AI feature differentiator |
-| 🟡 Solid | `aquarium tracker` | Tracks tank + parameter logs |
+| 🟡 Solid | `<REDACTED_SIGNING_VALUE> tracker` | Tracks tank + parameter logs |
 | 🟡 Solid | `betta fish care` | Huge search volume for single species |
 | 🟡 Solid | `planted tank` | High-engagement niche |
 | 🟢 Long-tail | `fish disease guide` | Captures "my fish is sick" panic searches |
-| 🟢 Long-tail | `aquarium maintenance` | Task-oriented searchers |
-| 🟢 Long-tail | `freshwater aquarium` | Qualifier that filters out saltwater noise |
+| 🟢 Long-tail | `<REDACTED_SIGNING_VALUE> maintenance` | Task-oriented searchers |
+| 🟢 Long-tail | `freshwater <REDACTED_SIGNING_VALUE>` | Qualifier that filters out saltwater noise |
 
 ### Title Recommendation
 
 **Current:** `Danio: Learn Fishkeeping`
-**Keep as-is.** "Learn" + "Fishkeeping" is the right combination. Don't swap for "Aquarium" in the title — "learn fishkeeping" is a more emotionally resonant promise for the beginner audience than "aquarium app."
+**Keep as-is.** "Learn" + "Fishkeeping" is the right combination. Don't swap for "Aquarium" in the title — "learn fishkeeping" is a more emotionally resonant promise for the beginner audience than "<REDACTED_SIGNING_VALUE> app."
 
 ### Short Description Recommendation
 
@@ -135,7 +138,7 @@ The current description is solid but under-represents two winning differentiator
 ### Category
 
 **Primary:** Education ✅
-**No change recommended.** Competing in Education over Tools/Lifestyle is the right call — the lesson system is the core differentiator and it positions Danio away from the generic "aquarium tracker" apps.
+**No change recommended.** Competing in Education over Tools/Lifestyle is the right call — the lesson system is the core differentiator and it positions Danio away from the generic "<REDACTED_SIGNING_VALUE> tracker" apps.
 
 ---
 
@@ -219,7 +222,7 @@ The gem economy infrastructure is well-built and could support real-money top-up
 | Slot | Shot | Caption |
 |---|---|---|
 | 1 | `01_welcome.png` | *Stop guessing. Start fishkeeping with confidence.* |
-| 2 | **NEED: Home dashboard** | *Your aquarium, beautifully organised.* |
+| 2 | **NEED: Home dashboard** | *Your <REDACTED_SIGNING_VALUE>, beautifully organised.* |
 | 3 | `05_post_species.png` | *Get species-specific care guidance instantly.* |
 | 4 | **NEED: Water parameter chart** | *Track water tests before problems become disasters.* |
 | 5 | `03_xp_first_lesson.png` | *Learn step by step — and stay motivated.* |
@@ -234,7 +237,7 @@ The gem economy infrastructure is well-built and could support real-money top-up
 | Item | Severity | Notes |
 |---|---|---|
 | No l10n / i18n setup | ℹ️ Info | All 149 screens use hardcoded English strings. Acceptable for v1.0 English-first launch. If global expansion is a goal, this is a large undertaking (~150 screens to instrument). |
-| Outdated `READINESS_CHECKLIST.md` | ℹ️ Info | Still references old package name `com.tiarnanlarkin.aquarium.aquarium_app` — harmless but misleading for future reference |
+| Outdated `READINESS_CHECKLIST.md` | ℹ️ Info | Still references old package name `com.tiarnanlarkin.<REDACTED_SIGNING_VALUE>.<REDACTED_SIGNING_VALUE>_app` — harmless but misleading for future reference |
 | Only 14 fish species have images | ⚠️ Low | Species database has 122+ species; only 14 have real images + thumbnails. Others show placeholder. This doesn't block launch but affects perceived polish. |
 | `emotional_fish.riv` asset size | ℹ️ Info | Previously flagged at ~867KB vs ~300KB target. 892KB Rive folder total. Minor. |
 | Universal APK at 92.8MB | ℹ️ Info | Normal for Flutter with all dependencies. AAB + Play Asset Delivery will fix this for end users. |

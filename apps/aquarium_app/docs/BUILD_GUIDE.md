@@ -1,5 +1,8 @@
 # Danio — Android Build Guide
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.** Public Git history retains previously exposed Android signing information; Play key role/use and the required remediation remain unresolved. Real signing material stays only in ignored local files.
+
+
 > Last updated: Wave D (March 2026)
 
 ---
@@ -8,7 +11,7 @@
 
 - Flutter SDK installed at `C:\Users\larki\flutter\`
 - Android SDK + NDK (see `android/app/build.gradle.kts` for NDK version)
-- Keystore file at `android/app/aquarium-release.jks`
+- Keystore file at `android/app/<YOUR_KEY_ALIAS>-release.jks`
 - `android/key.properties` present and correctly populated (see below)
 
 ---
@@ -17,9 +20,9 @@
 
 | Item | Path |
 |------|------|
-| App root | `apps/aquarium_app/` |
+| App root | `apps/<YOUR_KEY_ALIAS>_app/` |
 | Android build config | `android/app/build.gradle.kts` |
-| Keystore file | `android/app/aquarium-release.jks` |
+| Keystore file | `android/app/<YOUR_KEY_ALIAS>-release.jks` |
 | Key properties | `android/key.properties` *(gitignored — never commit)* |
 | AAB output | `build/app/outputs/bundle/release/app-release.aab` |
 | APK output | `build/app/outputs/apk/release/app-release.apk` |
@@ -29,10 +32,10 @@
 ## key.properties Format
 
 ```properties
-storePassword=<your_store_password>
-keyPassword=<your_key_password>
-keyAlias=aquarium
-storeFile=aquarium-release.jks
+storePassword=<YOUR_STORE_PASSWORD>
+keyPassword=<YOUR_KEY_PASSWORD>
+keyAlias=<YOUR_KEY_ALIAS>
+storeFile=<YOUR_KEY_ALIAS>-release.jks
 ```
 
 > ⚠️ **Never commit `key.properties` or `*.jks` to source control.**
@@ -45,7 +48,7 @@ storeFile=aquarium-release.jks
 Play Store requires AAB format since August 2021. Always use AAB for production uploads.
 
 ```bash
-cd apps/aquarium_app
+cd apps/<YOUR_KEY_ALIAS>_app
 flutter build appbundle --release
 ```
 
@@ -58,7 +61,7 @@ Output: `build/app/outputs/bundle/release/app-release.aab`
 ## Building a Release APK (Sideloading / Testing)
 
 ```bash
-cd apps/aquarium_app
+cd apps/<YOUR_KEY_ALIAS>_app
 flutter build apk --release
 ```
 
@@ -128,10 +131,10 @@ The release signing config is in `build.gradle.kts`:
 signingConfigs {
     create("release") {
         if (keystorePropertiesFile.exists()) {
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
+            keyAlias = <YOUR_KEY_ALIAS>
+            keyPassword = <YOUR_KEY_PASSWORD>
             storeFile = file(keystoreProperties.getProperty("storeFile"))
-            storePassword = keystoreProperties.getProperty("storePassword")
+            storePassword = <YOUR_STORE_PASSWORD>
         }
     }
 }

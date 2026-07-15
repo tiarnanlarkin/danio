@@ -1,3 +1,6 @@
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Tracked Android signing information was removed from the current Git tip, but public history and Play key registration/use remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. Older readiness evidence below is historical.
+
 # Danio — Release Readiness Assessment
 
 > Status note (2026-05-02): historical assessment for `openclaw/stage-system`. It is not current release approval for `main`. Use `docs/development/CODEX_SAFE_WORKFLOW.md`, current CI, Android device smoke tests, and verified legal URLs before release.

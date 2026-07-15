@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
-Status: Task 13 activation remains intact; WF-2026-07-11-017 repairs the launch claim's JSON transport while the committed live run state stays ready and uncharged.
-Last updated: 2026-07-15 in the WF-2026-07-11-017 repair candidate; live Git and committed run state remain the final authority.
+Status: Pre-development maintenance/security clearance is in closeout; product development and writer claiming remain paused while the committed live run state stays revision 1, ready, ownerless, and uncharged with 10 units remaining including current.
+Last updated: 2026-07-15 in the maintenance/security clearance candidate; live Git and committed run state remain the final authority.
 
 ## Branch
 
@@ -897,6 +897,44 @@ DS-2026-07-05-044:
   skill, account, cloud/provider, premium, store/deploy, public-release, iOS,
   or successor-task state changed in this repair.
 
+## Pre-Development Maintenance And Security Clearance
+
+- The exact failed deterministic writer identity for
+  `DCL-DR-001-restore-matrix-audit` was inspected with long-path-safe Git
+  commands before removal. It had only the staged revision-2 claim proposal,
+  no candidate commit or remote branch, no unstaged/untracked content, and no
+  live process or durable device owner. The user-authorized worktree and branch
+  were removed; no other branch, worktree, artifact, or state was pruned.
+- `WF-2026-07-15-018` fixed the real Windows drive-root defect in commit
+  `bbe89ac6`: path normalization now preserves a true drive root as `R:/`
+  while ordinary paths still lose redundant trailing separators. Focused
+  production-path RED/GREEN, autonomous Dart/PowerShell/activation/disposable-
+  Git checks, and Docs gates passed. No real claim was attempted.
+- `SEC-2026-07-15-013` removes Android signing values from the current tracked
+  tip, replaces affected guides with local-only placeholder instructions, and
+  adds a redacting index-plus-working-tree guard to the Docs and Full profiles.
+  The guard's ten disposable scenarios cover staged-bypass, exact CI-fixture,
+  anchored-placeholder/reference, additional-format, output-redaction,
+  keytool-CLI, ignored-local, and tracked-private-file boundaries. The
+  ignored local `android/key.properties` and private keystore remain present,
+  ignored, untracked, and unmodified.
+- The security fixture, current-tip guard, focused gate/document contracts,
+  `git diff --check`, dirty-branch Docs, and dirty-branch Full profiles passed.
+  Full included the complete Flutter suite, analysis, and a debug APK build;
+  no emulator or ADB action was taken.
+- Safe redacted history inspection confirms that the public repository history
+  retains an earlier credential-guide commit. Local evidence does not prove
+  whether the affected key is unknown to Play, an upload key, or an
+  app-signing key. History rewriting, force-push, key reset/rotation, and Play
+  Console actions were not authorized and were not performed.
+- Older release-ready documents now carry an explicit current security hold.
+  The canonical privacy and terms URLs require current external hosting and
+  content verification; no hosting, store, cloud, or account-backed action was
+  performed.
+- The committed operational state was not edited: revision 1, mode `ready`,
+  owner null, current charge `none`, 10 consumed, and 10 remaining including
+  current. `DCL-DR-001` was not started and product development remains paused.
+
 ## Device And Preview State
 
 - `QA-2026-07-11-001` used the dedicated `danio_api36` phone emulator on
@@ -958,15 +996,19 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No activation or repair blocker is recorded in this candidate.
-- Product audit remains forbidden until the current launch task wins the
-  committed `ready -> active` writer claim.
+- Public Git history retains previously exposed signing information.
+- Play Console evidence has not established the affected key's role or whether
+  it has ever been registered or used for a published app.
+- The canonical privacy and terms URLs still require current external hosting
+  and content verification.
+- These are release/external-decision blockers, not authority to resume product
+  work. The writer claim and `DCL-DR-001` remain explicitly paused.
 
 ## Next Action
 
-After the WF-2026-07-11-017 repair is on clean, pushed, aligned `main`, the
-existing unique `/launch/0` task must freshly synchronize and retry the same
-revision-1 `ready -> active` CAS claim exactly once. Do not create a duplicate
-task and do not charge budget during claim transfer. If accepted, begin the
-read-only `DCL-DR-001` restore-matrix audit in the deterministic writer
-worktree.
+Wait for explicit user direction. The recommended next manual action is to
+inspect Play Console **App integrity** and release history without changing
+anything, determine whether the affected key is unknown to Play, an upload
+key, or an app-signing key, and then authorize the exact rotation/reset/history
+response separately. Do not retry the writer claim, begin `DCL-DR-001`, create
+a successor task, or consume a phone-completion unit from this handoff.

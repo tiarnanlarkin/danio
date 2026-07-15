@@ -1,4 +1,7 @@
 # ✅ Build Configuration Checklist
+
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.** Public Git history retains previously exposed Android signing information. Keep all real signing material ignored and untracked pending the Play key decision.
+
 **Date:** 2026-02-16  
 **Status:** VERIFIED - Ready for release build
 
@@ -18,14 +21,14 @@ version: 1.0.0+1
 ### 2. Signing Configuration ✅
 **android/key.properties:**
 ```properties
-storePassword=dmVZEpbnqzfUINqwl9Rl4av4sdG6MWlq
-keyPassword=dmVZEpbnqzfUINqwl9Rl4av4sdG6MWlq
-keyAlias=aquarium
-storeFile=aquarium-release.jks
+storePassword=<YOUR_STORE_PASSWORD>
+keyPassword=<YOUR_KEY_PASSWORD>
+keyAlias=<YOUR_KEY_ALIAS>
+storeFile=<YOUR_KEY_ALIAS>-release.jks
 ```
 
 **Keystore file:**
-- Location: `android/app/aquarium-release.jks` ✅
+- Location: `android/app/<YOUR_KEY_ALIAS>-release.jks` ✅
 - File size: 2.7K ✅
 - File exists: YES ✅
 
@@ -33,10 +36,10 @@ storeFile=aquarium-release.jks
 ```kotlin
 signingConfigs {
     create("release") {
-        keyAlias = keystoreProperties.getProperty("keyAlias")
-        keyPassword = keystoreProperties.getProperty("keyPassword")
+        keyAlias = <YOUR_KEY_ALIAS>
+        keyPassword = <YOUR_KEY_PASSWORD>
         storeFile = file(keystoreProperties.getProperty("storeFile"))
-        storePassword = keystoreProperties.getProperty("storePassword")
+        storePassword = <YOUR_STORE_PASSWORD>
     }
 }
 ```
@@ -65,7 +68,7 @@ buildTypes {
     android:icon="@mipmap/ic_launcher">
 ```
 
-**Application ID:** `com.tiarnanlarkin.aquarium.aquarium_app` ✅
+**Application ID:** `com.tiarnanlarkin.<YOUR_KEY_ALIAS>.<YOUR_KEY_ALIAS>_app` ✅
 
 **Verification:**
 - App name: "Aquarium Hobbyist" ✅
@@ -162,7 +165,7 @@ type pubspec.yaml | findstr "version:"
 # Expected: version: 1.0.0+1
 
 # 2. Verify keystore exists
-dir android\app\aquarium-release.jks
+dir android\app\<YOUR_KEY_ALIAS>-release.jks
 # Expected: File found, ~2.7K
 
 # 3. Check git status (should be clean or only docs)
@@ -238,14 +241,14 @@ After `flutter build appbundle --release`, verify:
 ### Issue: "Keystore file not found"
 **Fix:** Verify key.properties has relative path:
 ```
-storeFile=aquarium-release.jks
+storeFile=<YOUR_KEY_ALIAS>-release.jks
 ```
 NOT an absolute path.
 
 ### Issue: "Build failed - signing error"
 **Fix:** Check key.properties passwords are correct. If needed, regenerate keystore:
 ```powershell
-keytool -genkey -v -keystore android/app/aquarium-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias aquarium
+keytool -genkey -v -keystore android/app/<YOUR_KEY_ALIAS>-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias <YOUR_KEY_ALIAS>
 ```
 
 ### Issue: "Resource shrinking failed"
@@ -268,7 +271,7 @@ isShrinkResources = false  // Try if needed
 | Setting | Value | Status |
 |---------|-------|--------|
 | Version | 1.0.0+1 | ✅ |
-| Package | com.tiarnanlarkin.aquarium.aquarium_app | ✅ |
+| Package | com.tiarnanlarkin.<YOUR_KEY_ALIAS>.<YOUR_KEY_ALIAS>_app | ✅ |
 | App Name | Aquarium Hobbyist | ✅ |
 | Min SDK | 21 (Android 5.0) | ✅ |
 | Target SDK | 34 (Android 14) | ✅ |

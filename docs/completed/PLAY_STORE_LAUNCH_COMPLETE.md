@@ -1,5 +1,8 @@
 # 🎉 Aquarium Hobbyist - Play Store Launch Package
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.** The filename and former completion language are historical only. Public Git history retains previously exposed Android signing information; Play key role/use, remediation, and external legal-page verification remain unresolved.
+
+
 **Status:** 95% Complete - Ready for Final Build & Submission  
 **Date:** February 7, 2026  
 **App Version:** 1.0.0+1
@@ -11,11 +14,11 @@
 ### 1. 🎨 Branding & Visual Identity **COMPLETE**
 
 **App Icon & Splash Screen**
-- ✅ Custom aquarium-themed icon (fish + bubbles design)
+- ✅ Custom <YOUR_KEY_ALIAS>-themed icon (fish + bubbles design)
 - ✅ 16 icon files generated (all densities: mdpi → xxxhdpi)
 - ✅ Adaptive icon for Android 8+ (foreground + background layers)
 - ✅ Splash screen with light blue background
-- ✅ App name changed: "aquarium_app" → "Aquarium Hobbyist"
+- ✅ App name changed: "<YOUR_KEY_ALIAS>_app" → "Aquarium Hobbyist"
 
 📄 **Documentation:** `APP_ICON_SPLASH_SUMMARY.md`, `ICON_DETAILS.txt`
 
@@ -75,8 +78,8 @@
 ### 5. 🔐 Release Build Configuration **COMPLETE**
 
 **Signing Setup**
-- ✅ Release keystore generated (`aquarium-release.jks`)
-- ✅ Alias: `aquarium`, valid for 10,000 days
+- ✅ Release keystore generated (`<YOUR_KEY_ALIAS>-release.jks`)
+- ✅ Alias: <YOUR_KEY_ALIAS>
 - ✅ `key.properties` created with credentials
 - ✅ `build.gradle.kts` configured for release signing
 - ✅ Version updated to 1.0.0+1
@@ -133,7 +136,7 @@
 **Steps:**
 1. Open PowerShell:
    ```powershell
-   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+   cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\<YOUR_KEY_ALIAS>_app"
    ```
 
 2. Build AAB:
@@ -215,7 +218,7 @@ Answer questionnaire (answers in `STORE_LISTING_CONTENT.md`):
 │   ├── 02_tank_detail.png
 │   ├── ... (7 total)
 │   └── SCREENSHOTS_SUMMARY.md
-└── /repo/apps/aquarium_app/
+└── /repo/apps/<YOUR_KEY_ALIAS>_app/
     ├── APP_ICON_SPLASH_SUMMARY.md
     ├── permissions-audit.md
     ├── PERMISSIONS-SUMMARY.md
@@ -223,7 +226,7 @@ Answer questionnaire (answers in `STORE_LISTING_CONTENT.md`):
     ├── /android/
     │   ├── key.properties                # 🔐 Git ignored
     │   └── /app/
-    │       ├── aquarium-release.jks      # 🔐 Git ignored - BACKUP THIS!
+    │       ├── <YOUR_KEY_ALIAS>-release.jks      # 🔐 Git ignored - BACKUP THIS!
     │       └── build.gradle.kts          # Signing config
     ├── /lib/screens/
     │   ├── privacy_policy_screen.dart    # Privacy screen
@@ -258,7 +261,7 @@ Answer questionnaire (answers in `STORE_LISTING_CONTENT.md`):
 ## 🔐 Critical Security Reminders
 
 **🚨 NEVER LOSE THESE:**
-1. `aquarium-release.jks` keystore file
+1. `<YOUR_KEY_ALIAS>-release.jks` keystore file
 2. `KEYSTORE_INFO.txt` with passwords
 
 **Why:** You MUST use the same keystore for all future app updates. Losing it means you can't update the app on Play Store!

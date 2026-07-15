@@ -325,4 +325,36 @@ void main() {
       reason: 'Git fixtures remain tier-selected disposable proof',
     );
   });
+
+  test('docs and full gates reject tracked Android signing credentials', () {
+    final source = File(scriptPath).readAsStringSync();
+    final normalized = source.replaceAll('\r\n', '\n');
+
+    expect(
+      source,
+      contains('scripts/quality_gates/check_tracked_signing_credentials.ps1'),
+    );
+    expect(
+      RegExp(r'\bInvoke-TrackedSigningCredentialGuard\b')
+          .allMatches(source),
+      hasLength(3),
+      reason: 'one function plus Docs and Full invocations',
+    );
+    final docsProfile = RegExp(
+      r'  "Docs" \{\n([\s\S]*?)\n  \}\n  "Full" \{',
+    ).firstMatch(normalized);
+    final fullProfile = RegExp(
+      r'  "Full" \{\n([\s\S]*?)\n  \}\n  "Visual" \{',
+    ).firstMatch(normalized);
+    expect(docsProfile, isNotNull, reason: 'Docs profile block');
+    expect(fullProfile, isNotNull, reason: 'Full profile block');
+    expect(
+      docsProfile!.group(1),
+      contains('Invoke-TrackedSigningCredentialGuard'),
+    );
+    expect(
+      fullProfile!.group(1),
+      contains('Invoke-TrackedSigningCredentialGuard'),
+    );
+  });
 }

@@ -94,7 +94,7 @@ The slice is done only when:
 
 ## Result
 
-- Commit: This slice's focused workflow-repair commit.
+- Commit: `bbe89ac6`.
 - Verification summary:
   - RED: the behavior suite threw `REHEARSAL_INPUT_INVALID` when the real
     rehearsal-report function received `R:\`.

@@ -77,6 +77,7 @@ jobs:
       - name: Create CI release signing key
         working-directory: apps/aquarium_app/android
         run: |
+          # DANIO_CI_DISPOSABLE_SIGNING_FIXTURE_BEGIN
           keytool -genkeypair \
             -v \
             -keystore app/ci-release.jks \
@@ -93,5 +94,6 @@ jobs:
           keyAlias=ci
           storeFile=ci-release.jks
           EOF
+          # DANIO_CI_DISPOSABLE_SIGNING_FIXTURE_END
       - working-directory: apps/aquarium_app
         run: flutter build appbundle --release

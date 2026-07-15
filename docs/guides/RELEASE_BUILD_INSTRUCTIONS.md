@@ -1,12 +1,15 @@
 # Release Build Instructions - Aquarium Hobbyist App
 
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.** Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This guide is not release approval.
+
+
 **Status:** ⚠️ Release AAB build configuration complete, but build from WSL timing out
 
 ## ✅ What's Already Done
 
 1. **Release Keystore Created**
-   - Location: `android/app/aquarium-release.jks`
-   - Alias: `aquarium`
+   - Location: `android/app/<YOUR_KEY_ALIAS>-release.jks`
+   - Alias: <YOUR_KEY_ALIAS>
    - Valid for 10,000 days
 
 2. **Signing Configuration Complete**
@@ -33,7 +36,7 @@
 ### Step 1: Open PowerShell in Project Directory
 
 ```powershell
-cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\<YOUR_KEY_ALIAS>_app"
 ```
 
 ### Step 2: Set Java Home (if needed)
@@ -66,20 +69,20 @@ Get-ChildItem "build\app\outputs\bundle\release\app-release.aab"
 ## 📦 What the AAB Contains
 
 - **App Name:** Aquarium Hobbyist
-- **Package:** com.tiarnanlarkin.aquarium.aquarium_app
+- **Package:** com.tiarnanlarkin.<YOUR_KEY_ALIAS>.<YOUR_KEY_ALIAS>_app
 - **Version:** 1.0.0 (version code 1)
-- **Signed:** Yes (with aquarium-release.jks)
+- **Signed:** Yes (with <YOUR_KEY_ALIAS>-release.jks)
 - **Minification:** Disabled for v1.0 (can enable later)
 
 ## 🔐 Important Security Notes
 
 1. **NEVER commit these files to git:**
    - `android/key.properties`
-   - `android/app/aquarium-release.jks`
+   - `android/app/<YOUR_KEY_ALIAS>-release.jks`
    - `KEYSTORE_INFO.txt`
 
 2. **Backup the keystore!**
-   - Store `aquarium-release.jks` in a secure location
+   - Store `<YOUR_KEY_ALIAS>-release.jks` in a secure location
    - You MUST use this exact keystore for all future updates
    - Losing it means you can't update the app!
 

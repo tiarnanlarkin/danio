@@ -1,4 +1,8 @@
 # 🚀 Launch Night Verification Plan
+
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical plan must not be executed as current release authority.
+
 **Date:** 2026-02-16  
 **Goal:** Bulletproof app ready to build & ship tomorrow morning  
 **Timeline:** Overnight automation (6-8h)

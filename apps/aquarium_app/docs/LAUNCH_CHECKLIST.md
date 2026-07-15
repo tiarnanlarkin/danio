@@ -1,3 +1,6 @@
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Tracked Android signing information was removed from the current Git tip, but public history and Play key registration/use remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical checklist is not release approval.
+
 # 🚀 Danio — Master Pre-Launch Checklist
 
 > Status note (2026-05-02): historical checklist for `openclaw/stage-system`. Reconcile blockers against current `main` before release. Use `docs/development/CODEX_SAFE_WORKFLOW.md` as the active gate.
