@@ -1,7 +1,8 @@
 # Play Store Readiness & ASO Audit — Danio
 
 > Current security clearance (2026-07-15): **NOT RELEASE-READY.**
-> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. Older readiness findings below are historical.
+> Danio is not listed in the Play Console account inspected on 2026-07-15. The exposed local signing key is retired and must not be used for a future release.
+> Public Git history retains the old exposure, and the canonical privacy and terms URLs require current external hosting and content verification. Older readiness findings below are historical.
 
 > **Auditor:** Aphrodite (Growth Specialist, Mount Olympus)
 > **Date:** 2026-03-29

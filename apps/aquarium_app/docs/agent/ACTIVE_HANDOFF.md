@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
-Status: Pre-development maintenance/security clearance is in closeout; product development and writer claiming remain paused while the committed live run state stays revision 1, ready, ownerless, and uncharged with 10 units remaining including current.
-Last updated: 2026-07-15 in the maintenance/security clearance candidate; live Git and committed run state remain the final authority.
+Status: Pre-development maintenance/security clearance is complete; the user has explicitly authorized the existing product-completion workflow to resume while the committed live run state stays revision 1, ready, ownerless, and uncharged with 10 units remaining including current.
+Last updated: 2026-07-15 after the user's read-only Play Console confirmation; live Git and committed run state remain the final authority.
 
 ## Branch
 
@@ -927,6 +927,12 @@ DS-2026-07-05-044:
   whether the affected key is unknown to Play, an upload key, or an
   app-signing key. History rewriting, force-push, key reset/rotation, and Play
   Console actions were not authorized and were not performed.
+- Danio is not listed in the Play Console account inspected on 2026-07-15.
+  This user-provided read-only observation establishes that there is no Danio
+  app listing to remediate in that account; it does not claim visibility into
+  any other account. The exposed local signing key is retired and must not be
+  used for a future release. Any later release setup must create fresh signing
+  material under separate explicit authorization.
 - Older release-ready documents now carry an explicit current security hold.
   The canonical privacy and terms URLs require current external hosting and
   content verification; no hosting, store, cloud, or account-backed action was
@@ -997,18 +1003,18 @@ DS-2026-07-05-044:
 ## Blockers
 
 - Public Git history retains previously exposed signing information.
-- Play Console evidence has not established the affected key's role or whether
-  it has ever been registered or used for a published app.
+- Danio is not listed in the Play Console account inspected on 2026-07-15, so
+  no Danio Play-side key reset is currently available or required there. The
+  exposed local key remains retired and unusable for a future release.
 - The canonical privacy and terms URLs still require current external hosting
   and content verification.
-- These are release/external-decision blockers, not authority to resume product
-  work. The writer claim and `DCL-DR-001` remain explicitly paused.
+- These remain release/external matters. The user explicitly authorized the
+  existing local product-completion workflow to resume on 2026-07-15.
 
 ## Next Action
 
-Wait for explicit user direction. The recommended next manual action is to
-inspect Play Console **App integrity** and release history without changing
-anything, determine whether the affected key is unknown to Play, an upload
-key, or an app-signing key, and then authorize the exact rotation/reset/history
-response separately. Do not retry the writer claim, begin `DCL-DR-001`, create
-a successor task, or consume a phone-completion unit from this handoff.
+Resume the existing operational product workflow from committed revision 1:
+use the repository claim transaction without creating a duplicate task, then
+perform the ordered read-only `DCL-DR-001` restore-matrix audit. Implement only
+if that audit proves one specific current gap, and preserve exact budget and
+closeout accounting.

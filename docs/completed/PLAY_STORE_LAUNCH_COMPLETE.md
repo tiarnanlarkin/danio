@@ -1,6 +1,7 @@
 # 🎉 Aquarium Hobbyist - Play Store Launch Package
 
-> Current security clearance (2026-07-15): **NOT RELEASE-READY.** The filename and former completion language are historical only. Public Git history retains previously exposed Android signing information; Play key role/use, remediation, and external legal-page verification remain unresolved.
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.** The filename and former completion language are historical only.
+> Danio is not listed in the Play Console account inspected on 2026-07-15. The exposed local signing key is retired and must not be used for a future release. Public Git history retains the old exposure, and external legal-page verification remains unresolved.
 
 
 **Status:** 95% Complete - Ready for Final Build & Submission  

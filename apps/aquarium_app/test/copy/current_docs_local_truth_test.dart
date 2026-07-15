@@ -120,6 +120,9 @@ void main() {
   test('release documents carry the current security hold', () {
     const marker =
         'Current security clearance (2026-07-15): **NOT RELEASE-READY.**';
+    const playConsoleMarker =
+        'Danio is not listed in the Play Console account inspected on '
+        '2026-07-15.';
     const releaseDocuments = [
       'docs/qa/final-launch-readiness-2026-06-12.md',
       'docs/LAUNCH_CHECKLIST.md',
@@ -138,7 +141,21 @@ void main() {
     for (final path in releaseDocuments) {
       final openingLines = _source(path).split('\n').take(8).join('\n');
       expect(openingLines, contains(marker), reason: path);
+      expect(openingLines, contains(playConsoleMarker), reason: path);
     }
+
+    expect(
+      _source('docs/agent/ACTIVE_HANDOFF.md'),
+      contains(playConsoleMarker),
+    );
+    expect(
+      _source(
+        'docs/agent/plans/'
+        'SEC-2026-07-15-013-android-signing-exposure-containment-'
+        'slice-contract.md',
+      ),
+      contains(playConsoleMarker),
+    );
   });
 
   test('current docs describe the local-first build honestly', () {
@@ -681,7 +698,9 @@ void main() {
     expect(chainPrompt, contains('`authorizes_launch: true`'));
     expect(
       chainPrompt,
-      isNot(contains('`authorizes_launch: false` and no live run state exists')),
+      isNot(
+        contains('`authorizes_launch: false` and no live run state exists'),
+      ),
     );
     final danioRunnerIndex = chainPrompt.indexOf(
       r'$danio-autonomous-slice-runner',

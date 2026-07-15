@@ -1,7 +1,8 @@
 # 🚀 Launch Night Verification Plan
 
 > Current security clearance (2026-07-15): **NOT RELEASE-READY.**
-> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical plan must not be executed as current release authority.
+> Danio is not listed in the Play Console account inspected on 2026-07-15. The exposed local signing key is retired and must not be used for a future release.
+> Public Git history retains the old exposure, and the canonical privacy and terms URLs require current external hosting and content verification. This historical plan must not be executed as current release authority.
 
 **Date:** 2026-02-16  
 **Goal:** Bulletproof app ready to build & ship tomorrow morning  

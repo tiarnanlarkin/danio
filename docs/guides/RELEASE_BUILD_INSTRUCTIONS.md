@@ -1,6 +1,7 @@
 # Release Build Instructions - Aquarium Hobbyist App
 
-> Current security clearance (2026-07-15): **NOT RELEASE-READY.** Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This guide is not release approval.
+> Current security clearance (2026-07-15): **NOT RELEASE-READY.**
+> Danio is not listed in the Play Console account inspected on 2026-07-15. The exposed local signing key is retired and must not be used for a future release. Public Git history retains the old exposure, and the canonical privacy and terms URLs require current external hosting and content verification. This guide is not release approval.
 
 
 **Status:** ⚠️ Release AAB build configuration complete, but build from WSL timing out

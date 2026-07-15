@@ -46,8 +46,10 @@
 - Tool/plugin/MCP/account-backed lane considered: Not needed.
 - Tool/plugin/MCP/account-backed lane approved: Not needed.
 - Decision-changing research notes: ignored local signing files remain outside
-  Git; local evidence proves signing use but does not prove Play registration,
-  upload-key status, app-signing-key status, or publication.
+  Git. Danio is not listed in the Play Console account inspected on 2026-07-15;
+  that user-provided observation does not claim visibility into another
+  account, but it establishes that no Danio listing in the inspected account
+  needs Play-side key remediation.
 
 ## Tests And Gates
 
@@ -71,10 +73,13 @@
   guidance and block recurrence in tracked files.
 - History: the public history exposure remains. No rewrite or force-push is
   authorized in this task.
-- Key status: local evidence does not prove whether the certificate is unknown
-  to Play, an upload key, or an app-signing key.
-- Safest next step: inspect Play Console App Integrity and release history,
-  then authorize the correct rotation/reset/history response separately.
+- Key status: Danio is not listed in the Play Console account inspected on 2026-07-15.
+  The exposed local key is retired and must not be used for a
+  future release; a separately authorized release setup must create fresh
+  signing material.
+- Play-side response: no reset or rotation is currently available or required
+  for a Danio listing in the inspected account. No claim is made about another
+  account.
 - Legal hosting: the canonical privacy and terms URLs require current external
   hosting/content verification; this task does not publish or configure them.
 
@@ -114,4 +119,5 @@ The slice is done only when:
     debug APK build. Clean committed-branch and merged-main proof remain part
     of closeout.
 - Evidence path: command output, `ACTIVE_HANDOFF.md`, and `SLICE_LOG.md`.
-- Follow-up created: None; unresolved Play/key decisions remain user-gated.
+- Follow-up: `SEC-2026-07-15-014` records the user's read-only Play Console
+  confirmation and the decision to retire the exposed local key.

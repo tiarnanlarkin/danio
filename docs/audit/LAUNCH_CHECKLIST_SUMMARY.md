@@ -1,7 +1,8 @@
 # 🚀 Launch Checklist - Quick Reference
 
 > Current security clearance (2026-07-15): **NOT RELEASE-READY.**
-> Public Git history retains previously exposed Android signing information; Play key role/use and remediation remain unresolved. The canonical privacy and terms URLs require current external hosting and content verification. This historical summary is not release approval.
+> Danio is not listed in the Play Console account inspected on 2026-07-15. The exposed local signing key is retired and must not be used for a future release.
+> Public Git history retains the old exposure, and the canonical privacy and terms URLs require current external hosting and content verification. This historical summary is not release approval.
 
 **Status:** 75% Complete | **Blockers:** 2 | **Time to Launch:** 3-5 days
 
