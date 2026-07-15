@@ -2,16 +2,16 @@
   "document_type": "danio_phone_completion_run_state",
   "schema_version": 1,
   "run_id": "danio-phone-complete-local-2026-07-11",
-  "state_revision": 1,
-  "mode": "ready",
+  "state_revision": 2,
+  "mode": "stopped",
   "transition": {
-    "action": "launch",
-    "from_mode": "inactive",
-    "to_mode": "ready",
-    "parent_state_revision": 0,
-    "work_unit_id": "WF-2026-07-11-activation",
-    "reason_code": null,
-    "occurred_at_utc": "2026-07-13T11:48:46.8280603Z"
+    "action": "preclaim_stop",
+    "from_mode": "ready",
+    "to_mode": "stopped",
+    "parent_state_revision": 1,
+    "work_unit_id": "DCL-DR-001-restore-matrix-audit",
+    "reason_code": "USER_REQUESTED_WORKFLOW_SIMPLIFICATION",
+    "occurred_at_utc": "2026-07-15T21:27:27.6736561Z"
   },
   "authority": {
     "phone_completion_program": {
@@ -77,7 +77,7 @@
   "handoff_generation": 0,
   "last_verified_checkpoint": null,
   "repeated_failure": null,
-  "stop_reason_code": null,
+  "stop_reason_code": "USER_REQUESTED_WORKFLOW_SIMPLIFICATION",
   "recovery": null,
   "control_surface_sync": {
     "status": "not_required",
