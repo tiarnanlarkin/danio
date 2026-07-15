@@ -79,7 +79,7 @@ Run commands from `apps/aquarium_app`.
    flutter test test/widget_tests/<changed_screen>_test.dart --reporter compact
    ```
 
-9. Run the Full gate before committing product behavior:
+9. Run one Full gate on the final settled product-code epoch tree:
 
    ```powershell
    .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full

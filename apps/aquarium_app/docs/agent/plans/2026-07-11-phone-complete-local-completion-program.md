@@ -1,5 +1,12 @@
 # Danio Phone Complete-Local Completion Program
 
+> **Current execution note - WF-2026-07-15-019:** The former autonomous
+> activation/launch clauses in this dated program are historical. `DCL-DR-001`
+> is the next manual task, remains `open` and unstarted, and begins only in a
+> new explicit manual epoch after the workflow-reset hard pause. This document
+> continues to preserve phone phase and scope history. All dated workflow and
+> gate cadence in this body defers to the current lean Verified Slice contract.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use
 > `$verified-slice-runner` for each implementation slice and
 > `superpowers:test-driven-development` for behavior or data-safety changes.

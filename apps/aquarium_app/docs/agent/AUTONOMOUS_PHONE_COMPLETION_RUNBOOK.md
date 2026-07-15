@@ -1,7 +1,12 @@
 # Danio Autonomous Phone Completion Runbook
 
-Status: Committed rehearsal proof authorizes launch; committed live state, when
-present, determines the operational mode
+> **FROZEN HISTORICAL WORKFLOW:** Retained for evidence and recovery analysis
+> only. Do not use for routine startup, claims, budget consumption, or
+> successors. Reactivation requires a new explicit user request and
+> reconciliation plan; see `autonomous_completion/README.md`.
+
+Status: Frozen historical workflow; the body below preserves the former
+contract and is non-authoritative while the live state is `stopped`
 Created: 2026-07-11
 Scope: Android phone complete-local workflow coordination only
 

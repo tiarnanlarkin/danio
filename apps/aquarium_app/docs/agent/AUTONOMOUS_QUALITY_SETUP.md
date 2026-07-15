@@ -1,5 +1,12 @@
 # Danio Autonomous Quality Setup
 
+> **FROZEN HISTORICAL WORKFLOW:** These autonomy-specific quality instructions
+> are retained for evidence and recovery analysis. Ordinary profiles do not run
+> them. Reactivation requires a new explicit user request and reconciliation
+> plan; see `autonomous_completion/README.md`.
+
+Status: Frozen historical workflow
+
 This setup gives Codex a repeatable local quality workflow for finishing Danio.
 Danio stays local-first and must not silently depend on paid services, cloud
 runners, external accounts, or API keys. Paid/account-backed quality tools are

@@ -1,234 +1,107 @@
-# Danio Agent Instructions
+# Danio Working Agreement
 
-This repo is developed local-first. Danio must stay offline-capable and honest,
-but the user has approved quality-first paid or account-backed tooling when it
-materially improves autonomous completion. Paid/cloud tools require explicit
-approval in the current thread or an existing entry in
-`apps/aquarium_app/docs/agent/PAID_TOOL_APPROVAL_LEDGER.md`.
+Danio is a local-first Flutter app. Work from repository truth, keep product
+claims honest, and optimize for small reviewed changes rather than ceremony.
 
-## Scope
+## Routine startup (exact)
 
-- Primary app: `apps/aquarium_app`.
-- Main product docs: `apps/aquarium_app/docs/product`.
-- Agent setup docs: `apps/aquarium_app/docs/agent`.
+Read exactly these documents before ordinary development:
 
-## Non-Negotiable Rules
+1. `AGENTS.md`
+2. `GIT_WORKFLOW.md`
+3. `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
+4. `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`
+5. `apps/aquarium_app/docs/agent/QUALITY_LADDER.md`
 
-- Do not set up paid services, hosted CI, cloud projects, external accounts, or API-backed workflows unless the current thread explicitly approves that tool and purpose.
-- Do not call paid APIs or require OpenAI, Supabase, Vercel, Sentry, Figma paid features, Maestro Cloud, or similar services without an approval ledger entry that covers the exact use.
-- Never commit secrets, API keys, tokens, account exports, billing artifacts, or machine-local credential files.
-- Paid/account-backed services are quality lanes only. They must not become required for local Danio use or replace local verification gates.
-- Do not add fake premium, fake social, fake cloud sync, fake leaderboards, or dormant monetisation promises.
-- Keep Danio usable without optional AI keys. Smart Hub must work locally first.
-- Optional AI must degrade gracefully and must never make the app feel broken when no key or backend is configured.
-- Do not make care claims that imply veterinary or professional advice. Danio is educational and practical, not a vet substitute.
+Do not add routine startup reads. Read the closure ledger, Finish Map, source,
+tests, device docs, archives, old plans, forecasts, and frozen autonomy material
+only when the current task directly needs them.
 
-## Dirty Worktree Protection
+## Product and account boundaries
 
-- Run `git status --short -uall` before editing and before staging.
-- Use `-uall` so untracked screenshots, generated docs, or other-agent files
-  are visible before you choose a working area.
-- Never revert, delete, or overwrite user changes you did not make.
-- If unrelated files are dirty, leave them alone.
-- If files you need are dirty, inspect them and work with the changes.
-- If another Codex session has active dirty work, do not stage, format, or
-  rewrite those files. Either wait for a clean handoff or work only in files
-  that are clearly isolated from that session's slice.
-- While the autonomous phone completion overlay is active, another
-  repository-writing session or unowned dirty work is a stop condition. The
-  isolated-file carveout does not apply; wait for one clean coordinator
-  handoff.
-- Commit focused slices separately. Docs-only setup changes must stay separate from product behavior changes.
+- Keep Danio useful offline and without external accounts or optional AI keys.
+- Do not add fake premium, social, cloud-sync, leaderboard, referral, or
+  subscription behavior.
+- Optional AI must fail gracefully and ask before writing app data.
+- Care content is educational and must not imply veterinary advice.
+- Keep work local and no-cost by default.
+- Do not configure paid services, cloud projects, hosted CI, external accounts,
+  or API-backed workflows without explicit current-thread approval.
+- Never commit secrets, keys, tokens, account exports, billing artifacts, or
+  machine-local credential files.
 
-## Session Freshness
+## Git and ownership
 
-- When a Codex session becomes long, usage-limited, heavily compacted, or is
-  about to start a broad new slice, pause at the next clean checkpoint and
-  recommend starting a fresh session.
-- Prefer pausing after commit/push with `git status --short -uall` clean.
-- Provide a concise handoff prompt before stopping so the next session can
-  continue from the current repo state without rebuilding context from chat.
+- The repository root contains the source-of-truth `main`; GitHub is its mirror.
+- Fetch and compare local/remote state before new work.
+- Run `git status --short -uall` before editing, staging, and committing.
+- Preserve user and other-agent work. Never revert, delete, overwrite, format,
+  stage, or relocate unrelated changes.
+- Use one repository-writing coordinator. Auditors and reviewers are read-only.
+- Keep branches and worktrees short-lived and record an exact handoff if work
+  cannot reach a clean checkpoint.
+- Never force-push unless the user explicitly authorizes a separate recovery.
+- Never create an automatic successor task.
 
-## Research-First Planning
+## Lean development epochs
 
-- Before substantial implementation, pause and plan from current repo state.
-  Start by checking whether the work should move to a fresh session, then read
-  the active repo docs, roadmap, relevant source, tests, and current worktree
-  state before proposing or editing.
-- Do not guess current best practice when it can be checked. For technology,
-  framework, testing, platform, accessibility, AI, security, or workflow
-  decisions, compare the intended approach against current primary sources
-  before implementation. Prefer official docs, standards, vendor docs, repo
-  docs, and directly inspected code over blogs or memory.
-- Use the narrowest powerful research lane that fits the task:
-  repo inspection for local truth; official docs or MCP documentation servers
-  for current APIs and platform guidance; installed skills for repeatable
-  workflows; browser/app tools for live UI evidence; specialist plugins only
-  when they materially improve quality.
-- If a useful tool, plugin, MCP server, account-backed service, or paid lane is
-  missing, stop before installing or using it. Explain the benefit, expected
-  cost or account requirement if known, local/no-cost alternatives, and wait for
-  explicit approval or a matching approval-ledger entry.
-- Record research that changes implementation direction in the slice contract,
-  active handoff, or relevant agent docs so future agents can see why the
-  approach was chosen.
+- Group two or three closely related micro-slices into one ordinary epoch.
+- Keep data-safety, security, persistence, lifecycle/concurrency, destructive,
+  release-truth, and broad multi-module changes in a single-slice epoch.
+- For behavior changes, write or update a focused failing test first, prove RED
+  for the expected reason, make the smallest fix, then prove GREEN.
+- Run focused tests once for the affected behavior and run `flutter analyze`.
+- Run one Full gate on the final settled tree of each product-code epoch.
+- A docs-only epoch uses one Docs gate and no Full gate.
+- After fast-forwarding or pushing identical tested bytes, compare tree IDs and
+  Git alignment; do not rerun an identical Full gate.
+- Update `ACTIVE_HANDOFF.md` and add one concise `SLICE_LOG.md` row per epoch.
+- Update the Finish Map or closure ledger only when its actual status changes.
+- Ordinary narrow work needs coordinator review only. Add one independent
+  settled-diff review for high-risk or broad changes.
 
-## Local Verification Gates
-
-Run commands from `apps/aquarium_app` unless stated otherwise.
-
-Required standard gates for product changes:
+Run gates from `apps/aquarium_app`. Focused and Visual require explicit paths:
 
 ```powershell
-flutter test
-flutter analyze
-flutter build apk --debug --target lib/main.dart
-git diff --check
-```
-
-The local quality gate can run these checks in repeatable profiles:
-
-```powershell
-.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused -FocusedTests test/widget_tests/search_screen_test.dart
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
-.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual -FocusedTests test/widget_tests/search_screen_test.dart
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep
 ```
 
-Also run focused tests for changed areas before the full suite, especially
-focused widget tests for changed screens or settings flows:
+Autonomy checks are retained but opt-in with `-RunAutonomyTests`.
+`-ResetGeneratedOutputs` is the only gate option allowed to remove generated
+trees. Ordinary gates preserve the warm `build` cache.
 
-```powershell
-flutter test test/widget_tests/journal_screen_test.dart
-flutter test test/widget_tests/search_screen_test.dart
-flutter test test/widget/settings_screen_test.dart
-flutter test test/copy/current_docs_local_truth_test.dart
-```
+## Android and visual work
 
-For docs-only changes, at minimum run:
+- Check `docs/agent/DEVICE_OWNERSHIP.md` before emulator, ADB, Patrol,
+  live-preview, screenshot, or device-affecting work.
+- Do not start, stop, wipe, install to, tap, or capture from a device without
+  clear ownership; use `adb -s <assigned-serial>` for assigned-device commands.
+- `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` live preview is
+  observational and never replaces tests or gates.
+- Ground material UI or visual changes in a current screenshot, golden, mockup,
+  approved design doc, Figma frame, or existing app surface.
+- Use local screenshots and assets with clear ownership or permissive licenses.
 
-```powershell
-git diff --check
-flutter test test/copy/current_docs_local_truth_test.dart
-flutter analyze
-rg -n "paid|cloud|OpenAI API calls|Maestro Cloud|fake premium|fake social" AGENTS.md apps/aquarium_app/docs/agent
-```
+## Frozen autonomous workflow
 
-Run Flutter/doc truth tests when docs assert current product behavior. A debug
-APK build is required for product behavior changes and for documentation updates
-that make new build/readiness claims.
+The former phone-completion claim, budget, and successor machinery is frozen
+historical material. The retained state is revision 2 `stopped`, with reason
+`USER_REQUESTED_WORKFLOW_SIMPLIFICATION`. Do not invoke, resume, reinterpret,
+or delete it during ordinary work.
 
-## Android Emulator Discipline
+Reactivation requires a new explicit user request plus a written reconciliation
+plan covering live Git authority, state/schema compatibility, budget meaning,
+tests, and safe rollback. Historical authorization is not reusable.
 
-- Multiple Codex sessions may be active on this machine.
-- For substantial Danio app work, especially UI, navigation, product behavior,
-  Android, or visual slices, attempt to start the Danio live-preview workflow at
-  the beginning of the session so the user can follow along. Use
-  `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` and keep the emulator
-  visible while making changes.
-- Live preview is not required for docs-only, tests-only, refactor-only, or
-  device-unsafe slices, but state when it was skipped and why.
-- Use `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md` before any emulator,
-  ADB, Patrol, Firebase Test Lab, live-preview, or screenshot evidence work.
-- Standardize Danio live preview on the dedicated `danio_api36` emulator; do
-  not use whichever emulator happens to be connected.
-- Do not start, stop, wipe, kill, or commandeer an emulator/device without confirming it is safe.
-- Before emulator use, check `adb devices` and foreground package ownership.
-- Prefer compile/test/build verification when device ownership is unclear.
-- Local APK builds are allowed. Emulator installs, taps, screenshots, and logcat capture require device ownership clarity.
+## Stop conditions
 
-## Screenshots
+Stop and ask before using a paid/account-backed lane, handling secrets, making
+an uncovered product decision, taking unclear device ownership, rewriting
+public Git history, or deleting an artifact whose ownership is uncertain.
 
-- Use local screenshots only.
-- Save reusable screenshots under `apps/aquarium_app/docs/qa/screenshots/<date-or-branch>/<slice>/`.
-- Temporary screenshots can stay in a temp folder if they are only for inspection.
-- Do not upload screenshots to external services unless the user explicitly asks.
-
-## Design And Visual QA
-
-- Before material UI, layout, illustration, icon, chart, or visual polish work,
-  ground the change in a current screenshot, Flutter golden, mockup, Figma
-  frame, or existing app surface.
-- Use `apps/aquarium_app/docs/design-direction.md`,
-  `apps/aquarium_app/docs/theme-system.md`, and the setup docs under
-  `apps/aquarium_app/docs/design/` for local design decisions.
-- Figma and Product Design skills may be used for visual targets. Paid Figma
-  features, paid assets, Figma Code Connect, or cloud visual QA require an
-  approval ledger entry for the exact purpose.
-- Preserve Danio's local-first product honesty: no fake AI, fake premium, fake
-  social, fake cloud sync, or care claims that imply veterinary advice.
-- For visual changes, run the applicable Flutter/golden/screenshot checks from
-  `apps/aquarium_app/docs/design/VISUAL_QA_CHECKLIST.md`.
-- Preserve design setup docs from parallel sessions. Extend them only when the
-  current slice explicitly owns that update, and keep design-baseline changes in
-  their own focused commit when practical.
-- While the autonomous phone completion overlay is active, there is no
-  parallel design writer; design subagents are read-only auditors and the sole
-  coordinator owns any design-doc write.
-
-## Multi-Agent Workflow
-
-- Repo-local Codex agent roles live under `.codex/`.
-- Use `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md` for the current
-  coordinator, auditor, reviewer, and Android QA ownership rules.
-- The coordinator is the only repository writer and owns staging, commits,
-  merges, pushes, installed-skill changes, durable evidence files, and task
-  creation. All registered repo-local agents are read-only auditors.
-- `.codex/agents/danio_worker.toml` is retained for history but is not
-  registered and must not be invoked by the phone completion program.
-- Android QA is repository-read-only and may use only a coordinator-supplied
-  immutable commit/APK on a coordinator-assigned serial after
-  `DEVICE_OWNERSHIP.md` is satisfied. Except for `adb devices`, every assigned
-  device-affecting command must use `adb -s <assigned-serial>`.
-
-## Autonomous Phone Bootstrap Containment
-
-- The phone completion program is the only ordered phase authority. The
-  closure ledger owns row closure state, disposition, evidence, and done
-  conditions. The Finish Map owns category status and quality-bar summaries.
-  Live Git, source, tests, and fresh command output remain factual truth.
-- Load `$danio-autonomous-slice-runner` first and
-  `$verified-slice-runner` second for every autonomous phone setup or product
-  unit.
-- One coordinator owns every repository/installed-skill write and Git/task
-  mutation. Parallel agents are repository-read-only auditors only.
-- Until the no-product-change rehearsal passes and Task 13 creates the live
-  run state, automatic operational chaining remains disabled. Setup units may
-  continue only through an explicit user-authorized project-scoped bootstrap
-  handoff with a positive integer budget and exact marker.
-- An explicit user-authorized project-scoped bootstrap handoff is not proof
-  that the operational product run is active. Do not select or implement a
-  product ledger row before Task 13 activation and launch readiness pass.
-- During bootstrap, the machine-readable budget block in `ACTIVE_HANDOFF.md`
-  is the temporary accounting authority. Each setup unit updates it once only
-  when its closeout reaches clean, pushed, aligned `main`; pre-closeout failure
-  consumes nothing.
-
-## Documentation References
-
-- Workflow charter: `apps/aquarium_app/docs/agent/WORKFLOW_CHARTER.md`
-- Research protocol: `apps/aquarium_app/docs/agent/RESEARCH_PROTOCOL.md`
-- Active handoff: `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
-- Complete-local closure ledger: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md`
-- Verified slice execution contract: `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`
-- Complete-local forecast: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_FORECAST.md`
-- Phone completion program: `apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`
-- Autonomous operating-model design: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md`
-- Autonomous workflow implementation plan: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`
-- Autonomous chain handoff prompt: `apps/aquarium_app/docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md`
-- Screen inventory: `apps/aquarium_app/docs/agent/SCREEN_INVENTORY.md`
-- Slice log: `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- Housekeeping: `apps/aquarium_app/docs/agent/HOUSEKEEPING.md`
-- Quality ladder: `apps/aquarium_app/docs/agent/QUALITY_LADDER.md`
-- Source references: `apps/aquarium_app/docs/agent/SOURCE_REFERENCES.md`
-- Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`
-- Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
-- Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`
-- Finish map: `apps/aquarium_app/docs/agent/FINISH_MAP.md`
-- Paid tool approval ledger: `apps/aquarium_app/docs/agent/PAID_TOOL_APPROVAL_LEDGER.md`
-- Device ownership: `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md`
-- Slice contract template: `apps/aquarium_app/docs/agent/SLICE_CONTRACT_TEMPLATE.md`
-- Multi-agent workflow: `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md`
-- Live preview workflow: `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md`
-- Current local audit: `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
-- Backlog: `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
+If work stops unfinished, leave the branch, dirty paths, completed checks,
+failure reason, and exact next command in `ACTIVE_HANDOFF.md`.

@@ -76,29 +76,6 @@ List<Map<String, String>> _markdownRows(String source, String heading) {
   }).toList();
 }
 
-Map<String, dynamic> _jsonBlock(
-  String source,
-  String documentType,
-) {
-  final matches = RegExp(
-    r'```json\s*(.*?)```',
-    dotAll: true,
-  ).allMatches(source);
-  final documents = <Map<String, dynamic>>[];
-  for (final match in matches) {
-    final decoded = jsonDecode(match.group(1)!) as Map<String, dynamic>;
-    if (decoded['document_type'] == documentType) {
-      documents.add(decoded);
-    }
-  }
-  if (documents.length != 1) {
-    throw StateError(
-      'Expected one $documentType JSON block, found ${documents.length}',
-    );
-  }
-  return documents.single;
-}
-
 Iterable<String?> _statesFor(
   List<Map<String, String>> rows,
   Set<String> ids,
@@ -222,63 +199,25 @@ void main() {
 
     final entryDocs = <String, List<String>>{
       '../../AGENTS.md': [
-        'WORKFLOW_CHARTER.md',
-        'RESEARCH_PROTOCOL.md',
+        'GIT_WORKFLOW.md',
         'ACTIVE_HANDOFF.md',
-        'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
-        'AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
-        'SCREEN_INVENTORY.md',
         'QUALITY_LADDER.md',
-        '2026-07-11-phone-complete-local-completion-program.md',
       ],
       'docs/agent/CODEX_SETUP.md': [
-        'WORKFLOW_CHARTER.md',
-        'RESEARCH_PROTOCOL.md',
+        'GIT_WORKFLOW.md',
         'ACTIVE_HANDOFF.md',
-        'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
-        'SCREEN_INVENTORY.md',
-        'QUALITY_LADDER.md',
-      ],
-      'docs/agent/AUTONOMOUS_QUALITY_SETUP.md': [
-        'WORKFLOW_CHARTER.md',
-        'RESEARCH_PROTOCOL.md',
-        'ACTIVE_HANDOFF.md',
-        'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
-        'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
         'QUALITY_LADDER.md',
       ],
       'docs/agent/TESTING_CHECKLIST.md': [
-        'WORKFLOW_CHARTER.md',
-        'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
-        'RESEARCH_PROTOCOL.md',
-        'ACTIVE_HANDOFF.md',
         'QUALITY_LADDER.md',
-        'SCREEN_INVENTORY.md',
-      ],
-      'docs/agent/MULTI_AGENT_WORKFLOW.md': [
-        'WORKFLOW_CHARTER.md',
-        'RESEARCH_PROTOCOL.md',
-        'ACTIVE_HANDOFF.md',
-        'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
-        'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
-        'SLICE_LOG.md',
-        'QUALITY_LADDER.md',
+        '-FocusedTests',
+        '-RunAutonomyTests',
       ],
       'docs/agent/FINISH_MAP.md': [
-        'ACTIVE_HANDOFF.md',
         'COMPLETE_LOCAL_CLOSURE_LEDGER.md',
-        'VERIFIED_SLICE_EXECUTION_CONTRACT.md',
-        'COMPLETE_LOCAL_FORECAST.md',
-        'SCREEN_INVENTORY.md',
-        'SLICE_LOG.md',
         '2026-07-11-phone-complete-local-completion-program.md',
       ],
     };
@@ -304,9 +243,10 @@ void main() {
       'PHASE_PARKED',
       'Current Phone Completion Boundary',
     ]);
-    _expectContainsAll('docs/agent/QUALITY_LADDER.md', [
-      'Current phase: Android phone complete-local',
-      'Phone release candidate',
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
+      'DCL-DR-001',
+      'remains `open`',
+      'unstarted',
     ]);
   });
 
@@ -331,7 +271,7 @@ void main() {
     ]);
   });
 
-  test('autonomy bootstrap authority is canonical and fail-closed', () {
+  test('product authority stays canonical while autonomy is frozen', () {
     const parkedIds = {
       'DCL-TAB-001',
       'DCL-QA-001',
@@ -394,6 +334,10 @@ void main() {
     expect(_statesFor(rows, parkedIds), everyElement('parked'));
     expect(_statesFor(rows, acceptedOrArchivedIds), everyElement('closed'));
     expect(ids, containsAll(programLedgerIds));
+    expect(
+      rows.singleWhere((row) => row['ID'] == 'DCL-DR-001')['Closure State'],
+      'open',
+    );
 
     for (final id in {'DCL-A11Y-001', 'DCL-PERF-001'}) {
       final row = rows.singleWhere((candidate) => candidate['ID'] == id);
@@ -419,6 +363,7 @@ void main() {
     final program = _source(
       'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
     );
+    final programFlat = program.replaceAll(RegExp(r'\s+'), ' ');
     final phaseRows = _markdownRows(program, 'Ordered Completion Phases');
     expect(
       program,
@@ -449,10 +394,12 @@ void main() {
       _normalizedLedgerIds(phaseRows.last['Ledger rows']!),
       'DCL-RC-001',
     );
-    expect(
-      program,
-      contains('First Product Slice After Workflow Setup And Explicit Launch'),
-    );
+    expect(program, contains('Current execution note - WF-2026-07-15-019'));
+    expect(program, contains('DCL-DR-001'));
+    expect(program, contains('next manual task'));
+    expect(program, contains('open'));
+    expect(program, contains('unstarted'));
+    expect(programFlat, contains('current lean Verified Slice contract'));
     expect(program, isNot(contains('tablet portion of `DCL-PERF-001`')));
 
     final forecast = _source('docs/agent/COMPLETE_LOCAL_FORECAST.md');
@@ -525,283 +472,99 @@ void main() {
     expect(
       _markdownSection(finishMap, 'Slice Selection Rule'),
       allOf(
-        contains('delegates solely'),
-        contains('2026-07-11-phone-complete-local-completion-program.md'),
+        contains('DCL-DR-001'),
+        contains('next manual'),
+        contains('open'),
+        contains('unstarted'),
+        isNot(contains('Task 13')),
+        isNot(contains('explicit launch')),
+      ),
+    );
+    expect(
+      _markdownSection(ledger, 'Next Ledger Target Rule'),
+      allOf(
+        contains('DCL-DR-001'),
+        contains('next manual'),
+        contains('open'),
+        contains('unstarted'),
+        isNot(contains('Task 13')),
+        isNot(contains('explicit launch')),
+      ),
+    );
+    expect(
+      _markdownSection(finishMap, 'Evidence Recording Rule'),
+      allOf(
+        contains('once per epoch'),
+        contains('one concise'),
+        contains('only when'),
       ),
     );
 
-    final design = _source(
-      'docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md',
-    );
-    expect(
-      design,
-      contains('product_complete := run_state.mode == "complete"'),
-    );
-    expect(
-      design,
-      contains('canonical_reference := { path, commit, blob_oid }'),
-    );
-    expect(design, contains('bootstrap authority input snapshot'));
-    const parentCommit = 'd62a174a41bbd7814f27163b93c077336e171336';
-    const expectedPins = {
-      'apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md':
-          '89c834f4cb2fb893086e184dc7b0760c8b668d3c',
-      'apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md':
-          'f331860f7bfe335e65cee3c78c0d730d772cdd28',
-      'apps/aquarium_app/docs/agent/FINISH_MAP.md':
-          '852420754061c1d814931e7c2819004b1f058915',
-      'apps/aquarium_app/docs/agent/QUALITY_LADDER.md':
-          '91f4dd98e2b9953852bec632b86e78812e130291',
-      'apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md':
-          '0fd22199a62f9cf68e8f397af217f8a9f31f73f1',
-      'apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md':
-          '921e22a5fb1a05cbe45ce80062209f337326d58c',
-      'apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md':
-          '229a3471399b0cd270ee0f34ecd9379b45b18590',
-    };
-    final referenceRows = _markdownRows(
-      design,
-      'Task 1 bootstrap authority input snapshot',
-    );
-    expect(referenceRows.length, expectedPins.length);
-    for (final row in referenceRows) {
-      final path = _plainMarkdownCell(row['Path']!);
-      expect(expectedPins, contains(path));
-      expect(_plainMarkdownCell(row['Commit']!), parentCommit, reason: path);
-      expect(
-        _plainMarkdownCell(row['Blob OID']!),
-        expectedPins[path],
-        reason: path,
-      );
-    }
-
-    final handoff = _source('docs/agent/ACTIVE_HANDOFF.md');
-    final budget = _jsonBlock(
-      handoff,
-      'danio_autonomy_bootstrap_budget',
-    );
-    final total = budget['total_approved_units'] as int;
-    final consumed = budget['consumed_units'] as int;
-    final remaining = budget['remaining_units_including_current'] as int;
-    final lastClosedUnitId = budget['last_closed_unit_id'] as String;
-    expect(budget['schema_version'], 1);
-    expect(total, consumed + remaining);
-    expect(total, 20);
-    expect(consumed, greaterThanOrEqualTo(1));
-    expect(consumed, lessThanOrEqualTo(total));
-    expect(remaining, greaterThanOrEqualTo(0));
-    expect(budget['authorization_id'], 'danio-phone-complete-local-2026-07-11');
     const liveStatePath =
         'docs/agent/autonomous_completion/phone_completion_run_state.json';
-    const liveStateRepositoryPath =
-        'apps/aquarium_app/docs/agent/autonomous_completion/'
-        'phone_completion_run_state.json';
-    final liveStateExists = _exists(liveStatePath);
-    if (liveStateExists) {
-      expect(budget['operational_state_path'], liveStateRepositoryPath);
-    } else {
-      expect(budget['operational_state_path'], isNull);
-    }
-    final sliceLog = _source('docs/agent/SLICE_LOG.md');
-    expect(
-      RegExp(
-        r'^\| WF-2026-07-11-007 \|',
-        multiLine: true,
-      ).allMatches(sliceLog).length,
-      1,
-      reason: 'The planning unit must be recorded exactly once',
-    );
-    expect(
-      RegExp(
-        '^\\| ${RegExp.escape(lastClosedUnitId)} \\|',
-        multiLine: true,
-      ).allMatches(sliceLog).length,
-      1,
-      reason: 'The latest consumed unit must be recorded exactly once',
-    );
-    if (liveStateExists) {
-      final liveState =
-          jsonDecode(_source(liveStatePath)) as Map<String, dynamic>;
-      final transition = liveState['transition'] as Map<String, dynamic>;
-      final authorization = liveState['authorization'] as Map<String, dynamic>;
-      final cursor = liveState['cursor'] as Map<String, dynamic>;
-      final liveBudget = liveState['budget'] as Map<String, dynamic>;
-      final currentCharge =
-          liveBudget['current_charge'] as Map<String, dynamic>;
-      final stateRevision = liveState['state_revision'] as int;
-      final mode = liveState['mode'] as String;
-      expect(liveState['document_type'], 'danio_phone_completion_run_state');
-      expect(liveState['run_id'], 'danio-phone-complete-local-2026-07-11');
-      expect(stateRevision, greaterThanOrEqualTo(1));
-      expect(transition['parent_state_revision'], stateRevision - 1);
-      expect(transition['to_mode'], mode);
-      expect(authorization['authorization_id'], isA<String>());
-      expect(
-        (authorization['authorization_id'] as String),
-        isNotEmpty,
-      );
-      expect(
-        authorization['repository_root'],
-        'C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project/repo',
-      );
-      final liveTotal = liveBudget['total_approved_units'] as int;
-      final liveConsumed = liveBudget['consumed_units'] as int;
-      final liveRemaining =
-          liveBudget['remaining_units_including_current'] as int;
-      expect(liveConsumed + liveRemaining, liveTotal);
-      expect(liveTotal, greaterThanOrEqualTo(total));
-      expect(liveConsumed, greaterThanOrEqualTo(consumed));
-      expect(total, 20);
-      expect(consumed, 10);
-      expect(remaining, 10);
-      expect(lastClosedUnitId, 'WF-2026-07-11-016');
-      final normalizedHandoff = handoff.toLowerCase();
-      expect(normalizedHandoff, contains('historical bootstrap'));
-      expect(normalizedHandoff, contains('sole accounting authority'));
-      if (stateRevision == 1) {
-        expect(authorization['authorization_id'], budget['authorization_id']);
-        expect(liveTotal, total);
-        expect(mode, 'ready');
-        expect(transition['action'], 'launch');
-        expect(transition['from_mode'], 'inactive');
-        expect(transition['work_unit_id'], 'WF-2026-07-11-activation');
-        expect(currentCharge['status'], 'none');
-        expect(currentCharge['work_unit_id'], isNull);
-        expect(currentCharge['claimed_revision'], isNull);
-        expect(currentCharge['consumed_revision'], isNull);
-        expect(liveState['owner'], isNull);
-        expect(liveState['handoff_generation'], 0);
-        expect(cursor['phase'], '1-data-resilience');
-        expect(cursor['work_unit_id'], 'DCL-DR-001-restore-matrix-audit');
-        expect(cursor['ledger_row_ids'], <String>['DCL-DR-001']);
-        expect(liveConsumed, consumed);
-        expect(liveRemaining, remaining);
-      } else {
-        expect(transition['action'], isNot('launch'));
-        if (<String>{'active', 'finalizing'}.contains(mode)) {
-          expect(liveState['owner'], isNotNull);
-        } else {
-          expect(liveState['owner'], isNull);
-        }
-      }
-    }
+    final liveState =
+        jsonDecode(_source(liveStatePath)) as Map<String, dynamic>;
+    final transition = liveState['transition'] as Map<String, dynamic>;
+    final authorization = liveState['authorization'] as Map<String, dynamic>;
+    final cursor = liveState['cursor'] as Map<String, dynamic>;
+    final liveBudget = liveState['budget'] as Map<String, dynamic>;
+    final currentCharge = liveBudget['current_charge'] as Map<String, dynamic>;
 
-    final chainPrompt = _source(
-      'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
-    );
-    const currentBootstrapStatus =
-        'Status: Committed rehearsal authorizes the explicit Task 13 activation path;\n'
-        'automatic operational successors remain state-, readiness-, generator-, and\n'
-        'duplicate-safety-gated.';
-    expect(chainPrompt, contains(currentBootstrapStatus));
-    expect(chainPrompt, isNot(contains('Status: Active successor prompt')));
-    expect(chainPrompt, contains('`authorizes_launch: true`'));
+    expect(liveState['document_type'], 'danio_phone_completion_run_state');
+    expect(liveState['schema_version'], 1);
+    expect(liveState['run_id'], 'danio-phone-complete-local-2026-07-11');
+    expect(liveState['state_revision'], 2);
+    expect(liveState['mode'], 'stopped');
+    expect(transition['action'], 'preclaim_stop');
+    expect(transition['from_mode'], 'ready');
+    expect(transition['to_mode'], 'stopped');
+    expect(transition['parent_state_revision'], 1);
     expect(
-      chainPrompt,
-      isNot(
-        contains('`authorizes_launch: false` and no live run state exists'),
-      ),
+      transition['work_unit_id'],
+      'DCL-DR-001-restore-matrix-audit',
     );
-    final danioRunnerIndex = chainPrompt.indexOf(
-      r'$danio-autonomous-slice-runner',
+    expect(
+      transition['reason_code'],
+      'USER_REQUESTED_WORKFLOW_SIMPLIFICATION',
     );
-    final verifiedRunnerIndex = chainPrompt.indexOf(r'$verified-slice-runner');
-    expect(danioRunnerIndex, greaterThanOrEqualTo(0));
-    expect(verifiedRunnerIndex, greaterThanOrEqualTo(0));
-    expect(danioRunnerIndex, lessThan(verifiedRunnerIndex));
-    _expectContainsAll('../../AGENTS.md', [
-      'automatic operational chaining remains disabled',
-      'explicit user-authorized project-scoped bootstrap handoff',
-    ]);
-    _expectContainsAll('docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md', [
-      r'$danio-autonomous-slice-runner',
-      r'$verified-slice-runner',
-      'automatic operational chaining remains disabled',
-    ]);
-    _expectContainsAll('docs/agent/QUALITY_LADDER.md', [
-      'Autonomy authority/bootstrap setup',
-      'Autonomy authority/schema change',
-      'Autonomy pure state/readiness change',
-      'Autonomy Git mutation/claim/closeout change',
-      'Autonomy no-product rehearsal',
-      'Docs truth; autonomous script contract',
-      'PowerShell behavior suite; disposable Git fixture suite',
-      'Race and disposable Git fixtures',
-      'All autonomous Dart, behavior, and disposable Git fixture suites',
-      'evidence manifest; affected phone QA',
-      '-RequireCleanWorktree',
-      'automatic successor creation disabled',
-    ]);
-    _expectContainsAll('docs/agent/TESTING_CHECKLIST.md', [
-      'Autonomy authority/schema change',
-      'Autonomy pure state/readiness change',
-      'Autonomy Git mutation/claim/closeout change',
-      'Autonomy no-product rehearsal',
-      'test/scripts/autonomous_completion_activation_fixture_test.ps1',
-      'test/scripts/autonomous_completion_git_fixture_test.ps1',
-      'disposable Git fixture suite',
-      'clean-main Docs profile',
-      '-RequireCleanWorktree',
-      '-Profile Full',
-      '-Profile AndroidPrep',
-      'validate the evidence',
-    ]);
+    expect(
+      liveState['stop_reason_code'],
+      'USER_REQUESTED_WORKFLOW_SIMPLIFICATION',
+    );
+    expect(
+      authorization['authorization_id'],
+      'danio-phone-complete-local-2026-07-11',
+    );
+    expect(cursor['phase'], '1-data-resilience');
+    expect(cursor['work_unit_id'], 'DCL-DR-001-restore-matrix-audit');
+    expect(cursor['ledger_row_ids'], <String>['DCL-DR-001']);
+    expect(liveState['owner'], isNull);
+    expect(liveState['handoff_generation'], 0);
+    expect(liveBudget['total_approved_units'], 20);
+    expect(liveBudget['consumed_units'], 10);
+    expect(liveBudget['remaining_units_including_current'], 10);
+    expect(currentCharge['status'], 'none');
+    expect(currentCharge['work_unit_id'], isNull);
+    expect(currentCharge['claimed_revision'], isNull);
+    expect(currentCharge['consumed_revision'], isNull);
 
-    final runbook = _source(
-      'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
-    );
-    expect(
-      runbook,
-      contains(
-        'inactive ready active handoff_ready paused stopped finalizing complete',
-      ),
-    );
-    expect(
-      runbook,
-      contains('product_complete := run_state.mode == "complete"'),
-    );
-    expect(
-      runbook,
-      contains('When the live path is absent, Task 13 alone may create it.'),
-    );
-    expect(
-      runbook,
-      contains(
-        'Before activation, automatic operational successor creation remains '
-        'disabled.',
-      ),
-    );
-    expect(
-      runbook,
-      contains(
-        'Once present, the committed live run state is the sole operational '
-        'accounting authority.',
-      ),
-    );
-    expect(
-      runbook,
-      contains(
-        'apps/aquarium_app/docs/agent/autonomous_completion/'
-        'phone_completion_run_state.json',
-      ),
-    );
-
-    final compatibility =
-        jsonDecode(
-              _source(
-                'docs/agent/autonomous_completion/runner_compatibility.json',
-              ),
-            )
-            as Map<String, dynamic>;
-    expect(compatibility['runner_compatible'], isTrue);
-    expect(compatibility['manifest_revision'], 3);
-    expect(compatibility['authorizes_launch'], isTrue);
-    expect(compatibility['launch_proof'], <String, dynamic>{
-      'report_path':
-          'apps/aquarium_app/docs/agent/autonomous_completion/rehearsal-2026-07-13.json',
-      'report_sha256':
-          '79f2d49fc24eda6ee2f4565d652491200fea0bbc6fc4c7b3ad1b5b8532324c4b',
-      'report_commit': 'ecbeffc2aa7a6f831c06d39ca110309e84e43702',
-    });
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
+      'manual lean workflow',
+      'DCL-DR-001',
+      'remains `open`',
+      'unstarted',
+      'Hard pause',
+      'Never create an automatic successor task.',
+    ]);
+    _expectContainsAll('docs/agent/autonomous_completion/README.md', [
+      'FROZEN HISTORICAL WORKFLOW',
+      'new explicit user request',
+      'reconciliation plan',
+    ]);
+    _expectContainsAll('docs/agent/SLICE_LOG.md', [
+      'WF-2026-07-15-019',
+      'DCL-DR-001',
+      'open and unstarted',
+    ]);
   });
 }

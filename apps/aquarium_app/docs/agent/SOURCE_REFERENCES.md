@@ -29,7 +29,7 @@ not a product bibliography and should stay concise.
 | `AGENTS.md` | Global Danio rules, paid/account-backed boundaries, local gates, emulator discipline. |
 | `docs/agent/CODEX_SETUP.md` | Local setup, live preview, quality scripts, optional account-backed lane boundaries. |
 | `docs/agent/FINISH_MAP.md` | Completion map, Done criteria, slice selection order. |
-| `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` | Local gate profiles and autonomous flow. |
+| `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` | Frozen historical autonomous-flow and recovery reference. |
 | `docs/agent/TESTING_CHECKLIST.md` | Verification commands and docs/product gate expectations. |
 | `docs/agent/MULTI_AGENT_WORKFLOW.md` | Coordinator, auditor, worker, reviewer, and Android QA ownership rules. |
 | `docs/product/danio-complete-local-current-audit-2026-06-13.md` | Current app state, recent evidence, and known gaps. |
@@ -44,4 +44,3 @@ not a product bibliography and should stay concise.
 - Use live preview for substantial app-facing work, not docs-only setup.
 - Use optional account-backed lanes only after local gates and explicit
   approval-ledger coverage.
-

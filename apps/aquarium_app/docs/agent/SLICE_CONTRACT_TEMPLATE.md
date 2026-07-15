@@ -1,7 +1,9 @@
 # Danio Slice Contract Template
 
-Use this template before each implementation slice. Keep it short, concrete,
-and tied to `FINISH_MAP.md`.
+Use this optional template for high-risk or broad epochs when a written scope
+will materially reduce risk. Ordinary narrow epochs may use the concise
+contract in the task/handoff. Tie work to `FINISH_MAP.md` only when it
+actually advances a product row.
 
 ## Slice
 
@@ -69,4 +71,4 @@ The slice is done only when:
 - Commit:
 - Verification summary:
 - Evidence path:
-- Follow-up created:
+- Manual next action / hard pause:

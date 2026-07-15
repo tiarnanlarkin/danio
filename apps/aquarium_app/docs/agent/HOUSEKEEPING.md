@@ -79,7 +79,7 @@ the path in `ACTIVE_HANDOFF.md`, compare with `git status` and `git rev-parse
 - Product backlog and audit docs preserve acceptance history.
 - `ACTIVE_HANDOFF.md` owns current session state.
 - `SCREEN_INVENTORY.md` owns current screen/page map and evidence gaps.
-- `SLICE_LOG.md` owns completed-slice breadcrumbs.
+- `SLICE_LOG.md` owns concise completed-epoch rows.
 
 When a doc is superseded, link it to the current source of truth instead of
 deleting historical context.
@@ -95,12 +95,12 @@ instructions, or product status.
 
 ## Cleanup Cadence
 
-At the end of each committed slice:
+At the end of each lean epoch or clean checkpoint:
 
 1. Run `git status --short -uall`.
 2. Confirm only intended files were committed.
 3. Remove or leave untracked temporary files intentionally outside Git.
-4. Update `ACTIVE_HANDOFF.md` if a future agent needs to know current state.
+4. Update `ACTIVE_HANDOFF.md` once for the epoch if current state changed.
 5. Note any remaining dirty files and their owner.
 
 Before release-candidate work:

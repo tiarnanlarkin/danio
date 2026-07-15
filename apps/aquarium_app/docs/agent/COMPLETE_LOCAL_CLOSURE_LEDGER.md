@@ -117,13 +117,14 @@ Confirmed by the user on 2026-07-11:
 
 ## Next Ledger Target Rule
 
-Target selection delegates solely to
-`plans/2026-07-11-phone-complete-local-completion-program.md`. Before Task 13
-activation, select only the setup task authorized by the autonomous workflow
-implementation plan. After explicit launch, inspect the current program phase
-and select an eligible `open` row only when fresh source/test evidence proves
-its specific gap.
+`DCL-DR-001` is the next manual ledger target. It remains `open` and
+unstarted. Begin only in a new explicit manual epoch after the
+`WF-2026-07-15-019` hard pause, and perform the ordered read-only
+restore-matrix audit before any implementation. Select no other product row
+unless current evidence or a user decision explicitly changes the target.
 
 Rows in `parked` or `decision_required` closure state are stop-and-ask items,
 not automatic implementation targets. This ledger records their state and done
-conditions but does not reorder the phone program.
+conditions. The dated phone completion program retains phase/scope history, but
+its former autonomous activation conditions are not current execution
+authority.

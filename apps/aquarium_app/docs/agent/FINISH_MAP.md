@@ -97,7 +97,7 @@ expansion rather than phone completion blockers.
 | Whole-app tablet audit | `DCL-TAB-001` | Locally verified | Current tablet screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`, with notes in `docs/qa/whole-app-tablet-map-2026-07-04.md`; smoke route assertions/tap handling and lower More hub tablet swipes are hardened locally with tests, the tablet black-box smoke rerun passed, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have tablet `Pass` accounting with 96 passes and 0 current gaps. | Retain as later-phase evidence; do not recheck for the phone candidate unless tablet scope is explicitly reopened. |
 | Visual regression | `DCL-VIS-002` | In progress | Golden tests and visual baseline manifest exist. | Add selective core-surface goldens/screenshots after visual targets stabilize. |
 | Rule tests | `DCL-RULE-001` | In progress | Rule coverage exists for some local intelligence and tool paths. | Expand recommendation, compatibility, emergency, unit, and calculation tests. |
-| Content validation | `DCL-CONTENT-001` | In progress | Content validator exists and runs in the focused gate, including emergency/distress lesson checks for educational positioning, aquatic-vet/professional escalation copy, direct prerequisite-free access, UK-style litre/litres volume spelling, metric context for gallon and Fahrenheit references in learning copy, warning-section coverage for medical/emergency lessons, unsafe/product-endorsing care copy, brand-specific emergency-product certainty claims, brand-specific conditioner/test-kit product names, learning graph IDs/prerequisites, per-lesson source density, quiz answer indexes, lesson section presence, and lesson reward/duration ranges. | Expand validation for broader locked-content coverage and any remaining source/content-risk gaps found during future audits. |
+| Content validation | `DCL-CONTENT-001` | In progress | Content validator exists and runs when explicitly selected through Focused, including emergency/distress lesson checks for educational positioning, aquatic-vet/professional escalation copy, direct prerequisite-free access, UK-style litre/litres volume spelling, metric context for gallon and Fahrenheit references in learning copy, warning-section coverage for medical/emergency lessons, unsafe/product-endorsing care copy, brand-specific emergency-product certainty claims, brand-specific conditioner/test-kit product names, learning graph IDs/prerequisites, per-lesson source density, quiz answer indexes, lesson section presence, and lesson reward/duration ranges. | Expand validation for broader locked-content coverage and any remaining source/content-risk gaps found during future audits. |
 | Data resilience | `DCL-DR-001,DCL-DR-002,DCL-DR-003,DCL-DR-004` | In progress | Backup/data hardening has broad coverage; achievement progress has lifecycle flush/restore-cancel and false-write retry coverage, achievement resetAll rejects failed local progress removal before clearing visible progress, lesson-completion achievement checks use persisted completed-lesson and perfect-score profile state, debug achievement reset rejects failed progress removal/profile writes and restores progress on profile-write failure, DebugMenu profile-write actions reject false local `user_profile` saves before showing success, Debug species reset rejects false local unlock writes, Debug Clear All Data rejects false local preference-clear results before showing restart copy, Debug Force SR Cards Due rejects false review-card writes before showing due-now success, Settings theme/notification/ambient/haptic writes now report durable-save failures, theme selection stays retryable when local theme persistence fails, Phone Notifications avoids false disabled-success feedback when local persistence fails, ambient/haptic switches show retry feedback when local saves fail, Preferences region/tank-stage/experience/goals edits stay retryable when profile persistence fails, and Reminder Settings review/streak toggles, reminder-intensity presets, and reminder-time edits show retry feedback when profile persistence fails, review-card create/seed/delete paths rollback on failed local writes, review reset keeps visible cards/stats and restores partially removed cards/stats/streak/session JSON when reset removal fails, gem and inventory resets reject false local removal results, room-vibe applies require durable preference saves before showing success, Reduce Motion override changes stay aligned with saved preferences, guidance and seasonal prompt dismissals only report dismissal after the local flag is saved, Tank returning-user prompt dismissals check failed seen-flag writes, the stage sheet hint uses the shared preferences provider and restores visible retry state when its seen-flag save fails, the energy explainer prompt is marked seen only after dismissal, all current OpenAI request surfaces including Ask Danio typed questions use the shared disclosure gate and stop before AI requests when the local disclosure flag cannot be saved, first-run consent/under-13 actions wait for durable preference writes before advancing, user-profile saves and resets treat false preference write/remove results as failures, schema migration stamps fail loudly when the version marker cannot be saved, backup preview and SharedPreferences restore reject wrong primitive value types for exportable preference keys before import/restore, backup restore extracts only archive photo files referenced by validated backup data, ignores duplicate archive-only photo basenames that backup data does not reference, scopes photo reference handling to current `imageUrl` and `photoUrls` fields so free-text path-like strings do not block valid backup operations, and now has executable proof that restored-photo cleanup runs when tank import fails after photo extraction and remains best-effort if cleanup fails in either the import flow or screen catch, direct tank-scoped backup imports reject child rows whose tank IDs are not imported, trim-empty required tank and child IDs, missing relationship targets, malformed relationship ID types, duplicate tank and child IDs, and cross-tank relationship targets before imported tank saves or success, bulk tank delete failures restore visible tanks and surface retry feedback, onboarding completion/reset/replay wait for durable local flag writes or show retry feedback, Delete My Data rejects false preference-clear results before destructive follow-up steps, Clear All Data copy matches its narrower local tank/log/task/photo scope, Add Log edits skip duplicate reward/progress side effects, Tank Settings saved edits close without dirty-prompt loops, equipment adds roll back partial equipment saves when maintenance-task sync fails, equipment-add, livestock-add, Quick Water Test, and practice-lesson progress failures no longer undo durable saves or show generic/false save success, single and bulk livestock adds roll back partial livestock/log saves when timeline-log persistence fails, livestock removal expiry skips timeline logs when the parent tank is missing, single livestock moves reject missing target tank IDs before saving moved livestock, Wishlist purchase rejects missing local item IDs before reporting success or applying budget spend, tank, log, task, equipment, and livestock edit submissions reject missing local record IDs before saving, Add Log, Livestock, Task, Equipment, Cycling Assistant reminder, bulk Livestock, Symptom Triage journal, Species detail care-task, Tank Journal manual-entry, and Tank Detail quick-feeding child save paths reject missing parent tank IDs before saving, Equipment delete Undo rejects missing parent tanks before restoring equipment or generated maintenance tasks, root lifecycle detach flushes pending gem writes before app-kill can skip the debounce timer, DS-2026-07-05-044 verified the current durable debounced-writer inventory as gems and achievement progress with lifecycle evidence, and gem, inventory, legacy inventory migration, review-card, review-session count, review-streak, reminder, cost-tracker, maintenance-checklist, difficulty-setting, review-request tracking, and API rate-limit writes reject false local save results. | Finish remaining restore, migration, create/edit/delete, and relationship-mapping walkthrough coverage. Re-open debounced-writer app-kill work only when a new durable debounced local writer is added or lifecycle evidence changes. |
 | Weekly Plan cache clear | none | Locally verified | Weekly Plan cache clear now waits for durable local `weekly_plan_cache` removal before hiding the visible plan, and failed removals leave the plan visible with a surfaced error. | Recheck if Weekly Plan cache, restore invalidation, or optional-AI save flows change. |
 | Debug QA seeds | `DCL-QA-001` | In progress | Existing debug QA seeds now include demo tank, lesson quiz/practice, unlock/progression controls, emergency unsafe-water, incompatible-fish, skipped-onboarding quick-start, no-AI Smart Hub, partial unlock-edge, and tablet visual-stress seeds. | Add any real keyed-AI seed only when it can avoid fake provider readiness. |
@@ -162,9 +162,10 @@ deploy, account-backed, and iOS work remain outside this ranked phone roadmap.
 ### Historical Next-Push Note
 
 The 2026-07-04 recommendation was to continue `CL-P1-009` / `CL-QA-006`
-data-resilience closeout from fresh repo evidence. The current program retains
-that as the first product lane only after workflow setup, Task 13 activation,
-and explicit launch. Bootstrap setup units must not start it.
+data-resilience closeout from fresh repo evidence. The dated 2026-07-11 program
+retains that phase order, but its former autonomous prerequisites are
+historical. The current manual selection rule below makes `DCL-DR-001` the
+next task after the workflow-reset hard pause.
 
 First files to inspect:
 
@@ -340,37 +341,31 @@ local tests and `Full` gate first; use Android walkthrough evidence only after
 
 ## Slice Selection Rule
 
-Slice ordering delegates solely to
-`docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`.
-Before Task 13 activation, the autonomous workflow implementation plan selects
-setup work and no product row may be chosen. After explicit launch, select the
-first eligible row in the current phone-program phase whose gap is proven by
-fresh source/test evidence.
+`DCL-DR-001` is the next manual development task. It remains `open` and
+unstarted. Begin it only in a new explicit manual epoch after the
+`WF-2026-07-15-019` hard pause, starting with the ordered read-only
+restore-matrix audit. Implement only when fresh source/test evidence proves one
+specific current gap.
 
 This map may record a newly discovered regression or higher-risk category, but
-it cannot silently reorder the program. Stop and reconcile the canonical docs
-or obtain the required product decision when live evidence would change phase
-order or scope.
+it cannot silently select a different product row. The dated completion program
+retains phase/scope history; its former autonomous activation conditions are
+historical, not current execution authority. Stop for a product decision when
+live evidence would change phase order or scope.
 
 ## Evidence Recording Rule
 
-Each completed slice should update one of these sources:
+Update `ACTIVE_HANDOFF.md` once per epoch and add one concise `SLICE_LOG.md`
+row at epoch closeout. Update other evidence only when its underlying truth
+changes:
 
-- This file, when the overall completion status changes.
-- The detailed product backlog, when feature acceptance history changes.
-- `WORKFLOW_CHARTER.md`, `RESEARCH_PROTOCOL.md`, `QUALITY_LADDER.md`,
-  `HOUSEKEEPING.md`, or `SOURCE_REFERENCES.md`, when the operating model or
-  research policy changes.
-- `ACTIVE_HANDOFF.md`, when a future agent needs current branch, dirty-file,
-  live-preview, blocker, or next-action state.
-- `SCREEN_INVENTORY.md`, when screens, routes, tests, evidence, or visual gaps
-  change.
-- `SLICE_LOG.md`, when a completed slice needs a durable breadcrumb.
-- `docs/qa/screenshots/...`, when phone/tablet visual evidence is captured.
-- `PAID_TOOL_APPROVAL_LEDGER.md`, when an external paid or account-backed lane
-  is approved or used.
-- `DEVICE_OWNERSHIP.md`, when the slice uses emulator, ADB, Patrol, Firebase
-  Test Lab, live preview, or local screenshot capture.
+- This file only when an overall completion status, product selection rule, or
+  quality-bar summary changes.
+- The closure ledger only when a finding's state, disposition, evidence, or done
+  condition changes.
+- Product/backlog, research, workflow, screen, screenshot, approval, or device
+  docs only when the corresponding acceptance, policy, evidence, approval, or
+  ownership state changes.
 
 Keep evidence concise. Do not add screenshots or logs that do not prove a
 decision, fix, or completed acceptance criterion.

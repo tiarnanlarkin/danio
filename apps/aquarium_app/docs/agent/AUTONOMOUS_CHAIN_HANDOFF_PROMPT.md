@@ -1,8 +1,12 @@
 # Danio Autonomous Chain Handoff Prompt
 
-Status: Committed rehearsal authorizes the explicit Task 13 activation path;
-automatic operational successors remain state-, readiness-, generator-, and
-duplicate-safety-gated.
+> **FROZEN HISTORICAL WORKFLOW:** Retained for evidence and recovery analysis
+> only. Do not execute this prompt or generate successors. Reactivation requires
+> a new explicit user request and reconciliation plan; see
+> `autonomous_completion/README.md`.
+
+Status: Frozen historical workflow; the body below preserves the former
+activation and chaining contract and is not executable current authority.
 Created: 2026-07-05
 Reconciled: 2026-07-11 for the approved autonomous phone workflow bootstrap
 

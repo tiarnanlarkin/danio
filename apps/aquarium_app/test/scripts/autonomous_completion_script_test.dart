@@ -1152,6 +1152,7 @@ void main() {
     final checklist = File(
       'docs/agent/TESTING_CHECKLIST.md',
     ).readAsStringSync();
+    final qualityFlat = quality.replaceAll(RegExp(r'\s+'), ' ');
     final checklistFlat = checklist.replaceAll(RegExp(r'\s+'), ' ');
 
     expect(gate, contains(r'[switch]$RunAutonomyTests'));
@@ -1179,81 +1180,23 @@ void main() {
       ),
     );
 
-    for (final tier in <String>[
-      'Autonomy authority/schema change',
-      'Autonomy pure state/readiness change',
-      'Autonomy Git mutation/claim/closeout change',
-      'Autonomy no-product rehearsal',
-      'Phone release candidate',
-    ]) {
-      expect(quality, contains(tier), reason: tier);
-      expect(checklist, contains(tier), reason: tier);
+    for (final source in <String>[qualityFlat, checklistFlat]) {
+      expect(source, contains('-RunAutonomyTests'));
+      expect(source, contains('autonomy Dart contract'));
+      expect(source, contains('pure PowerShell behavior'));
     }
-
-    final qualityMappings = <String, List<String>>{
-      'Autonomy authority/schema change': <String>[
-        'Docs truth',
-        'autonomous script contract',
-        '-Profile Docs',
-      ],
-      'Autonomy pure state/readiness change': <String>[
-        'PowerShell behavior suite',
-        'disposable Git fixture suite',
-        '-Profile Docs',
-      ],
-      'Autonomy Git mutation/claim/closeout change': <String>[
-        'Race and disposable Git fixtures',
-        '-Profile Docs',
-        '-RequireCleanWorktree',
-      ],
-      'Autonomy no-product rehearsal': <String>[
-        'All autonomous Dart, behavior, and disposable Git fixture suites',
-        '-Profile Docs -RequireCleanWorktree',
-      ],
-      'Phone release candidate': <String>[
-        '-Profile Full',
-        '-Profile AndroidPrep',
-        'evidence manifest',
-        'phone QA',
-      ],
-    };
-    for (final entry in qualityMappings.entries) {
-      final row = quality
-          .split(RegExp(r'\r?\n'))
-          .singleWhere((line) => line.startsWith('| ${entry.key} |'));
-      for (final requirement in entry.value) {
-        expect(
-          row,
-          contains(requirement),
-          reason: '${entry.key}: $requirement',
-        );
-      }
-    }
-
-    for (final mapping in <String>[
-      <String>[
-        'Autonomy authority/schema change:** run docs truth, the autonomous ',
-        'script contract, and the Docs profile.',
-      ].join(),
-      <String>[
-        'Autonomy pure state/readiness change:** run the behavior suite, the ',
-        'disposable Git fixture suite, and the Docs profile.',
-      ].join(),
-      <String>[
-        'Autonomy Git mutation/claim/closeout change:** run race/disposable Git ',
-        'fixtures, the Docs profile, and the clean-main Docs profile.',
-      ].join(),
-      <String>[
-        'Autonomy no-product rehearsal:** run all autonomous suites and the Docs ',
-        'profile with `-RequireCleanWorktree`',
-      ].join(),
-      <String>[
-        'Phone release candidate:** run Full, AndroidPrep, validate the evidence ',
-        'manifest, and complete affected phone QA.',
-      ].join(),
-    ]) {
-      expect(checklistFlat, contains(mapping), reason: mapping);
-    }
+    expect(
+      checklist,
+      contains('autonomous_completion_activation_fixture_test.ps1'),
+    );
+    expect(
+      checklist,
+      contains('autonomous_completion_git_fixture_test.ps1'),
+    );
+    expect(checklistFlat, contains('direct, manual checks'));
+    expect(quality, contains('-Profile Full'));
+    expect(quality, contains('-Profile AndroidPrep'));
+    expect(qualityFlat, contains('not part of ordinary profiles'));
   });
 
   test('runner manifest pins exact ordered semantic identities', () {
@@ -1452,95 +1395,107 @@ void main() {
       expect(android, contains(contract), reason: contract);
     }
 
-    final chainPrompt = File(
+    for (final path in <String>[
       'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
-    ).readAsStringSync();
-    final startupStart = chainPrompt.indexOf('Required startup:');
-    final startupEnd = chainPrompt.indexOf('Objective:', startupStart);
-    expect(startupStart, greaterThanOrEqualTo(0));
-    expect(startupEnd, greaterThan(startupStart));
-    final startup = chainPrompt.substring(startupStart, startupEnd);
-    final danioRunner = startup.indexOf(
-      r'1. Load the latest installed $danio-autonomous-slice-runner',
-    );
-    final verifiedRunner = startup.indexOf(
-      r'2. Load the latest installed $verified-slice-runner',
-    );
-    expect(danioRunner, greaterThanOrEqualTo(0));
-    expect(verifiedRunner, greaterThan(danioRunner));
-  });
-
-  test('normative fixtures retain coverage across live activation', () {
-    const expectedModes = <String>[
-      'inactive',
-      'ready',
-      'active',
-      'handoff_ready',
-      'finalizing',
-      'complete',
-    ];
-
-    for (var index = 0; index < expectedModes.length; index += 1) {
-      final fixture = _readJson(_fixturePaths[index]);
-      final budget = fixture['budget'] as Map<String, dynamic>;
-
+      'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
+      'docs/agent/AUTONOMOUS_QUALITY_SETUP.md',
+    ]) {
       expect(
-        fixture['mode'],
-        expectedModes[index],
-        reason: _fixturePaths[index],
-      );
-      expect(budget['total_approved_units'], 20);
-      expect(
-        (budget['consumed_units'] as int) +
-            (budget['remaining_units_including_current'] as int),
-        budget['total_approved_units'],
+        File(path).readAsStringSync(),
+        contains('FROZEN HISTORICAL WORKFLOW'),
+        reason: path,
       );
     }
+    final frozenReadme = File(
+      'docs/agent/autonomous_completion/README.md',
+    ).readAsStringSync();
+    expect(frozenReadme, contains('new explicit user request'));
+    expect(frozenReadme, contains('reconciliation plan'));
+  });
 
-    final inactive = _readJson(_fixturePaths[0]);
-    final inactiveBudget = inactive['budget'] as Map<String, dynamic>;
-    final inactiveCharge =
-        inactiveBudget['current_charge'] as Map<String, dynamic>;
-    expect(inactiveBudget['consumed_units'], 1);
-    expect(inactiveBudget['remaining_units_including_current'], 19);
-    expect(inactiveCharge['status'], 'none');
+  test(
+    'normative fixtures retain coverage while live authority is stopped',
+    () {
+      const expectedModes = <String>[
+        'inactive',
+        'ready',
+        'active',
+        'handoff_ready',
+        'finalizing',
+        'complete',
+      ];
 
-    final liveFile = File(_liveRunStatePath);
-    if (liveFile.existsSync()) {
-      final live = _readJson(_liveRunStatePath);
-      final transition = live['transition'] as Map<String, dynamic>;
-      final liveBudget = live['budget'] as Map<String, dynamic>;
-      final liveCharge = liveBudget['current_charge'] as Map<String, dynamic>;
-      final cursor = live['cursor'] as Map<String, dynamic>;
-      final authorization = live['authorization'] as Map<String, dynamic>;
-      final stateRevision = live['state_revision'] as int;
-      final mode = live['mode'] as String;
-      final liveConsumed = liveBudget['consumed_units'] as int;
-      final liveRemaining =
-          liveBudget['remaining_units_including_current'] as int;
-      expect(live['document_type'], 'danio_phone_completion_run_state');
-      expect(live['run_id'], 'danio-phone-complete-local-2026-07-11');
-      expect(stateRevision, greaterThanOrEqualTo(1));
-      expect(transition['parent_state_revision'], stateRevision - 1);
-      expect(transition['to_mode'], mode);
-      expect(authorization['authorization_id'], isA<String>());
-      expect((authorization['authorization_id'] as String), isNotEmpty);
-      final liveTotal = liveBudget['total_approved_units'] as int;
-      expect(
-        liveConsumed + liveRemaining,
-        liveTotal,
-      );
-      expect(liveTotal, greaterThanOrEqualTo(20));
-      expect(liveConsumed, greaterThanOrEqualTo(10));
-      if (stateRevision == 1) {
+      for (var index = 0; index < expectedModes.length; index += 1) {
+        final fixture = _readJson(_fixturePaths[index]);
+        final budget = fixture['budget'] as Map<String, dynamic>;
+
+        expect(
+          fixture['mode'],
+          expectedModes[index],
+          reason: _fixturePaths[index],
+        );
+        expect(budget['total_approved_units'], 20);
+        expect(
+          (budget['consumed_units'] as int) +
+              (budget['remaining_units_including_current'] as int),
+          budget['total_approved_units'],
+        );
+      }
+
+      final inactive = _readJson(_fixturePaths[0]);
+      final inactiveBudget = inactive['budget'] as Map<String, dynamic>;
+      final inactiveCharge =
+          inactiveBudget['current_charge'] as Map<String, dynamic>;
+      expect(inactiveBudget['consumed_units'], 1);
+      expect(inactiveBudget['remaining_units_including_current'], 19);
+      expect(inactiveCharge['status'], 'none');
+
+      final liveFile = File(_liveRunStatePath);
+      if (liveFile.existsSync()) {
+        final live = _readJson(_liveRunStatePath);
+        final transition = live['transition'] as Map<String, dynamic>;
+        final liveBudget = live['budget'] as Map<String, dynamic>;
+        final liveCharge = liveBudget['current_charge'] as Map<String, dynamic>;
+        final cursor = live['cursor'] as Map<String, dynamic>;
+        final authorization = live['authorization'] as Map<String, dynamic>;
+        final stateRevision = live['state_revision'] as int;
+        final mode = live['mode'] as String;
+        final liveConsumed = liveBudget['consumed_units'] as int;
+        final liveRemaining =
+            liveBudget['remaining_units_including_current'] as int;
+        expect(live['document_type'], 'danio_phone_completion_run_state');
+        expect(live['run_id'], 'danio-phone-complete-local-2026-07-11');
+        expect(stateRevision, 2);
+        expect(transition['parent_state_revision'], stateRevision - 1);
+        expect(transition['to_mode'], mode);
+        expect(authorization['authorization_id'], isA<String>());
+        expect((authorization['authorization_id'] as String), isNotEmpty);
+        final liveTotal = liveBudget['total_approved_units'] as int;
+        expect(
+          liveConsumed + liveRemaining,
+          liveTotal,
+        );
         expect(
           authorization['authorization_id'],
           'danio-phone-complete-local-2026-07-11',
         );
         expect(liveTotal, 20);
-        expect(mode, 'ready');
-        expect(transition['action'], 'launch');
-        expect(transition['from_mode'], 'inactive');
+        expect(mode, 'stopped');
+        expect(transition['action'], 'preclaim_stop');
+        expect(transition['from_mode'], 'ready');
+        expect(transition['to_mode'], 'stopped');
+        expect(
+          transition['work_unit_id'],
+          'DCL-DR-001-restore-matrix-audit',
+        );
+        expect(
+          transition['reason_code'],
+          'USER_REQUESTED_WORKFLOW_SIMPLIFICATION',
+        );
+        expect(
+          live['stop_reason_code'],
+          'USER_REQUESTED_WORKFLOW_SIMPLIFICATION',
+        );
         expect(live['owner'], isNull);
         expect(live['handoff_generation'], 0);
         expect(liveCharge['status'], 'none');
@@ -1552,16 +1507,9 @@ void main() {
         expect(cursor['phase'], '1-data-resilience');
         expect(cursor['work_unit_id'], 'DCL-DR-001-restore-matrix-audit');
         expect(cursor['ledger_row_ids'], <String>['DCL-DR-001']);
-      } else {
-        expect(transition['action'], isNot('launch'));
-        if (<String>{'active', 'finalizing'}.contains(mode)) {
-          expect(live['owner'], isNotNull);
-        } else {
-          expect(live['owner'], isNull);
-        }
       }
-    }
-  });
+    },
+  );
 
   test('rehearsal entry point is preview-only and zero-side-effect', () {
     const path =
