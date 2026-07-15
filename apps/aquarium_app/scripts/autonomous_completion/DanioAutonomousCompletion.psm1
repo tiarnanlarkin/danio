@@ -2670,7 +2670,11 @@ function ConvertTo-DanioForwardSlashPath {
   [CmdletBinding()]
   param([Parameter(Mandatory = $true)][string]$Path)
 
-  return $Path.Replace("\", "/").TrimEnd("/")
+  $normalizedPath = $Path.Replace("\", "/")
+  if ($normalizedPath -cmatch '^[A-Za-z]:/+$') {
+    return $normalizedPath.Substring(0, 2) + "/"
+  }
+  return $normalizedPath.TrimEnd("/")
 }
 
 function Invoke-DanioGitReadOnly {

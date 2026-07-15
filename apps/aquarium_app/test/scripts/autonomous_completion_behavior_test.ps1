@@ -790,20 +790,38 @@ $claimPreview = [pscustomobject][ordered]@{
   mutations_performed = $false
 }
 $closeoutPreview = Copy-JsonValue -Value $claimPreview
-$rehearsalReport = New-DanioRehearsalReport `
-  -RehearsalRunId "danio-rehearsal-fixture" `
-  -TaskId "task-fixture-001" `
-  -CreatedAtUtc "2026-07-13T12:00:00.0000000Z" `
-  -RepositoryRoot $checkoutRepoRoot `
-  -BaseCommit ("6" * 40) `
-  -ProposedAutonomousUnits 12 `
-  -ProposedWorkUnitId "WF-2026-07-11-015" `
-  -ProposedLedgerRowIds @("DCL-DR-001") `
-  -Before $rehearsalObservation `
-  -After (Copy-JsonValue -Value $rehearsalObservation) `
-  -LaunchPreview $launchPreview `
-  -ClaimPreview $claimPreview `
-  -CloseoutPreview $closeoutPreview
+$rehearsalParameters = @{
+  RehearsalRunId = "danio-rehearsal-fixture"
+  TaskId = "task-fixture-001"
+  CreatedAtUtc = "2026-07-13T12:00:00.0000000Z"
+  RepositoryRoot = $checkoutRepoRoot
+  BaseCommit = ("6" * 40)
+  ProposedAutonomousUnits = 12
+  ProposedWorkUnitId = "WF-2026-07-11-015"
+  ProposedLedgerRowIds = @("DCL-DR-001")
+  Before = $rehearsalObservation
+  After = (Copy-JsonValue -Value $rehearsalObservation)
+  LaunchPreview = $launchPreview
+  ClaimPreview = $claimPreview
+  CloseoutPreview = $closeoutPreview
+}
+$driveRootParameters = @{} + $rehearsalParameters
+$driveRootParameters.RepositoryRoot = "R:\"
+$driveRootRehearsalReport = New-DanioRehearsalReport @driveRootParameters
+Assert-Equal `
+  -Actual $driveRootRehearsalReport.repository_root `
+  -Expected "R:/" `
+  -Message "A Windows drive root was normalized into a drive-relative path."
+
+$ordinaryRootParameters = @{} + $rehearsalParameters
+$ordinaryRootParameters.RepositoryRoot = "C:/safe/repository///"
+$ordinaryRootRehearsalReport = New-DanioRehearsalReport @ordinaryRootParameters
+Assert-Equal `
+  -Actual $ordinaryRootRehearsalReport.repository_root `
+  -Expected "C:/safe/repository" `
+  -Message "An ordinary repository path retained trailing separators."
+
+$rehearsalReport = New-DanioRehearsalReport @rehearsalParameters
 Assert-Equal -Actual $rehearsalReport.overall_status -Expected "pass" -Message "Valid zero-side-effect rehearsal did not pass."
 Assert-Equal -Actual $rehearsalReport.previews.launch.code -Expected "LAUNCH_NOT_AUTHORIZED" -Message "Launch preview code mismatch."
 Assert-Equal -Actual $rehearsalReport.previews.claim.code -Expected "AUTHORITY_CONFLICT" -Message "Claim preview code mismatch."
