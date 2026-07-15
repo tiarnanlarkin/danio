@@ -1,17 +1,15 @@
 # Danio Phone Complete-Local Completion Program
 
-> **Current execution note - WF-2026-07-15-019:** The former autonomous
-> activation/launch clauses in this dated program are historical. `DCL-DR-001`
+> **Roadmap authority lock - E0**
+>
+> Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
+>
+> This is the current and only ordered phone completion authority. It preserves
+> seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
+> frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
 > is the next manual task, remains `open` and unstarted, and begins only in a
-> new explicit manual epoch after the workflow-reset hard pause. This document
-> continues to preserve phone phase and scope history. All dated workflow and
-> gate cadence in this body defers to the current lean Verified Slice contract.
-
-> **For agentic workers:** REQUIRED SUB-SKILL: Use
-> `$verified-slice-runner` for each implementation slice and
-> `superpowers:test-driven-development` for behavior or data-safety changes.
-> Use `superpowers:verification-before-completion` before closeout. This
-> document controls sequence; it does not authorize broad implementation.
+> new manual epoch after E0 is clean, pushed, and aligned. Execution and gate
+> mechanics defer to the current lean Verified Slice contract.
 
 **Goal:** Finish Danio as a polished, resilient, local-first Android phone app
 while keeping tablet and external product lanes explicitly parked.
@@ -20,10 +18,10 @@ while keeping tablet and external product lanes explicitly parked.
 The closure ledger owns row closure state, disposition, evidence, and exact done
 conditions; the Finish Map owns category status and quality-bar summaries; live
 Git, source, tests, and fresh commands own factual truth. The Figma phone atlas
-is the downstream visual control surface. Work through one authorized closure
-lane at a time on a short-lived branch, using a focused read-only audit before
-each implementation slice and RED/GREEN proof for every behavior or persistence
-change.
+is optional downstream context, while current repo screenshots and assets govern
+visual defects. Work through one closure lane at a time on a short-lived branch,
+using a focused read-only audit before each implementation slice and RED/GREEN
+proof for every behavior or persistence change.
 
 **Tech Stack:** Flutter, Dart, Riverpod, local JSON and SharedPreferences
 storage, PowerShell quality wrappers, Android local debug builds, local Figma
@@ -36,6 +34,9 @@ phone atlas evidence.
   until phone complete-local closes.
 - Cloud, accounts, hosted sync, API-key/provider expansion, premium,
   store/deploy, public release, and iOS remain outside this program.
+- Tablet, keyed-AI seed, providers, premium, store/deploy, public release,
+  cloud/accounts, signing, legal hosting, public-history recovery, and iOS are
+  parked. Each requires a separate user-approved plan before work begins.
 - Danio must remain useful without Optional AI or a provider key.
 - Do not create fake provider, premium, cloud, social, or release behavior.
 - Repository code, tests, ledger, and fresh gates remain authoritative when
@@ -47,43 +48,39 @@ phone atlas evidence.
 - Data safety, accessibility, visual, and performance rows cannot close from
   documentation alone.
 - Use Android runtime only after `DEVICE_OWNERSHIP.md` and scoped preflight.
+- Frozen autonomy is historical recovery evidence only and cannot select,
+  authorize, charge, close, or hand off a phone phase.
 
 ---
 
 ## Current Evidence Baseline
 
-- Source branch checkpoint before this plan: clean `main` at
-  `12a68376775d1d3b820aeb6fcb906a22853bc169`, aligned with `origin/main`.
-- Latest verified product slice: `DS-2026-07-06-050` / `DCL-DR-001`.
-- Planning-checkpoint Full gate: 2,133 Flutter tests, Flutter analyze, and
-  debug APK build passed.
-- Figma phone atlas:
-  `https://www.figma.com/design/JnSwJlWnisxF6xtiwK6nFc`
-- Atlas evidence: 14 pages total (13 audit/atlas pages plus the phone
-  completion plan), all 96 screen-inventory rows accounted for, 98 numbered
-  phone captures, 2 additional live variants, and 100 phone evidence images
-  across pages 02 through 11.
-- The atlas state matrix identifies uncaptured or unclosed success, empty,
-  validation, failure, confirmation, destructive, locked, theme,
-  accessibility, and performance states without claiming they are defects.
-- A fresh APK rebuild during atlas capture was blocked by dependency DNS
-  resolution. Captures used the already installed app from the same clean
-  source checkpoint. The planning-checkpoint Full gate later rebuilt the debug
-  APK successfully.
+- Live Git, source, tests, validators, and fresh commands must be checked in
+  each epoch; dated commit and gate results are historical evidence only.
+- The current 2026-07-04 phone map accounts for all 96 screen-inventory rows
+  with 98 numbered phone captures and 0 recorded capture gaps.
+- The current content baseline is 82 lessons, 75+ species, and 40+ plants.
+- Current repo screenshots and assets govern visual defects. The March visual
+  asset audit is historical evidence, not current defect authority.
+- The Figma phone atlas remains optional downstream context:
+  `https://www.figma.com/design/JnSwJlWnisxF6xtiwK6nFc`.
 
 ## Product Decision Record
 
-Resolved on 2026-07-11. The user accepted both recommended phone-complete
-boundaries:
+Resolved on 2026-07-11 for the first two rows and extended by the user on
+2026-07-15 for the finite content, visual, and motion defaults:
 
 | ID | Accepted phone-complete boundary | Parked expansion |
 | --- | --- | --- |
 | `DCL-P1-001` | Current data-derived plant, aquascape, decoration, progression, and seasonal cues are sufficient. Fix concrete defects only. | Dedicated plant inventory and broader seasonal variants require a fresh user-approved plan. |
 | `DCL-P1-002` | Current room vibes, badges, inventory, earned decorations, and equip controls are sufficient. Fix concrete defects only. | Seasonal cosmetics and deeper plant/decor collections require a fresh user-approved plan. |
+| `DCL-P1-005`, `DCL-P1-006` | The current 82 lessons, 75+ species, and 40+ plants are sufficient. Only audited defects or validator failures require work. | More lessons, entries, interaction types, or source expansion require fresh user direction. |
+| `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | Visual and motion completion is defect-based, with no mandatory asset-replacement or new-animation quota. | Purely additive asset, golden, decoration, or animation quotas require fresh user direction. |
 
-Both ledger rows are closed as `ACCEPTED_LOCAL_LIMITATION`. These boundaries
-constrain Phase 3 but do not bypass later phone visual, accessibility, motion,
-performance, or final-candidate checks.
+Both ledger rows are closed as `ACCEPTED_LOCAL_LIMITATION` for the first two
+decisions. The later rows remain open only for finite current-proof closure;
+these decisions do not bypass phone accessibility, content/rule validation,
+performance, or final acceptance.
 
 ## Recalibrated Working Range
 
@@ -92,9 +89,9 @@ purposes. It is still a range, not a delivery promise.
 
 | Range | Verified sessions | Assumptions |
 | --- | --- | --- |
-| Lower bound | 10 to 13 | Several verification rows close without code, both accepted product-depth boundaries remain stable, and no material accessibility or performance defects appear. |
-| Planning range | 13 to 22 | Data resilience needs targeted fixes, phone visual/accessibility work finds bounded defects, and each high-risk phase receives its own closeout evidence. |
-| Expanded scope | 18 to 30 | The accepted plant/reward boundary is later reopened, visual assets need broad replacement, or performance/accessibility evidence requires iteration. |
+| Lower bound | 10 to 13 | Several verification rows close without code, the two known AI-history gaps take one slice each, and no material accessibility or performance defects appear. |
+| Planning range | 13 to 22 | Data resilience needs targeted fixes, phone visual/accessibility work finds bounded current defects, and each high-risk phase receives its own closeout evidence. |
+| Locked-scope upper | 18 to 26 | Current phone defects require iteration without reopening accepted breadth, adding asset/animation quotas, or entering parked lanes. |
 
 Recalibrate after the data-resilience phase.
 
@@ -104,10 +101,10 @@ Recalibrate after the data-resilience phase.
 | --- | --- | --- | --- |
 | 0. Scope lock | `DCL-P1-001`, `DCL-P1-002` | Complete | Both current product-depth boundaries were accepted on 2026-07-11; broader expansion is parked. |
 | 1. Data resilience | `DCL-DR-001` through `DCL-DR-004` | 3 to 5 | Restore, migration/corruption, broader CRUD/undo, and import relationship mapping are fixed or closed by fresh proof; Full gate passes. |
-| 2. Optional AI and preferences | `DCL-AI-001`, `DCL-PREF-001` | 1 to 2 | Every real current AI write is confirmed-before-write or proven absent; keyless/provider/privacy preferences are honest and persistent. |
-| 3. Normal-user depth | `DCL-P1-003` through `DCL-P1-006`, constrained by Phase 0 | 2 to 5 | Guided tools, timeline, learning, and species/plants meet the accepted phone scope while Living Tank and rewards remain within their accepted boundaries. |
-| 4. Content and rules | `DCL-CONTENT-001`, `DCL-RULE-001` | 2 to 3 | The next concrete source, locked-content, recommendation, compatibility, emergency, unit, and calculator risk clusters have executable coverage. |
-| 5. Phone accessibility and visual quality | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 3 to 5 | High-traffic phone clusters meet accessibility, visual, reduced-motion, and haptic acceptance with stable targeted baselines. |
+| 2. Optional AI and preferences | `DCL-AI-001`, `DCL-PREF-001` | 2 to 3 | Fish ID and AI Compatibility close as separate single-slice epochs; every other current AI write and preference is confirmed, honest, persistent, or proven no-current-gap. |
+| 3. Normal-user depth | `DCL-P1-003` through `DCL-P1-006`, constrained by Phase 0 | 2 to 4 | Guided tools and timeline handoffs are audited; the accepted learning/species/plant breadth passes validators and only concrete defects are fixed. |
+| 4. Content and rules | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 to 3 | Current content validators and the high-risk rule-family inventory pass; only concrete uncovered or failing risks add proof or fixes. |
+| 5. Phone accessibility and visual quality | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 3 to 5 | All ordered phone clusters have no open accessibility, screenshot, asset, reduced-motion, or haptic-preference defect; current targeted baselines pass. |
 | 6. Phone performance | `DCL-PERF-001` | 1 to 2 | Owned Android phone evidence covers the recorded startup, resume, tab, animation, scrolling, and image targets. |
 | 7. Final phone candidate | `DCL-RC-001` | 1 to 2 | No higher phone row remains open; clean main passes the final local gate set and phone signoff packet. |
 
@@ -115,6 +112,20 @@ Recalibrate after the data-resilience phase.
 tablet visual polish, and tablet performance. It is phase-parked and does not
 block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
 `DCL-EXT-002` remain externally parked.
+
+## Finite Phone Done Conditions
+
+| Area | Done condition |
+| --- | --- |
+| Learning | The current 82 lessons pass content validation and representative phone-path checks; every audited navigation, lock, practice-link, citation, content, or visual defect is fixed. No additional lesson or interaction quota remains. |
+| Species and plants | The current 75+ species and 40+ plants pass database/content validation and representative browser/detail/handoff checks; every audited data, source, image, or display defect is fixed. No entry-growth quota remains. |
+| Guided tools and timeline | Every current tool save/apply handoff and timeline/journal source label is mapped once to source/test or owned walkthrough evidence; each concrete gap is fixed or the rows close with no-current-gap evidence. |
+| Content and rules | The current validator covers the identified content risks and the high-risk recommendation, compatibility, emergency, unit, and calculation families have focused proof; only concrete uncovered/failing risks add work. |
+| Accessibility | Every ordered phone cluster is checked for contrast, 48dp targets, semantics, large text, non-colour-only state, clipping, and reduced motion; all failures are closed with affected test paths and local visual proof. |
+| Visual assets and regression | Current July phone screenshots and repo assets are inspected; every concrete weak/mismatched/missing/licensing/clipping defect is closed, the baseline manifest passes, and changed high-risk surfaces have targeted proof where useful. No asset or golden quota remains. |
+| Motion and haptics | Current animated and haptic flows are inventoried; every reduced-motion failure, haptic-preference bypass, or clarity defect is closed with focused proof. No new animation is required. |
+| Performance | Cold start, warm resume, tab switching, tank animation, representative scrolling, and local image first paint are measured on the owned Android phone target and meet `PERFORMANCE_TARGETS.md`, or each reproducible miss is fixed and remeasured. |
+| Final acceptance | Every earlier active phone row is closed or explicitly accepted/parked; clean `main` passes Full, AndroidPrep, current content and visual checks, affected phone-state rechecks, product-truth scan, and the final phone QA note with no known untracked phone defect. |
 
 ## Phase 1: Data Resilience
 
@@ -193,8 +204,12 @@ source inventory.
 
 - [ ] Inventory each create, edit, delete, bulk delete, undo, and partial-save
   boundary against existing DS slice evidence.
-- [ ] Prefer verification closure when current tests already prove the path.
-- [ ] Fix only one shared module/test-family boundary per slice.
+- [ ] Keep `DCL-DR-003` verification-first until this inventory proves one
+  concrete current false-success, rollback, or orphan gap.
+- [ ] Close by no-current-gap evidence when current source/tests already prove
+  every inventoried path; do not create work to satisfy the row.
+- [ ] If a gap is proven, fix only one shared module/test-family boundary per
+  slice with focused RED/GREEN proof.
 - [ ] Re-run import relationship tests after any import mapping change.
 
 **Inventory and focused commands:**
@@ -230,6 +245,11 @@ flutter test test/services/backup_import_service_test.dart --reporter compact
 
 - [ ] Classify every current AI output as no-write, confirmed local write, or
   unconfirmed local write.
+- [ ] Treat Fish ID AI-history persistence as one future single-slice epoch.
+- [ ] Treat AI Compatibility AI-history persistence as a separate future
+  single-slice epoch; do not bundle the two confirmation flows.
+- [ ] For each, prove cancel/no-write and confirm/write-once behavior before
+  closing the gap.
 - [ ] Verify cancel leaves storage unchanged and confirm writes exactly once.
 - [ ] Close by audit evidence if no unconfirmed current write exists. Do not
   invent a write path to satisfy the row.
@@ -258,13 +278,12 @@ policy, and privacy copy are verified without enabling parked providers.
 - [ ] Audit timeline/journal source labels and save handoffs for `DCL-P1-004`
   using `lib/screens/journal_screen.dart` and
   `test/widget_tests/journal_screen_test.dart`.
-- [ ] Select one learning path cluster for `DCL-P1-005`; ground any visual
-  work in the current lesson/practice screenshots and add focused widget or
-  content proof.
-- [ ] Select one concrete species/plant source, image, or depth gap for
-  `DCL-P1-006`; run database/content validation after the change.
-- [ ] Do not combine Living Tank, rewards, learning, and species expansion in
-  one slice.
+- [ ] Run current learning validation and representative phone-path checks for
+  `DCL-P1-005`; fix only a concrete audited defect.
+- [ ] Run current species/plant validation and representative browser/detail
+  checks for `DCL-P1-006`; fix only a concrete audited defect.
+- [ ] Do not add lessons, species, plants, interaction types, or source breadth
+  merely to advance a row.
 
 ## Phase 4: Content And Rule Confidence
 
@@ -276,20 +295,23 @@ policy, and privacy copy are verified without enabling parked providers.
 
 **Actions:**
 
-- [ ] Pick one related risk cluster per slice.
+- [ ] Inventory the current validator and high-risk rule families first.
+- [ ] Pick one concrete uncovered or failing risk cluster per slice.
 - [ ] Write the failing validator/rule test before content or rule changes.
 - [ ] Preserve educational positioning and professional escalation language.
 - [ ] Run content validation and the Focused gate after each cluster.
 
 ```powershell
 flutter test test/quality/content_validation_test.dart --reporter compact
-.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused -FocusedTests test/quality/content_validation_test.dart
 ```
 
 ## Phase 5: Phone Accessibility, Visual Quality, And Motion
 
-Use Figma pages 02 through 11 as the current visual target and gap register.
-Tablet evidence is not part of this phase.
+Use current July phone screenshots and repo assets as defect authority. Figma
+pages 02 through 11 are optional downstream context. The March visual asset
+audit is historical evidence, not current defect authority. Tablet evidence is
+not part of this phase.
 
 **Inspect:**
 
@@ -313,10 +335,12 @@ Tablet evidence is not part of this phase.
 
 **Per-cluster checks:** contrast, 48dp targets, semantics, large text, reduced
 motion, non-colour-only state, clipping, asset quality, and stable selective
-goldens. Add motion or haptics only when it clarifies feedback.
+goldens. Fix concrete failures only. There is no mandatory asset-replacement or
+new-animation quota; add a golden, asset, motion, or haptic only when current
+evidence proves it is useful.
 
 ```powershell
-.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual -FocusedTests test/quality/visual_baseline_manifest_test.dart
 ```
 
 ## Phase 6: Phone Performance
@@ -343,12 +367,15 @@ flutter test test/utils/performance_targets_test.dart --reporter compact
 
 - [ ] Confirm every higher phone ledger row is closed, accepted, or explicitly
   parked.
-- [ ] Confirm the Figma state matrix matches the ledger.
+- [ ] Confirm current phone screenshots, the baseline manifest, and the ledger
+  agree; optional Figma context must not override them.
 - [ ] Run Full, AndroidPrep, content validation, visual baseline, and product
   truth checks from clean `main`.
 - [ ] Recheck phone routes/states affected since the atlas baseline.
 - [ ] Write the final local phone QA note with commit, gates, Android evidence,
   accepted limits, and parked work.
+- [ ] Confirm no known current phone defect is missing from the ledger or final
+  QA note.
 - [ ] Do not start store, deploy, cloud, provider, premium, tablet, or iOS work
   from the phone release-candidate checkpoint.
 
@@ -362,25 +389,23 @@ Every implementation slice must:
 4. Run the smallest focused proof, then the ladder-required gate.
 5. Update `ACTIVE_HANDOFF.md` and `SLICE_LOG.md`.
 6. Update the ledger/Finish Map only when status genuinely changes.
-7. Fast-forward merge, rerun required clean-main proof, push, and remove the
-   temporary branch.
+7. Fast-forward merge, prove tested-tree identity, push, and remove the safely
+   merged temporary branch.
 8. Leave `git status --short -uall` clean and `main...origin/main` at `0 0`.
 
-## Figma Synchronization Contract
+## Visual Synchronization Contract
 
-- Repo truth changes first; Figma status changes after verified merge.
+- Repo truth changes first; any optional Figma status changes after verified
+  merge and never replace repo authority.
 - Keep current screenshots; do not replace evidence with speculative mockups.
 - Mark a state `Verified` only after the corresponding repo proof exists.
 - Mark accepted product limits explicitly rather than deleting the gap.
 - Keep tablet and external lanes on the parked page until the user reopens
   them.
 
-## First Product Slice After Workflow Setup And Explicit Launch
+## Next Manual Epoch
 
-Product work remains blocked until the autonomous workflow setup, rehearsal,
-Task 13 activation, and explicit launch readiness all pass. Automatic product
-successor creation is disabled during bootstrap.
-
-After explicit launch, start with a fresh read-only `DCL-DR-001` restore matrix
-audit using Task 1.1. Implement only if that audit proves one specific current
-false-success, rollback, cleanup, or failure-feedback gap.
+After E0 is clean, pushed, and aligned, open a fresh manual `DCL-DR-001` epoch
+and perform Task 1.1 as an ordered read-only restore matrix audit. Implement
+only if that audit proves one specific current false-success, rollback,
+cleanup, or failure-feedback gap. Do not create or start that epoch from E0.

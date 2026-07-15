@@ -1,18 +1,20 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; product development paused
+Status: manual lean workflow; E0 roadmap authority locked; product paused
 Updated: 2026-07-15
-Maintenance epoch: `WF-2026-07-15-019`
+Documentation epoch: `E0-2026-07-15-020`
+Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
 
 - Repository authority is local `main`; verify branch, tree, cleanliness, and
   `main...origin/main` live at startup.
-- This maintenance epoch stops the autonomous chain, streamlines local gates,
-  archives the former workflow context, and adopts lean manual epochs.
+- E0 locks the seven ordered phone phases and finite done conditions across the
+  completion program, ledger, Finish Map, forecast, performance, and visual
+  baseline authorities.
 - No Flutter application API, persisted-data schema, dependency, UI, emulator,
   account, cloud, or release behavior changed.
-- Product work remains paused until this maintenance epoch is clean, pushed,
+- Product work remains paused until E0 is clean, pushed,
   aligned, and reduced to one worktree.
 
 ## Frozen autonomy
@@ -29,6 +31,8 @@ Maintenance epoch: `WF-2026-07-15-019`
 - Claim, launch, budget, closeout, and successor machinery is retained only for
   historical/recovery evidence. It is outside routine startup and gates.
 - Reactivation requires a new explicit user request and reconciliation plan.
+- Frozen material cannot select, reorder, authorize, charge, resume, or hand
+  off any completion phase.
 
 Never create an automatic successor task.
 
@@ -38,8 +42,18 @@ Never create an automatic successor task.
 - `DCL-DR-001` remains `open`, was not claimed, and is unstarted.
 - Its first action is an ordered read-only restore-matrix audit. Implement only
   if that audit proves one specific current gap.
-- The closure ledger and Finish Map remain the authority for product status;
-  read them only when selecting or updating a directly relevant product row.
+- The locked completion program is the only ordered phase authority; the
+  closure ledger owns row state/done conditions and the Finish Map owns category
+  status. Read them only for the directly relevant row.
+- `DCL-DR-003` is verification-first until a current source/test inventory
+  proves one concrete gap.
+- The current 82 lessons, 75+ species, and 40+ plants are sufficient for phone
+  completion. Only audited defects or validator failures require more content.
+- Visual and motion work has no asset-replacement or new-animation quota.
+  Current screenshot, accessibility, reduced-motion, and haptic-preference
+  defects govern.
+- Fish ID and AI Compatibility each have a known unconfirmed AI-history
+  persistence gap and require separate future single-slice epochs.
 
 ## Release and external truth
 
@@ -50,6 +64,9 @@ Never create an automatic successor task.
   force-push without an explicit recovery plan and user authorization.
 - Public legal-page availability and other account-side release checks remain
   external/user-gated. Do not infer readiness from local gates.
+- Tablet, keyed-AI seed, providers, premium, store/deploy, public release,
+  cloud/accounts, signing, legal hosting, public-history recovery, and iOS all
+  remain parked outside the phone roadmap.
 
 ## Routine startup
 
@@ -62,15 +79,15 @@ when the chosen task directly requires them.
 - Focused and Visual gates require explicit affected test paths.
 - Product-code epochs get one Full gate on their final settled tree.
 - Docs-only epochs get one Docs gate and no Full gate.
-- `WF-2026-07-15-019` changes the Full-gate implementation, so its settled
-  final tree requires one Full gate before landing.
 - After an identical fast-forward/push, compare tree IDs and Git alignment; do
-  not run the same Full gate again.
+  not rerun an identical gate.
 
 ## Hard pause
 
-Stop after `WF-2026-07-15-019` is clean, pushed, aligned, and reduced to one
-worktree. Do not begin `DCL-DR-001` in the maintenance epoch.
+Stop after E0 is clean, pushed, aligned, and reduced to one worktree. Do not
+begin `DCL-DR-001` in this documentation epoch and do not create a successor
+task.
 
-Next manual action: open a fresh development task for the read-only
-`DCL-DR-001` restore-matrix audit.
+Next manual action: open a fresh manual `DCL-DR-001` task and perform the
+ordered read-only restore-matrix audit; implement only if it proves one specific
+current false-success, rollback, cleanup, or failure-feedback gap.

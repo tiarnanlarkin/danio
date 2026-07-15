@@ -271,6 +271,128 @@ void main() {
     ]);
   });
 
+  test('E0 roadmap authority lock is finite and cannot revive old workflow', () {
+    const marker = 'danio-completion-roadmap-authority-lock-2026-07-15/1';
+    const authorityPaths = [
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      'docs/agent/FINISH_MAP.md',
+      'docs/agent/COMPLETE_LOCAL_FORECAST.md',
+      'docs/agent/plans/'
+          '2026-07-11-phone-complete-local-completion-program.md',
+      'docs/agent/PERFORMANCE_TARGETS.md',
+      'docs/design/BASELINES.md',
+      'docs/agent/ACTIVE_HANDOFF.md',
+      'docs/agent/SLICE_LOG.md',
+    ];
+    final authorityText = authorityPaths.map(_source).join('\n');
+    for (final path in authorityPaths) {
+      expect(_source(path), contains(marker), reason: path);
+    }
+
+    final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md');
+    final rows = [
+      ..._markdownRows(ledger, 'Active Findings'),
+      ..._markdownRows(ledger, 'Closed, Accepted, Or Superseded Findings'),
+    ];
+    for (final id in {
+      'DCL-DR-003',
+      'DCL-P1-005',
+      'DCL-P1-006',
+      'DCL-VIS-001',
+      'DCL-VIS-002',
+      'DCL-MOTION-001',
+    }) {
+      expect(
+        rows.singleWhere((row) => row['ID'] == id)['Disposition'],
+        '`VERIFY_LOCALLY`',
+        reason: '$id must start from current proof, not a work quota',
+      );
+    }
+    final aiRow = rows
+        .singleWhere((row) => row['ID'] == 'DCL-AI-001')
+        .values
+        .join(' ');
+    expect(aiRow, contains('Fish ID'));
+    expect(aiRow, contains('AI Compatibility'));
+    expect(aiRow, contains('separate future single-slice epochs'));
+
+    final program = _source(
+      'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
+    );
+    final doneRows = _markdownRows(program, 'Finite Phone Done Conditions');
+    expect(
+      doneRows.map((row) => row['Area']),
+      equals([
+        'Learning',
+        'Species and plants',
+        'Guided tools and timeline',
+        'Content and rules',
+        'Accessibility',
+        'Visual assets and regression',
+        'Motion and haptics',
+        'Performance',
+        'Final acceptance',
+      ]),
+    );
+    _expectContainsAll(
+      'docs/agent/plans/'
+      '2026-07-11-phone-complete-local-completion-program.md',
+      [
+        '82 lessons',
+        '75+ species',
+        '40+ plants',
+        'no mandatory asset-replacement or new-animation quota',
+        'keyed-AI seed',
+        'signing',
+        'legal hosting',
+        'public-history recovery',
+      ],
+    );
+    for (final staleWorkflowText in [
+      'Task 13',
+      'explicit launch',
+      'autonomous workflow setup',
+      'rerun required clean-main proof',
+    ]) {
+      expect(program, isNot(contains(staleWorkflowText)));
+    }
+
+    final profileLines = authorityText
+        .split('\n')
+        .where(
+          (line) =>
+              line.contains('-Profile Focused') ||
+              line.contains('-Profile Visual'),
+        );
+    for (final line in profileLines) {
+      expect(
+        line,
+        contains('-FocusedTests'),
+        reason: 'Focused and Visual examples require explicit paths: $line',
+      );
+    }
+
+    final performance = _source('docs/agent/PERFORMANCE_TARGETS.md');
+    expect(performance, contains('phone-only local completion boundary'));
+    expect(performance, isNot(contains('Android tablet second')));
+    expect(performance, isNot(contains('Firebase Test Lab')));
+
+    final baselines = _source('docs/design/BASELINES.md');
+    expect(
+      baselines,
+      contains(
+        'docs/qa/screenshots/2026-07-04/'
+        'cl-qa-001-phone-whole-app-map',
+      ),
+    );
+    expect(baselines, isNot(contains('2026-05-18')));
+    expect(authorityText, contains('March visual asset audit'));
+    expect(
+      authorityText,
+      contains('historical evidence, not current defect authority'),
+    );
+  });
+
   test('product authority stays canonical while autonomy is frozen', () {
     const parkedIds = {
       'DCL-TAB-001',
@@ -394,7 +516,7 @@ void main() {
       _normalizedLedgerIds(phaseRows.last['Ledger rows']!),
       'DCL-RC-001',
     );
-    expect(program, contains('Current execution note - WF-2026-07-15-019'));
+    expect(program, contains('Roadmap authority lock - E0'));
     expect(program, contains('DCL-DR-001'));
     expect(program, contains('next manual task'));
     expect(program, contains('open'));

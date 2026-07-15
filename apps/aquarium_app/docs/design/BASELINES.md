@@ -1,7 +1,15 @@
 # Design Baselines
 
+Authority lock: `danio-completion-roadmap-authority-lock-2026-07-15/1`
+
 This file defines Danio's small baseline set for local visual work. Use it to
 avoid broad, unfocused screenshot capture.
+
+Current July phone screenshots and current repo assets govern visual defects.
+The March visual asset audit is historical evidence, not current defect
+authority. There is no asset-replacement, screenshot, golden, or new-animation
+quota; add or replace evidence only for a concrete current defect or changed
+high-risk surface.
 
 ## Baseline Surfaces
 
@@ -9,13 +17,13 @@ Capture no more than these eight app surfaces for a broad visual pass:
 
 | Surface | State | Evidence target |
 | --- | --- | --- |
-| Welcome/onboarding | Fresh install | `docs/screenshots/01_welcome.png` or new local capture |
-| Home/tank dashboard | Post-onboarding local tank | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-tank.png` |
-| Learn | Lesson list or detail | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-learn.png` |
-| Practice | Weak-spots/session state | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-practice.png` |
-| Smart Hub | Local useful guidance without AI | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-smart.png` |
-| Workshop | Calculator hub or selected tool | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-workshop.png` |
-| Preferences | Privacy/data controls | `docs/qa/screenshots/whole-app-map-2026-05-18/post-fix/final-release-preferences.png` |
+| Welcome/onboarding | Fresh install | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-86-welcome.png` |
+| Home/tank dashboard | Post-onboarding local tank | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-03-tank-root.png` |
+| Learn | Lesson list or detail | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-01-learn-root.png` |
+| Practice | Weak-spots/session state | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-02-practice-root.png` |
+| Smart Hub | Local useful guidance without AI | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-04b-smart-root-after-dock-fix.png` |
+| Workshop | Calculator hub or selected tool | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-06-workshop-root.png` |
+| Preferences | Privacy/data controls | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-07-preferences-root.png` |
 | Golden widgets | MC card and empty room scene | `test/golden_tests/` local golden runs |
 
 For focused UI work, capture only the changed surface plus one adjacent
@@ -37,6 +45,6 @@ task intentionally reviews visual output.
 
 ## Current Baseline Status
 
-Initial baseline manifest added on 2026-06-13. Existing committed screenshots
-and local golden-test harnesses are the baseline; no fresh device capture was
-performed in this setup slice.
+The baseline manifest now points at the current 2026-07-04 phone map plus the
+local golden-test harnesses. Refresh only a changed surface or one whose current
+defect audit requires new evidence.

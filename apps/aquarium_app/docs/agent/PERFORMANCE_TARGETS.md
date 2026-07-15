@@ -1,16 +1,18 @@
 # Danio Performance Targets
 
-These are the complete-local performance targets for Android phone and tablet.
-Use profile or release evidence for final judgement; debug mode is useful for
+Authority lock: `danio-completion-roadmap-authority-lock-2026-07-15/1`
+
+These are the phone-only local completion boundary performance targets. Use
+local profile or release evidence for final judgement; debug mode is useful for
 development signals but is not the final performance bar.
 
 ## Target Device Class
 
 - Mid-range Android phone first.
-- Android tablet second, with the same interaction targets unless a tablet-only
-  layout requires extra evidence.
-- Local emulator evidence is acceptable for early detection, but physical-device
-  or Firebase Test Lab evidence is preferred before final release-readiness.
+- Measure on the locally owned Danio Android phone target. Local emulator
+  evidence is acceptable when that is the owned target.
+- Tablet performance remains parked under `DCL-TAB-001`; no tablet or hosted
+  device-lab evidence is required for phone complete-local.
 
 ## Budgets
 
@@ -38,6 +40,20 @@ together if a target changes.
 5. Record only useful evidence under `docs/qa/screenshots/...` or the relevant
    QA notes; do not commit noisy raw logs.
 6. Run the documented local gate before committing product behavior.
+
+Focused performance-target example:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused -FocusedTests test/utils/performance_targets_test.dart
+```
+
+## Finite Completion Rule
+
+`DCL-PERF-001` closes when cold start, warm resume, tab switching, tank
+animation, representative scrolling, and local image first paint are measured
+on the owned Android phone target and meet these budgets, or every reproducible
+miss is fixed and remeasured. Unclear device ownership leaves the row open; it
+does not authorize tablet, cloud, or account-backed measurement.
 
 Performance work does not replace correctness, accessibility, visual QA, or data
 resilience checks. It is an additional completion lane.
