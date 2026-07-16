@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-009`
-Marker: `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-010`
+Marker: `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -50,9 +50,12 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   malformed file remains corrupted and blocks empty-data reads after retry,
   while a schema-v2 repair remains blocked until `retryLoad`, then loads without
   rewriting the repair or creating another corruption copy.
-- No product code, persisted-data schema, provider, dependency, deletion
-  behavior, emulator, account, cloud, or release configuration changed in F3.
-  No later Phase 1 row was selected.
+- `DCL-DR-002-F4` is locally verified with no current product gap under marker
+  `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`: both the
+  explicit Cancel action and system back dismiss the destructive dialog with
+  zero recovery calls, provider refreshes, state changes, or success feedback.
+- F4 changed no product code, schema, provider, dependency, deletion behavior,
+  emulator, account, cloud, or release configuration; no later row was selected.
 
 ## Frozen autonomy
 
@@ -73,10 +76,9 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 Never create an automatic successor task.
 
-The current user explicitly authorized continued manual roadmap execution in
-this task until the app is complete, stopping only when user input is genuinely
-required. That permission does not reactivate, charge, or alter the retained
-frozen-autonomy state and does not authorize automatic successor tasks.
+The user authorized continued manual roadmap execution in this task until the
+app is complete, stopping only when genuinely needed. This does not reactivate,
+charge, or alter frozen autonomy or authorize automatic successor tasks.
 
 ## Product authority
 
@@ -85,13 +87,13 @@ frozen-autonomy state and does not authorize automatic successor tasks.
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
 - `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed, and `DCL-DR-002-F3` is locally verified under their recorded markers:
-  both storage error states expose honest recovery actions, only a successfully
-  created corrupt-file copy is advertised, and real-file retry cannot normalize
-  unchanged corruption to empty success.
-- The next matrix path is start-fresh cancel/back zero-clear evidence. Continue
-  it only under marker
-  `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1` after this F3
+  fixed, and `DCL-DR-002-F3` and `DCL-DR-002-F4` are locally verified under
+  their recorded markers: both storage error states expose honest recovery
+  actions, only a real copy is advertised, retry cannot normalize unchanged
+  corruption to empty success, and cancellation cannot reach destructive work.
+- The next matrix path is confirmed start-fresh scoped-deletion evidence.
+  Continue it only under marker
+  `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1` after this F4
   checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -137,10 +139,12 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F3 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F4` under marker
-`danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`. Prove cancelling
-or backing out of the destructive start-fresh dialog performs no service clear,
-file deletion, provider refresh, or success feedback. Do not bundle confirmed
-deletion or recovery failure, and do not start `DCL-DR-003`, `DCL-DR-004`, or a
-later phone phase while `DCL-DR-002` remains open.
+After this F4 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F5` under marker
+`danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`. Use a real
+temporary local-storage directory to prove confirmed recovery deletes only the
+corrupt main file, preserves its recovery copy and unrelated siblings, clears
+the service maps, and reports healthy empty success only after deletion. Do not
+bundle recovery failure or first-run/preference evidence, and do not start
+`DCL-DR-003`, `DCL-DR-004`, or a later phone phase while `DCL-DR-002` remains
+open.

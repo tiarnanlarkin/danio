@@ -257,11 +257,13 @@ void main() {
       'DCL-DR-002-F1',
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
-      'DR-2026-07-16-009',
+      'DCL-DR-002-F4',
+      'DR-2026-07-16-010',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -295,6 +297,10 @@ void main() {
         'unchanged malformed JSON retry stays corrupted and blocks empty success',
         'repaired malformed JSON succeeds only through retry without rewriting repair',
         'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
+        'DCL-DR-002-F4',
+        'canceling start fresh preserves corrupted storage and provider state',
+        'system back dismisses start fresh without recovery side effects',
+        'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
         'Status: open',
       ],
     );
@@ -579,10 +585,17 @@ void main() {
     expect(program, contains('DCL-DR-002-F1'));
     expect(program, contains('DCL-DR-002-F2'));
     expect(program, contains('DCL-DR-002-F3'));
+    expect(program, contains('DCL-DR-002-F4'));
     expect(
       program,
       contains(
         'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
+      ),
+    );
+    expect(
+      program,
+      contains(
+        'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
       ),
     );
     expect(
@@ -675,7 +688,10 @@ void main() {
         allOf(
           contains('DCL-DR-002-F1'),
           contains('DCL-DR-002-F2'),
-          contains('DCL-DR-002-F3'),
+          allOf(
+            contains('DCL-DR-002-F3'),
+            contains('DCL-DR-002-F4'),
+          ),
         ),
         contains('next manual'),
         allOf(
@@ -683,7 +699,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('start-fresh-cancel-back'),
+        contains('start-fresh-scoped-deletion'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -698,7 +714,10 @@ void main() {
         allOf(
           contains('DCL-DR-002-F1'),
           contains('DCL-DR-002-F2'),
-          contains('DCL-DR-002-F3'),
+          allOf(
+            contains('DCL-DR-002-F3'),
+            contains('DCL-DR-002-F4'),
+          ),
         ),
         contains('next manual'),
         allOf(
@@ -706,7 +725,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('start-fresh-cancel-back'),
+        contains('start-fresh-scoped-deletion'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -784,11 +803,13 @@ void main() {
       'DCL-DR-002-F1',
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
-      'DR-2026-07-16-009',
+      'DCL-DR-002-F4',
+      'DR-2026-07-16-010',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -809,6 +830,7 @@ void main() {
       'DR-2026-07-16-007',
       'DR-2026-07-16-008',
       'DR-2026-07-16-009',
+      'DR-2026-07-16-010',
       'DCL-DR-001',
       'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
@@ -821,6 +843,7 @@ void main() {
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
     ]);
   });
 }

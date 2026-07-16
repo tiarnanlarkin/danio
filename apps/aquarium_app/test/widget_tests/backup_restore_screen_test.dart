@@ -416,6 +416,7 @@ class _RecoverableStorageService
 
   int retryCount = 0;
   int recoverCount = 0;
+  int getAllTanksCount = 0;
 
   @override
   StorageState state = StorageState.corrupted;
@@ -449,7 +450,10 @@ class _RecoverableStorageService
   }
 
   @override
-  Future<List<Tank>> getAllTanks() async => _delegate.getAllTanks();
+  Future<List<Tank>> getAllTanks() async {
+    getAllTanksCount += 1;
+    return _delegate.getAllTanks();
+  }
 
   @override
   Future<Tank?> getTank(String id) => _delegate.getTank(id);
@@ -1105,6 +1109,67 @@ void main() {
           findsOneWidget,
         );
         expect(find.textContaining('keeps the recovery copy'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'canceling start fresh preserves corrupted storage and provider state',
+      (tester) async {
+        final storage = _RecoverableStorageService();
+        final originalError = storage.lastError;
+
+        await tester.pumpWidget(_wrap(storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(find.text('Start Fresh On This Device'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsOneWidget);
+        final readsBeforeCancel = storage.getAllTanksCount;
+
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsNothing);
+        expect(find.text('Local Data Needs Attention'), findsOneWidget);
+        expect(storage.recoverCount, 0);
+        expect(storage.retryCount, 0);
+        expect(storage.getAllTanksCount, readsBeforeCancel);
+        expect(storage.state, StorageState.corrupted);
+        expect(storage.lastError, same(originalError));
+        expect(find.text('Started fresh on this device.'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'system back dismisses start fresh without recovery side effects',
+      (tester) async {
+        final storage = _RecoverableStorageService();
+        final originalError = storage.lastError;
+
+        await tester.pumpWidget(_wrap(storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(find.text('Start Fresh On This Device'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsOneWidget);
+        final readsBeforeBack = storage.getAllTanksCount;
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsNothing);
+        expect(find.byType(BackupRestoreScreen), findsOneWidget);
+        expect(find.text('Local Data Needs Attention'), findsOneWidget);
+        expect(storage.recoverCount, 0);
+        expect(storage.retryCount, 0);
+        expect(storage.getAllTanksCount, readsBeforeBack);
+        expect(storage.state, StorageState.corrupted);
+        expect(storage.lastError, same(originalError));
+        expect(find.text('Started fresh on this device.'), findsNothing);
       },
     );
 

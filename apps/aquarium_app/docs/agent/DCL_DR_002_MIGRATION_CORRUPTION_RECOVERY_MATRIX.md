@@ -1,8 +1,8 @@
 # DCL-DR-002 Migration And Corruption Recovery Matrix
 
 Status: open; no known current product gap; executable-evidence gaps remain
-Latest epoch: `DR-2026-07-16-009`
-Latest marker: `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`
+Latest epoch: `DR-2026-07-16-010`
+Latest marker: `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`
 Authority base: `dbc12209b9401a485f751a967248532c0cf232da`
 
 ## Scope
@@ -27,7 +27,7 @@ signing, store, release, or iOS work.
 | Malformed or structurally corrupted local JSON | Parse or entity-structure failure attempts a timestamped recovery copy, stores `corrupted`, and rethrows instead of becoming empty-data success. A recovery path is now recorded only after the copy completes; the UI and destructive dialog distinguish copy success from failure. | `malformed JSON copy failure does not advertise recovery path`; `malformed JSON reports only a recovery copy that exists`; `corruption without recovery path never claims a copy exists`; `shows local storage recovery actions when data is corrupted` | Accounted for. F2 proves file-backed malformed JSON, failed-copy honesty, original-file preservation, successful-copy preservation, and conditional user copy. |
 | I/O failure propagation and user-visible retry | File I/O failures remain `ioError`; later reads rethrow until `retryLoad` resets and rereads. The recovery card now exposes that real retry for every service error while withholding start fresh unless the state is `corrupted`. | `load I/O errors stay in ioError instead of reporting empty success`; `I/O load error offers real retry without destructive start fresh` | Accounted for. `DCL-DR-002-F1` is locally fixed. |
 | Retry after corruption | `retryLoad` clears the cached state/maps and rereads disk. An unchanged real malformed file remains `corrupted` and getters rethrow instead of exposing cleared maps; a schema-v2 repair remains blocked until retry, then loads without rewriting the repair or adding another corruption copy. | `try again reloads local storage and hides recovery card`; `unchanged malformed JSON retry stays corrupted and blocks empty success`; `repaired malformed JSON succeeds only through retry without rewriting repair` | Accounted for. F3 adds direct real-file repaired-versus-still-malformed service evidence. |
-| Start-fresh cancel or back | The screen awaits an affirmative destructive dialog result before calling `recoverFromCorruption`. | No named cancel/back test. | Direct zero-clear evidence is missing. |
+| Start-fresh cancel or back | The screen awaits an affirmative destructive dialog result before calling `recoverFromCorruption`. Explicit Cancel returns false and system back returns null, so neither path can recover, refresh the tanks provider, change the error state, or show success. | `canceling start fresh preserves corrupted storage and provider state`; `system back dismisses start fresh without recovery side effects` | Accounted for. F4 directly proves both dismissal paths. |
 | Confirmed start fresh | After confirmation, the screen calls `recoverFromCorruption`; the service deletes the corrupt main file, clears local aquarium maps, and only then reports loaded/empty success. The confirmation now says a copy remains only when the service recorded one; otherwise it warns that no recovery copy will remain. | `start fresh confirms and clears corrupted local storage`; `corruption without recovery path never claims a copy exists` | Recovery-copy wording is accounted for. Actual scoped deletion still lacks direct service evidence. |
 | Start-fresh failure | The screen catches recovery failure, retains the service-owned error state, and reports that start fresh did not complete. | No named failure test. | Retryable failure/no-false-success evidence is missing. |
 
@@ -145,3 +145,35 @@ After a clean, pushed, aligned F3 checkpoint, continue only
   proves a current cancellation defect.
 - Do not bundle confirmed start-fresh deletion, start-fresh failure, preference
   preservation, legitimate-first-run evidence, or a later ledger row.
+
+## F4 Resolution
+
+- No current product-code gap was found. The destructive dialog returns false
+  for Cancel and null for system-back dismissal; the screen returns unless the
+  result is exactly true.
+- `canceling start fresh preserves corrupted storage and provider state` proves
+  the explicit Cancel action leaves recovery/retry counts at zero, preserves
+  the same corruption error/state, performs no additional tanks-provider read,
+  keeps the recovery card visible, and emits no start-fresh success feedback.
+- `system back dismisses start fresh without recovery side effects` proves the
+  same zero-side-effect boundary through the platform back route while keeping
+  the Backup & Restore screen mounted.
+- F4 changes tests and current controls only. `DCL-DR-002` remains open for
+  confirmed scoped deletion, recovery failure, preference preservation, and
+  legitimate-first-run executable evidence.
+
+## F5 Slice Boundary
+
+After a clean, pushed, aligned F4 checkpoint, continue only
+`DCL-DR-002-F5` under marker
+`danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`.
+
+- Use a real temporary local-storage directory with a corrupt main file, its
+  recovery copy, and unrelated sibling content.
+- Prove confirmed service recovery deletes only the corrupt main file, preserves
+  the recovery copy and unrelated siblings, clears all entity maps, and reports
+  healthy empty success only after deletion completes.
+- Inspect source first and change product code only if direct service evidence
+  proves a current scoped-deletion or false-success defect.
+- Do not bundle start-fresh failure, preference preservation, legitimate-first-
+  run evidence, or a later ledger row.
