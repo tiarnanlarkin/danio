@@ -3,16 +3,16 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-028`
+Current epoch: `DR-2026-07-16-029`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-thirteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+fourteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
 Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
-restore, make review-answer commits authoritative,
+restore, keep livestock bulk-move counts honest, make review-answer commits authoritative,
 and make lesson progress precede rewards with a real retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
@@ -69,7 +69,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; RED/GREEN `stale equipment service does not recreate deleted equipment` | `DCL-DR-003-F13` locally fixed: the durable equipment-ID check precedes all service writes, so a stale card cannot recreate equipment, mutate its task, add logs, or report success. Supported tank deletion atomically removes equipment/tasks, so the same preflight also rejects the settled parent-deletion state; no separate current parent-only path remains. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving` | Failure boundaries covered; ordinary success has no exact persistence assertion. |
-| Livestock move | `success feedback reports selected livestock count`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails` | Open: missing selected IDs are skipped while UI reports the original selected count. |
+| Livestock move | `success feedback reports selected livestock count`; RED/GREEN `bulk move reports actual count when a selected livestock id is missing`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails` | `DCL-DR-003-F15` locally fixed: the provider returns its successful move count and the screen reports that count, so a vanished selection cannot inflate success feedback while existing skip and rollback behavior remains. |
 | Livestock delete/expiry | `failed single removal expiry restores item with feedback`; `expired livestock removal does not log after parent tank deletion`; `expired bulk removal writes timeline logs` | Open: bulk expiry failure restores visibility without feedback; removal logs retain a deleted livestock reference. |
 
 ## Wishlist, Cost, Review, And Reward Paths
@@ -143,10 +143,14 @@ belongs to `DCL-DR-004` and is not selected here.
 14. `DCL-DR-003-F14` - Tasks Snooze rejects a stale task ID before its first
     write: fixed and focused GREEN in `DR-2026-07-16-028` under marker
     `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`.
-15. `DCL-DR-003-F15` - Livestock bulk move must report the actual moved count
-    when a selected ID disappears. Next marker:
+15. `DCL-DR-003-F15` - Livestock bulk move reports the actual moved count when
+    a selected ID disappears: fixed and focused GREEN in `DR-2026-07-16-029`
+    under marker
     `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`.
-16. Remaining livestock bulk, wishlist/shop stale-ID, and cross-store reward
+16. `DCL-DR-003-F16` - a failed bulk removal expiry must restore visibility
+    with user-facing failure feedback. Next marker:
+    `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`.
+17. Remaining removal-log relationship, wishlist/shop stale-ID, and cross-store reward
     boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or

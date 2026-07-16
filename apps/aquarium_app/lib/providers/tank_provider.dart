@@ -681,8 +681,8 @@ class TankActions {
     }
   }
 
-  /// Bulk move livestock to a different tank
-  Future<void> bulkMoveLivestock(
+  /// Bulk move livestock and return the number successfully moved.
+  Future<int> bulkMoveLivestock(
     List<String> livestockIds,
     String fromTankId,
     String toTankId,
@@ -724,6 +724,7 @@ class TankActions {
 
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
+      return movedOriginals.length;
     } catch (e, st) {
       for (final original in movedOriginals.reversed) {
         try {

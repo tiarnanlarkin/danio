@@ -1025,6 +1025,84 @@ void main() {
       expect(find.text('Moved 2 livestock to Bedroom Tank'), findsOneWidget);
       expect(find.text('Moved 0 livestock to Bedroom Tank'), findsNothing);
     });
+
+    testWidgets(
+      'bulk move reports actual count when a selected livestock id is missing',
+      (tester) async {
+        suppressAvatarError();
+        const sourceTankId = 'bulk-move-stale-source';
+        const targetTankId = 'bulk-move-stale-target';
+        const durableLivestockId = 'bulk-move-stale-neons';
+        const missingLivestockId = 'bulk-move-stale-corys';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(
+          _makeTank(id: sourceTankId, name: 'Living Room Tank'),
+        );
+        await storage.saveTank(
+          _makeTank(id: targetTankId, name: 'Bedroom Tank'),
+        );
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: durableLivestockId,
+            tankId: sourceTankId,
+            name: 'Neon Tetra',
+            count: 8,
+          ),
+        );
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: missingLivestockId,
+            tankId: sourceTankId,
+            name: 'Corydoras',
+            count: 5,
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: sourceTankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(
+          find.descendant(
+            of: find.byType(AppBar),
+            matching: find.byIcon(Icons.more_vert),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Select multiple'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Select All'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Move to Tank'));
+        await tester.pumpAndSettle();
+
+        await storage.deleteLivestock(missingLivestockId);
+        final bedroomTankTile = tester.widget<ListTile>(
+          find
+              .ancestor(
+                of: find.text('Bedroom Tank'),
+                matching: find.byType(ListTile),
+              )
+              .last,
+        );
+        expect(bedroomTankTile.onTap, isNotNull);
+        bedroomTankTile.onTap!.call();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(await storage.getLivestockForTank(sourceTankId), isEmpty);
+        expect(
+          (await storage.getLivestockForTank(
+            targetTankId,
+          )).map((livestock) => livestock.id),
+          [durableLivestockId],
+        );
+        expect(find.text('Moved 1 livestock to Bedroom Tank'), findsOneWidget);
+        expect(find.text('Moved 2 livestock to Bedroom Tank'), findsNothing);
+      },
+    );
   });
 
   group('LivestockScreen - bulk delete', () {

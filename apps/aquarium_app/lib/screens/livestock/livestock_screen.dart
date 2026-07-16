@@ -439,8 +439,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     try {
       final actions = ref.read(tankActionsProvider);
       final selectedIds = _selectedLivestockIds.toList();
-      final selectedCount = selectedIds.length;
-      await actions.bulkMoveLivestock(
+      final movedCount = await actions.bulkMoveLivestock(
         selectedIds,
         widget.tankId,
         selectedTank.id,
@@ -453,7 +452,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         });
         AppFeedback.showSuccess(
           context,
-          'Moved $selectedCount livestock to ${selectedTank.name}',
+          'Moved $movedCount livestock to ${selectedTank.name}',
         );
       }
     } catch (e, st) {
