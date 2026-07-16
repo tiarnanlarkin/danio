@@ -10,10 +10,10 @@
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
 > verified. `DCL-DR-002` remains open; `DCL-DR-002-F1` and `DCL-DR-002-F2`
-> are locally fixed, `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally
-> verified, and the next manual start-fresh failure proof is locked to
+> are locally fixed, `DCL-DR-002-F3` through `DCL-DR-002-F6` are locally
+> verified, and the next manual v0 preference-preservation proof is locked to
 > marker
-> `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Execution
+> `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -215,9 +215,13 @@ flutter test test/services/shared_preferences_backup_test.dart --reporter compac
   `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`: confirmed
   real-file recovery deletes only the corrupt main store, preserves recovery
   and unrelated sibling evidence, clears all maps, and then reports empty.
+- [x] Verify `DCL-DR-002-F6` under marker
+  `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`: failed recovery
+  retains its service error/card and retry actions without provider refresh or
+  success feedback, while accurate failure feedback appears.
 - [ ] Verify first-run migration, idempotence, failed version stamp, migrated
   v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
-- [ ] Confirm failure states never become empty-data success and start-fresh
+- [x] Confirm failure states never become empty-data success and start-fresh
   never runs without destructive confirmation.
 - [ ] Add RED/GREEN proof for each uncovered behavior.
 - [ ] Use owned Android phone walkthrough evidence only when widget/service
@@ -443,10 +447,10 @@ Every implementation slice must:
 ## Next Manual Epoch
 
 `DCL-DR-001` is closed after `DR-2026-07-16-006`. `DCL-DR-002` remains open
-after `DR-2026-07-16-011`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally verified. After
-this checkpoint is clean, pushed, and aligned, continue the next manual
-start-fresh failure proof under marker
-`danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Prove recovery
-failure remains retryable and cannot report success or refresh providers. Do not
-select Task 1.3, Task 1.4, or a later phase first.
+after `DR-2026-07-16-012`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
+fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F6` are locally verified. After
+this checkpoint is clean, pushed, and aligned, continue the next manual v0
+preference-preservation proof under marker
+`danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`. Prove every
+pre-existing value and primitive type survives the version stamp. Do not select
+Task 1.3, Task 1.4, or a later phase first.

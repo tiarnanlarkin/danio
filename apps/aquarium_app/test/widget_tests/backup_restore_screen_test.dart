@@ -417,6 +417,7 @@ class _RecoverableStorageService
   int retryCount = 0;
   int recoverCount = 0;
   int getAllTanksCount = 0;
+  Object? recoverFailure;
 
   @override
   StorageState state = StorageState.corrupted;
@@ -443,6 +444,10 @@ class _RecoverableStorageService
   @override
   Future<void> recoverFromCorruption() async {
     recoverCount += 1;
+    final failure = recoverFailure;
+    if (failure != null) {
+      throw failure;
+    }
     final tanks = await _delegate.getAllTanks();
     await _delegate.deleteAllTanks(tanks.map((tank) => tank.id).toList());
     state = StorageState.loaded;
@@ -1169,6 +1174,43 @@ void main() {
         expect(storage.getAllTanksCount, readsBeforeBack);
         expect(storage.state, StorageState.corrupted);
         expect(storage.lastError, same(originalError));
+        expect(find.text('Started fresh on this device.'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'failed start fresh retains recovery state without false success',
+      (tester) async {
+        final storage = _RecoverableStorageService()
+          ..recoverFailure = StateError('Simulated recovery failure');
+        final originalError = storage.lastError;
+
+        await tester.pumpWidget(_wrap(storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(find.text('Start Fresh On This Device'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsOneWidget);
+        final readsBeforeRecovery = storage.getAllTanksCount;
+
+        await tester.tap(find.text('Start Fresh'));
+        await tester.pumpAndSettle();
+
+        expect(storage.recoverCount, 1);
+        expect(storage.retryCount, 0);
+        expect(storage.getAllTanksCount, readsBeforeRecovery);
+        expect(storage.state, StorageState.corrupted);
+        expect(storage.lastError, same(originalError));
+        expect(find.text('Start Fresh On This Device?'), findsNothing);
+        expect(find.text('Local Data Needs Attention'), findsOneWidget);
+        expect(find.text('Try Again'), findsOneWidget);
+        expect(find.text('Start Fresh On This Device'), findsOneWidget);
+        expect(
+          find.text('Start fresh did not complete. Try again.'),
+          findsOneWidget,
+        );
         expect(find.text('Started fresh on this device.'), findsNothing);
       },
     );

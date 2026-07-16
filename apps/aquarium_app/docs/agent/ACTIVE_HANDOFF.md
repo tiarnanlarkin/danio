@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-011`
-Marker: `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-012`
+Marker: `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -41,7 +41,11 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`: real-file
   recovery deletes only the corrupt main store, preserves recovery/sibling
   evidence, clears all five entity maps, and only then exposes healthy emptiness.
-- F5 changed no product code, schema, provider, dependency, deletion behavior,
+- `DCL-DR-002-F6` is locally verified with no current product gap under marker
+  `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`: recovery failure
+  retains the service error/card and retry actions, performs no provider reread,
+  shows accurate failure feedback, and cannot show start-fresh success.
+- F6 changed no product code, schema, provider, dependency, deletion behavior,
   emulator, account, cloud, or release configuration; no later row was selected.
 
 ## Frozen autonomy
@@ -74,12 +78,12 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
 - `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally verified:
+  fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F6` are locally verified:
   retries and cancellation stay non-destructive, while confirmed recovery is
-  main-file scoped and cannot expose empty success before deletion.
-- The next matrix path is start-fresh failure/no-false-success evidence.
+  main-file scoped and failure cannot expose empty success or refresh providers.
+- The next matrix path is SharedPreferences v0-data preservation evidence.
   Continue it only under marker
-  `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1` after this F5
+  `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1` after this F6
   checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -125,10 +129,10 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F5 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F6` under marker
-`danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Force confirmed
-recovery to fail and prove the recovery error/card remains retryable with no
-provider refresh or false success. Do not bundle preference or first-run proof,
+After this F6 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F7` under marker
+`danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`. Prove a
+missing `_schemaVersion` stamps v1 while every existing preference value and
+primitive type remains unchanged. Do not bundle local-JSON first-run evidence,
 and do not start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while
 `DCL-DR-002` remains open.

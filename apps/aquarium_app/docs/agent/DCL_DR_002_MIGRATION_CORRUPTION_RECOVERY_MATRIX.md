@@ -1,8 +1,8 @@
 # DCL-DR-002 Migration And Corruption Recovery Matrix
 
 Status: open; no known current product gap; executable-evidence gaps remain
-Latest epoch: `DR-2026-07-16-011`
-Latest marker: `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`
+Latest epoch: `DR-2026-07-16-012`
+Latest marker: `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`
 Authority base: `dbc12209b9401a485f751a967248532c0cf232da`
 
 ## Scope
@@ -29,7 +29,7 @@ signing, store, release, or iOS work.
 | Retry after corruption | `retryLoad` clears the cached state/maps and rereads disk. An unchanged real malformed file remains `corrupted` and getters rethrow instead of exposing cleared maps; a schema-v2 repair remains blocked until retry, then loads without rewriting the repair or adding another corruption copy. | `try again reloads local storage and hides recovery card`; `unchanged malformed JSON retry stays corrupted and blocks empty success`; `repaired malformed JSON succeeds only through retry without rewriting repair` | Accounted for. F3 adds direct real-file repaired-versus-still-malformed service evidence. |
 | Start-fresh cancel or back | The screen awaits an affirmative destructive dialog result before calling `recoverFromCorruption`. Explicit Cancel returns false and system back returns null, so neither path can recover, refresh the tanks provider, change the error state, or show success. | `canceling start fresh preserves corrupted storage and provider state`; `system back dismisses start fresh without recovery side effects` | Accounted for. F4 directly proves both dismissal paths. |
 | Confirmed start fresh | After confirmation, the screen calls `recoverFromCorruption`; the service deletes the corrupt main file, clears local aquarium maps, and only then reports loaded/empty success. The confirmation now says a copy remains only when the service recorded one; otherwise it warns that no recovery copy will remain. | `start fresh confirms and clears corrupted local storage`; `corruption without recovery path never claims a copy exists`; `start fresh deletes only corrupt main and exposes healthy empty storage` | Accounted for. F5 directly proves scoped deletion, recovery/sibling preservation, five-map clearing, pre-delete read blocking, and healthy empty state after deletion. |
-| Start-fresh failure | The screen catches recovery failure, retains the service-owned error state, and reports that start fresh did not complete. | No named failure test. | Retryable failure/no-false-success evidence is missing. |
+| Start-fresh failure | The screen catches recovery failure, retains the service-owned error state, and reports that start fresh did not complete. Provider invalidation and success feedback remain below the awaited recovery call. | `failed start fresh retains recovery state without false success` | Accounted for. F6 proves the original error/card and actions remain, provider reads do not increase, the confirmation closes, accurate failure feedback appears, and success is absent. |
 
 ## F1 Slice Boundary Before Code
 
@@ -208,3 +208,29 @@ After a clean, pushed, aligned F5 checkpoint, continue only
   evidence proves a current error-retention or false-success defect.
 - Do not bundle preference preservation, legitimate-first-run evidence, or a
   later ledger row.
+
+## F6 Resolution
+
+- No current product-code gap was found. The screen awaits service recovery;
+  provider invalidation and success feedback execute only afterward. A thrown
+  recovery jumps directly to the catch, which never mutates service error state.
+- `failed start fresh retains recovery state without false success` proves one
+  attempted recovery leaves the original corruption state/error and recovery
+  card/actions intact, performs no retry or tanks-provider reread, closes the
+  confirmation, shows accurate retryable failure feedback, and shows no success.
+- F6 changes tests and current controls only. `DCL-DR-002` remains open for v0
+  preference preservation and legitimate local-JSON first-run evidence.
+
+## F7 Slice Boundary
+
+After a clean, pushed, aligned F6 checkpoint, continue only
+`DCL-DR-002-F7` under marker
+`danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`.
+
+- Seed representative SharedPreferences values without `_schemaVersion`, run
+  migration, and prove version 1 is stamped while every existing key, value,
+  and primitive type remains unchanged.
+- Inspect source first and change product code only if direct migration evidence
+  proves a current mutation or false-success defect.
+- Do not bundle legitimate local-JSON first-run/empty-file evidence or a later
+  ledger row.
