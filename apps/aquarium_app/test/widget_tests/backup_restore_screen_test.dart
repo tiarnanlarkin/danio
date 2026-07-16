@@ -1073,6 +1073,41 @@ void main() {
       expect(find.text('Start Fresh On This Device'), findsOneWidget);
     });
 
+    testWidgets(
+      'corruption without recovery path never claims a copy exists',
+      (tester) async {
+        final storage = _RecoverableStorageService()
+          ..lastError = StorageError(
+            state: StorageState.corrupted,
+            message: 'JSON parsing failed after backup copy failed',
+            timestamp: DateTime.utc(2026, 1, 1),
+          );
+
+        await tester.pumpWidget(_wrap(storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Local Data Needs Attention'), findsOneWidget);
+        expect(
+          find.textContaining('could not make a recovery copy'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('kept a recovery copy'), findsNothing);
+        expect(find.text('Try Again'), findsOneWidget);
+        expect(find.text('Start Fresh On This Device'), findsOneWidget);
+
+        await tester.tap(find.text('Start Fresh On This Device'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Start Fresh On This Device?'), findsOneWidget);
+        expect(
+          find.textContaining('no recovery copy will remain'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('keeps the recovery copy'), findsNothing);
+      },
+    );
+
     testWidgets('start fresh confirms and clears corrupted local storage', (
       tester,
     ) async {
@@ -1087,6 +1122,10 @@ void main() {
 
       expect(find.text('Start Fresh On This Device?'), findsOneWidget);
       expect(find.text('Start Fresh'), findsOneWidget);
+      expect(
+        find.textContaining('keeps the recovery copy'),
+        findsOneWidget,
+      );
 
       await tester.tap(find.text('Start Fresh'));
       await tester.pumpAndSettle();

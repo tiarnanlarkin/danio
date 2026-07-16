@@ -1,8 +1,8 @@
 # DCL-DR-002 Migration And Corruption Recovery Matrix
 
-Status: open; one current product gap and several executable-evidence gaps
-Latest epoch: `DR-2026-07-16-007`
-Latest marker: `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`
+Status: open; no known current product gap; executable-evidence gaps remain
+Latest epoch: `DR-2026-07-16-008`
+Latest marker: `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`
 Authority base: `dbc12209b9401a485f751a967248532c0cf232da`
 
 ## Scope
@@ -24,11 +24,11 @@ signing, store, release, or iOS work.
 | SharedPreferences failed version stamp | `_stampVersion` throws when `setInt` returns false, so the caller cannot observe migrated success. | `surfaces failed schema version stamp writes` | Accounted for; the version remains absent. |
 | Unversioned local JSON migration | v0 JSON is copied, stamped through v1 and v2, parsed with safe defaults, then atomically persisted before loaded success. | `loads and persists migrated v0 local JSON data` | Accounted for; the legacy tank and current defaults survive and version 2 reaches disk. |
 | Failed local-JSON migration stamp | A failed migrated-payload write clears the just-loaded maps, records `ioError`, and throws `StorageMigrationPersistenceException`. | `failed migration stamp write does not report loaded success` | Accounted for; the source file remains unstamped and no loaded success is exposed. |
-| Malformed or structurally corrupted local JSON | Parse or entity-structure failure attempts a timestamped recovery copy, stores `corrupted`, and rethrows instead of becoming empty-data success. Copy failure is best effort, but the current error still records the intended path and the UI unconditionally says the copy exists. | Exception value tests and `shows local storage recovery actions when data is corrupted` use constructed/fake errors only. | Current F2 product gap: backup-copy failure is indistinguishable from success before destructive start fresh. Direct file-backed corruption and blocked-read evidence is also missing. |
+| Malformed or structurally corrupted local JSON | Parse or entity-structure failure attempts a timestamped recovery copy, stores `corrupted`, and rethrows instead of becoming empty-data success. A recovery path is now recorded only after the copy completes; the UI and destructive dialog distinguish copy success from failure. | `malformed JSON copy failure does not advertise recovery path`; `malformed JSON reports only a recovery copy that exists`; `corruption without recovery path never claims a copy exists`; `shows local storage recovery actions when data is corrupted` | Accounted for. F2 proves file-backed malformed JSON, failed-copy honesty, original-file preservation, successful-copy preservation, and conditional user copy. |
 | I/O failure propagation and user-visible retry | File I/O failures remain `ioError`; later reads rethrow until `retryLoad` resets and rereads. The recovery card now exposes that real retry for every service error while withholding start fresh unless the state is `corrupted`. | `load I/O errors stay in ioError instead of reporting empty success`; `I/O load error offers real retry without destructive start fresh` | Accounted for. `DCL-DR-002-F1` is locally fixed. |
 | Retry after corruption | `retryLoad` clears the cached state/maps, rereads disk, and preserves an error if the reread still fails. | `try again reloads local storage and hides recovery card` proves the screen call with a successful fake. | The corrupted-file repair/reread path still lacks direct service evidence. |
 | Start-fresh cancel or back | The screen awaits an affirmative destructive dialog result before calling `recoverFromCorruption`. | No named cancel/back test. | Direct zero-clear evidence is missing. |
-| Confirmed start fresh | After confirmation, the screen calls `recoverFromCorruption`; the service deletes the corrupt main file, clears local aquarium maps, and only then reports loaded/empty success. Current confirmation copy says a recovery copy exists even when the preceding best-effort copy failed. | `start fresh confirms and clears corrupted local storage` proves one call and the successful screen state with a fake service. | Recovery-copy honesty is the selected F2 product gap. Actual scoped deletion still lacks direct service evidence. |
+| Confirmed start fresh | After confirmation, the screen calls `recoverFromCorruption`; the service deletes the corrupt main file, clears local aquarium maps, and only then reports loaded/empty success. The confirmation now says a copy remains only when the service recorded one; otherwise it warns that no recovery copy will remain. | `start fresh confirms and clears corrupted local storage`; `corruption without recovery path never claims a copy exists` | Recovery-copy wording is accounted for. Actual scoped deletion still lacks direct service evidence. |
 | Start-fresh failure | The screen catches recovery failure, retains the service-owned error state, and reports that start fresh did not complete. | No named failure test. | Retryable failure/no-false-success evidence is missing. |
 
 ## F1 Slice Boundary Before Code
@@ -67,7 +67,7 @@ No second product or executable-evidence gap is selected in this epoch.
   settled-diff review finds no blocking issue, and the final Full gate passes.
 - `DCL-DR-002` remains open for the executable-evidence gaps in this matrix.
 
-## F2 Slice Boundary
+## F2 Slice Boundary Before Code
 
 After a clean, pushed, aligned F1 checkpoint, continue only
 `DCL-DR-002-F2` under marker
@@ -81,3 +81,36 @@ After a clean, pushed, aligned F1 checkpoint, continue only
   start fresh; successful recovery-copy behavior must remain unchanged.
 - Do not bundle repaired retry, start-fresh cancellation/failure, scoped
   deletion, preference preservation, or legitimate-first-run evidence.
+
+## F2 Resolution And Verification
+
+- RED: the forced `File.copy` failure still produced a non-null
+  `corruptedFilePath`, and the recovery card could not find the required
+  no-copy warning.
+- GREEN: the shared corruption-backup helper returns a path only after the copy
+  completes. Both corruption handlers therefore expose null after copy failure,
+  while the malformed original remains unchanged until explicit recovery.
+- The recovery card and destructive confirmation now use that verified path.
+  Copy-success wording and the destructive action remain unchanged when a real
+  copy exists; copy failure receives an explicit permanent-clear warning.
+- `malformed JSON reports only a recovery copy that exists` proves the copied
+  bytes exist and the original bytes remain unchanged on the success path.
+- All 45 affected service/widget tests pass, the current-doc guard passes, the
+  Focused profile including `flutter analyze` passes, an independent settled-
+  diff review finds no blocking issue, and the final Full gate passes.
+- `DCL-DR-002` remains open for the executable-evidence gaps in this matrix.
+
+## F3 Slice Boundary
+
+After a clean, pushed, aligned F2 checkpoint, continue only
+`DCL-DR-002-F3` under marker
+`danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`.
+
+- Begin with real malformed local JSON and prove a repaired file succeeds only
+  through `retryLoad`, while an unchanged malformed reread remains corrupted.
+- Prove the retry performs no destructive write and cannot normalize a failed
+  reread to empty-data success.
+- Inspect source first and change product code only if direct service evidence
+  proves a current retry defect.
+- Do not bundle start-fresh cancel/failure/deletion, preference preservation,
+  legitimate-first-run evidence, or a later ledger row.

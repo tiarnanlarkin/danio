@@ -136,6 +136,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (activeRecovery != null) ...[
         _LocalStorageRecoveryCard(
           isRecovering: _isRecoveringLocalData,
+          hasRecoveryCopy:
+              activeRecovery.lastError?.corruptedFilePath?.trim().isNotEmpty ??
+              false,
           onRetry: () => _retryLocalStorageRecovery(activeRecovery),
           onStartFresh: activeRecovery.state == StorageState.corrupted
               ? () => _confirmStartFreshLocalStorage(activeRecovery)
@@ -435,11 +438,15 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     StorageRecoveryService storageRecovery,
   ) async {
     if (_isRecoveringLocalData) return;
+    final hasRecoveryCopy =
+        storageRecovery.lastError?.corruptedFilePath?.trim().isNotEmpty ??
+        false;
     final confirmed = await showAppDestructiveDialog(
       context: context,
       title: 'Start Fresh On This Device?',
-      message:
-          'This clears the damaged local aquarium data file on this device. Danio keeps the recovery copy it made before stopping the load.',
+      message: hasRecoveryCopy
+          ? 'This clears the damaged local aquarium data file on this device. Danio keeps the recovery copy it made before stopping the load.'
+          : 'This permanently clears the damaged local aquarium data file on this device. Danio could not make a recovery copy, so no recovery copy will remain.',
       destructiveLabel: 'Start Fresh',
     );
 
@@ -860,11 +867,13 @@ class _BackupRestoreReadableFrame extends StatelessWidget {
 class _LocalStorageRecoveryCard extends StatelessWidget {
   const _LocalStorageRecoveryCard({
     required this.isRecovering,
+    required this.hasRecoveryCopy,
     required this.onRetry,
     required this.onStartFresh,
   });
 
   final bool isRecovering;
+  final bool hasRecoveryCopy;
   final VoidCallback onRetry;
   final VoidCallback? onStartFresh;
 
@@ -891,9 +900,11 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      onStartFresh != null
+                      onStartFresh == null
+                          ? 'Danio could not safely read or update the local aquarium data on this device. It has not replaced that data with an empty aquarium.'
+                          : hasRecoveryCopy
                           ? 'Danio stopped loading this device because the local data file looks damaged. Danio kept a recovery copy on this device before offering these options.'
-                          : 'Danio could not safely read or update the local aquarium data on this device. It has not replaced that data with an empty aquarium.',
+                          : 'Danio stopped loading this device because the local data file looks damaged. Danio could not make a recovery copy, so the damaged original remains on this device.',
                       style: AppTypography.bodySmall,
                     ),
                   ],
@@ -903,9 +914,11 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            onStartFresh != null
+            onStartFresh == null
+                ? 'Try again after the device storage issue is resolved.'
+                : hasRecoveryCopy
                 ? 'Try again if you repaired or replaced the local file. Start fresh only clears aquarium data on this device.'
-                : 'Try again after the device storage issue is resolved.',
+                : 'Try again if you repaired or replaced the local file. Start fresh permanently clears the damaged original on this device.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),

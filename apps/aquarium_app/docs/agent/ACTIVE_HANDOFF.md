@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-007`
-Marker: `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`
+Product epoch: `DR-2026-07-16-008`
+Marker: `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -36,11 +36,17 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   while preserving the pre-existing file and blocking directory.
 - `DCL-DR-002` is now mapped in
   `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and remains `open`.
-- `DCL-DR-002-F1` is locally fixed: both corrupted and I/O-failed local storage
-  expose the real `retryLoad` action, while destructive start fresh remains
-  exclusive to confirmed corruption.
-- No persisted-data schema, storage-service/provider, dependency, emulator,
-  account, cloud, or release configuration changed in F1. No later Phase 1 row
+- `DCL-DR-002-F1` is locally fixed under marker
+  `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: both
+  corrupted and I/O-failed local storage expose the real `retryLoad` action,
+  while destructive start fresh remains exclusive to confirmed corruption.
+- `DCL-DR-002-F2` is locally fixed under marker
+  `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`: failed corrupt-file
+  backup no longer exposes a nonexistent recovery path, and the card/dialog
+  warn honestly while keeping the damaged original until explicit start fresh.
+  Successful copies retain their path and copy-preserved wording.
+- No persisted-data schema, provider, dependency, deletion behavior, emulator,
+  account, cloud, or release configuration changed in F2. No later Phase 1 row
   was selected.
 
 ## Frozen autonomy
@@ -73,14 +79,14 @@ frozen-autonomy state and does not authorize automatic successor tasks.
   locally fixed and `DCL-DR-001-F4` through `DCL-DR-001-F6` are locally
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
-- `DCL-DR-002` remains `open`. `DCL-DR-002-F1` is locally fixed under marker
-  `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: an
-  `ioError` now exposes a real retry without offering destructive start fresh.
-- Independent F1 review found the next separate product gap: corrupt-file backup
-  creation is best effort, but the error and UI still promise a recovery copy
-  even when that copy failed. Continue it only under marker
-  `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1` after this F1 checkpoint
-  is clean, pushed, and aligned.
+- `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
+  fixed under their recorded markers: both storage error states expose honest
+  recovery actions, and only a successfully created corrupt-file copy is
+  advertised to the user.
+- The next matrix path is direct repaired-versus-still-malformed `retryLoad`
+  service evidence. Continue it only under marker
+  `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1` after this F2
+  checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
   status. Read them only for the directly relevant row.
@@ -125,11 +131,11 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F1 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F2` under marker
-`danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`. Force corrupt-file backup
-copy failure, stop the error and recovery UI from advertising a nonexistent
-copy, and keep the original corrupt file until explicit destructive
-confirmation. Do not bundle repaired retry or another matrix gap, and do not
-start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while `DCL-DR-002`
-remains open.
+After this F2 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F3` under marker
+`danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`. Use real malformed
+local JSON to prove a repaired file succeeds only through `retryLoad` and an
+unchanged malformed reread remains blocked, without destructive writes or
+empty-data false success. Do not bundle start-fresh or another matrix gap, and
+do not start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while
+`DCL-DR-002` remains open.

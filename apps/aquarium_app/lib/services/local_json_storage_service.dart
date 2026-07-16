@@ -152,6 +152,26 @@ class LocalJsonStorageService
     return File(p.join(dir.path, _fileName));
   }
 
+  Future<String?> _createCorruptionBackup(File file) async {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final candidatePath = '${file.path}.corrupted.$timestamp';
+
+    try {
+      await file.copy(candidatePath);
+      logError(
+        '💾 Corrupted file backed up to: $candidatePath',
+        tag: 'LocalJsonStorageService',
+      );
+      return candidatePath;
+    } catch (backupError) {
+      logError(
+        '⚠️  Failed to backup corrupted file: $backupError',
+        tag: 'LocalJsonStorageService',
+      );
+      return null;
+    }
+  }
+
   // P0-2 FIX: Enhanced error handling with backup/recovery and proper state management
   Future<void> _loadFromDisk() async {
     _state = StorageState.loading;
@@ -206,21 +226,7 @@ class LocalJsonStorageService
         json = _migrateJson(json);
       } catch (parseError) {
         // P0-2: Save corrupted file as backup before handling error
-        final timestamp = DateTime.now().millisecondsSinceEpoch;
-        final corruptedPath = '${file.path}.corrupted.$timestamp';
-
-        try {
-          await file.copy(corruptedPath);
-          logError(
-            '💾 Corrupted file backed up to: $corruptedPath',
-            tag: 'LocalJsonStorageService',
-          );
-        } catch (backupError) {
-          logError(
-            '⚠️  Failed to backup corrupted file: $backupError',
-            tag: 'LocalJsonStorageService',
-          );
-        }
+        final corruptedPath = await _createCorruptionBackup(file);
 
         // Log detailed error for debugging
         logError(
@@ -229,7 +235,12 @@ class LocalJsonStorageService
         );
         logError('   Error: $parseError', tag: 'LocalJsonStorageService');
         logError('   File: ${file.path}', tag: 'LocalJsonStorageService');
-        appLog('   Backup: $corruptedPath', tag: 'LocalJsonStorageService');
+        appLog(
+          corruptedPath == null
+              ? '   Backup: not created'
+              : '   Backup: $corruptedPath',
+          tag: 'LocalJsonStorageService',
+        );
         appLog(
           '   Timestamp: ${DateTime.now().toIso8601String()}',
           tag: 'LocalJsonStorageService',
@@ -301,21 +312,7 @@ class LocalJsonStorageService
         }
 
         // Error during entity parsing (malformed data structure)
-        final timestamp = DateTime.now().millisecondsSinceEpoch;
-        final corruptedPath = '${file.path}.corrupted.$timestamp';
-
-        try {
-          await file.copy(corruptedPath);
-          logError(
-            '💾 Corrupted file backed up to: $corruptedPath',
-            tag: 'LocalJsonStorageService',
-          );
-        } catch (backupError) {
-          logError(
-            '⚠️  Failed to backup corrupted file: $backupError',
-            tag: 'LocalJsonStorageService',
-          );
-        }
+        final corruptedPath = await _createCorruptionBackup(file);
 
         logError(
           '❌ STORAGE ERROR: Entity Parsing Failed',
@@ -323,7 +320,12 @@ class LocalJsonStorageService
         );
         logError('   Error: $entityError', tag: 'LocalJsonStorageService');
         logError('   File: ${file.path}', tag: 'LocalJsonStorageService');
-        logError('   Backup: $corruptedPath', tag: 'LocalJsonStorageService');
+        logError(
+          corruptedPath == null
+              ? '   Backup: not created'
+              : '   Backup: $corruptedPath',
+          tag: 'LocalJsonStorageService',
+        );
         appLog(
           '   Timestamp: ${DateTime.now().toIso8601String()}',
           tag: 'LocalJsonStorageService',

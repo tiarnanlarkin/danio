@@ -26,6 +26,30 @@ class _FakePathProviderPlatform extends PathProviderPlatform {
   Future<String?> getApplicationDocumentsPath() async => documentsPath;
 }
 
+class _CopyFailingFile implements File {
+  _CopyFailingFile(this._delegate);
+
+  final File _delegate;
+
+  @override
+  String get path => _delegate.path;
+
+  @override
+  Future<bool> exists() => _delegate.exists();
+
+  @override
+  Future<String> readAsString({Encoding encoding = utf8}) =>
+      _delegate.readAsString(encoding: encoding);
+
+  @override
+  Future<File> copy(String newPath) {
+    throw FileSystemException('Simulated corrupt-file copy failure', newPath);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Tank _makeTank({
   String id = 'tank-1',
   String name = 'Test Tank',
@@ -342,6 +366,71 @@ void main() {
         );
       },
     );
+
+    test(
+      'malformed JSON copy failure does not advertise recovery path',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        const malformedJson = '{"tanks":';
+        await file.writeAsString(malformedJson);
+
+        await IOOverrides.runZoned(
+          () async {
+            await expectLater(
+              service.retryLoad(),
+              throwsA(
+                isA<StorageCorruptionException>().having(
+                  (error) => error.corruptedFilePath,
+                  'corruptedFilePath',
+                  isNull,
+                ),
+              ),
+            );
+          },
+          createFile: (path) {
+            expect(path, file.path);
+            return _CopyFailingFile(file);
+          },
+        );
+
+        expect(service.state, StorageState.corrupted);
+        expect(service.lastError?.corruptedFilePath, isNull);
+        expect(await file.exists(), isTrue);
+        expect(await file.readAsString(), malformedJson);
+        expect(
+          root.listSync().whereType<File>().where(
+            (candidate) => candidate.path.contains('.corrupted.'),
+          ),
+          isEmpty,
+        );
+      },
+    );
+
+    test('malformed JSON reports only a recovery copy that exists', () async {
+      final service = LocalJsonStorageService();
+      final file = File(
+        '${root.path}${Platform.pathSeparator}aquarium_data.json',
+      );
+      const malformedJson = '{"tanks":';
+      await file.writeAsString(malformedJson);
+
+      StorageCorruptionException? thrown;
+      try {
+        await service.retryLoad();
+      } on StorageCorruptionException catch (error) {
+        thrown = error;
+      }
+
+      expect(thrown, isNotNull);
+      expect(thrown?.corruptedFilePath, isNotNull);
+      expect(service.lastError?.corruptedFilePath, thrown?.corruptedFilePath);
+      expect(await File(thrown!.corruptedFilePath!).exists(), isTrue);
+      expect(await file.exists(), isTrue);
+      expect(await file.readAsString(), malformedJson);
+    });
   });
 
   group('LocalJsonStorageService singleton', () {
@@ -377,10 +466,8 @@ void main() {
     });
   });
 
-  // Note: Full file-based integration tests (corrupt JSON, missing file, etc.)
-  // require mocking path_provider to redirect getApplicationDocumentsDirectory()
-  // to a temp directory. Those tests are best run as integration tests with a
-  // real device/emulator. The unit tests above cover the model layer thoroughly.
+  // The temp path-provider coverage above exercises file-backed migration,
+  // corruption, and I/O failures without requiring a device.
   test('StorageState enum count is 5', () {
     expect(StorageState.values.length, equals(5));
   });
