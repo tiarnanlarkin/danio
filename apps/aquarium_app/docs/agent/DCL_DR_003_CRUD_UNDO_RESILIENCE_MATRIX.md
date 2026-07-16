@@ -3,15 +3,16 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-015`
+Current epoch: `DR-2026-07-16-016`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-bounded fix, `DCL-DR-003-F1`, prevents Today Board quick Feed from creating a
-log after its parent tank has disappeared. `DCL-DR-003` remains open because
-the same inventory proved additional independent rollback, orphan, and
-false-success gaps. They must be handled as later single data-safety slices.
+two bounded fixes prevent Today Board quick Feed from creating an orphan log and
+prevent equipment Undo from leaving a partial restore when its maintenance-task
+restore fails. `DCL-DR-003` remains open because the same inventory proved
+additional independent rollback, orphan, and false-success gaps. They must be
+handled as later single data-safety slices.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -54,7 +55,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Equipment create | `adding equipment shows success feedback`; `failed maintenance-task sync rolls back new equipment`; `profile activity failure after equipment add does not report add failure`; `missing tank ids do not create orphan equipment` | Covered. |
 | Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
 | Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved` | Covered. |
-| Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted` | Open: if equipment restore succeeds and task restore fails, equipment remains partially restored. This is the next slice. |
+| Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted`; RED/GREEN `failed maintenance-task undo rolls back restored equipment`; RED/GREEN `undo after leaving screen refreshes equipment watchers` | `DCL-DR-003-F2` locally fixed: a failed maintenance-task restore removes equipment already restored by the same Undo, retains honest failure feedback, and route-independent invalidation refreshes active watchers after the Equipment route closes. |
 | Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task` | Rollback covered; stale equipment/parent preflight remains open. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving` | Failure boundaries covered; ordinary success has no exact persistence assertion. |
@@ -72,7 +73,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
 | Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active` | Covered for current UI actions; currency rollback and stale-index evidence remain unexplained. |
 | Review card create/seed/delete/reset | Throw/false create and seed tests, delete rollback tests, and four-key reset rollback tests in `spaced_repetition_persistence_failure_test.dart` | Covered. |
-| Review answer/update | Scheduling/model tests and `records fallback answer and advances using returned result` | Open: card/stat save failure is swallowed, so the session advances and awards XP after persistence failed. |
+| Review answer/update | Scheduling/model tests and `records fallback answer and advances using returned result` | Next product finding: card/stat save failure is swallowed, so the session advances and awards XP after persistence failed. |
 | Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; `exit dialog abandons active session before popping` | Partial persistence covered; later card/stat failure after other effects remains open. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, and `reset surfaces failed local removals before reporting reset success` | Covered for direct writers; failed compensating refund remains unexplained. |
 | Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Covered for named paths; missing item, expired cleanup, and refund-failure boundaries remain unexplained. |
@@ -83,10 +84,13 @@ belongs to `DCL-DR-004` and is not selected here.
 
 1. `DCL-DR-003-F1` - Today Board missing-parent quick Feed orphan log: fixed
    and focused GREEN in `DR-2026-07-16-015`.
-2. `DCL-DR-003-F2` - equipment delete Undo must roll back a restored equipment
-   row when generated maintenance-task restoration fails. Next marker:
+2. `DCL-DR-003-F2` - equipment delete Undo rolls back a restored equipment row
+   when generated maintenance-task restoration fails: fixed and focused GREEN
+   in `DR-2026-07-16-016` under marker
    `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`.
-3. Review-answer persistence failure must not advance or award XP.
+3. `DCL-DR-003-F3` - review-answer persistence failure must not advance or
+   award XP. Next marker:
+   `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`.
 4. Normal lesson retry must not duplicate quiz gems or claim unsaved progress.
 5. Remaining orphan quick-log, stale task, livestock bulk, wishlist/shop stale-ID,
    and cross-store reward boundaries remain separate future slices.

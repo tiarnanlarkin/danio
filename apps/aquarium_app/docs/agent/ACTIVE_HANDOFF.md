@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-015`
-Marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
+Product epoch: `DR-2026-07-16-016`
+Marker: `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -58,7 +58,11 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F1` is locally fixed under marker
   `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`: Today Board Feed
   rejects a missing tank before saving and cannot create an orphan/false success.
-- F1 changed no schema, provider contract, dependency, emulator, account,
+- `DCL-DR-003-F2` is locally fixed under marker
+  `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`: failed task
+  restoration rolls back equipment already restored by the same Undo, while
+  route-independent invalidation refreshes watchers after leaving the screen.
+- F2 changed no schema, provider contract, dependency, emulator, account,
   cloud, or release configuration; no second gap or later row was selected.
 
 ## Frozen autonomy
@@ -72,17 +76,15 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Cursor: `DCL-DR-001-restore-matrix-audit`.
 - Budget remains historical and uncharged: total 20, consumed 10, remaining 10.
 - Owner is null and current charge status is `none`.
-- Claim, launch, budget, closeout, and successor machinery is retained only for
-  historical/recovery evidence. It is outside routine startup and gates.
-- Reactivation requires a new explicit user request and reconciliation plan.
-- Frozen material cannot select, reorder, authorize, charge, resume, or hand
-  off any completion phase.
+- Claim, launch, budget, closeout, and successor machinery is retained only as
+  historical evidence outside routine startup and gates.
+- Reactivation requires a new explicit request and reconciliation plan; frozen
+  material cannot select, authorize, charge, resume, or hand off a phase.
 
 Never create an automatic successor task.
 
-The user authorized continued manual roadmap execution in this task until the
-app is complete, stopping only when genuinely needed. This does not reactivate,
-charge, or alter frozen autonomy or authorize automatic successor tasks.
+The user authorized continued manual roadmap execution here until completion,
+stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 
 ## Product authority
 
@@ -93,10 +95,9 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`. Its complete fresh matrix is recorded and
-  `DCL-DR-003-F1` is locally fixed. Continue only with its next ordered proven
-  gap under marker
-  `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1` after this F1
+- `DCL-DR-003` remains `open`; its matrix and F1/F2 fixes are recorded. Continue
+  its next ordered gap under marker
+  `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1` after this F2
   checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -120,9 +121,8 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
   force-push without an explicit recovery plan and user authorization.
 - Public legal-page availability and other account-side release checks remain
   external/user-gated. Do not infer readiness from local gates.
-- Tablet, keyed-AI seed, providers, premium, store/deploy, public release,
-  cloud/accounts, signing, legal hosting, public-history recovery, and iOS all
-  remain parked outside the phone roadmap.
+- Tablet, keyed-AI seed, providers, premium, deploy/release, cloud/accounts,
+  signing, legal hosting, public-history recovery, and iOS remain parked.
 
 ## Routine startup
 
@@ -142,9 +142,8 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F1 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-003-F2` under marker
-`danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`. Prove that a
-generated maintenance-task restore failure rolls back any equipment row already
-restored by Undo and retains honest failure feedback. Do not bundle another
-matrix finding, `DCL-DR-004`, or a later phone phase.
+After this F2 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-003-F3` under marker
+`danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`. Prove that a
+review-card or review-stat persistence failure cannot advance the session or
+award XP. Do not bundle another matrix finding, `DCL-DR-004`, or a later phase.

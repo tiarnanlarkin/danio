@@ -450,12 +450,17 @@ class EquipmentScreen extends ConsumerWidget {
           ref.invalidate(tasksProvider(tankId));
           if (context.mounted) {
             final messenger = ScaffoldMessenger.of(context);
+            final providerContainer = ProviderScope.containerOf(
+              context,
+              listen: false,
+            );
             DanioSnackBar.show(
               context,
               '${equipment.name} removed',
               duration: const Duration(seconds: 5),
               actionLabel: 'Undo',
               onAction: () async {
+                var equipmentRestored = false;
                 try {
                   final parentTank = await storage.getTank(equipment.tankId);
                   if (parentTank == null) {
@@ -464,14 +469,22 @@ class EquipmentScreen extends ConsumerWidget {
                     );
                   }
                   await storage.saveEquipment(equipment);
+                  equipmentRestored = true;
                   if (maintenanceTask != null) {
                     await storage.saveTask(maintenanceTask);
                   }
-                  ref.invalidate(equipmentProvider(tankId));
-                  ref.invalidate(tasksProvider(tankId));
                 } catch (e, st) {
-                  ref.invalidate(equipmentProvider(tankId));
-                  ref.invalidate(tasksProvider(tankId));
+                  if (equipmentRestored) {
+                    try {
+                      await storage.deleteEquipment(equipment.id);
+                    } catch (rollbackError, rollbackStack) {
+                      logError(
+                        'EquipmentScreen: equipment restore rollback failed: $rollbackError',
+                        stackTrace: rollbackStack,
+                        tag: 'EquipmentScreen',
+                      );
+                    }
+                  }
                   logError(
                     'EquipmentScreen: equipment restore failed: $e',
                     stackTrace: st,
@@ -483,6 +496,16 @@ class EquipmentScreen extends ConsumerWidget {
                       'Could not restore ${equipment.name}. Try again in a moment.',
                     );
                   });
+                }
+                try {
+                  providerContainer.invalidate(equipmentProvider(tankId));
+                  providerContainer.invalidate(tasksProvider(tankId));
+                } catch (refreshError, refreshStack) {
+                  logError(
+                    'EquipmentScreen: equipment restore refresh failed: $refreshError',
+                    stackTrace: refreshStack,
+                    tag: 'EquipmentScreen',
+                  );
                 }
               },
             );

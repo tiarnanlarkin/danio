@@ -262,7 +262,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-015',
+      'DR-2026-07-16-016',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -274,9 +274,11 @@ void main() {
       'DCL-DR-003',
       '`DCL-DR-003` remains `open`',
       'DCL-DR-003-F1',
+      'DCL-DR-003-F2',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
+      'danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -334,9 +336,14 @@ void main() {
       [
         'Status: open',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
+        'DR-2026-07-16-016',
         'DCL-DR-003-F1',
         'Feed quick care rejects a missing tank before saving a log',
         'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
+        'DCL-DR-003-F2',
+        'failed maintenance-task undo rolls back restored equipment',
+        'undo after leaving screen refreshes equipment watchers',
+        'danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1',
       ],
     );
   });
@@ -883,7 +890,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-015',
+      'DR-2026-07-16-016',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -895,9 +902,11 @@ void main() {
       'DCL-DR-003',
       '`DCL-DR-003` remains `open`',
       'DCL-DR-003-F1',
+      'DCL-DR-003-F2',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
+      'danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -924,6 +933,7 @@ void main() {
       'DR-2026-07-16-013',
       'DR-2026-07-16-014',
       'DR-2026-07-16-015',
+      'DR-2026-07-16-016',
       'DCL-DR-001',
       'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
@@ -942,6 +952,7 @@ void main() {
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
+      'danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1',
     ]);
   });
 }
