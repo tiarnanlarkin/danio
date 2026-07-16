@@ -3,15 +3,16 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-026`
+Current epoch: `DR-2026-07-16-027`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-eleven bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
-Home Quick Water Test, and Tasks/Tank Detail Completion from creating orphan or
-recreated records under covered stale-ID/parent boundaries, prevent equipment
-Undo from leaving a partial restore, make review-answer commits authoritative,
+twelve bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+Home Quick Water Test, Tasks/Tank Detail Completion, and Equipment Mark
+Serviced from creating orphan or recreated records under covered stale-ID and
+parent boundaries. They also prevent equipment Undo from leaving a partial
+restore, make review-answer commits authoritative,
 and make lesson progress precede rewards with a real retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
@@ -65,7 +66,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
 | Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved` | Covered. |
 | Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted`; RED/GREEN `failed maintenance-task undo rolls back restored equipment`; RED/GREEN `undo after leaving screen refreshes equipment watchers` | `DCL-DR-003-F2` locally fixed: a failed maintenance-task restore removes equipment already restored by the same Undo, retains honest failure feedback, and route-independent invalidation refreshes active watchers after the Equipment route closes. |
-| Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task` | Rollback covered; stale equipment/parent preflight remains open. |
+| Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; RED/GREEN `stale equipment service does not recreate deleted equipment` | `DCL-DR-003-F13` locally fixed: the durable equipment-ID check precedes all service writes, so a stale card cannot recreate equipment, mutate its task, add logs, or report success. Supported tank deletion atomically removes equipment/tasks, so the same preflight also rejects the settled parent-deletion state; no separate current parent-only path remains. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving` | Failure boundaries covered; ordinary success has no exact persistence assertion. |
 | Livestock move | `success feedback reports selected livestock count`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails` | Open: missing selected IDs are skipped while UI reports the original selected count. |
@@ -135,11 +136,15 @@ belongs to `DCL-DR-004` and is not selected here.
     even while its visible task remains: fixed and focused GREEN in
     `DR-2026-07-16-026` under marker
     `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`.
-13. `DCL-DR-003-F13` - Equipment Mark Serviced must reject a stale equipment
-    ID before its first write. Next marker:
+13. `DCL-DR-003-F13` - Equipment Mark Serviced rejects a stale equipment ID
+    before its first write: fixed and focused GREEN in `DR-2026-07-16-027`
+    under marker
     `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`.
-14. Remaining equipment-parent, livestock bulk, wishlist/shop stale-ID, and
-    cross-store reward boundaries remain separate future slices.
+14. `DCL-DR-003-F14` - Tasks Snooze must reject a stale task ID before its
+    first write. Next marker:
+    `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`.
+15. Remaining livestock bulk, wishlist/shop stale-ID, and cross-store reward
+    boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

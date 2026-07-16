@@ -286,6 +286,10 @@ class EquipmentScreen extends ConsumerWidget {
     String? maintenanceLogId;
     Task? originalMaintenanceTask;
     try {
+      final currentEquipment = await storage.getEquipmentForTank(tankId);
+      if (!currentEquipment.any((item) => item.id == equipment.id)) {
+        throw StateError('Cannot service missing equipment ${equipment.id}');
+      }
       final originalTasks = await storage.getTasksForTank(tankId);
       for (final task in originalTasks) {
         if (task.id == taskId) {
