@@ -9,8 +9,9 @@
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
-> verified. The next manual task is `DCL-DR-002`, which remains open and
-> unproven. Execution
+> verified. `DCL-DR-002` remains open; `DCL-DR-002-F1` is locally fixed and
+> its next manual recovery-copy honesty fix is locked to marker
+> `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -193,6 +194,9 @@ flutter test test/services/shared_preferences_backup_test.dart --reporter compac
 
 **Actions:**
 
+- [x] Record the finite source/test matrix before code and fix
+  `DCL-DR-002-F1` so `ioError` exposes `retryLoad` without offering destructive
+  start fresh.
 - [ ] Verify first-run migration, idempotence, failed version stamp, migrated
   v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
 - [ ] Confirm failure states never become empty-data success and start-fresh
@@ -420,10 +424,12 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-`DCL-DR-001` is closed after `DR-2026-07-16-006`: F1 through F3 are locally
-fixed, F4 through F6 are locally verified, every restore-matrix path has named
-current evidence, and the required final Full gate passes. `DCL-DR-002` is the
-next manual task and remains open and unproven. After the F6 checkpoint is
-clean, pushed, and aligned, establish its exact Task 1.2 migration/corruption
-audit marker, then inspect the ordered source/tests before assuming a product
-gap. Do not select Task 1.3, Task 1.4, or a later phase first.
+`DCL-DR-001` is closed after `DR-2026-07-16-006`. `DCL-DR-002` remains open
+after `DR-2026-07-16-007`; `DCL-DR-002-F1` is locally fixed so both corrupted
+and I/O-failed local storage expose the real retry action while destructive
+start fresh remains exclusive to confirmed corruption. After this checkpoint
+is clean, pushed, and aligned, continue the next manual recovery-copy honesty
+fix under marker
+`danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`. Distinguish failed
+corrupt-file backup from a recovery copy that really exists before destructive
+recovery. Do not select Task 1.3, Task 1.4, or a later phase first.

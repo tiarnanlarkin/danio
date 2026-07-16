@@ -181,6 +181,7 @@ void main() {
       'docs/agent/RESEARCH_PROTOCOL.md',
       'docs/agent/ACTIVE_HANDOFF.md',
       'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      'docs/agent/DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md',
       'docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md',
       'docs/agent/COMPLETE_LOCAL_FORECAST.md',
       'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
@@ -252,9 +253,11 @@ void main() {
       'DCL-DR-001-F6',
       'DCL-DR-002',
       '`DCL-DR-001` is `closed`',
-      'remains `open`',
+      '`DCL-DR-002` remains `open`',
+      'DCL-DR-002-F1',
+      'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
+      'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'locally fixed',
-      'unproven',
     ]);
     _expectContainsAll(
       'docs/agent/DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md',
@@ -269,6 +272,16 @@ void main() {
         'restore preserves the initiating error when snapshot rollback also fails',
         'restoreBackup cleans new photos and preserves existing files after mid-extraction failure',
         'Status: closed',
+      ],
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md',
+      [
+        'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
+        'DCL-DR-002-F1',
+        'I/O load error offers real retry without destructive start fresh',
+        'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
+        'Status: open',
       ],
     );
   });
@@ -482,6 +495,10 @@ void main() {
       rows.singleWhere((row) => row['ID'] == 'DCL-DR-001')['Closure State'],
       'closed',
     );
+    expect(
+      rows.singleWhere((row) => row['ID'] == 'DCL-DR-002')['Closure State'],
+      'open',
+    );
 
     for (final id in {'DCL-A11Y-001', 'DCL-PERF-001'}) {
       final row = rows.singleWhere((candidate) => candidate['ID'] == id);
@@ -545,10 +562,15 @@ void main() {
     expect(program, contains('DCL-DR-001-F5'));
     expect(program, contains('DCL-DR-001-F6'));
     expect(program, contains('DCL-DR-002'));
+    expect(program, contains('DCL-DR-002-F1'));
+    expect(
+      program,
+      contains(
+        'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
+      ),
+    );
     expect(program, contains('closed'));
-    expect(program, contains('next manual task'));
     expect(program, contains('open'));
-    expect(program, contains('unproven'));
     expect(programFlat, contains('current lean Verified Slice contract'));
     expect(program, isNot(contains('tablet portion of `DCL-PERF-001`')));
 
@@ -624,11 +646,14 @@ void main() {
       allOf(
         contains('DCL-DR-001'),
         contains('DCL-DR-002'),
+        contains('DCL-DR-002-F1'),
         contains('next manual'),
         allOf(contains('locally fixed'), contains('closed')),
-        contains('unproven'),
-        isNot(contains('Task 13')),
-        isNot(contains('explicit launch')),
+        contains('recovery-copy'),
+        allOf(
+          isNot(contains('Task 13')),
+          isNot(contains('explicit launch')),
+        ),
       ),
     );
     expect(
@@ -636,11 +661,14 @@ void main() {
       allOf(
         contains('DCL-DR-001'),
         contains('DCL-DR-002'),
+        contains('DCL-DR-002-F1'),
         contains('next manual'),
         allOf(contains('locally fixed'), contains('closed')),
-        contains('unproven'),
-        isNot(contains('Task 13')),
-        isNot(contains('explicit launch')),
+        contains('recovery-copy'),
+        allOf(
+          isNot(contains('Task 13')),
+          isNot(contains('explicit launch')),
+        ),
       ),
     );
     expect(
@@ -710,9 +738,11 @@ void main() {
       'DCL-DR-001-F6',
       'DCL-DR-002',
       '`DCL-DR-001` is `closed`',
-      'remains `open`',
+      '`DCL-DR-002` remains `open`',
+      'DCL-DR-002-F1',
+      'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
+      'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'locally fixed',
-      'unproven',
       'Next manual action',
       'Never create an automatic successor task.',
     ]);
@@ -728,13 +758,17 @@ void main() {
       'DR-2026-07-16-004',
       'DR-2026-07-16-005',
       'DR-2026-07-16-006',
+      'DR-2026-07-16-007',
       'DCL-DR-001',
+      'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
       'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
       'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
       'danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1',
       'danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1',
       'danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1',
+      'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
+      'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
     ]);
   });
 }

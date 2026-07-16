@@ -133,11 +133,13 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       const SizedBox(height: AppSpacing.lg),
 
-      if (showRecovery) ...[
+      if (activeRecovery != null) ...[
         _LocalStorageRecoveryCard(
           isRecovering: _isRecoveringLocalData,
-          onRetry: () => _retryLocalStorageRecovery(activeRecovery!),
-          onStartFresh: () => _confirmStartFreshLocalStorage(activeRecovery!),
+          onRetry: () => _retryLocalStorageRecovery(activeRecovery),
+          onStartFresh: activeRecovery.state == StorageState.corrupted
+              ? () => _confirmStartFreshLocalStorage(activeRecovery)
+              : null,
         ),
         const SizedBox(height: AppSpacing.lg),
       ],
@@ -397,8 +399,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   }
 
   bool _shouldShowStorageRecovery(StorageRecoveryService? storageRecovery) {
-    return storageRecovery != null &&
-        storageRecovery.state == StorageState.corrupted;
+    return storageRecovery != null && storageRecovery.hasError;
   }
 
   Future<void> _retryLocalStorageRecovery(
@@ -865,7 +866,7 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
 
   final bool isRecovering;
   final VoidCallback onRetry;
-  final VoidCallback onStartFresh;
+  final VoidCallback? onStartFresh;
 
   @override
   Widget build(BuildContext context) {
@@ -890,7 +891,9 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Danio stopped loading this device because the local data file looks damaged. Danio kept a recovery copy on this device before offering these options.',
+                      onStartFresh != null
+                          ? 'Danio stopped loading this device because the local data file looks damaged. Danio kept a recovery copy on this device before offering these options.'
+                          : 'Danio could not safely read or update the local aquarium data on this device. It has not replaced that data with an empty aquarium.',
                       style: AppTypography.bodySmall,
                     ),
                   ],
@@ -900,7 +903,9 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Try again if you repaired or replaced the local file. Start fresh only clears aquarium data on this device.',
+            onStartFresh != null
+                ? 'Try again if you repaired or replaced the local file. Start fresh only clears aquarium data on this device.'
+                : 'Try again after the device storage issue is resolved.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),
@@ -914,14 +919,16 @@ class _LocalStorageRecoveryCard extends StatelessWidget {
             isFullWidth: true,
             variant: AppButtonVariant.secondary,
           ),
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: 'Start Fresh On This Device',
-            onPressed: isRecovering ? null : onStartFresh,
-            leadingIcon: Icons.delete_outline,
-            isFullWidth: true,
-            variant: AppButtonVariant.destructive,
-          ),
+          if (onStartFresh != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: 'Start Fresh On This Device',
+              onPressed: isRecovering ? null : onStartFresh,
+              leadingIcon: Icons.delete_outline,
+              isFullWidth: true,
+              variant: AppButtonVariant.destructive,
+            ),
+          ],
         ],
       ),
     );

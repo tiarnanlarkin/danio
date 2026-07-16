@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-006`
-Marker: `danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-007`
+Marker: `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -34,9 +34,14 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-001-F6` is locally proven with no current product gap: one photo file
   exists before a later extraction failure, then cleanup removes that new file
   while preserving the pre-existing file and blocking directory.
-- No product code, persisted-data schema, dependency, emulator, account, cloud,
-  release, or device behavior changed in F6.
-- Phase 1 next advances to `DCL-DR-002`; no later phase was selected.
+- `DCL-DR-002` is now mapped in
+  `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and remains `open`.
+- `DCL-DR-002-F1` is locally fixed: both corrupted and I/O-failed local storage
+  expose the real `retryLoad` action, while destructive start fresh remains
+  exclusive to confirmed corruption.
+- No persisted-data schema, storage-service/provider, dependency, emulator,
+  account, cloud, or release configuration changed in F1. No later Phase 1 row
+  was selected.
 
 ## Frozen autonomy
 
@@ -68,11 +73,14 @@ frozen-autonomy state and does not authorize automatic successor tasks.
   locally fixed and `DCL-DR-001-F4` through `DCL-DR-001-F6` are locally
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
-- `DCL-DR-002` remains `open`, unstarted, and unproven. It is the next manual
-  Task 1.2 target for first-run migration, idempotence, failed version stamps,
-  migrated v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
-- No exact `DCL-DR-002` marker exists yet. Establish one only after this F6
-  checkpoint is clean, pushed, and aligned, then audit before assuming a gap.
+- `DCL-DR-002` remains `open`. `DCL-DR-002-F1` is locally fixed under marker
+  `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: an
+  `ioError` now exposes a real retry without offering destructive start fresh.
+- Independent F1 review found the next separate product gap: corrupt-file backup
+  creation is best effort, but the error and UI still promise a recovery copy
+  even when that copy failed. Continue it only under marker
+  `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1` after this F1 checkpoint
+  is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
   status. Read them only for the directly relevant row.
@@ -117,8 +125,11 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F6 checkpoint is clean, pushed, and aligned, continue manually with
-Phase 1 Task 1.2 / `DCL-DR-002`. Establish its exact audit marker from the
-current migration/corruption boundary, then inspect the ordered source and tests
-before assuming a product gap. Do not start `DCL-DR-003`, `DCL-DR-004`, or a
-later phone phase while `DCL-DR-002` remains open.
+After this F1 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F2` under marker
+`danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`. Force corrupt-file backup
+copy failure, stop the error and recovery UI from advertising a nonexistent
+copy, and keep the original corrupt file until explicit destructive
+confirmation. Do not bundle repaired retry or another matrix gap, and do not
+start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while `DCL-DR-002`
+remains open.

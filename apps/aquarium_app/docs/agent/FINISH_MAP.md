@@ -89,7 +89,7 @@ animation quota.
 | Guided tools | `DCL-P1-003` | In progress | Major calculators have tank-context handoffs, explanations, warnings, and save/apply paths. | Audit every current tool handoff once; fix only a concrete save/apply defect, or close with no-current-gap evidence. |
 | Multi-tank | none | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | `DCL-P1-004` | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Audit current source labels and save handoffs once; fix only a concrete missing label/context/persistence defect, or close with no-current-gap evidence. |
-| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` through `DR-2026-07-16-006` map and close `DCL-DR-001`: F1 through F3 fix preference-error preservation, share outcomes/ZIP cleanup, and inaccessible-selection feedback; F4 through F6 prove cancellation, simultaneous tank-import/rollback failure, and mid-extraction photo cleanup without further product changes. Every restore-matrix path has named current evidence and the final Full gate passes. Existing evidence also covers relationship preflight, migration, corruption recovery, and account-keyed cloud backup copy honesty. | Audit Task 1.2 / `DCL-DR-002` migration and corruption recovery next; establish its exact marker only after the F6 checkpoint is clean and aligned, then fix only a concrete current gap. |
+| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` through `DR-2026-07-16-006` close `DCL-DR-001`. `DR-2026-07-16-007` maps `DCL-DR-002` and fixes its first concrete gap: an `ioError` now exposes the service's real retry action without offering destructive start fresh. Review records the separate false recovery-copy assurance as F2. | Continue `DCL-DR-002-F2` under marker `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`; distinguish failed corrupt-file backup from a copy that really exists before offering destructive recovery. |
 | Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Audit the current keyless/provider/privacy preference paths once; fix a concrete honesty or persistence defect, or close with no-current-gap evidence. |
 | Global search | none | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | none | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
@@ -286,10 +286,11 @@ rule applies to older accessibility, motion, content, and performance findings.
 ## Slice Selection Rule
 
 `DCL-DR-001` is closed: F1 through F3 are locally fixed and F4 through F6 are
-locally verified. `DCL-DR-002` is the next manual development task and remains
-open and unproven. Establish its exact Task 1.2 audit marker only after this F6
-checkpoint is clean, pushed, and aligned. Do not select `DCL-DR-003`,
-`DCL-DR-004`, or a later phone phase first.
+locally verified. `DCL-DR-002` is the current manual development task and
+remains open; `DCL-DR-002-F1` is locally fixed. After this checkpoint is clean,
+pushed, and aligned, continue the next manual recovery-copy honesty fix under
+marker `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`. Do not select
+`DCL-DR-003`, `DCL-DR-004`, or a later phone phase first.
 
 This map may record a newly discovered regression or higher-risk category, but
 it cannot silently select a different product row. Frozen claim, budget,

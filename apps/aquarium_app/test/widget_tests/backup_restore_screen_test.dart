@@ -1023,6 +1023,38 @@ void main() {
   });
 
   group('BackupRestoreScreen - local storage recovery', () {
+    testWidgets(
+      'I/O load error offers real retry without destructive start fresh',
+      (tester) async {
+        final storage = _RecoverableStorageService()
+          ..state = StorageState.ioError
+          ..lastError = StorageError(
+            state: StorageState.ioError,
+            message: 'Migration stamp persistence failed',
+            timestamp: DateTime.utc(2026, 1, 1),
+          );
+
+        await tester.pumpWidget(_wrap(storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Local Data Needs Attention'), findsOneWidget);
+        expect(
+          find.textContaining('could not safely read or update'),
+          findsOneWidget,
+        );
+        expect(find.text('Try Again'), findsOneWidget);
+        expect(find.text('Start Fresh On This Device'), findsNothing);
+
+        await tester.tap(find.text('Try Again'));
+        await tester.pumpAndSettle();
+
+        expect(storage.retryCount, 1);
+        expect(storage.state, StorageState.loaded);
+        expect(find.text('Local Data Needs Attention'), findsNothing);
+      },
+    );
+
     testWidgets('shows local storage recovery actions when data is corrupted', (
       tester,
     ) async {
