@@ -800,6 +800,49 @@ void main() {
       expect(find.text('Rinse prefilter snoozed for 1 day.'), findsOneWidget);
     });
 
+    testWidgets('stale task snooze does not recreate a deleted task', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-stale-snooze';
+      const taskId = 'task-stale-snooze';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: taskId,
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Snooze').last);
+      await tester.pumpAndSettle();
+      await svc.deleteTask(taskId);
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+
+      await tester.tap(find.text('1 day'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t snooze that task. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Rinse prefilter snoozed for 1 day.'), findsNothing);
+    });
+
     testWidgets('failed snooze keeps task unchanged with error feedback', (
       tester,
     ) async {

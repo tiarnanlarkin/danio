@@ -373,6 +373,10 @@ class TasksScreen extends ConsumerWidget {
     final storage = ref.read(storageServiceProvider);
     final snoozed = task.snooze(days);
     try {
+      final currentTasks = await storage.getTasksForTank(tankId);
+      if (!currentTasks.any((currentTask) => currentTask.id == task.id)) {
+        throw StateError('Cannot snooze missing task ${task.id}');
+      }
       await storage.saveTask(snoozed);
       ref.invalidate(tasksProvider(tankId));
       if (context.mounted) {

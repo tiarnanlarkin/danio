@@ -3,14 +3,14 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-027`
+Current epoch: `DR-2026-07-16-028`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-twelve bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
-Home Quick Water Test, Tasks/Tank Detail Completion, and Equipment Mark
-Serviced from creating orphan or recreated records under covered stale-ID and
+thirteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
+Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
 restore, make review-answer commits authoritative,
 and make lesson progress precede rewards with a real retry after failure.
@@ -54,7 +54,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
 | Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail from stale task IDs and missing parents before task, log, equipment, XP, or success effects. Later equipment-step boundaries remain open. |
-| Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback` | Save failure covered; a stale task or missing parent can still be recreated. |
+| Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback`; RED/GREEN `stale task snooze does not recreate a deleted task` | `DCL-DR-003-F14` locally fixed: the durable task-ID check precedes `saveTask`, so a stale dialog cannot recreate a task or report success. Supported parent deletion cascades tasks, so the same missing-ID preflight covers that settled state. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
 | Bulk log/task deletion | No current user-facing operation. | Not applicable. |
 
@@ -140,10 +140,13 @@ belongs to `DCL-DR-004` and is not selected here.
     before its first write: fixed and focused GREEN in `DR-2026-07-16-027`
     under marker
     `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`.
-14. `DCL-DR-003-F14` - Tasks Snooze must reject a stale task ID before its
-    first write. Next marker:
+14. `DCL-DR-003-F14` - Tasks Snooze rejects a stale task ID before its first
+    write: fixed and focused GREEN in `DR-2026-07-16-028` under marker
     `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`.
-15. Remaining livestock bulk, wishlist/shop stale-ID, and cross-store reward
+15. `DCL-DR-003-F15` - Livestock bulk move must report the actual moved count
+    when a selected ID disappears. Next marker:
+    `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`.
+16. Remaining livestock bulk, wishlist/shop stale-ID, and cross-store reward
     boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
