@@ -94,7 +94,7 @@ Confirmed by the user on 2026-07-11:
 
 | ID | Finding | How Found | Evidence | Disposition | Closure State | Lane | User Input | Done Condition |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DCL-DR-001 | Restore walkthrough and restore failure behavior still need closure evidence beyond the recent photo/import hardening. | The phone completion program begins product work with Phase 1 data resilience; the Finish Map and backlog keep Backup/Data resilience in progress after DS-043. | Phase 1 Task 1.1; `DR-2026-07-16-001`; `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`; `DCL-DR-001-F1` is locally fixed so preference rollback failure cannot replace the initiating restore error; `DCL-DR-001-F2` remains unimplemented because dismissed/unavailable export sharing can show a `Last backup` timestamp after deleting the only ZIP and supplies no terminal feedback. | `VERIFY_LOCALLY` | open | Data resilience | No | Prove and fix `DCL-DR-001-F2` test-first, account for completed-ZIP cleanup on every adjacent terminal path, leave no restore-matrix path unexplained, and pass one final Full gate. |
+| DCL-DR-001 | Restore walkthrough and restore failure behavior still need closure evidence beyond the recent photo/import hardening. | The phone completion program begins product work with Phase 1 data resilience; the Finish Map and backlog keep Backup/Data resilience in progress after DS-043. | Phase 1 Task 1.1; `DR-2026-07-16-001`; `DR-2026-07-16-002`; `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`; F1 preserves initiating and rollback preference errors; F2 makes export-share status honest and cleans every completed-ZIP terminal path. `DCL-DR-001-F3` is next because picker cancellation/pathlessness remains source-explained but unproven. | `VERIFY_LOCALLY` | open | Data resilience | No | Prove `DCL-DR-001-F3` first, then add direct confirmation-cancel, simultaneous tank-import/rollback-failure, and mid-extraction-cleanup evidence; fix only proven gaps, leave no matrix path unexplained, and pass one final Full gate. |
 | DCL-DR-002 | Schema migration and corruption-recovery walkthroughs remain open for complete-local confidence. | Finish Map next actions name restore and migration Android walkthrough QA. | `FINISH_MAP.md` Backup and restore row; `FINISH_MAP.md` next development push; `docs/product/danio-complete-local-current-audit-2026-06-13.md` local data notes. | `VERIFY_LOCALLY` | open | Data resilience | No | Migration/corruption paths are proven by source/test or owned-device walkthrough evidence; any missing behavior is fixed locally and Full gate passes. |
 | DCL-DR-003 | Broader create/edit/delete/undo data-resilience coverage needs a final current proof inventory. | Finish Map `Data resilience` evidence records extensive DS coverage, so remaining work must be proven rather than assumed. | `FINISH_MAP.md` Data resilience row; archived `SLICE_LOG.md` DS-2026-07-04-002 through DS-2026-07-05-043. | `VERIFY_LOCALLY` | open | Data resilience | No | A fresh source/test matrix accounts for current create, edit, delete, bulk-delete, undo, false-success, and orphan boundaries; each proven gap receives its own focused RED/GREEN slice, or the row closes with no-current-gap evidence and Full passes. |
 | DCL-DR-004 | Relationship-mapping import integrity needs a final fresh audit after DS-034 through DS-043. | Recent DS chain closed several direct-import relationship boundaries but the Finish Map still keeps relationship-mapping walkthrough coverage open. | `FINISH_MAP.md` Current Data-Resilience Note; `SLICE_LOG.md` DS-034 through DS-043; DS-2026-07-06-046 tightened direct-import preflight for child rows whose backup tank IDs are not imported; DS-2026-07-06-047 tightened direct-import relationship preflight so missing relationship target IDs are rejected before imported tank saves; DS-2026-07-06-048 tightened direct-import required ID preflight so whitespace-only tank and child record IDs are rejected before imported tank saves. | `VERIFY_LOCALLY` | open | Data resilience | No | Audit proves no remaining current direct import relationship false-success boundary, or one specific boundary is fixed with service tests and Full gate. |
@@ -129,11 +129,11 @@ Confirmed by the user on 2026-07-11:
 
 ## Next Ledger Target Rule
 
-`DCL-DR-001` remains the next manual ledger target. `DCL-DR-001-F1` is locally
-fixed, but `DCL-DR-001-F2` is open and unimplemented. Begin its exact-marker
-export-share outcome slice only after this checkpoint is clean, pushed, and
-aligned. Do not select `DCL-DR-002` or another product row until the restore
-matrix has no unexplained current path.
+`DCL-DR-001` remains the next manual ledger target. `DCL-DR-001-F1` and
+`DCL-DR-001-F2` are locally fixed; `DCL-DR-001-F3` is the next unproven ordered
+path. Begin its exact-marker file-selection outcome proof only after this
+checkpoint is clean, pushed, and aligned. Do not select `DCL-DR-002` or another
+product row until the restore matrix has no unexplained current path.
 
 Rows in `parked` or `decision_required` closure state are stop-and-ask items,
 not automatic implementation targets. This ledger records their state and done

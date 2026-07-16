@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-001`
-Marker: `danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1`
+Product epoch: `DR-2026-07-16-002`
+Marker: `danio-dcl-dr-001-export-share-outcome-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -18,11 +18,12 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - The audit found and fixed one error-replacement boundary: if preference
   restore and snapshot rollback both fail, the initiating error and rollback
   error now remain separately inspectable with their original stack traces.
-- The same audit records one later, unimplemented export-share finding: a
-  dismissed or unavailable share can leave a visible `Last backup` timestamp
-  after the only temporary ZIP is deleted, without terminal feedback.
-- No persisted-data schema, dependency, UI, emulator, account, cloud, release,
-  or device behavior changed.
+- `DCL-DR-001-F2` is locally fixed: only affirmative share success records
+  `Last backup`; dismissed and unavailable outcomes get honest terminal
+  warnings; completed ZIP cleanup now covers success, returned non-success,
+  thrown share errors, and unmount while sharing.
+- No persisted-data schema, dependency, import, emulator, account, cloud,
+  release, or device behavior changed.
 - Phase 1 remains on `DCL-DR-001`; no later ledger row was selected.
 
 ## Frozen autonomy
@@ -44,19 +45,20 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 Never create an automatic successor task.
 
-The current user separately authorized one exact-marker saved-project
-continuation after a clean, pushed checkpoint. That routing permission is not
-frozen-autonomy authority and does not charge or alter the retained state.
+The current user explicitly authorized continued manual roadmap execution in
+this task until the app is complete, stopping only when user input is genuinely
+required. That permission does not reactivate, charge, or alter the retained
+frozen-autonomy state and does not authorize automatic successor tasks.
 
 ## Product authority
 
-- `DCL-DR-001` remains `open`. `DCL-DR-001-F1` is locally fixed with focused
-  RED/GREEN proof; `DCL-DR-001-F2` is recorded but unimplemented so this row is
-  not closed.
-- The next manual development task is the exact-marker `DCL-DR-001-F2`
-  export-share outcome slice. Start with a focused failing widget test for the
-  dismissed/unavailable share result, then make the smallest fix that prevents
-  false `Last backup` state and supplies honest terminal feedback.
+- `DCL-DR-001` remains `open`. `DCL-DR-001-F1` and `DCL-DR-001-F2` are locally
+  fixed with focused RED/GREEN proof. The row is not closed because four
+  source-explained paths still lack executable evidence.
+- The next manual proof task is `DCL-DR-001-F3` with exact marker
+  `danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`. Picker cancel
+  and selected-item-without-path behavior remain unproven; test both before
+  assuming a product gap or changing code.
 - `DCL-DR-002` remains open and unstarted but is not selected yet.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -100,9 +102,9 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Open a fresh manual `DCL-DR-001-F2` task with exact marker
-`danio-dcl-dr-001-export-share-outcome-2026-07-16/1`. Prove the dismissed or
-unavailable share-result false-success boundary with one focused failing widget
-test before code, make the smallest fix, and re-audit completed-ZIP cleanup as
-directly adjacent evidence. Do not start `DCL-DR-002`, another ledger row, or a
-later phone phase in that epoch.
+Continue manually with `DCL-DR-001-F3` under exact marker
+`danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`. Add focused
+picker-cancel and selected-item-without-path evidence first; implement only if
+that proof exposes one concrete current gap. Do not start `DCL-DR-002`, another
+ledger row, or a later phone phase until the restore matrix has no unexplained
+path.

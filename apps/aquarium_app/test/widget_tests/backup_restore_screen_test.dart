@@ -2,10 +2,12 @@
 //
 // Run: flutter test test/widget_tests/backup_restore_screen_test.dart
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +31,133 @@ Widget _wrap({StorageService? storage}) {
     ],
     child: const MaterialApp(home: BackupRestoreScreen()),
   );
+}
+
+Tank _makeTank() {
+  final now = DateTime.utc(2026, 7, 16);
+  return Tank(
+    id: 'backup-tank',
+    name: 'Backup Tank',
+    type: TankType.freshwater,
+    volumeLitres: 100,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+const _pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
+const _shareChannel = MethodChannel('dev.fluttercommunity.plus/share');
+
+class _StartedExport {
+  const _StartedExport({required this.zipPath, required this.existedAtShare});
+
+  final String zipPath;
+  final bool existedAtShare;
+}
+
+Future<_StartedExport> _startExport(
+  WidgetTester tester, {
+  required Future<Object?> Function() shareResponse,
+}) async {
+  late final Directory root;
+  late final Directory documentsDirectory;
+  late final Directory temporaryDirectory;
+  await tester.runAsync(() async {
+    root = await Directory.systemTemp.createTemp('danio_backup_share_test_');
+    documentsDirectory = await Directory(
+      '${root.path}${Platform.pathSeparator}documents',
+    ).create();
+    temporaryDirectory = await Directory(
+      '${root.path}${Platform.pathSeparator}temporary',
+    ).create();
+  });
+
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  final shareInvoked = Completer<void>();
+  String? sharedZipPath;
+  var zipExistedWhenShared = false;
+
+  addTearDown(() {
+    messenger.setMockMethodCallHandler(_pathProviderChannel, null);
+    messenger.setMockMethodCallHandler(_shareChannel, null);
+    if (root.existsSync()) {
+      try {
+        root.deleteSync(recursive: true);
+      } on FileSystemException {
+        // Preserve the primary test failure when a leaking archive is still
+        // briefly held by the export operation.
+      }
+    }
+  });
+
+  messenger.setMockMethodCallHandler(_pathProviderChannel, (call) async {
+    switch (call.method) {
+      case 'getApplicationDocumentsDirectory':
+        return documentsDirectory.path;
+      case 'getTemporaryDirectory':
+        return temporaryDirectory.path;
+      default:
+        throw MissingPluginException(
+          'Unexpected path_provider call: ${call.method}',
+        );
+    }
+  });
+  messenger.setMockMethodCallHandler(_shareChannel, (call) async {
+    expect(call.method, 'shareFiles');
+    final arguments = Map<String, dynamic>.from(call.arguments as Map);
+    sharedZipPath = (arguments['paths'] as List).single as String;
+    zipExistedWhenShared = File(sharedZipPath!).existsSync();
+    shareInvoked.complete();
+    return shareResponse();
+  });
+
+  final storage = InMemoryStorageService();
+  await storage.saveTank(_makeTank());
+  await tester.pumpWidget(_wrap(storage: storage));
+  await tester.pump();
+  await tester.pump(const Duration(seconds: 1));
+  await tester.tap(find.text('Export Backup (ZIP)'));
+  await tester.pump();
+
+  for (var i = 0; i < 300 && !shareInvoked.isCompleted; i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    await tester.pump(const Duration(milliseconds: 10));
+  }
+
+  expect(shareInvoked.isCompleted, isTrue);
+  expect(sharedZipPath, isNotNull);
+  return _StartedExport(
+    zipPath: sharedZipPath!,
+    existedAtShare: zipExistedWhenShared,
+  );
+}
+
+Future<void> _waitForExportUi(WidgetTester tester) async {
+  for (
+    var i = 0;
+    i < 300 && find.text('Exporting...').evaluate().isNotEmpty;
+    i++
+  ) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    await tester.pump(const Duration(milliseconds: 10));
+  }
+  await tester.pump(const Duration(milliseconds: 300));
+}
+
+Future<void> _waitForZipCleanup(WidgetTester tester, String zipPath) async {
+  for (var i = 0; i < 300 && File(zipPath).existsSync(); i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    await tester.pump(const Duration(milliseconds: 10));
+  }
 }
 
 class _RecoverableStorageService
@@ -352,6 +481,108 @@ void main() {
         );
       },
     );
+  });
+
+  group('BackupRestoreScreen - export outcomes', () {
+    testWidgets(
+      'dismissed export leaves no Last backup and explains it was not saved',
+      (tester) async {
+        final export = await _startExport(
+          tester,
+          shareResponse: () async => '',
+        );
+        await _waitForExportUi(tester);
+
+        expect(export.existedAtShare, isTrue);
+        expect(find.textContaining('Last backup:'), findsNothing);
+        expect(
+          find.text(
+            "Backup wasn't saved. Choose a destination and try again.",
+          ),
+          findsOneWidget,
+        );
+        expect(File(export.zipPath).existsSync(), isFalse);
+      },
+    );
+
+    testWidgets(
+      'unavailable export explains that saved status could not be confirmed',
+      (tester) async {
+        final export = await _startExport(
+          tester,
+          shareResponse: () async =>
+              'dev.fluttercommunity.plus/share/unavailable',
+        );
+        await _waitForExportUi(tester);
+
+        expect(export.existedAtShare, isTrue);
+        expect(find.textContaining('Last backup:'), findsNothing);
+        expect(
+          find.text(
+            "Danio couldn't confirm that the backup was saved. Check your destination before trying again.",
+          ),
+          findsOneWidget,
+        );
+        expect(File(export.zipPath).existsSync(), isFalse);
+      },
+    );
+
+    testWidgets(
+      'share failure cleans the ZIP and keeps error feedback honest',
+      (
+        tester,
+      ) async {
+        final export = await _startExport(
+          tester,
+          shareResponse: () async => throw PlatformException(
+            code: 'share-failed',
+            message: 'simulated share failure',
+          ),
+        );
+        await _waitForExportUi(tester);
+
+        expect(export.existedAtShare, isTrue);
+        expect(find.textContaining('Last backup:'), findsNothing);
+        expect(
+          find.text("Export didn't work. Give it another go!"),
+          findsOneWidget,
+        );
+        expect(File(export.zipPath).existsSync(), isFalse);
+      },
+    );
+
+    testWidgets('successful share records Last backup and cleans the ZIP', (
+      tester,
+    ) async {
+      final export = await _startExport(
+        tester,
+        shareResponse: () async => 'selected.destination',
+      );
+      await _waitForExportUi(tester);
+
+      expect(export.existedAtShare, isTrue);
+      expect(find.textContaining('Last backup:'), findsOneWidget);
+      expect(find.text('Backup exported successfully!'), findsOneWidget);
+      expect(File(export.zipPath).existsSync(), isFalse);
+    });
+
+    testWidgets('unmount while sharing still cleans the completed ZIP', (
+      tester,
+    ) async {
+      final shareResponse = Completer<Object?>();
+      final export = await _startExport(
+        tester,
+        shareResponse: () => shareResponse.future,
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      shareResponse.complete('');
+      await _waitForZipCleanup(tester, export.zipPath);
+
+      expect(export.existedAtShare, isTrue);
+      expect(File(export.zipPath).existsSync(), isFalse);
+    });
   });
 
   group('BackupRestoreScreen - local storage recovery', () {

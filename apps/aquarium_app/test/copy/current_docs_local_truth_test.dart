@@ -246,8 +246,10 @@ void main() {
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
       'DCL-DR-001',
       'DCL-DR-001-F2',
+      'DCL-DR-001-F3',
       'remains `open`',
-      'unimplemented',
+      'locally fixed',
+      'unproven',
     ]);
     _expectContainsAll(
       'docs/agent/DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md',
@@ -255,6 +257,7 @@ void main() {
         'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
         'DCL-DR-001-F1',
         'DCL-DR-001-F2',
+        'DCL-DR-001-F3',
       ],
     );
   });
@@ -526,9 +529,10 @@ void main() {
     );
     expect(program, contains('Roadmap authority lock - E0'));
     expect(program, contains('DCL-DR-001-F2'));
+    expect(program, contains('DCL-DR-001-F3'));
     expect(program, contains('next manual task'));
     expect(program, contains('open'));
-    expect(program, contains('unimplemented'));
+    expect(program, contains('unproven'));
     expect(programFlat, contains('current lean Verified Slice contract'));
     expect(program, isNot(contains('tablet portion of `DCL-PERF-001`')));
 
@@ -603,9 +607,10 @@ void main() {
       _markdownSection(finishMap, 'Slice Selection Rule'),
       allOf(
         contains('DCL-DR-001'),
+        contains('DCL-DR-001-F3'),
         contains('next manual'),
-        contains('open'),
-        contains('unimplemented'),
+        contains('locally fixed'),
+        contains('unproven'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
       ),
@@ -614,9 +619,10 @@ void main() {
       _markdownSection(ledger, 'Next Ledger Target Rule'),
       allOf(
         contains('DCL-DR-001'),
+        contains('DCL-DR-001-F3'),
         contains('next manual'),
-        contains('open'),
-        contains('unimplemented'),
+        contains('locally fixed'),
+        contains('unproven'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
       ),
@@ -682,8 +688,10 @@ void main() {
       'manual lean workflow',
       'DCL-DR-001',
       'DCL-DR-001-F2',
+      'DCL-DR-001-F3',
       'remains `open`',
-      'unimplemented',
+      'locally fixed',
+      'unproven',
       'Next manual action',
       'Never create an automatic successor task.',
     ]);
@@ -694,9 +702,11 @@ void main() {
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
       'DR-2026-07-16-001',
+      'DR-2026-07-16-002',
       'DCL-DR-001',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
       'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
+      'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
     ]);
   });
 }

@@ -89,7 +89,7 @@ animation quota.
 | Guided tools | `DCL-P1-003` | In progress | Major calculators have tank-context handoffs, explanations, warnings, and save/apply paths. | Audit every current tool handoff once; fix only a concrete save/apply defect, or close with no-current-gap evidence. |
 | Multi-tank | none | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | `DCL-P1-004` | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Audit current source labels and save handoffs once; fix only a concrete missing label/context/persistence defect, or close with no-current-gap evidence. |
-| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` maps the current restore matrix and fixes `DCL-DR-001-F1`, preserving both the initiating preference-restore error and snapshot-rollback error when both writes fail. `DCL-DR-001-F2` remains: dismissed/unavailable export sharing can show `Last backup` after deleting the only ZIP, without terminal feedback. Existing evidence also covers validation, tank/child rollback, referenced-photo-only extraction, best-effort restored-photo cleanup, no-tank preference guards, relationship preflight, migration, corruption recovery, and account-keyed cloud backup copy honesty. | Fix `DCL-DR-001-F2` test-first and account for adjacent completed-ZIP cleanup before selecting `DCL-DR-002`; do not bundle another restore gap into the same slice. |
+| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` maps the current restore matrix and fixes F1 preference error preservation. `DR-2026-07-16-002` fixes F2 so only affirmative share success records `Last backup`, returned non-success gets honest feedback, and completed-ZIP cleanup covers success, non-success, throw, and unmount. Existing evidence also covers validation, tank/child rollback, referenced-photo-only extraction, best-effort restored-photo cleanup, no-tank preference guards, relationship preflight, migration, corruption recovery, and account-keyed cloud backup copy honesty. | Prove `DCL-DR-001-F3` picker cancel/pathlessness next, then close the remaining ordered evidence gaps before selecting `DCL-DR-002`; fix only a concrete gap proven by the current test-first slice. |
 | Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Audit the current keyless/provider/privacy preference paths once; fix a concrete honesty or persistence defect, or close with no-current-gap evidence. |
 | Global search | none | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | none | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
@@ -285,11 +285,11 @@ rule applies to older accessibility, motion, content, and performance findings.
 
 ## Slice Selection Rule
 
-`DCL-DR-001` remains the next manual development task. `DCL-DR-001-F1` is
-locally fixed, while `DCL-DR-001-F2` is open and unimplemented. Begin the exact
-export-share outcome slice only after this checkpoint is clean, pushed, and
-aligned. Do not select `DCL-DR-002` until the restore matrix has no unexplained
-current path.
+`DCL-DR-001` remains the next manual development task. `DCL-DR-001-F1` and
+`DCL-DR-001-F2` are locally fixed, while `DCL-DR-001-F3` picker
+cancel/pathlessness remains unproven. Begin that exact evidence slice only
+after this checkpoint is clean, pushed, and aligned. Do not select
+`DCL-DR-002` until the restore matrix has no unexplained current path.
 
 This map may record a newly discovered regression or higher-risk category, but
 it cannot silently select a different product row. Frozen claim, budget,

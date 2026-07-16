@@ -471,6 +471,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       _progressValue = 0.0;
     });
 
+    String? completedZipPath;
     try {
       // Collect all data from storage
       final storage = ref.read(storageServiceProvider);
@@ -530,12 +531,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       );
 
       final zipPath = await backupService.createBackup(exportData);
+      completedZipPath = zipPath;
 
       if (!mounted) return;
-
-      setState(() {
-        _lastBackup = DateFormat('d MMM y h:mm a').format(DateTime.now());
-      });
 
       // Share the ZIP file
       final result = await Share.shareXFiles(
@@ -547,17 +545,25 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       if (!mounted) return;
 
-      // Clean up temp file after sharing.
-      try {
-        await File(zipPath).delete();
-      } catch (e) {
-        logError('Backup cleanup failed: $e', tag: 'BackupRestoreScreen');
-      }
-
-      if (!mounted) return;
-
-      if (result.status == ShareResultStatus.success) {
-        AppFeedback.showSuccess(context, 'Backup exported successfully!');
+      switch (result.status) {
+        case ShareResultStatus.success:
+          setState(() {
+            _lastBackup = DateFormat('d MMM y h:mm a').format(DateTime.now());
+          });
+          AppFeedback.showSuccess(context, 'Backup exported successfully!');
+          break;
+        case ShareResultStatus.dismissed:
+          AppFeedback.showWarning(
+            context,
+            "Backup wasn't saved. Choose a destination and try again.",
+          );
+          break;
+        case ShareResultStatus.unavailable:
+          AppFeedback.showWarning(
+            context,
+            "Danio couldn't confirm that the backup was saved. Check your destination before trying again.",
+          );
+          break;
       }
     } catch (e, st) {
       logError(
@@ -572,6 +578,16 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         );
       }
     } finally {
+      if (completedZipPath != null) {
+        try {
+          final completedZip = File(completedZipPath);
+          if (await completedZip.exists()) {
+            await completedZip.delete();
+          }
+        } catch (e) {
+          logError('Backup cleanup failed: $e', tag: 'BackupRestoreScreen');
+        }
+      }
       if (mounted) {
         setState(() {
           _isExporting = false;
