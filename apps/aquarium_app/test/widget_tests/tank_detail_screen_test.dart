@@ -183,6 +183,21 @@ class _DelegatingStorageService implements StorageService {
   Future<void> saveTask(Task task) => _delegate.saveTask(task);
 }
 
+class _MissingTankAfterLoadStorage extends _DelegatingStorageService {
+  _MissingTankAfterLoadStorage(super.delegate, {required this.missingTankId});
+
+  final String missingTankId;
+  bool tankMissing = false;
+
+  @override
+  Future<Tank?> getTank(String id) async {
+    if (tankMissing && id == missingTankId) {
+      return null;
+    }
+    return super.getTank(id);
+  }
+}
+
 class _CompletionLogFailsStorage extends _DelegatingStorageService {
   _CompletionLogFailsStorage(super.delegate);
 
@@ -256,6 +271,71 @@ void main() {
   });
 
   group('TankDetailScreen - task completion', () {
+    testWidgets(
+      'tank-detail task completion rejects a missing parent before writing',
+      (tester) async {
+        const tankId = 'tank-detail-task-complete-missing-parent';
+        final svc = InMemoryStorageService();
+        final missingTankStorage = _MissingTankAfterLoadStorage(
+          svc,
+          missingTankId: tankId,
+        );
+        await svc.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: 'task-detail-complete-missing-parent',
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(tankId, storage: missingTankStorage),
+        );
+        await _advance(tester);
+        await tester.scrollUntilVisible(
+          find.text('Rinse prefilter'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final taskTile = find.ancestor(
+          of: find.text('Rinse prefilter'),
+          matching: find.byType(ListTile),
+        );
+        final completeTaskButton = find.descendant(
+          of: taskTile,
+          matching: find.byTooltip('Complete task'),
+        );
+        await tester.ensureVisible(completeTaskButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        missingTankStorage.tankMissing = true;
+        expect(await missingTankStorage.getTank(tankId), isNull);
+        expect(await svc.getTasksForTank(tankId), hasLength(1));
+
+        await tester.tap(completeTaskButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        final storedTask = (await svc.getTasksForTank(tankId)).single;
+        expect(storedTask.completionCount, 0);
+        expect(storedTask.lastCompletedAt, isNull);
+        expect(await svc.getLogsForTank(tankId), isEmpty);
+        expect(
+          find.text('Couldn\'t complete that task. Try again.'),
+          findsOneWidget,
+        );
+        expect(find.text('Rinse prefilter completed!'), findsNothing);
+      },
+    );
+
     testWidgets(
       'stale tank-detail equipment-task completion does not recreate task or service equipment',
       (tester) async {

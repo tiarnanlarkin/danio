@@ -3,12 +3,12 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-025`
+Current epoch: `DR-2026-07-16-026`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-ten bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+eleven bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, and Tasks/Tank Detail Completion from creating orphan or
 recreated records under covered stale-ID/parent boundaries, prevent equipment
 Undo from leaving a partial restore, make review-answer commits authoritative,
@@ -52,7 +52,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
-| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11` protects Tank Detail from stale task IDs before task, log, equipment, XP, or success effects. Tank Detail missing-parent and later equipment-step boundaries remain open. |
+| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail from stale task IDs and missing parents before task, log, equipment, XP, or success effects. Later equipment-step boundaries remain open. |
 | Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback` | Save failure covered; a stale task or missing parent can still be recreated. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
 | Bulk log/task deletion | No current user-facing operation. | Not applicable. |
@@ -131,10 +131,14 @@ belongs to `DCL-DR-004` and is not selected here.
     behind its visible card or service linked equipment: fixed and focused
     GREEN in `DR-2026-07-16-025` under marker
     `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`.
-12. `DCL-DR-003-F12` - Tank Detail Completion must reject a missing durable
-    parent even while its visible task remains. Next marker:
+12. `DCL-DR-003-F12` - Tank Detail Completion rejects a missing durable parent
+    even while its visible task remains: fixed and focused GREEN in
+    `DR-2026-07-16-026` under marker
     `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`.
-13. Remaining equipment, livestock bulk, wishlist/shop stale-ID, and
+13. `DCL-DR-003-F13` - Equipment Mark Serviced must reject a stale equipment
+    ID before its first write. Next marker:
+    `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`.
+14. Remaining equipment-parent, livestock bulk, wishlist/shop stale-ID, and
     cross-store reward boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
