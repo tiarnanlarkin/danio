@@ -3,14 +3,17 @@
 // Run: flutter test test/widget_tests/backup_restore_screen_test.dart
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/screens/backup_restore_screen.dart';
@@ -56,6 +59,18 @@ class _StartedExport {
 
   final String zipPath;
   final bool existedAtShare;
+}
+
+class _StartedImportPreview {
+  const _StartedImportPreview({
+    required this.picker,
+    required this.zipPath,
+    required this.documentsDirectory,
+  });
+
+  final _FakeFilePicker picker;
+  final String zipPath;
+  final Directory documentsDirectory;
 }
 
 class _FakeFilePicker extends FilePicker {
@@ -139,6 +154,31 @@ class _WriteTrackingStorageService extends _RecoverableStorageService {
   }
 }
 
+class _WriteTrackingSharedPreferencesStore
+    extends InMemorySharedPreferencesStore {
+  _WriteTrackingSharedPreferencesStore.withData(super.data) : super.withData();
+
+  int writeCount = 0;
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) {
+    writeCount += 1;
+    return super.setValue(valueType, key, value);
+  }
+
+  @override
+  Future<bool> remove(String key) {
+    writeCount += 1;
+    return super.remove(key);
+  }
+
+  @override
+  Future<bool> clear() {
+    writeCount += 1;
+    return super.clear();
+  }
+}
+
 Future<_FakeFilePicker> _startImportWithPickerResult(
   WidgetTester tester, {
   required FilePickerResult? result,
@@ -158,6 +198,113 @@ Future<_FakeFilePicker> _startImportWithPickerResult(
   await tester.pump(const Duration(milliseconds: 300));
 
   return fakeFilePicker;
+}
+
+Future<_StartedImportPreview> _startValidImportPreview(
+  WidgetTester tester, {
+  required StorageService storage,
+}) async {
+  late final Directory root;
+  late final Directory documentsDirectory;
+  late final String zipPath;
+  late final int zipSize;
+
+  await tester.runAsync(() async {
+    root = await Directory.systemTemp.createTemp(
+      'danio_backup_confirm_cancel_test_',
+    );
+    documentsDirectory = await Directory(
+      '${root.path}${Platform.pathSeparator}documents',
+    ).create();
+    zipPath = '${root.path}${Platform.pathSeparator}confirmation-cancel.zip';
+
+    const timestamp = '2026-07-16T12:00:00.000Z';
+    final archive = Archive()
+      ..addFile(
+        ArchiveFile.string(
+          'backup.json',
+          jsonEncode({
+            'tanks': [
+              {
+                'id': 'confirmation-cancel-tank',
+                'name': 'Confirmation Cancel Tank',
+                'type': 'freshwater',
+                'volumeLitres': 100,
+                'startDate': timestamp,
+                'createdAt': timestamp,
+                'updatedAt': timestamp,
+                'imageUrl': 'photos/confirmation-cancel.jpg',
+              },
+            ],
+            'livestock': <Object>[],
+            'equipment': <Object>[],
+            'logs': <Object>[],
+            'tasks': <Object>[],
+            'sharedPreferences': {
+              '__backup_version': 1,
+              'exportDate': timestamp,
+              'entries': {'use_metric': false},
+            },
+          }),
+        ),
+      )
+      ..addFile(
+        ArchiveFile.string(
+          'photos/confirmation-cancel.jpg',
+          'confirmation cancel photo fixture',
+        ),
+      );
+    final zipBytes = ZipEncoder().encode(archive)!;
+    final zipFile = File(zipPath);
+    await zipFile.writeAsBytes(zipBytes);
+    zipSize = await zipFile.length();
+  });
+
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  addTearDown(() {
+    messenger.setMockMethodCallHandler(_pathProviderChannel, null);
+    if (root.existsSync()) {
+      root.deleteSync(recursive: true);
+    }
+  });
+  messenger.setMockMethodCallHandler(_pathProviderChannel, (call) async {
+    if (call.method == 'getApplicationDocumentsDirectory') {
+      return documentsDirectory.path;
+    }
+    throw MissingPluginException(
+      'Unexpected path_provider call during import preview: ${call.method}',
+    );
+  });
+
+  final picker = await _startImportWithPickerResult(
+    tester,
+    result: FilePickerResult([
+      PlatformFile(
+        name: 'confirmation-cancel.zip',
+        size: zipSize,
+        path: zipPath,
+      ),
+    ]),
+    storage: storage,
+  );
+
+  for (
+    var i = 0;
+    i < 300 && find.text('Import Backup?').evaluate().isEmpty;
+    i++
+  ) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
+    await tester.pump(const Duration(milliseconds: 10));
+  }
+
+  return _StartedImportPreview(
+    picker: picker,
+    zipPath: zipPath,
+    documentsDirectory: documentsDirectory,
+  );
 }
 
 Future<_StartedExport> _startExport(
@@ -801,6 +948,71 @@ void main() {
             "Danio couldn't access that backup file. Choose it again or try another ZIP.",
           ),
           findsOneWidget,
+        );
+        expect(
+          find.text('Import failed. The file may be invalid or corrupted.'),
+          findsNothing,
+        );
+      },
+    );
+  });
+
+  group('BackupRestoreScreen - confirmation outcomes', () {
+    testWidgets(
+      'canceling a valid preview returns idle without restore writes',
+      (tester) async {
+        final originalPreferencesStore =
+            SharedPreferencesStorePlatform.instance;
+        final preferenceStore = _WriteTrackingSharedPreferencesStore.withData({
+          'flutter.use_metric': true,
+        });
+        SharedPreferences.resetStatic();
+        SharedPreferencesStorePlatform.instance = preferenceStore;
+        addTearDown(() {
+          SharedPreferences.resetStatic();
+          SharedPreferencesStorePlatform.instance = originalPreferencesStore;
+        });
+        final storage = _WriteTrackingStorageService();
+        final started = await _startValidImportPreview(
+          tester,
+          storage: storage,
+        );
+        final preferences = await SharedPreferences.getInstance();
+        final photosDirectory = Directory(
+          '${started.documentsDirectory.path}${Platform.pathSeparator}photos',
+        );
+
+        expect(started.picker.pickCalls, 1);
+        expect(File(started.zipPath).existsSync(), isTrue);
+        expect(find.text('Import Backup?'), findsOneWidget);
+        expect(
+          find.textContaining('This will import 1 tank with all photos.'),
+          findsOneWidget,
+        );
+        expect(find.text('Cancel'), findsOneWidget);
+        expect(find.text('Import'), findsOneWidget);
+        expect(storage.importWriteCount, 0);
+        expect(preferenceStore.writeCount, 0);
+        expect(preferences.getBool('use_metric'), isTrue);
+        expect(preferences.getKeys(), {'use_metric'});
+        expect(photosDirectory.existsSync(), isFalse);
+
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Import Backup?'), findsNothing);
+        expect(find.text('Select Backup File'), findsOneWidget);
+        expect(find.text('Importing...'), findsNothing);
+        expect(find.byType(LinearProgressIndicator), findsNothing);
+        expect(storage.importWriteCount, 0);
+        expect(preferenceStore.writeCount, 0);
+        expect(preferences.getBool('use_metric'), isTrue);
+        expect(preferences.getKeys(), {'use_metric'});
+        expect(photosDirectory.existsSync(), isFalse);
+        expect(File(started.zipPath).existsSync(), isTrue);
+        expect(
+          find.text('Imported 1 tank with all data successfully!'),
+          findsNothing,
         );
         expect(
           find.text('Import failed. The file may be invalid or corrupted.'),

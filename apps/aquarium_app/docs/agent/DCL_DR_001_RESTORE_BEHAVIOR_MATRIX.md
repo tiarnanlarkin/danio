@@ -1,8 +1,8 @@
 # DCL-DR-001 Restore Behavior Matrix
 
 Status: advanced; `DCL-DR-001` remains open
-Latest epoch: `DR-2026-07-16-003`
-Latest marker: `danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`
+Latest epoch: `DR-2026-07-16-004`
+Latest marker: `danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`
 Initial marker: `danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1`
 Authority base: `ea0d3c41ad94a90ecc785e34c571eb0839fe558f`
 
@@ -24,7 +24,7 @@ cloud, signing, store, release, or iOS work.
 | File selection cancel or inaccessible selection | A cancelled or empty picker result returns to idle before preview with no feedback or writes. A selected item without a path returns to idle with access-specific feedback. The pinned Android picker's realistic `unknown_path` platform error receives the same feedback. Neither access failure is mislabeled as backup corruption. | `picker cancel returns idle without restore writes`; `empty picker result returns idle without restore writes`; `pathless selection returns idle with access feedback and no writes`; `unknown-path picker error returns idle with access feedback and no writes` | Accounted for. `DCL-DR-001-F3` proves custom ZIP selection parameters, idle restoration, zero tank/preference writes, and accurate access feedback. |
 | Preview | `getBackupData` checks file existence, decodes the ZIP, requires and validates `backup.json`, validates tanks, children, relationships, preferences, and referenced photos, then resolves portable photo paths without writing files. | `restores same-basename photos without overwriting local files`; all named `getBackupData rejects ...` cases in `backup_service_photo_restore_test.dart` | Accounted for; preview is read-only. |
 | Invalid ZIP or malformed backup | ZIP decode or any validation failure propagates to the screen catch, which performs best-effort photo cleanup if needed and shows `Import failed. The file may be invalid or corrupted.` Validation covers root/tank/child structure, required data, dates, enums, numeric ranges, recurrence, relationships, preferences, and photo archive integrity. | `import failure path cleans newly restored photos`; `restore screen cleanup helper keeps cleanup failures best effort`; the named `getBackupData rejects ...` families | Accounted for; validation occurs before restore writes. |
-| Confirmation and cancel | The preview tank count and merge/replace effects are shown before the confirm dialog. Any result other than explicit confirmation returns before photo extraction, tank writes, or preference replacement. | No named current test dismisses the confirm dialog; `shows clear import safety copy` and `user-facing copy describes local ZIP backup only` cover the copy contract only. | Source-explained, but direct executable confirmation-cancel evidence remains before closure. |
+| Confirmation and cancel | The preview tank count and merge/replace effects are shown before the confirm dialog. Any result other than explicit confirmation returns before photo extraction, tank writes, preference replacement, or provider invalidation. | `canceling a valid preview returns idle without restore writes`; `shows clear import safety copy`; `user-facing copy describes local ZIP backup only` | Accounted for. `DCL-DR-001-F4` drives a valid referenced-photo ZIP to the dialog and proves Cancel preserves the selected ZIP, performs zero storage and preference-platform writes, creates no photo directory, emits no import outcome, and restores idle UI. |
 | Confirmed photo restore | `restoreBackup` revalidates the archive, returns early for zero tanks, extracts only referenced photos under deterministic import-prefixed names, never overwrites existing files, and records only newly created paths. | `restores same-basename photos without overwriting local files`; `restoreBackup restores Windows-style photo archive entries`; `restoreBackup ignores archive photos that backup data does not reference` | Accounted for. |
 | Successful tank import | Backup tank and child IDs are preflighted and remapped, relationships remain tank-local, each imported tank is recorded before its save, and success is returned only after all tank-scoped writes finish. | `imports tank-scoped backup data with remapped relationships`; `regenerates imported tank ids that already exist locally`; `regenerates imported child ids that already exist locally` | Accounted for. |
 | No-tank import | Photo extraction returns zero without creating files, tank import returns zero, preference replacement and provider invalidation are skipped, and the screen warns `No tanks found in this backup file.` | `restoreBackup skips photo extraction when a backup has no tanks`; `skips preference restore when backup imports no tanks` | Accounted for; no app-wide preference false write remains. |
@@ -35,7 +35,7 @@ cloud, signing, store, release, or iOS work.
 | Preference restore failure after tank success | Imported tanks remain, preference failure is returned as a warning state, preference providers are not invalidated, and the screen reports that tanks imported but profile/preferences could not be restored. | `reports malformed preference payloads after importing tanks` | Accounted for; no false all-data success is shown. |
 | Tank-import failure photo cleanup | The import flow calls restored-photo cleanup before rethrowing the original tank import failure. Cleanup failure is logged and cannot replace that original failure. The screen catch repeats only the best-effort helper. | `runs restored photo cleanup when tank import fails`; `preserves tank import failure when restored photo cleanup also fails`; `import failure path cleans newly restored photos`; `restore screen cleanup helper keeps cleanup failures best effort` | Accounted for. |
 | Photo extraction failure cleanup | `restoreBackup` records a destination before writing and deletes all newly recorded paths if extraction throws. `cleanupLastRestoredPhotos` never removes pre-existing local files. | `cleanupLastRestoredPhotos removes only newly restored photos`; `restores same-basename photos without overwriting local files`; no named current test forces extraction to throw after creating a destination. | Source-explained with cleanup identity proof, but the mid-extraction failure branch lacks direct executable evidence before closure. |
-| User-visible terminal states | Export success feedback and `Last backup` are conditional on affirmative share success. Dismissed sharing says no backup was saved; unavailable sharing says saved status could not be confirmed; thrown export errors remain errors. Cancelled file selection is a silent no-op; inaccessible selection gets actionable access feedback; invalid/corrupt content remains an import error. Preference partial success and no-tank import are warnings; full import is success; all busy/progress state is cleared in `finally`. | The five named export-outcome tests above; the four named file-selection tests above; `user-facing copy describes local ZIP backup only`; `shows clear import safety copy`; `reports malformed preference payloads after importing tanks`; `skips preference restore when backup imports no tanks`; `import failure path cleans newly restored photos` | Accounted for through file selection and content validation. Returned non-success sharing and inaccessible selection no longer create false or misleading terminal state. |
+| User-visible terminal states | Export success feedback and `Last backup` are conditional on affirmative share success. Dismissed sharing says no backup was saved; unavailable sharing says saved status could not be confirmed; thrown export errors remain errors. Cancelled file selection and cancelled confirmation are silent no-ops; inaccessible selection gets actionable access feedback; invalid/corrupt content remains an import error. Preference partial success and no-tank import are warnings; full import is success; all busy/progress state is cleared in `finally`. | The five named export-outcome tests above; the four named file-selection tests above; `canceling a valid preview returns idle without restore writes`; `user-facing copy describes local ZIP backup only`; `shows clear import safety copy`; `reports malformed preference payloads after importing tanks`; `skips preference restore when backup imports no tanks`; `import failure path cleans newly restored photos` | Accounted for through confirmation cancellation. Returned non-success sharing, inaccessible selection, and cancelled confirmation do not create false or misleading terminal state. |
 
 ## Selected Finding Before Code
 
@@ -148,13 +148,41 @@ selected ahead of the user-visible F2 boundary.
   tank-import/rollback failure, and mid-extraction cleanup still lack direct
   executable evidence.
 
+## F4 Slice Boundary Before Code
+
+`DCL-DR-001-F4` is the only selected evidence gap for
+`danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`.
+
+- Drive a structurally valid ZIP with one referenced photo and one conflicting
+  exportable preference through preview to the `Import Backup?` dialog.
+- Cancel explicitly and prove the selected ZIP remains, no photo directory is
+  created, storage and preference-platform write counts remain zero, no import
+  outcome is shown, and the screen returns idle.
+- Implement product code only if current executable evidence exposes one
+  concrete false-success, cleanup, or feedback gap.
+
+## F4 Resolution And Verification
+
+- The focused proof passed on unchanged product code; no current F4 product gap
+  was found.
+- `canceling a valid preview returns idle without restore writes` confirms the
+  one-tank preview and Cancel action, then proves zero storage mutations, zero
+  SharedPreferences platform writes, no restored-photo directory, unchanged
+  `use_metric`, no success/error feedback, and cleared busy/progress state.
+- The picker, path-provider channel, preference platform, ZIP fixture, and
+  temporary directory are all restored or removed by test teardown.
+- `DCL-DR-001` remains open because simultaneous tank-import/rollback failure
+  and mid-extraction cleanup still lack direct executable evidence.
+
 ## Next Ordered Evidence Gap
 
-`DCL-DR-001-F4` is the confirmation-cancel proof slice with marker
-`danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`. It must drive a
-valid preview through the confirmation dialog, cancel it, and prove no photo,
-tank, or preference write occurs. Implement only if that executable proof
-reveals one concrete current false-success, cleanup, or feedback gap.
+`DCL-DR-001-F5` is the simultaneous tank-import/rollback-failure proof slice
+with marker
+`danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1`. It must
+force one initiating tank-scoped import failure plus `deleteAllTanks` failure,
+then prove the initiating and rollback errors remain separately inspectable.
+Implement only if that executable proof exposes one concrete error-replacement
+or cleanup gap.
 
 ## F1 Resolution And Verification
 
