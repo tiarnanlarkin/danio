@@ -119,8 +119,15 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
   }
 
   Future<void> updateItem(WishlistItem item) async {
+    final current = state;
+    final itemIndex = current.indexWhere((entry) => entry.id == item.id);
+    if (itemIndex == -1) {
+      throw StateError('Wishlist item ${item.id} was not found.');
+    }
+
     try {
-      final updated = state.map((e) => e.id == item.id ? item : e).toList();
+      final updated = [...current];
+      updated[itemIndex] = item;
       await _saveToStorage(updated);
       state = updated;
     } catch (e, stackTrace) {

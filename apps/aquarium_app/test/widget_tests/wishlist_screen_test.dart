@@ -60,6 +60,16 @@ class _FailingUndoWishlistNotifier extends WishlistNotifier {
   }
 }
 
+class _DeleteBeforeUpdateWishlistNotifier extends WishlistNotifier {
+  _DeleteBeforeUpdateWishlistNotifier(super.ref);
+
+  @override
+  Future<void> updateItem(WishlistItem item) async {
+    await super.removeItem(item.id);
+    await super.updateItem(item);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -165,6 +175,57 @@ void main() {
       await _advance(tester);
       expect(find.text('Neon Tetra'), findsOneWidget);
     });
+
+    testWidgets(
+      'editing a stale wishlist item shows error instead of false success',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'wishlist_items':
+              '[{"id":"wishlist-stale-edit","name":"Neon Tetra",'
+              '"category":"fish","species":"Paracheirodon innesi",'
+              '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+              '"quantity":6,"purchased":false,'
+              '"createdAt":"${DateTime.now().toIso8601String()}",'
+              '"purchasedAt":null}]',
+        });
+
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              wishlistProvider.overrideWith(
+                (ref) => _DeleteBeforeUpdateWishlistNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Neon Tetra'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Fish name'),
+          'Cardinal Tetra',
+        );
+        await tester.tap(find.text('Save Changes'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.text(
+            'Could not save that wishlist item. Try again in a moment.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Cardinal Tetra saved.'), findsNothing);
+        expect(find.text('Edit Item'), findsOneWidget);
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedItems =
+            jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+        expect(savedItems, isEmpty);
+      },
+    );
 
     testWidgets('tablet keeps wishlist item cards readable', (tester) async {
       await tester.binding.setSurfaceSize(const Size(2000, 1200));

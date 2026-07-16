@@ -3,18 +3,19 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-030`
+Current epoch: `DR-2026-07-16-031`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-fifteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+sixteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
 Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
 restore, keep livestock bulk-move counts honest, surface bulk-removal expiry
-failures, make review-answer commits authoritative, and make lesson progress
-precede rewards with a real retry after failure.
+failures, stop stale wishlist edits from reporting success, make review-answer
+commits authoritative, and make lesson progress precede rewards with a real
+retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
 needed for that boundary.
@@ -78,7 +79,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Path | Named current evidence | Result |
 | --- | --- | --- |
 | Wishlist add | `addItem waits for wishlist save before exposing the item`; `adding a wishlist item saves it and confirms the add` | Durability covered; add-failure UI lacks an exact test. |
-| Wishlist edit/delete | `removeItem keeps item visible until wishlist save completes`; delete/undo success and failure tests in `wishlist_screen_test.dart` | Open: `updateItem` and `removeItem` do not reject missing IDs, so stale actions can report false success. |
+| Wishlist edit/delete | RED/GREEN `editing a stale wishlist item shows error instead of false success`; `removeItem keeps item visible until wishlist save completes`; delete/undo success and failure tests in `wishlist_screen_test.dart` | `DCL-DR-003-F17` locally fixed: Edit verifies the item ID is still current before persistence, so a deletion behind the sheet remains durable and Save stays open with retry feedback instead of false success. Stale removal remains open. |
 | Wishlist purchase/budget | `markPurchased rejects missing items before reporting success`; `marking an item purchased saves it and updates budget`; `failed purchase keeps item unpurchased with error feedback`; `setMonthlyBudget waits for budget save before exposing amount` | Open: budget failure after purchase and failed compensation are not fully proven. |
 | Local shops | `addShop waits for local shop save before exposing shop`; add, delete/undo, delete-failure, and undo-failure widget tests | Open: `updateShop` and `removeShop` do not reject missing IDs. |
 | Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
@@ -152,12 +153,16 @@ belongs to `DCL-DR-004` and is not selected here.
     one user-facing retry message: fixed and focused GREEN in
     `DR-2026-07-16-030` under marker
     `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`.
-17. `DCL-DR-003-F17` - Wishlist Edit must reject an item deleted behind the
-    open sheet before Save. Next marker:
+17. `DCL-DR-003-F17` - Wishlist Edit rejects an item deleted behind the open
+    sheet before Save: fixed and focused GREEN in `DR-2026-07-16-031` under
+    marker
     `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`.
-18. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
-    it changes that row's backup relationship invariant. Wishlist removal,
-    local-shop stale-ID, and cross-store reward boundaries remain later slices.
+18. `DCL-DR-003-F18` - Wishlist Remove must reject an item deleted behind the
+    confirmation dialog. Next marker:
+    `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`.
+19. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+    it changes that row's backup relationship invariant. Local-shop stale-ID
+    and cross-store reward boundaries remain later slices after F18.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown
