@@ -226,6 +226,10 @@ class TankDetailScreen extends ConsumerWidget {
     final equipmentLogId = _uuid.v4();
 
     try {
+      final currentTasks = await storage.getTasksForTank(tankId);
+      if (!currentTasks.any((currentTask) => currentTask.id == task.id)) {
+        throw StateError('Cannot complete missing task ${task.id}');
+      }
       await storage.saveTask(completed);
       taskSaved = true;
 

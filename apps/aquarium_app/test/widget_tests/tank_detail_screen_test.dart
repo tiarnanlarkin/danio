@@ -256,6 +256,77 @@ void main() {
   });
 
   group('TankDetailScreen - task completion', () {
+    testWidgets(
+      'stale tank-detail equipment-task completion does not recreate task or service equipment',
+      (tester) async {
+        const tankId = 'tank-detail-task-complete-stale-id';
+        final svc = InMemoryStorageService();
+        final lastServiced = _now.subtract(const Duration(days: 30));
+        await svc.saveTank(_makeTank(id: tankId));
+        final equipment = Equipment(
+          id: 'equipment-detail-task-complete-stale-id',
+          tankId: tankId,
+          type: EquipmentType.filter,
+          name: 'Canister filter',
+          maintenanceIntervalDays: 30,
+          lastServiced: lastServiced,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveEquipment(equipment);
+        final task = Task(
+          id: 'task-detail-complete-stale-id',
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          relatedEquipmentId: equipment.id,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+
+        await tester.pumpWidget(_wrap(tankId, storage: svc));
+        await _advance(tester);
+        await tester.scrollUntilVisible(
+          find.text('Rinse prefilter'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final taskTile = find.ancestor(
+          of: find.text('Rinse prefilter'),
+          matching: find.byType(ListTile),
+        );
+        final completeTaskButton = find.descendant(
+          of: taskTile,
+          matching: find.byTooltip('Complete task'),
+        );
+        await tester.ensureVisible(completeTaskButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        await svc.deleteTask(task.id);
+        expect(await svc.getTasksForTank(tankId), isEmpty);
+
+        await tester.tap(completeTaskButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(await svc.getTasksForTank(tankId), isEmpty);
+        final storedEquipment = (await svc.getEquipmentForTank(tankId)).single;
+        expect(storedEquipment.lastServiced, lastServiced);
+        expect(await svc.getLogsForTank(tankId), isEmpty);
+        expect(
+          find.text('Couldn\'t complete that task. Try again.'),
+          findsOneWidget,
+        );
+        expect(find.text('Rinse prefilter completed!'), findsNothing);
+      },
+    );
+
     testWidgets('failed completion log write rolls back task completion', (
       tester,
     ) async {

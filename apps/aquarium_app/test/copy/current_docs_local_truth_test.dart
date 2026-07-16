@@ -262,7 +262,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-024',
+      'DR-2026-07-16-025',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -283,6 +283,7 @@ void main() {
       'DCL-DR-003-F8',
       'DCL-DR-003-F9',
       'DCL-DR-003-F10',
+      'DCL-DR-003-F11',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -295,6 +296,7 @@ void main() {
       'danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -352,7 +354,7 @@ void main() {
       [
         'Status: open',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
-        'DR-2026-07-16-024',
+        'DR-2026-07-16-025',
         'DCL-DR-003-F1',
         'Feed quick care rejects a missing tank before saving a log',
         'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -393,6 +395,9 @@ void main() {
         'DCL-DR-003-F10',
         'task completion rejects a missing parent before writing',
         'danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1',
+        'DCL-DR-003-F11',
+        'stale tank-detail equipment-task completion does not recreate task or service equipment',
+        'danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1',
       ],
     );
   });
@@ -939,7 +944,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-024',
+      'DR-2026-07-16-025',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -960,6 +965,7 @@ void main() {
       'DCL-DR-003-F8',
       'DCL-DR-003-F9',
       'DCL-DR-003-F10',
+      'DCL-DR-003-F11',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -972,6 +978,7 @@ void main() {
       'danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -983,7 +990,6 @@ void main() {
       'reconciliation plan',
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
-      'DR-2026-07-16-001',
       'DR-2026-07-16-002',
       'DR-2026-07-16-003',
       'DR-2026-07-16-004',
@@ -1007,9 +1013,9 @@ void main() {
       'DR-2026-07-16-022',
       'DR-2026-07-16-023',
       'DR-2026-07-16-024',
+      'DR-2026-07-16-025',
       'DCL-DR-001',
       'DCL-DR-002',
-      'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
       'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
       'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
       'danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1',
@@ -1034,6 +1040,14 @@ void main() {
       'danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1',
     ]);
+    _expectContainsAll(
+      'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
+      [
+        'DR-2026-07-16-001',
+        'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
+      ],
+    );
   });
 }
