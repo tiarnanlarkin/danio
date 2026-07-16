@@ -181,14 +181,22 @@ class WishlistScreen extends ConsumerWidget {
             .addPurchase(item.estimatedPrice! * item.quantity);
       }
     } catch (_) {
+      var purchaseRemainsCommitted = false;
       if (markedPurchased) {
         try {
           await wishlist.updateItem(item);
         } catch (_) {
-          // Leave provider rollback best-effort; the user-facing action failed.
+          purchaseRemainsCommitted = true;
         }
       }
       if (!context.mounted) return;
+      if (purchaseRemainsCommitted) {
+        AppFeedback.showWarning(
+          context,
+          '${item.name} was marked as purchased, but the budget could not be updated.',
+        );
+        return;
+      }
       AppFeedback.showError(
         context,
         'Could not mark ${item.name} as purchased. Try again in a moment.',
