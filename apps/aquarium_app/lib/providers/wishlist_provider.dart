@@ -381,8 +381,13 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
   }
 
   Future<void> removeShop(String id) async {
-    final updated = state.where((e) => e.id != id).toList();
+    final current = state;
+    if (!current.any((shop) => shop.id == id)) {
+      throw StateError('Local shop $id was not found.');
+    }
+
     try {
+      final updated = current.where((shop) => shop.id != id).toList();
       await _saveToStorage(updated);
       state = updated;
     } catch (e, stackTrace) {

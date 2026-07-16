@@ -3,17 +3,17 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-033`
+Current epoch: `DR-2026-07-16-034`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-eighteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+nineteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
 Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
 restore, keep livestock bulk-move counts honest, surface bulk-removal expiry
-failures, stop stale wishlist edits/removals and local-shop edits from reporting success, make review-answer
+failures, stop stale wishlist and local-shop edits/removals from reporting success, make review-answer
 commits authoritative, and make lesson progress precede rewards with a real
 retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
@@ -81,7 +81,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Wishlist add | `addItem waits for wishlist save before exposing the item`; `adding a wishlist item saves it and confirms the add` | Durability covered; add-failure UI lacks an exact test. |
 | Wishlist edit/delete | RED/GREEN `editing a stale wishlist item shows error instead of false success`; RED/GREEN `deleting a stale wishlist item shows error instead of false success`; `removeItem keeps item visible until wishlist save completes`; delete/undo success and failure tests in `wishlist_screen_test.dart` | `DCL-DR-003-F17/F18` locally fixed: Edit and Remove verify the item ID is still current before persistence, so a concurrent deletion remains durable and the UI shows retry feedback instead of false saved/removed success or Undo. |
 | Wishlist purchase/budget | `markPurchased rejects missing items before reporting success`; `marking an item purchased saves it and updates budget`; `failed purchase keeps item unpurchased with error feedback`; `setMonthlyBudget waits for budget save before exposing amount` | Open: budget failure after purchase and failed compensation are not fully proven. |
-| Local shops | `addShop waits for local shop save before exposing shop`; RED/GREEN `editing a stale local shop shows error instead of false success`; delete/undo, delete-failure, and undo-failure widget tests | `DCL-DR-003-F19` locally fixed: Edit verifies the shop ID is still current before persistence, so a concurrent deletion remains durable and the editor stays open with retry feedback instead of false saved success. Stale removal remains open. |
+| Local shops | `addShop waits for local shop save before exposing shop`; RED/GREEN `editing a stale local shop shows error instead of false success`; RED/GREEN `deleting a stale local shop shows error instead of false success`; delete/undo, delete-failure, and undo-failure widget tests | `DCL-DR-003-F19/F20` locally fixed: Edit and Remove verify the shop ID is still current before persistence, so a concurrent deletion remains durable and the UI shows retry feedback instead of false saved/removed success or Undo. |
 | Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
 | Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active` | Covered for current UI actions; currency rollback and stale-index evidence remain unexplained. |
 | Review card create/seed/delete/reset | Throw/false create and seed tests, delete rollback tests, and four-key reset rollback tests in `spaced_repetition_persistence_failure_test.dart` | Covered. |
@@ -163,12 +163,15 @@ belongs to `DCL-DR-004` and is not selected here.
 19. `DCL-DR-003-F19` - Local Shop Edit rejects a shop deleted behind its open
     sheet: fixed and focused GREEN in `DR-2026-07-16-033` under marker
     `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`.
-20. `DCL-DR-003-F20` - Local Shop Remove must reject a shop deleted behind its
-    confirmation dialog. Next marker:
+20. `DCL-DR-003-F20` - Local Shop Remove rejects a shop deleted behind its
+    confirmation dialog: fixed and focused GREEN in `DR-2026-07-16-034` under marker
     `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`.
-21. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
-    it changes that row's backup relationship invariant. Local-shop stale-ID
-    removal is F20; cross-store reward boundaries remain later slices.
+21. `DCL-DR-003-F21` - failed budget persistence plus failed purchase
+    compensation must report that the wishlist item stayed purchased. Next marker:
+    `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`.
+22. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+    it changes that row's backup relationship invariant. Other cross-store
+    reward boundaries remain later slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

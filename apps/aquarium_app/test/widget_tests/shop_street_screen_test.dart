@@ -58,6 +58,16 @@ class _DeleteBeforeUpdateLocalShopsNotifier extends LocalShopsNotifier {
   }
 }
 
+class _DeleteBeforeRemoveLocalShopsNotifier extends LocalShopsNotifier {
+  _DeleteBeforeRemoveLocalShopsNotifier(super.ref);
+
+  @override
+  Future<void> removeShop(String id) async {
+    await super.removeShop(id);
+    await super.removeShop(id);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -261,6 +271,56 @@ void main() {
         expect(find.text('Reef House saved.'), findsNothing);
         expect(find.text('Edit Shop'), findsOneWidget);
         expect(find.text('Save Changes'), findsOneWidget);
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedShops =
+            jsonDecode(prefs.getString('local_shops')!) as List<dynamic>;
+        expect(savedShops, isEmpty);
+      },
+    );
+
+    testWidgets(
+      'deleting a stale local shop shows error instead of false success',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'local_shops':
+              '[{"id":"shop-stale-remove","name":"Aquatic World",'
+              '"address":"12 River Road","phone":null,"website":null,'
+              '"distanceMiles":3.5,"rating":4.5,'
+              '"notes":"Good plant section",'
+              '"createdAt":"${DateTime.now().toIso8601String()}"}]',
+        });
+
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              localShopsProvider.overrideWith(
+                (ref) => _DeleteBeforeRemoveLocalShopsNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        await tester.scrollUntilVisible(
+          find.text('Local Fish Shops'),
+          500,
+          scrollable: find.byType(Scrollable),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byTooltip('Close'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Remove Shop'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.text('Could not remove Aquatic World. Try again in a moment.'),
+          findsOneWidget,
+        );
+        expect(find.text('Aquatic World removed'), findsNothing);
+        expect(find.text('Undo'), findsNothing);
 
         final prefs = await SharedPreferences.getInstance();
         final savedShops =
