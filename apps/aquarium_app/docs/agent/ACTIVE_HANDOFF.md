@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-014`
-Marker: `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-015`
+Marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -53,8 +53,13 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`: missing,
   zero-byte, and whitespace-only local JSON stores load healthy and empty with
   no rewrite, corruption artifact, recovery state, or invented entity.
-- F8 changed no product code, schema, provider, dependency, deletion behavior,
-  emulator, account, cloud, or release configuration; no later row was selected.
+- `DCL-DR-003` is mapped in `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md` and
+  remains `open` because the fresh inventory proved independent current gaps.
+- `DCL-DR-003-F1` is locally fixed under marker
+  `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`: Today Board Feed
+  rejects a missing tank before saving and cannot create an orphan/false success.
+- F1 changed no schema, provider contract, dependency, emulator, account,
+  cloud, or release configuration; no second gap or later row was selected.
 
 ## Frozen autonomy
 
@@ -88,15 +93,16 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- The next locked ledger row is verification-first `DCL-DR-003`. Continue only
-  under marker
-  `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1` after this F8
-  checkpoint is clean, pushed, and aligned; do not assume a product gap.
+- `DCL-DR-003` remains `open`. Its complete fresh matrix is recorded and
+  `DCL-DR-003-F1` is locally fixed. Continue only with its next ordered proven
+  gap under marker
+  `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1` after this F1
+  checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
   status. Read them only for the directly relevant row.
-- `DCL-DR-003` is verification-first until a current source/test inventory
-  proves one concrete gap.
+- The completed fresh `DCL-DR-003` matrix owns its remaining ordered findings;
+  each proven gap stays a separate data-safety slice.
 - The current 82 lessons, 75+ species, and 40+ plants are sufficient for phone
   completion. Only audited defects or validator failures require more content.
 - Visual and motion work has no asset-replacement or new-animation quota.
@@ -136,8 +142,9 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F8 checkpoint is clean, pushed, and aligned, begin the read-only
-`DCL-DR-003` create/edit/delete/undo resilience inventory under marker
-`danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Map every current
-path to named source/test evidence before selecting at most one concrete gap.
-Do not bundle `DCL-DR-004` or a later phone phase.
+After this F1 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-003-F2` under marker
+`danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`. Prove that a
+generated maintenance-task restore failure rolls back any equipment row already
+restored by Undo and retains honest failure feedback. Do not bundle another
+matrix finding, `DCL-DR-004`, or a later phone phase.

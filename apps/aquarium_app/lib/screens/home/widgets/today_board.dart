@@ -258,6 +258,10 @@ class _QuickCareRail extends ConsumerWidget {
     try {
       final now = DateTime.now();
       final storage = ref.read(storageServiceProvider);
+      final tank = await storage.getTank(tankId);
+      if (tank == null) {
+        throw StateError('Cannot save feeding log for missing tank $tankId');
+      }
       await storage.saveLog(
         LogEntry(
           id: 'quick-feed-${now.microsecondsSinceEpoch}',

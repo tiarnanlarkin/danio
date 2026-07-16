@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:danio/models/daily_goal.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/models/tank.dart';
 import 'package:danio/models/task.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
@@ -83,7 +84,26 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
 }
 
 class _LogOnlyStorageService implements StorageService {
+  _LogOnlyStorageService({this.hasTank = true});
+
+  final bool hasTank;
   final List<LogEntry> savedLogs = [];
+
+  @override
+  Future<Tank?> getTank(String id) async {
+    if (!hasTank) return null;
+    final now = DateTime(2026, 5, 23, 12);
+    return Tank(
+      id: id,
+      name: 'Test Tank',
+      type: TankType.freshwater,
+      volumeLitres: 80,
+      startDate: now,
+      targets: const WaterTargets(),
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
 
   @override
   Future<void> saveLog(LogEntry log) async => savedLogs.add(log);
@@ -271,6 +291,37 @@ void main() {
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.textContaining('Feeding logged'), findsOneWidget);
       expect(find.byType(AddLogScreen), findsNothing);
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('Feed quick care rejects a missing tank before saving a log', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final storage = _LogOnlyStorageService(hasTank: false);
+
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          dailyGoal: _completedGoal(),
+          tasks: [_task()],
+          logs: [_waterTest()],
+          storage: storage,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('Quick care action: Feed'));
+      await tester.pump();
+
+      expect(await storage.getLogsForTank('tank-1'), isEmpty);
+      expect(
+        find.text("Couldn't save that feeding. Try again."),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Feeding logged'), findsNothing);
     } finally {
       semantics.dispose();
     }

@@ -1,0 +1,97 @@
+# DCL-DR-003 CRUD And Undo Resilience Matrix
+
+Status: open
+Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
+Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
+Current epoch: `DR-2026-07-16-015`
+
+## Decision
+
+The fresh current-source inventory disproved a no-current-gap close. The first
+bounded fix, `DCL-DR-003-F1`, prevents Today Board quick Feed from creating a
+log after its parent tank has disappeared. `DCL-DR-003` remains open because
+the same inventory proved additional independent rollback, orphan, and
+false-success gaps. They must be handled as later single data-safety slices.
+
+This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
+belongs to `DCL-DR-004` and is not selected here.
+
+## Shared Storage Boundary
+
+| Path | Current source behavior | Named current evidence | Result |
+| --- | --- | --- | --- |
+| Single entity save/update | `LocalJsonStorageService` builds a copied map, persists it through `_commitMapsUnlocked`, and replaces visible memory only after persistence succeeds. | `failed saveTank does not expose unsaved tank in memory` | Covered by the shared commit path; exact log/task/equipment/livestock failure tests remain evidence follow-ups. |
+| Tank cascade delete | `deleteTank` commits tank, livestock, equipment, log, and task maps together. | `failed deleteTank keeps tank and children in memory` | Covered. |
+| Bulk tank write/delete | `saveTanks` and `deleteAllTanks` commit copied maps under the persistence lock. | `rolls back partial sort-order writes if bulk save fails`; `failed permanent bulk soft delete restores tank visibility` | Covered for current callers; a mixed bulk-expiry outcome has no exact test. |
+
+## Tank, Log, And Task Paths
+
+| Path | Named current evidence | Result |
+| --- | --- | --- |
+| Tank create plus default tasks | `creates a new tank and persists it to storage`; `creates default tasks along with the tank`; `rolls back tank and partial default tasks if default task save fails`; `successful guided creation closes the wizard` | Covered. |
+| Demo tank replacement/seed | `cleans up partial first-run demo data if seeding fails`; `replaces existing demo tanks without removing real tanks`; `restores previous demo data if replacement creation fails` | Covered. |
+| Tank edit | `updates tank and persists changes`; `rejects missing tank ids before saving an edit`; `successful save closes without dirty-change prompt` | Covered. |
+| Tank single delete/undo/expiry failure | `soft-deleted tank is excluded from tanksProvider`; `undoing soft-delete restores tank in tanksProvider`; `soft-delete does not remove tank from storage immediately`; `failed permanent soft delete restores tank visibility`; `failed delete expiry restores tank with retry feedback` | Covered. |
+| Tank bulk delete/undo | `bulk delete hides tanks but keeps them recoverable for undo`; `failed permanent bulk soft delete restores tank visibility` | Basic and failure behavior covered; mixed success/failure batch timing has no exact test. |
+| Tank reorder | `rolls back partial sort-order writes if bulk save fails` | Covered. |
+| Main log add/edit | `saves a water test once a parameter is entered`; `stale log edit ids are not recreated by save`; `missing tank ids do not create orphan log entries`; `editing an existing log does not award new XP` | Covered. |
+| Log delete/undo | `delete failure shows feedback and keeps log visible`; `undo restore failure shows feedback without throwing`; `undo does not restore a log after its parent tank was deleted` | Covered. |
+| Tank Detail quick Feed | `successful feeding log emits a tank feeding pulse`; `failed feeding log write shows normal error feedback`; `missing tank ids do not create orphan quick feeding logs` | Covered. |
+| Journal and symptom logs | `failed new entry save keeps sheet open with feedback`; `missing tank ids do not create orphan journal entries`; `stale tanks do not create orphan symptom triage journal logs` | Covered. |
+| Today Board quick Feed | RED observed a real orphan log when `getTank` returned null. GREEN: `Feed quick care rejects a missing tank before saving a log`; success remains covered by `Feed quick care action saves a feeding log directly` and `Feed quick care action emits a tank feeding pulse`. | `DCL-DR-003-F1` locally fixed. |
+| Other home/livestock quick Feed and quick-water shortcuts | Current source reaches `saveLog` without a durable-parent preflight. Existing success tests do not model disappearance. | Open product finding; do not bundle with F1. |
+| Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
+| Task delete/undo | `deleting a task shows undo and restores the task`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Undo covered; the primary delete-write failure has no exact test. |
+| Task completion | `completing a task shows success feedback`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | Initial rollback covered; stale task/parent and later equipment-step failures remain open. |
+| Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback` | Save failure covered; a stale task or missing parent can still be recreated. |
+| Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
+| Bulk log/task deletion | No current user-facing operation. | Not applicable. |
+
+## Equipment And Livestock Paths
+
+| Path | Named current evidence | Result |
+| --- | --- | --- |
+| Equipment create | `adding equipment shows success feedback`; `failed maintenance-task sync rolls back new equipment`; `profile activity failure after equipment add does not report add failure`; `missing tank ids do not create orphan equipment` | Covered. |
+| Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
+| Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved` | Covered. |
+| Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted` | Open: if equipment restore succeeds and task restore fails, equipment remains partially restored. This is the next slice. |
+| Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task` | Rollback covered; stale equipment/parent preflight remains open. |
+| Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
+| Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving` | Failure boundaries covered; ordinary success has no exact persistence assertion. |
+| Livestock move | `success feedback reports selected livestock count`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails` | Open: missing selected IDs are skipped while UI reports the original selected count. |
+| Livestock delete/expiry | `failed single removal expiry restores item with feedback`; `expired livestock removal does not log after parent tank deletion`; `expired bulk removal writes timeline logs` | Open: bulk expiry failure restores visibility without feedback; removal logs retain a deleted livestock reference. |
+
+## Wishlist, Cost, Review, And Reward Paths
+
+| Path | Named current evidence | Result |
+| --- | --- | --- |
+| Wishlist add | `addItem waits for wishlist save before exposing the item`; `adding a wishlist item saves it and confirms the add` | Durability covered; add-failure UI lacks an exact test. |
+| Wishlist edit/delete | `removeItem keeps item visible until wishlist save completes`; delete/undo success and failure tests in `wishlist_screen_test.dart` | Open: `updateItem` and `removeItem` do not reject missing IDs, so stale actions can report false success. |
+| Wishlist purchase/budget | `markPurchased rejects missing items before reporting success`; `marking an item purchased saves it and updates budget`; `failed purchase keeps item unpurchased with error feedback`; `setMonthlyBudget waits for budget save before exposing amount` | Open: budget failure after purchase and failed compensation are not fully proven. |
+| Local shops | `addShop waits for local shop save before exposing shop`; add, delete/undo, delete-failure, and undo-failure widget tests | Open: `updateShop` and `removeShop` do not reject missing IDs. |
+| Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
+| Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active` | Covered for current UI actions; currency rollback and stale-index evidence remain unexplained. |
+| Review card create/seed/delete/reset | Throw/false create and seed tests, delete rollback tests, and four-key reset rollback tests in `spaced_repetition_persistence_failure_test.dart` | Covered. |
+| Review answer/update | Scheduling/model tests and `records fallback answer and advances using returned result` | Open: card/stat save failure is swallowed, so the session advances and awards XP after persistence failed. |
+| Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; `exit dialog abandons active session before popping` | Partial persistence covered; later card/stat failure after other effects remains open. |
+| Gems | Grant/refund failure tests, add/spend cumulative rollback tests, and `reset surfaces failed local removals before reporting reset success` | Covered for direct writers; failed compensating refund remains unexplained. |
+| Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Covered for named paths; missing item, expired cleanup, and refund-failure boundaries remain unexplained. |
+| Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, and debug two-store reset rollback tests | Open: cross-store unlock/profile/gem partial failure can leave a durable unlock without a recoverable reward. |
+| Normal lesson rewards | `XP awarded and lesson marked complete after completeLesson`; practice-only failure `practice completion does not claim XP when XP save fails` | Open: quiz gems are awarded before profile completion; a failed profile save followed by Retry can duplicate gems and then report success without durable lesson progress. |
+
+## Ordered Findings
+
+1. `DCL-DR-003-F1` - Today Board missing-parent quick Feed orphan log: fixed
+   and focused GREEN in `DR-2026-07-16-015`.
+2. `DCL-DR-003-F2` - equipment delete Undo must roll back a restored equipment
+   row when generated maintenance-task restoration fails. Next marker:
+   `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`.
+3. Review-answer persistence failure must not advance or award XP.
+4. Normal lesson retry must not duplicate quiz gems or claim unsaved progress.
+5. Remaining orphan quick-log, stale task, livestock bulk, wishlist/shop stale-ID,
+   and cross-store reward boundaries remain separate future slices.
+
+`DCL-DR-003` must remain open until every open product finding is fixed or
+disproved and every unexplained evidence boundary is either covered or shown
+not to affect a current user-facing write path. Row closure still requires one
+final Full gate on its settled closing tree.
