@@ -262,7 +262,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-036',
+      'DR-2026-07-16-037',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -295,6 +295,7 @@ void main() {
       'DCL-DR-003-F20',
       'DCL-DR-003-F21',
       'DCL-DR-003-F22',
+      'DCL-DR-003-F23',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -319,6 +320,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1',
       'danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1',
       'danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1',
+      'danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -376,7 +378,7 @@ void main() {
       [
         'Status: open',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
-        'DR-2026-07-16-036',
+        'DR-2026-07-16-037',
         'DCL-DR-003-F1',
         'Feed quick care rejects a missing tank before saving a log',
         'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -453,6 +455,9 @@ void main() {
         'DCL-DR-003-F22',
         'rapid expense dismissals delete both expenses without stale-index failure',
         'danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1',
+        'DCL-DR-003-F23',
+        'completeSession does not fail after durable count and streak when stats mirror rejects save',
+        'danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1',
       ],
     );
   });
@@ -999,7 +1004,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-036',
+      'DR-2026-07-16-037',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -1032,6 +1037,7 @@ void main() {
       'DCL-DR-003-F20',
       'DCL-DR-003-F21',
       'DCL-DR-003-F22',
+      'DCL-DR-003-F23',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -1056,6 +1062,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1',
       'danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1',
       'danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1',
+      'danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -1067,7 +1074,6 @@ void main() {
       'reconciliation plan',
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
-      'DR-2026-07-16-013',
       'DR-2026-07-16-014',
       'DR-2026-07-16-015',
       'DR-2026-07-16-016',
@@ -1091,6 +1097,7 @@ void main() {
       'DR-2026-07-16-034',
       'DR-2026-07-16-035',
       'DR-2026-07-16-036',
+      'DR-2026-07-16-037',
       'DCL-DR-001',
       'DCL-DR-002',
       'DCL-DR-003-F13',
@@ -1103,7 +1110,7 @@ void main() {
       'DCL-DR-003-F20',
       'DCL-DR-003-F21',
       'DCL-DR-003-F22',
-      'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
+      'DCL-DR-003-F23',
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -1128,6 +1135,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1',
       'danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1',
       'danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1',
+      'danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1',
     ]);
     _expectContainsAll(
       'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
@@ -1144,6 +1152,7 @@ void main() {
         'DR-2026-07-16-010',
         'DR-2026-07-16-011',
         'DR-2026-07-16-012',
+        'DR-2026-07-16-013',
         'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
         'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
         'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
@@ -1156,6 +1165,7 @@ void main() {
         'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
         'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
         'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
+        'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
       ],
     );
   });

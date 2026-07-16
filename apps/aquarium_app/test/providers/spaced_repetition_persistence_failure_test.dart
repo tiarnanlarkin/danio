@@ -791,4 +791,62 @@ void main() {
       expect(statsData['streak'], 0);
     },
   );
+
+  test(
+    'completeSession does not fail after durable count and streak when stats mirror rejects save',
+    () async {
+      final originalCard = ReviewCard.newCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      final cardsJson = jsonEncode([originalCard.toJson()]);
+      final statsJson = jsonEncode({
+        'reviewsToday': 0,
+        'totalReviews': 0,
+        'streak': 0,
+        'lastReviewDate': DateTime.now().toIso8601String(),
+      });
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': cardsJson,
+        'spaced_repetition_stats': statsJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseSavesForKey(
+        prefs,
+        'spaced_repetition_stats',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.startSession();
+      expect(
+        container.read(spacedRepetitionProvider).currentSession,
+        isNotNull,
+      );
+
+      await notifier.completeSession();
+
+      final state = container.read(spacedRepetitionProvider);
+      final sessionsData =
+          jsonDecode(prefs.getString('spaced_repetition_sessions')!)
+              as Map<String, dynamic>;
+      final streakData =
+          jsonDecode(prefs.getString('spaced_repetition_streak')!)
+              as Map<String, dynamic>;
+      expect(state.currentSession, isNull);
+      expect(state.stats.currentStreak, 1);
+      expect(state.errorMessage, isNull);
+      expect(sessionsData['count'], 1);
+      expect(streakData['currentStreak'], 1);
+      expect(prefs.getString('spaced_repetition_stats'), statsJson);
+
+      await notifier.reload();
+
+      final reloaded = container.read(spacedRepetitionProvider);
+      expect(reloaded.cards.single.id, originalCard.id);
+      expect(reloaded.stats.currentStreak, 1);
+      expect(reloaded.errorMessage, isNull);
+    },
+  );
 }

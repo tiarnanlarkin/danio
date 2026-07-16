@@ -859,7 +859,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         clearResolvedQuestions: true,
         clearError: streakUpdated,
       );
-      await _saveData();
+      // Each answer already persisted its card and review totals. The streak
+      // key is authoritative, so no fallible mirror write belongs here.
 
       // Refresh notifications for next review
       await _scheduleNotifications();
