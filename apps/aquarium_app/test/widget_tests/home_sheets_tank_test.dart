@@ -163,6 +163,53 @@ void main() {
     expect(find.textContaining('Temp ('), findsNothing);
   });
 
+  testWidgets(
+    'quick water test rejects a missing parent before saving or rewarding',
+    (tester) async {
+      final initialProfile = _profile().copyWith(totalXp: 40);
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(initialProfile.toJson()),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_tank());
+
+      await tester.pumpWidget(
+        _wrap(storage: storage, showProfileProbe: true),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('profile ready'), findsOneWidget);
+
+      await tester.tap(find.text('Open quick test'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.widgetWithText(TextField, 'pH'), '7.2');
+
+      await storage.deleteTank(_tank().id);
+      expect(await storage.getTank(_tank().id), isNull);
+
+      await tester.tap(find.text('Save & Earn 10 XP'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(await storage.getLogsForTank(_tank().id), isEmpty);
+      final persistedProfile = UserProfile.fromJson(
+        jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+      );
+      expect(persistedProfile.totalXp, initialProfile.totalXp);
+      expect(find.text('Quick Water Test'), findsOneWidget);
+      expect(
+        find.text("Couldn't save that water test. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Water test logged! +10 XP'), findsNothing);
+      expect(
+        find.text('Water test logged. XP could not be saved.'),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('quick water test treats XP failure as non-blocking', (
     tester,
   ) async {
@@ -175,6 +222,7 @@ void main() {
       (key, _) => key == 'user_profile',
     );
     final storage = InMemoryStorageService();
+    await storage.saveTank(_tank());
 
     await tester.pumpWidget(
       _wrap(

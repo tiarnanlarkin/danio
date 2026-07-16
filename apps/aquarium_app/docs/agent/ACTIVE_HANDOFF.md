@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-020`
-Marker: `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-021`
+Marker: `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -59,13 +59,13 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   failed saves stay pending and abandoned sessions cannot resurrect.
 - `DCL-DR-003-F4` fixed: `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`;
   rewards follow durable lesson progress with honest failure feedback.
-- `DCL-DR-003-F5` is locally fixed under marker
-  `danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1`: the
-  Home main-Tank Feed shortcut rejects a missing durable parent before saving.
-- `DCL-DR-003-F6` is locally fixed under marker
-  `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`:
-  Livestock Feed rejects a missing parent before log, pulse, XP, or success.
-- F6 added no schema, dependency, emulator, account, cloud, or release change.
+- `DCL-DR-003-F5` fixed: `danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1`;
+  Home main-Tank Feed rejects a missing parent before saving.
+- `DCL-DR-003-F6` fixed: `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`; Livestock Feed rejects a missing parent before saving or rewarding.
+- `DCL-DR-003-F7` is locally fixed under marker
+  `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`:
+  Home Quick Water Test rejects a missing parent before saving or rewarding.
+- F7 added no schema, dependency, emulator, account, cloud, or release change.
 
 ## Frozen autonomy
 
@@ -97,9 +97,9 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; its matrix and F1 through F6 fixes are recorded.
+- `DCL-DR-003` remains `open`; its matrix and F1 through F7 fixes are recorded.
   Continue its next ordered gap under marker
-  `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1` after this F6
+  `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1` after this F7
   checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -144,7 +144,7 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After clean F6 alignment, continue `DCL-DR-003-F7` under marker
-`danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`;
-reject a missing Home Quick Water Test parent before saving. Do not bundle a
-second shortcut, `DCL-DR-004`, or a later phase.
+After clean F7 alignment, continue `DCL-DR-003-F8` under marker
+`danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`; prove a failed
+primary task delete keeps the task visible with honest feedback. Implement only
+if current proof exposes a gap; do not bundle task Undo or a later finding.

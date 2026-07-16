@@ -113,6 +113,13 @@ class _QuickWaterTestSheetState extends ConsumerState<_QuickWaterTestSheet> {
     }
 
     try {
+      final storage = ref.read(storageServiceProvider);
+      final durableTank = await storage.getTank(widget.tank.id);
+      if (durableTank == null) {
+        throw StateError(
+          'Cannot save quick water test for missing tank ${widget.tank.id}',
+        );
+      }
       final now = DateTime.now();
       final log = LogEntry(
         id: now.microsecondsSinceEpoch.toString(),
@@ -127,7 +134,6 @@ class _QuickWaterTestSheetState extends ConsumerState<_QuickWaterTestSheet> {
           ammonia: ammonia,
         ),
       );
-      final storage = ref.read(storageServiceProvider);
       await storage.saveLog(log);
       ref.invalidate(logsProvider(widget.tank.id));
       ref.invalidate(allLogsProvider(widget.tank.id));

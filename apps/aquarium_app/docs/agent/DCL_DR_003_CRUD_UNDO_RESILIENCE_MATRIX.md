@@ -3,15 +3,16 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-020`
+Current epoch: `DR-2026-07-16-021`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-six bounded fixes prevent Today Board, Home main-Tank, and Livestock quick Feed
-from creating orphan logs, prevent equipment Undo from leaving a partial
-restore, make review-answer commits authoritative, and make normal-lesson
-progress precede quiz rewards with a real retry after profile-write failure.
+seven bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+and Home Quick Water Test from creating orphan logs, prevent equipment Undo
+from leaving a partial restore, make review-answer commits authoritative, and
+make normal-lesson progress precede quiz rewards with a real retry after
+profile-write failure.
 `DCL-DR-003` remains open because the same inventory proved additional
 independent rollback, orphan, and false-success gaps. They must be handled as
 later single data-safety slices.
@@ -44,7 +45,8 @@ belongs to `DCL-DR-004` and is not selected here.
 | Today Board quick Feed | RED observed a real orphan log when `getTank` returned null. GREEN: `Feed quick care rejects a missing tank before saving a log`; success remains covered by `Feed quick care action saves a feeding log directly` and `Feed quick care action emits a tank feeding pulse`. | `DCL-DR-003-F1` locally fixed. |
 | Home main-Tank quick Feed | Existing success `main Tank Feed quick action saves a feeding log`; RED/GREEN `main Tank Feed quick action rejects a missing parent before saving a log` | `DCL-DR-003-F5` locally fixed: the action checks `getTank` before `saveLog`, so a stale displayed tank produces normal failure feedback with no log, success message, or feeding pulse. |
 | Livestock quick Feed | Existing success `successful feeding log emits a tank feeding pulse` and `successful feeding log refreshes all-log timeline data`; RED/GREEN `quick feeding rejects a missing parent before saving or rewarding` | `DCL-DR-003-F6` locally fixed: `getTank` now precedes `saveLog`, so stale parents yield normal error feedback without an orphan log, feeding pulse, XP animation, or success feedback. |
-| Home Quick Water Test and other quick-water shortcuts | Current source reaches `saveLog` without a durable-parent preflight. Existing success tests do not model disappearance. | Open product findings; keep each path in its own later slice. |
+| Home Quick Water Test | Existing non-blocking XP proof `quick water test treats XP failure as non-blocking`; RED/GREEN `quick water test rejects a missing parent before saving or rewarding` | `DCL-DR-003-F7` locally fixed: `getTank` now precedes `saveLog`, so a stale sheet stays open with failure feedback and cannot create an orphan log, XP, or success feedback. |
+| Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Undo covered; the primary delete-write failure has no exact test. |
 | Task completion | `completing a task shows success feedback`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | Initial rollback covered; stale task/parent and later equipment-step failures remain open. |
@@ -107,11 +109,15 @@ belongs to `DCL-DR-004` and is not selected here.
    parent before saving or rewarding: fixed and focused GREEN in
    `DR-2026-07-16-020` under marker
    `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`.
-7. `DCL-DR-003-F7` - the Home Quick Water Test path must reject a missing
-   durable parent before saving. Next marker:
+7. `DCL-DR-003-F7` - the Home Quick Water Test path rejects a missing durable
+   parent before saving or rewarding: fixed and focused GREEN in
+   `DR-2026-07-16-021` under marker
    `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`.
-8. Remaining quick-water, stale task, livestock bulk, wishlist/shop stale-ID,
-   and cross-store reward boundaries remain separate future slices.
+8. `DCL-DR-003-F8` - prove that a primary task-delete write failure keeps the
+   task visible with honest feedback. Next marker:
+   `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`.
+9. Remaining stale task, livestock bulk, wishlist/shop stale-ID, and
+   cross-store reward boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

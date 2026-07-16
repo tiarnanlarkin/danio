@@ -262,7 +262,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-020',
+      'DR-2026-07-16-021',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -279,6 +279,7 @@ void main() {
       'DCL-DR-003-F4',
       'DCL-DR-003-F5',
       'DCL-DR-003-F6',
+      'DCL-DR-003-F7',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -287,6 +288,7 @@ void main() {
       'danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1',
+      'danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -344,7 +346,7 @@ void main() {
       [
         'Status: open',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
-        'DR-2026-07-16-020',
+        'DR-2026-07-16-021',
         'DCL-DR-003-F1',
         'Feed quick care rejects a missing tank before saving a log',
         'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -373,6 +375,9 @@ void main() {
         'DCL-DR-003-F6',
         'quick feeding rejects a missing parent before saving or rewarding',
         'danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1',
+        'DCL-DR-003-F7',
+        'quick water test rejects a missing parent before saving or rewarding',
+        'danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1',
       ],
     );
   });
@@ -919,7 +924,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-020',
+      'DR-2026-07-16-021',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -936,6 +941,7 @@ void main() {
       'DCL-DR-003-F4',
       'DCL-DR-003-F5',
       'DCL-DR-003-F6',
+      'DCL-DR-003-F7',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -944,6 +950,7 @@ void main() {
       'danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1',
+      'danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -975,6 +982,7 @@ void main() {
       'DR-2026-07-16-018',
       'DR-2026-07-16-019',
       'DR-2026-07-16-020',
+      'DR-2026-07-16-021',
       'DCL-DR-001',
       'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
@@ -998,6 +1006,7 @@ void main() {
       'danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1',
+      'danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1',
     ]);
   });
 }
