@@ -172,6 +172,7 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
+      await storage.saveTank(tank);
 
       await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
       await tester.pump();
@@ -196,6 +197,51 @@ void main() {
       expect(find.byKey(const Key('tank-feeding-pulse-1')), findsOneWidget);
       expect(find.byType(AddLogScreen), findsNothing);
     });
+
+    testWidgets(
+      'main Tank Feed quick action rejects a missing parent before saving a log',
+      (tester) async {
+        suppressLayoutErrors();
+        final storage = InMemoryStorageService();
+        final now = DateTime(2026, 1, 1);
+        final tank = Tank(
+          id: 'missing-quick-feed-${DateTime.now().microsecondsSinceEpoch}',
+          name: 'Missing Quick Feed Tank',
+          type: TankType.freshwater,
+          volumeLitres: 100,
+          startDate: now,
+          targets: WaterTargets.freshwaterTropical(),
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 5));
+
+        await tester.tap(find.bySemanticsLabel('Open action menu'));
+        await tester.pump(const Duration(milliseconds: 800));
+        final feedTapTarget = tester.widget<GestureDetector>(
+          find
+              .ancestor(
+                of: find.text('Feed'),
+                matching: find.byType(GestureDetector),
+              )
+              .first,
+        );
+        feedTapTarget.onTap!();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        final logs = await storage.getLogsForTank(tank.id);
+        expect(logs, isEmpty);
+        expect(
+          find.text("Couldn't save that feeding. Try again."),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Feeding logged'), findsNothing);
+        expect(find.byKey(const Key('tank-feeding-pulse-1')), findsNothing);
+      },
+    );
 
     testWidgets('Tank top bar opens Emergency Guide', (tester) async {
       suppressLayoutErrors();

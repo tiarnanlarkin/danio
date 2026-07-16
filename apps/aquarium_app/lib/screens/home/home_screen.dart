@@ -282,6 +282,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final now = DateTime.now();
       final storage = ref.read(storageServiceProvider);
+      final durableTank = await storage.getTank(tank.id);
+      if (durableTank == null) {
+        throw StateError(
+          'Cannot save quick feeding for missing tank ${tank.id}',
+        );
+      }
       await storage.saveLog(
         LogEntry(
           id: now.microsecondsSinceEpoch.toString(),
