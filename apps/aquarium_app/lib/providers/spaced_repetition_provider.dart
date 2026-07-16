@@ -275,14 +275,42 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
+  Future<void> _restoreStringPreferenceAfterSaveFailure(
+    SharedPreferences prefs,
+    String key,
+    String? value,
+  ) async {
+    try {
+      if (value == null) {
+        await _removeOrThrow(prefs, key);
+      } else {
+        await _setStringOrThrow(prefs, key, value);
+      }
+    } catch (e, stackTrace) {
+      logError(
+        'SpacedRepetitionProvider: failed to restore $key after save failure: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
+    }
+  }
+
   /// Save cards to storage
   Future<void> _saveData() async {
+    SharedPreferences? prefs;
+    String? originalCardsJson;
+    String? originalStatsJson;
+    var capturedOriginals = false;
+
     try {
-      final prefs = await _ref.read(sharedPreferencesProvider.future);
+      final preferences = await _ref.read(sharedPreferencesProvider.future);
+      prefs = preferences;
+      originalCardsJson = preferences.getString(_storageKey);
+      originalStatsJson = preferences.getString(_statsKey);
+      capturedOriginals = true;
 
       // Save cards
       final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
-      await _setStringOrThrow(prefs, _storageKey, cardsJson);
+      await _setStringOrThrow(preferences, _storageKey, cardsJson);
 
       // Save stats
       final statsData = {
@@ -291,8 +319,21 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'streak': state.stats.currentStreak,
         'lastReviewDate': DateTime.now().toIso8601String(),
       };
-      await _setStringOrThrow(prefs, _statsKey, jsonEncode(statsData));
+      await _setStringOrThrow(preferences, _statsKey, jsonEncode(statsData));
     } catch (e, stackTrace) {
+      final preferences = prefs;
+      if (preferences != null && capturedOriginals) {
+        await _restoreStringPreferenceAfterSaveFailure(
+          preferences,
+          _storageKey,
+          originalCardsJson,
+        );
+        await _restoreStringPreferenceAfterSaveFailure(
+          preferences,
+          _statsKey,
+          originalStatsJson,
+        );
+      }
       throw Exception('Failed to save review data: $e\n$stackTrace');
     }
   }
@@ -550,8 +591,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
-  /// Update a review card after an attempt
-  /// Card scheduling errors will not break review flow
+  /// Update a review card after an attempt.
+  ///
+  /// Persistence failures are rethrown so callers cannot advance the session
+  /// or award XP for an answer that was not durably recorded.
   Future<void> reviewCard({
     required String cardId,
     required bool correct,
@@ -561,7 +604,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "That review card couldn't be found.",
       );
-      return; // Don't break flow
+      throw StateError('Review card not found: $cardId');
     }
 
     // Store original state for potential rollback
@@ -597,7 +640,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       await _saveData();
     } catch (e, stackTrace) {
-      // Rollback on save failure, but don't break review flow
+      // Roll back visible state and make the failure authoritative to callers.
       state = state.copyWith(
         cards: originalCards,
         stats: originalStats,
@@ -608,7 +651,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'Failed to save review result: $e\n$stackTrace',
         tag: 'SpacedRepetitionProvider',
       );
-      // Don't rethrow - let review flow continue
+      Error.throwWithStackTrace(e, stackTrace);
     }
   }
 
@@ -701,20 +744,23 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
-  /// Record result for current session card
-  /// Errors in card scheduling will not break the session
+  /// Record result for current session card.
+  ///
+  /// The session result is exposed only after the card and aggregate review
+  /// statistics have both been saved successfully.
   Future<ReviewSessionResult> recordSessionResult({
     required String cardId,
     required bool correct,
     required Duration timeSpent,
   }) async {
-    if (state.currentSession == null) {
+    final activeSession = state.currentSession;
+    if (activeSession == null) {
       throw Exception('No active session');
     }
 
     try {
       // Find the card
-      final card = state.currentSession!.cards.firstWhere(
+      final card = activeSession.cards.firstWhere(
         (c) => c.id == cardId,
         orElse: () => throw Exception('Card not found in session: $cardId'),
       );
@@ -736,22 +782,29 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       // Update session
-      final updatedResults = [...state.currentSession!.results, result];
+      final updatedResults = [...activeSession.results, result];
       final updatedSession = ReviewSession(
-        id: state.currentSession!.id,
-        startTime: state.currentSession!.startTime,
-        endTime: updatedResults.length == state.currentSession!.cards.length
+        id: activeSession.id,
+        startTime: activeSession.startTime,
+        endTime: updatedResults.length == activeSession.cards.length
             ? DateTime.now()
             : null,
-        cards: state.currentSession!.cards,
+        cards: activeSession.cards,
         results: updatedResults,
-        mode: state.currentSession!.mode,
+        mode: activeSession.mode,
       );
 
-      state = state.copyWith(currentSession: updatedSession, clearError: true);
-
-      // Update the card itself (this has its own error handling)
+      // Persist scheduling and review totals before exposing session progress.
       await reviewCard(cardId: cardId, correct: correct);
+
+      // Do not resurrect a session that was abandoned or replaced while the
+      // durable save was pending.
+      if (identical(state.currentSession, activeSession)) {
+        state = state.copyWith(
+          currentSession: updatedSession,
+          clearError: true,
+        );
+      }
 
       return result;
     } catch (e, stackTrace) {

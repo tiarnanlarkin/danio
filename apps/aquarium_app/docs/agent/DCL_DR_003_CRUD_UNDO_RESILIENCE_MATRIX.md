@@ -3,16 +3,17 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-016`
+Current epoch: `DR-2026-07-16-017`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-two bounded fixes prevent Today Board quick Feed from creating an orphan log and
-prevent equipment Undo from leaving a partial restore when its maintenance-task
-restore fails. `DCL-DR-003` remains open because the same inventory proved
-additional independent rollback, orphan, and false-success gaps. They must be
-handled as later single data-safety slices.
+three bounded fixes prevent Today Board quick Feed from creating an orphan log,
+prevent equipment Undo from leaving a partial restore, and make review-answer
+commit outcomes authoritative across save, abandon, stale-card, and downstream
+XP-failure boundaries. `DCL-DR-003` remains open because the same inventory
+proved additional independent rollback, orphan, and false-success gaps. They
+must be handled as later single data-safety slices.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -73,7 +74,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
 | Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active` | Covered for current UI actions; currency rollback and stale-index evidence remain unexplained. |
 | Review card create/seed/delete/reset | Throw/false create and seed tests, delete rollback tests, and four-key reset rollback tests in `spaced_repetition_persistence_failure_test.dart` | Covered. |
-| Review answer/update | Scheduling/model tests and `records fallback answer and advances using returned result` | Next product finding: card/stat save failure is swallowed, so the session advances and awards XP after persistence failed. |
+| Review answer/update | Success remains covered by scheduling/model tests and `records fallback answer and advances using returned result`; RED/GREEN `recordSessionResult keeps the answer pending when review-card save fails`; `recordSessionResult restores the card when review-stats save fails`; `recordSessionResult rejects a session card missing from saved cards`; `recordSessionResult does not resurrect an abandoned session after save`; `failed review save neither advances nor awards XP`; `failed XP save does not retry an already recorded answer` | `DCL-DR-003-F3` locally fixed: two-key save compensation preserves the initiating failure, only the still-active session advances, missing durable cards fail, review-save failure awards no XP and stays retryable, and downstream XP failure cannot retry the durable answer. |
 | Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; `exit dialog abandons active session before popping` | Partial persistence covered; later card/stat failure after other effects remains open. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, and `reset surfaces failed local removals before reporting reset success` | Covered for direct writers; failed compensating refund remains unexplained. |
 | Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Covered for named paths; missing item, expired cleanup, and refund-failure boundaries remain unexplained. |
@@ -88,10 +89,13 @@ belongs to `DCL-DR-004` and is not selected here.
    when generated maintenance-task restoration fails: fixed and focused GREEN
    in `DR-2026-07-16-016` under marker
    `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`.
-3. `DCL-DR-003-F3` - review-answer persistence failure must not advance or
-   award XP. Next marker:
+3. `DCL-DR-003-F3` - review-answer commit remains honest across card/stat save,
+   stale-card, abandon-during-save, and downstream XP failure: fixed and focused
+   GREEN in `DR-2026-07-16-017` under marker
    `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`.
-4. Normal lesson retry must not duplicate quiz gems or claim unsaved progress.
+4. `DCL-DR-003-F4` - normal lesson retry must not duplicate quiz gems or claim
+   unsaved progress. Next marker:
+   `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`.
 5. Remaining orphan quick-log, stale task, livestock bulk, wishlist/shop stale-ID,
    and cross-store reward boundaries remain separate future slices.
 

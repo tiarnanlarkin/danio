@@ -417,23 +417,61 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     if (_questionStartTime == null || _isSubmitting) return;
 
     final timeSpent = DateTime.now().difference(_questionStartTime!);
+    final isBoostActive = ref.read(xpBoostActiveProvider);
+    final profileNotifier = ref.read(userProfileProvider.notifier);
 
     setState(() => _isSubmitting = true);
 
     try {
-      final result = await ref
-          .read(spacedRepetitionProvider.notifier)
-          .recordSessionResult(
-            cardId: _currentCard.id,
-            correct: correct,
-            timeSpent: timeSpent,
-          );
+      late final ReviewSessionResult result;
+      ReviewSession? latestSession;
 
-      final latestSession = ref.read(spacedRepetitionProvider).currentSession;
-      final isBoostActive = ref.read(xpBoostActiveProvider);
-      await ref
-          .read(userProfileProvider.notifier)
-          .addXp(result.xpEarned, xpBoostActive: isBoostActive);
+      try {
+        result = await ref
+            .read(spacedRepetitionProvider.notifier)
+            .recordSessionResult(
+              cardId: _currentCard.id,
+              correct: correct,
+              timeSpent: timeSpent,
+            );
+        if (mounted) {
+          latestSession = ref.read(spacedRepetitionProvider).currentSession;
+        }
+      } catch (e, st) {
+        logError(
+          'SpacedRepetitionScreen: record answer failed: $e',
+          stackTrace: st,
+          tag: 'SpacedRepetitionScreen',
+        );
+        if (mounted) {
+          setState(() {
+            _errorMessage =
+                'Couldn\'t save your answer. It wasn\'t recorded, so please try again.';
+          });
+
+          DanioSnackBar.error(
+            context,
+            'Couldn\'t record that answer, try again',
+            onRetry: () => _recordAnswer(correct, autoAdvance: autoAdvance),
+          );
+        }
+        return;
+      }
+
+      Object? xpFailure;
+      try {
+        await profileNotifier.addXp(
+          result.xpEarned,
+          xpBoostActive: isBoostActive,
+        );
+      } catch (e, st) {
+        xpFailure = e;
+        logError(
+          'SpacedRepetitionScreen: XP update failed after answer save: $e',
+          stackTrace: st,
+          tag: 'SpacedRepetitionScreen',
+        );
+      }
 
       if (mounted) {
         setState(() {
@@ -443,24 +481,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         if (autoAdvance) {
           _nextCard();
         }
-      }
-    } catch (e, st) {
-      logError(
-        'SpacedRepetitionScreen: record answer failed: $e',
-        stackTrace: st,
-        tag: 'SpacedRepetitionScreen',
-      );
-      if (mounted) {
-        setState(() {
-          _errorMessage =
-              'Couldn\'t save your answer. Your progress is still tracked.';
-        });
 
-        DanioSnackBar.error(
-          context,
-          'Couldn\'t record that answer, try again',
-          onRetry: () => _recordAnswer(correct, autoAdvance: autoAdvance),
-        );
+        if (xpFailure != null && mounted) {
+          DanioSnackBar.error(
+            context,
+            'Answer saved, but the XP update was not confirmed',
+          );
+        }
       }
     } finally {
       if (mounted) {

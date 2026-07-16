@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-016`
-Marker: `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-017`
+Marker: `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -15,19 +15,14 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   baseline authorities.
 - `DCL-DR-001` is `closed`: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
   `DCL-DR-001-F3` are locally fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and
-  `DCL-DR-001-F6` are locally verified. Its complete ordered evidence remains in
-  `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
-- `DCL-DR-002` is now mapped in
-  `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and is `closed`.
+  `DCL-DR-001-F6` are locally verified in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
+- `DCL-DR-002` is `closed` in `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
 - `DCL-DR-002-F1` is locally fixed under marker
   `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: both
-  corrupted and I/O-failed local storage expose the real `retryLoad` action,
-  while destructive start fresh remains exclusive to confirmed corruption.
+  error states expose `retryLoad`; start fresh remains corruption-only.
 - `DCL-DR-002-F2` is locally fixed under marker
   `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`: failed corrupt-file
-  backup no longer exposes a nonexistent recovery path, and the card/dialog
-  warn honestly while keeping the damaged original until explicit start fresh.
-  Successful copies retain their path and copy-preserved wording.
+  backup no longer exposes a nonexistent path; successful-copy behavior remains.
 - `DCL-DR-002-F3` is locally verified with no current product gap under marker
   `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`: an unchanged real
   malformed file remains corrupted and blocks empty-data reads after retry,
@@ -62,8 +57,13 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`: failed task
   restoration rolls back equipment already restored by the same Undo, while
   route-independent invalidation refreshes watchers after leaving the screen.
-- F2 changed no schema, provider contract, dependency, emulator, account,
-  cloud, or release configuration; no second gap or later row was selected.
+- `DCL-DR-003-F3` is locally fixed under marker
+  `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`: review-card
+  and review-stat save failures attempt two-key compensation, preserve the
+  initiating failure, stay pending, and award no XP. Missing durable cards fail,
+  delayed saves cannot resurrect abandoned sessions, and XP failure cannot retry.
+- F3 changed no schema, dependency, emulator, account, cloud, or release
+  configuration; no second gap or later row was selected.
 
 ## Frozen autonomy
 
@@ -95,9 +95,9 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; its matrix and F1/F2 fixes are recorded. Continue
-  its next ordered gap under marker
-  `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1` after this F2
+- `DCL-DR-003` remains `open`; its matrix and F1/F2/F3 fixes are recorded.
+  Continue its next ordered gap under marker
+  `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1` after this F3
   checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -142,8 +142,9 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F2 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-003-F3` under marker
-`danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`. Prove that a
-review-card or review-stat persistence failure cannot advance the session or
-award XP. Do not bundle another matrix finding, `DCL-DR-004`, or a later phase.
+After this F3 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-003-F4` under marker
+`danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`. Prove that a
+failed normal-lesson profile completion followed by Retry cannot duplicate quiz
+gems or claim unsaved lesson progress. Do not bundle another matrix finding,
+`DCL-DR-004`, or a later phase.

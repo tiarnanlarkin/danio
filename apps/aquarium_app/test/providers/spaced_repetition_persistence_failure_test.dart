@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:danio/models/achievements.dart';
@@ -36,6 +37,9 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   }
 
   @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
@@ -61,6 +65,9 @@ class _FalseSetStringPrefs implements SharedPreferences {
     }
     return _delegate.setString(key, value);
   }
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -92,6 +99,39 @@ class _FalseRemovePrefs implements SharedPreferences {
     }
     return _delegate.remove(key);
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _BlockingSetStringPrefs implements SharedPreferences {
+  _BlockingSetStringPrefs(this._delegate);
+
+  final SharedPreferences _delegate;
+  final cardSaveStarted = Completer<void>();
+  final releaseCardSave = Completer<void>();
+  bool blockCardSaves = false;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    if (blockCardSaves && key == 'spaced_repetition_cards') {
+      if (!cardSaveStarted.isCompleted) cardSaveStarted.complete();
+      await releaseCardSave.future;
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -138,6 +178,18 @@ Future<void> _waitForLoad(ProviderContainer container) async {
     if (!container.read(spacedRepetitionProvider).isLoading) return;
     await Future<void>.delayed(Duration.zero);
   }
+}
+
+ProviderContainer _containerWithPreferences(SharedPreferences prefs) {
+  return ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async => prefs),
+      notificationServiceProvider.overrideWithValue(
+        _NoopReminderNotificationService(),
+      ),
+      achievementCheckerProvider.overrideWith(_NoopAchievementChecker.new),
+    ],
+  );
 }
 
 ProviderContainer _containerWithFailingCardSaves(SharedPreferences prefs) {
@@ -504,6 +556,171 @@ void main() {
       expect(prefs.getString('spaced_repetition_stats'), statsJson);
       expect(prefs.getString('spaced_repetition_streak'), streakJson);
       expect(prefs.getString('spaced_repetition_sessions'), sessionsJson);
+    },
+  );
+
+  test(
+    'recordSessionResult keeps the answer pending when review-card save fails',
+    () async {
+      final originalCard = ReviewCard.newCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      final cardsJson = jsonEncode([originalCard.toJson()]);
+      final statsJson = jsonEncode({
+        'reviewsToday': 0,
+        'totalReviews': 0,
+        'streak': 0,
+        'lastReviewDate': DateTime.now().toIso8601String(),
+      });
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': cardsJson,
+        'spaced_repetition_stats': statsJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseCardSaves(prefs);
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.startSession();
+
+      final session = container.read(spacedRepetitionProvider).currentSession!;
+      expect(session.results, isEmpty);
+
+      await expectLater(
+        notifier.recordSessionResult(
+          cardId: session.cards.single.id,
+          correct: true,
+          timeSpent: const Duration(seconds: 3),
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      final state = container.read(spacedRepetitionProvider);
+      expect(state.currentSession!.results, isEmpty);
+      expect(state.cards.single.reviewCount, originalCard.reviewCount);
+      expect(state.stats.reviewsToday, 0);
+      expect(state.stats.totalReviews, 0);
+      expect(prefs.getString('spaced_repetition_cards'), cardsJson);
+      expect(prefs.getString('spaced_repetition_stats'), statsJson);
+    },
+  );
+
+  test(
+    'recordSessionResult restores the card when review-stats save fails',
+    () async {
+      final originalCard = ReviewCard.newCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      final cardsJson = jsonEncode([originalCard.toJson()]);
+      final statsJson = jsonEncode({
+        'reviewsToday': 0,
+        'totalReviews': 0,
+        'streak': 0,
+        'lastReviewDate': DateTime.now().toIso8601String(),
+      });
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': cardsJson,
+        'spaced_repetition_stats': statsJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseSavesForKey(
+        prefs,
+        'spaced_repetition_stats',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.startSession();
+
+      final session = container.read(spacedRepetitionProvider).currentSession!;
+      await expectLater(
+        notifier.recordSessionResult(
+          cardId: session.cards.single.id,
+          correct: true,
+          timeSpent: const Duration(seconds: 3),
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      final state = container.read(spacedRepetitionProvider);
+      expect(state.currentSession!.results, isEmpty);
+      expect(state.cards.single.reviewCount, originalCard.reviewCount);
+      expect(state.stats.reviewsToday, 0);
+      expect(state.stats.totalReviews, 0);
+      expect(prefs.getString('spaced_repetition_cards'), cardsJson);
+      expect(prefs.getString('spaced_repetition_stats'), statsJson);
+    },
+  );
+
+  test(
+    'recordSessionResult rejects a session card missing from saved cards',
+    () async {
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithPreferences(prefs);
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.createCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      await notifier.startSession();
+
+      final session = container.read(spacedRepetitionProvider).currentSession!;
+      await notifier.deleteCard(session.cards.single.id);
+
+      await expectLater(
+        notifier.recordSessionResult(
+          cardId: session.cards.single.id,
+          correct: true,
+          timeSpent: const Duration(seconds: 3),
+        ),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(
+        container.read(spacedRepetitionProvider).currentSession!.results,
+        isEmpty,
+      );
+      expect(prefs.getString('spaced_repetition_cards'), '[]');
+    },
+  );
+
+  test(
+    'recordSessionResult does not resurrect an abandoned session after save',
+    () async {
+      final prefs = await SharedPreferences.getInstance();
+      final blockingPrefs = _BlockingSetStringPrefs(prefs);
+      final container = _containerWithPreferences(blockingPrefs);
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.createCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      await notifier.startSession();
+      final session = container.read(spacedRepetitionProvider).currentSession!;
+
+      blockingPrefs.blockCardSaves = true;
+      final recordFuture = notifier.recordSessionResult(
+        cardId: session.cards.single.id,
+        correct: true,
+        timeSpent: const Duration(seconds: 3),
+      );
+      await blockingPrefs.cardSaveStarted.future;
+
+      notifier.abandonSession();
+      blockingPrefs.releaseCardSave.complete();
+      await recordFuture;
+
+      expect(container.read(spacedRepetitionProvider).currentSession, isNull);
     },
   );
 

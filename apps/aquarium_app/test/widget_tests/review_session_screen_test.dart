@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/spaced_repetition_practice/review_session_screen.dart';
 import 'package:danio/models/resolved_question.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 
@@ -84,6 +85,42 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
   @override
   void abandonSession() {
     state = state.copyWith(clearSession: true, clearResolvedQuestions: true);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FailingSrNotifier extends _FakeSrNotifier {
+  _FailingSrNotifier(super.session);
+
+  @override
+  Future<ReviewSessionResult> recordSessionResult({
+    required String cardId,
+    required bool correct,
+    required Duration timeSpent,
+  }) {
+    return Future<ReviewSessionResult>.error(
+      StateError('Simulated review persistence failure'),
+    );
+  }
+}
+
+class _TrackingUserProfileNotifier
+    extends StateNotifier<AsyncValue<UserProfile?>>
+    implements UserProfileNotifier {
+  _TrackingUserProfileNotifier({this.failXpAwards = false})
+    : super(const AsyncValue.data(null));
+
+  final bool failXpAwards;
+  int xpAwardCalls = 0;
+
+  @override
+  Future<void> addXp(int amount, {bool xpBoostActive = false}) async {
+    xpAwardCalls += 1;
+    if (failXpAwards) {
+      throw StateError('Simulated XP persistence failure');
+    }
   }
 
   @override
@@ -293,6 +330,92 @@ void main() {
       expect(find.text('Remembered'), findsNothing);
       expect(find.text('1 correct'), findsOneWidget);
       expect(find.textContaining('Couldn\'t record'), findsNothing);
+    });
+
+    testWidgets('failed review save neither advances nor awards XP', (
+      tester,
+    ) async {
+      final session = _makeSession(cardCount: 2);
+      late _FailingSrNotifier srNotifier;
+      late _TrackingUserProfileNotifier profileNotifier;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            _prefsOverride,
+            spacedRepetitionProvider.overrideWith((ref) {
+              srNotifier = _FailingSrNotifier(session);
+              return srNotifier;
+            }),
+            userProfileProvider.overrideWith((ref) {
+              profileNotifier = _TrackingUserProfileNotifier();
+              return profileNotifier;
+            }),
+          ],
+          child: MaterialApp(home: ReviewSessionScreen(session: session)),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Reveal answer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remembered'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Card 1 of 2'), findsOneWidget);
+      expect(srNotifier.state.currentSession!.results, isEmpty);
+      expect(profileNotifier.xpAwardCalls, 0);
+      expect(
+        find.text(
+          'Couldn\'t save your answer. It wasn\'t recorded, so please try again.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('failed XP save does not retry an already recorded answer', (
+      tester,
+    ) async {
+      final session = _makeSession(cardCount: 2);
+      late _FakeSrNotifier srNotifier;
+      late _TrackingUserProfileNotifier profileNotifier;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            _prefsOverride,
+            spacedRepetitionProvider.overrideWith((ref) {
+              srNotifier = _FakeSrNotifier(session);
+              return srNotifier;
+            }),
+            userProfileProvider.overrideWith((ref) {
+              profileNotifier = _TrackingUserProfileNotifier(
+                failXpAwards: true,
+              );
+              return profileNotifier;
+            }),
+          ],
+          child: MaterialApp(home: ReviewSessionScreen(session: session)),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Reveal answer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remembered'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(srNotifier.state.currentSession!.results, hasLength(1));
+      expect(profileNotifier.xpAwardCalls, 1);
+      expect(find.text('Card 2 of 2'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Answer saved, but the XP update was not confirmed',
+        ),
+        findsWidgets,
+      );
     });
 
     testWidgets(
