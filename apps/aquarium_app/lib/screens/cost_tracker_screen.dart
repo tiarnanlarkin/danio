@@ -193,7 +193,10 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     );
   }
 
-  Future<void> _deleteExpense(int index) async {
+  Future<void> _deleteExpense(String expenseId) async {
+    final index = _expenses.indexWhere((expense) => expense.id == expenseId);
+    if (index == -1) return;
+
     final expense = _expenses[index];
     final previousExpenses = List<_Expense>.from(_expenses);
     setState(() {
@@ -401,10 +404,11 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
 
     // Expense tiles
     final expenseIndex = index - currentIndex;
+    final expense = _expenses[expenseIndex];
     return _ExpenseTile(
-      expense: _expenses[expenseIndex],
+      expense: expense,
       currency: _currency,
-      onDelete: () => _deleteExpense(expenseIndex),
+      onDelete: () => _deleteExpense(expense.id),
     );
   }
 

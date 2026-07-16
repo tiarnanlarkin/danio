@@ -339,6 +339,47 @@ void main() {
       expect(find.text('\u00A335.00'), findsWidgets);
     });
 
+    testWidgets(
+      'rapid expense dismissals delete both expenses without stale-index failure',
+      (tester) async {
+        const savedExpenses =
+            '[{"id":"1","description":"Filter","amount":35.0,'
+            '"category":"Equipment","date":"2025-01-15T12:00:00.000"},'
+            '{"id":"2","description":"Plant food","amount":8.5,'
+            '"category":"Food","date":"2025-01-16T12:00:00.000"}]';
+        SharedPreferences.setMockInitialValues({
+          'cost_tracker_expenses': savedExpenses,
+          'cost_tracker_currency': '\u00A3',
+        });
+
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        final firstDismissible = tester.widget<Dismissible>(
+          find.byKey(const Key('1')),
+        );
+        final secondDismissible = tester.widget<Dismissible>(
+          find.byKey(const Key('2')),
+        );
+
+        firstDismissible.onDismissed!(DismissDirection.endToStart);
+        secondDismissible.onDismissed!(DismissDirection.endToStart);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Filter'), findsNothing);
+        expect(find.text('Plant food'), findsNothing);
+
+        final prefs = await SharedPreferences.getInstance();
+        final saved =
+            jsonDecode(prefs.getString('cost_tracker_expenses')!)
+                as List<dynamic>;
+        expect(saved, isEmpty);
+      },
+    );
+
     testWidgets('shows summary cards', (tester) async {
       SharedPreferences.setMockInitialValues({
         'cost_tracker_expenses':

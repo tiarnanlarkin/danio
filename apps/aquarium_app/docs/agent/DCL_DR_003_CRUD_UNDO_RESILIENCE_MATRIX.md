@@ -3,19 +3,19 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-035`
+Current epoch: `DR-2026-07-16-036`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-twenty bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+twenty-one bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
 Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
 restore, keep livestock bulk-move counts honest, surface bulk-removal expiry
 failures, stop stale wishlist and local-shop edits/removals from reporting success,
 report a durable wishlist purchase honestly when its budget update and rollback both fail, make review-answer
-commits authoritative, and make lesson progress precede rewards with a real
+commits authoritative, bind Cost Tracker deletion to stable expense IDs, and make lesson progress precede rewards with a real
 retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
@@ -84,10 +84,10 @@ belongs to `DCL-DR-004` and is not selected here.
 | Wishlist purchase/budget | `markPurchased rejects missing items before reporting success`; `marking an item purchased saves it and updates budget`; `failed purchase keeps item unpurchased with error feedback`; RED/GREEN `failed purchase compensation reports persisted purchase and missing budget update`; `setMonthlyBudget waits for budget save before exposing amount` | `DCL-DR-003-F21` locally fixed: when budget persistence and purchase rollback both fail, the UI warns that the item remains durably purchased while the budget was not updated instead of claiming purchase failure. Budget failure with successful compensation remains source-covered but lacks exact evidence. |
 | Local shops | `addShop waits for local shop save before exposing shop`; RED/GREEN `editing a stale local shop shows error instead of false success`; RED/GREEN `deleting a stale local shop shows error instead of false success`; delete/undo, delete-failure, and undo-failure widget tests | `DCL-DR-003-F19/F20` locally fixed: Edit and Remove verify the shop ID is still current before persistence, so a concurrent deletion remains durable and the UI shows retry feedback instead of false saved/removed success or Undo. |
 | Cost add | `saving expense confirms local add and persists it`; `false save result shows feedback and keeps expense unsaved` | Covered. |
-| Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active` | Currency failure already rolls visible state back with error feedback but lacks exact evidence. `DCL-DR-003-F22` is selected because rapid dismissals can reuse stale indices, throw, and leave an expense undeleted. |
+| Cost delete/clear/undo | `clearing all expenses shows undo and restores saved expenses`; `undo restore failure shows local feedback without throwing`; `single expense undo restore failure keeps expense deleted with feedback`; `single expense delete failure keeps expense visible with feedback`; `clear false save result shows feedback and keeps expenses active`; RED/GREEN `rapid expense dismissals delete both expenses without stale-index failure` | `DCL-DR-003-F22` locally fixed: each rendered callback captures an expense ID and resolves its current index immediately before mutation, so rapid dismissals delete both expenses without a stale-index exception. Currency failure already rolls visible state back with error feedback but lacks exact evidence. |
 | Review card create/seed/delete/reset | Throw/false create and seed tests, delete rollback tests, and four-key reset rollback tests in `spaced_repetition_persistence_failure_test.dart` | Covered. |
 | Review answer/update | Success remains covered by scheduling/model tests and `records fallback answer and advances using returned result`; RED/GREEN `recordSessionResult keeps the answer pending when review-card save fails`; `recordSessionResult restores the card when review-stats save fails`; `recordSessionResult rejects a session card missing from saved cards`; `recordSessionResult does not resurrect an abandoned session after save`; `failed review save neither advances nor awards XP`; `failed XP save does not retry an already recorded answer` | `DCL-DR-003-F3` locally fixed: two-key save compensation preserves the initiating failure, only the still-active session advances, missing durable cards fail, review-save failure awards no XP and stays retryable, and downstream XP failure cannot retry the durable answer. |
-| Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; `exit dialog abandons active session before popping` | Partial persistence covered; later card/stat failure after other effects remains open. |
+| Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; `exit dialog abandons active session before popping` | Early persistence paths are covered. `DCL-DR-003-F23` is selected because a redundant late card/stat mirror save can throw after count and streak are durable and the session is cleared, suppressing honest completion feedback. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, and `reset surfaces failed local removals before reporting reset success` | Covered for direct writers; failed compensating refund remains unexplained. |
 | Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Covered for named paths; missing item, expired cleanup, and refund-failure boundaries remain unexplained. |
 | Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, and debug two-store reset rollback tests | Open: cross-store unlock/profile/gem partial failure can leave a durable unlock without a recoverable reward. |
@@ -171,10 +171,14 @@ belongs to `DCL-DR-004` and is not selected here.
     compensation reports that the wishlist item stayed purchased: fixed and
     focused GREEN in `DR-2026-07-16-035` under marker
     `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`.
-22. `DCL-DR-003-F22` - rapid Cost Tracker dismissals must resolve each expense
-    by stable ID instead of reusing stale list indices. Next marker:
+22. `DCL-DR-003-F22` - rapid Cost Tracker dismissals resolve each expense by
+    stable ID instead of reusing stale list indices: fixed and focused GREEN in
+    `DR-2026-07-16-036` under marker
     `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`.
-23. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+23. `DCL-DR-003-F23` - Review Completion must not turn a durable session count
+    and streak into false failure through its redundant late mirror save. Next
+    marker: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
+24. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Other cross-store
     reward boundaries remain later slices.
 

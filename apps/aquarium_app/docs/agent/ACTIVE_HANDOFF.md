@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-035`
-Marker: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`
+Product epoch: `DR-2026-07-16-036`
+Marker: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -65,7 +65,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F8` verified: `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`; failed deletion keeps the task visible with no success or Undo.
 - `DCL-DR-003-F9` fixed: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`; stale Tasks Completion cannot recreate a task or create completion side effects.
 - `DCL-DR-003-F10` fixed: `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F11` fixed: `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`.
-- `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`.
+- `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`; `DCL-DR-003-F22` fixed: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`.
 
 ## Frozen autonomy
 
@@ -97,8 +97,8 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9-F21 fixes and F8 proof are recorded.
-  Continue F22 under `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F22 fixes and F8 proof are recorded.
+  Continue F23 under `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -143,7 +143,7 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After clean F21 alignment, continue `DCL-DR-003-F22` under marker
-`danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`; bind expense
-deletion to a stable ID so two rapid dismissals cannot reuse stale list indices,
-throw, or leave one expense undeleted without honest feedback.
+After clean F22 alignment, continue `DCL-DR-003-F23` under marker
+`danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`; remove
+the redundant post-commit card/stat mirror save so a durable session count and
+streak cannot be reported as a failed session completion.
