@@ -48,6 +48,16 @@ class _FailingUndoLocalShopsNotifier extends LocalShopsNotifier {
   }
 }
 
+class _DeleteBeforeUpdateLocalShopsNotifier extends LocalShopsNotifier {
+  _DeleteBeforeUpdateLocalShopsNotifier(super.ref);
+
+  @override
+  Future<void> updateShop(LocalShop shop) async {
+    await super.removeShop(shop.id);
+    await super.updateShop(shop);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -203,6 +213,61 @@ void main() {
       expect(savedShop['address'], '4 Reef Lane');
       expect(savedShop['distanceMiles'], 2.4);
     });
+
+    testWidgets(
+      'editing a stale local shop shows error instead of false success',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'local_shops':
+              '[{"id":"shop-stale-edit","name":"Aquatic World",'
+              '"address":"12 River Road","phone":null,"website":null,'
+              '"distanceMiles":3.5,"rating":4.5,'
+              '"notes":"Good plant section",'
+              '"createdAt":"${DateTime.now().toIso8601String()}"}]',
+        });
+
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              localShopsProvider.overrideWith(
+                (ref) => _DeleteBeforeUpdateLocalShopsNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        await tester.scrollUntilVisible(
+          find.text('Local Fish Shops'),
+          500,
+          scrollable: find.byType(Scrollable),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Aquatic World'));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Shop name'),
+          'Reef House',
+        );
+        await tester.tap(find.text('Save Changes'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.text('Could not save that shop. Try again in a moment.'),
+          findsOneWidget,
+        );
+        expect(find.text('Reef House saved.'), findsNothing);
+        expect(find.text('Edit Shop'), findsOneWidget);
+        expect(find.text('Save Changes'), findsOneWidget);
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedShops =
+            jsonDecode(prefs.getString('local_shops')!) as List<dynamic>;
+        expect(savedShops, isEmpty);
+      },
+    );
 
     testWidgets('deleting a local shop shows undo and restores it', (
       tester,

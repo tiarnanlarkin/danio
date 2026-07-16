@@ -262,7 +262,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-032',
+      'DR-2026-07-16-033',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -291,6 +291,7 @@ void main() {
       'DCL-DR-003-F16',
       'DCL-DR-003-F17',
       'DCL-DR-003-F18',
+      'DCL-DR-003-F19',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -311,6 +312,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -368,7 +370,7 @@ void main() {
       [
         'Status: open',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
-        'DR-2026-07-16-032',
+        'DR-2026-07-16-033',
         'DCL-DR-003-F1',
         'Feed quick care rejects a missing tank before saving a log',
         'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -433,6 +435,9 @@ void main() {
         'DCL-DR-003-F18',
         'deleting a stale wishlist item shows error instead of false success',
         'danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1',
+        'DCL-DR-003-F19',
+        'editing a stale local shop shows error instead of false success',
+        'danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1',
       ],
     );
   });
@@ -979,7 +984,7 @@ void main() {
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
       'DCL-DR-002-F8',
-      'DR-2026-07-16-032',
+      'DR-2026-07-16-033',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -1008,6 +1013,7 @@ void main() {
       'DCL-DR-003-F16',
       'DCL-DR-003-F17',
       'DCL-DR-003-F18',
+      'DCL-DR-003-F19',
       'DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -1028,6 +1034,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -1039,7 +1046,6 @@ void main() {
       'reconciliation plan',
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
-      'DR-2026-07-16-009',
       'DR-2026-07-16-010',
       'DR-2026-07-16-011',
       'DR-2026-07-16-012',
@@ -1063,6 +1069,7 @@ void main() {
       'DR-2026-07-16-030',
       'DR-2026-07-16-031',
       'DR-2026-07-16-032',
+      'DR-2026-07-16-033',
       'DCL-DR-001',
       'DCL-DR-002',
       'DCL-DR-003-F13',
@@ -1071,7 +1078,7 @@ void main() {
       'DCL-DR-003-F16',
       'DCL-DR-003-F17',
       'DCL-DR-003-F18',
-      'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
+      'DCL-DR-003-F19',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
@@ -1096,6 +1103,7 @@ void main() {
       'danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1',
+      'danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1',
     ]);
     _expectContainsAll(
       'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
@@ -1108,6 +1116,7 @@ void main() {
         'DR-2026-07-16-006',
         'DR-2026-07-16-007',
         'DR-2026-07-16-008',
+        'DR-2026-07-16-009',
         'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
         'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
         'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
@@ -1116,6 +1125,7 @@ void main() {
         'danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1',
         'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
         'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
+        'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       ],
     );
   });

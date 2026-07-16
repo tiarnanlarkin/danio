@@ -360,8 +360,15 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
   }
 
   Future<void> updateShop(LocalShop shop) async {
-    final updated = state.map((e) => e.id == shop.id ? shop : e).toList();
+    final current = state;
+    final shopIndex = current.indexWhere((entry) => entry.id == shop.id);
+    if (shopIndex == -1) {
+      throw StateError('Local shop ${shop.id} was not found.');
+    }
+
     try {
+      final updated = [...current];
+      updated[shopIndex] = shop;
       await _saveToStorage(updated);
       state = updated;
     } catch (e, stackTrace) {
