@@ -253,7 +253,7 @@ void main() {
       'DCL-DR-001-F6',
       'DCL-DR-002',
       '`DCL-DR-001` is `closed`',
-      '`DCL-DR-002` remains `open`',
+      '`DCL-DR-002` is `closed`',
       'DCL-DR-002-F1',
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
@@ -261,7 +261,8 @@ void main() {
       'DCL-DR-002-F5',
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
-      'DR-2026-07-16-013',
+      'DCL-DR-002-F8',
+      'DR-2026-07-16-014',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -270,6 +271,7 @@ void main() {
       'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
+      'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -316,7 +318,10 @@ void main() {
         'DCL-DR-002-F7',
         'v0 stamp preserves every existing preference value and type',
         'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
-        'Status: open',
+        'DCL-DR-002-F8',
+        'missing local JSON loads healthy empty without recovery artifacts',
+        'empty local JSON loads healthy empty without rewrite or recovery artifacts',
+        'Status: closed',
       ],
     );
   });
@@ -532,7 +537,7 @@ void main() {
     );
     expect(
       rows.singleWhere((row) => row['ID'] == 'DCL-DR-002')['Closure State'],
-      'open',
+      'closed',
     );
 
     for (final id in {'DCL-A11Y-001', 'DCL-PERF-001'}) {
@@ -604,6 +609,7 @@ void main() {
     expect(program, contains('DCL-DR-002-F5'));
     expect(program, contains('DCL-DR-002-F6'));
     expect(program, contains('DCL-DR-002-F7'));
+    expect(program, contains('DCL-DR-002-F8'));
     expect(
       program,
       contains(
@@ -642,6 +648,12 @@ void main() {
       program,
       contains(
         'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
+      ),
+    );
+    expect(
+      program,
+      contains(
+        'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       ),
     );
     expect(program, contains('closed'));
@@ -722,13 +734,18 @@ void main() {
         contains('DCL-DR-001'),
         contains('DCL-DR-002'),
         allOf(
-          contains('DCL-DR-002-F1'),
-          contains('DCL-DR-002-F2'),
-          contains('DCL-DR-002-F3'),
-          contains('DCL-DR-002-F4'),
-          contains('DCL-DR-002-F5'),
-          contains('DCL-DR-002-F6'),
-          contains('DCL-DR-002-F7'),
+          allOf(
+            contains('DCL-DR-002-F1'),
+            contains('DCL-DR-002-F2'),
+            contains('DCL-DR-002-F3'),
+            contains('DCL-DR-002-F4'),
+          ),
+          allOf(
+            contains('DCL-DR-002-F5'),
+            contains('DCL-DR-002-F6'),
+            contains('DCL-DR-002-F7'),
+            contains('DCL-DR-002-F8'),
+          ),
         ),
         contains('next manual'),
         allOf(
@@ -736,7 +753,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('local-json-first-run'),
+        contains('crud-undo-resilience-audit'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -749,13 +766,18 @@ void main() {
         contains('DCL-DR-001'),
         contains('DCL-DR-002'),
         allOf(
-          contains('DCL-DR-002-F1'),
-          contains('DCL-DR-002-F2'),
-          contains('DCL-DR-002-F3'),
-          contains('DCL-DR-002-F4'),
-          contains('DCL-DR-002-F5'),
-          contains('DCL-DR-002-F6'),
-          contains('DCL-DR-002-F7'),
+          allOf(
+            contains('DCL-DR-002-F1'),
+            contains('DCL-DR-002-F2'),
+            contains('DCL-DR-002-F3'),
+            contains('DCL-DR-002-F4'),
+          ),
+          allOf(
+            contains('DCL-DR-002-F5'),
+            contains('DCL-DR-002-F6'),
+            contains('DCL-DR-002-F7'),
+            contains('DCL-DR-002-F8'),
+          ),
         ),
         contains('next manual'),
         allOf(
@@ -763,7 +785,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('local-json-first-run'),
+        contains('crud-undo-resilience-audit'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -837,7 +859,7 @@ void main() {
       'DCL-DR-001-F6',
       'DCL-DR-002',
       '`DCL-DR-001` is `closed`',
-      '`DCL-DR-002` remains `open`',
+      '`DCL-DR-002` is `closed`',
       'DCL-DR-002-F1',
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
@@ -845,7 +867,8 @@ void main() {
       'DCL-DR-002-F5',
       'DCL-DR-002-F6',
       'DCL-DR-002-F7',
-      'DR-2026-07-16-013',
+      'DCL-DR-002-F8',
+      'DR-2026-07-16-014',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
@@ -854,6 +877,7 @@ void main() {
       'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
+      'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -878,6 +902,7 @@ void main() {
       'DR-2026-07-16-011',
       'DR-2026-07-16-012',
       'DR-2026-07-16-013',
+      'DR-2026-07-16-014',
       'DCL-DR-001',
       'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
@@ -894,6 +919,7 @@ void main() {
       'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
+      'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
     ]);
   });
 }

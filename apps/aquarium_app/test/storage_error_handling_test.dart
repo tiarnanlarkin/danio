@@ -199,6 +199,67 @@ void main() {
       fakePathProvider.documentsPath = blocker.path;
     }
 
+    Future<void> expectHealthyEmptyStorage(
+      LocalJsonStorageService service,
+    ) async {
+      expect(service.state, StorageState.loaded);
+      expect(service.isHealthy, isTrue);
+      expect(service.hasError, isFalse);
+      expect(service.lastError, isNull);
+      expect(await service.getAllTanks(), isEmpty);
+      expect(await service.getLivestockForTank('never-created'), isEmpty);
+      expect(await service.getEquipmentForTank('never-created'), isEmpty);
+      expect(await service.getLogsForTank('never-created'), isEmpty);
+      expect(await service.getTasksForTank(null), isEmpty);
+    }
+
+    Iterable<File> corruptionCopies() =>
+        root.listSync().whereType<File>().where(
+          (candidate) => candidate.path.contains('.corrupted.'),
+        );
+
+    test(
+      'missing local JSON loads healthy empty without recovery artifacts',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        expect(await file.exists(), isFalse);
+
+        await service.retryLoad();
+
+        await expectHealthyEmptyStorage(service);
+        expect(await file.exists(), isFalse);
+        expect(corruptionCopies(), isEmpty);
+        expect(root.listSync(), isEmpty);
+      },
+    );
+
+    test(
+      'empty local JSON loads healthy empty without rewrite or recovery artifacts',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+
+        for (final originalContents in <String>['', ' \r\n\t ']) {
+          await file.writeAsString(originalContents);
+
+          await service.retryLoad();
+
+          await expectHealthyEmptyStorage(service);
+          expect(await file.exists(), isTrue);
+          expect(await file.readAsString(), originalContents);
+          expect(corruptionCopies(), isEmpty);
+          expect(root.listSync().map((entity) => entity.path), <String>[
+            file.path,
+          ]);
+        }
+      },
+    );
+
     test('failed saveTank does not expose unsaved tank in memory', () async {
       final service = LocalJsonStorageService();
       final existing = _makeTank(id: 'existing', name: 'Existing');

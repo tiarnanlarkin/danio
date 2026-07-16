@@ -9,11 +9,11 @@
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
-> verified. `DCL-DR-002` remains open; `DCL-DR-002-F1` and `DCL-DR-002-F2`
-> are locally fixed, `DCL-DR-002-F3` through `DCL-DR-002-F7` are locally
-> verified, and the next manual local-JSON first-run proof is locked to
+> verified. `DCL-DR-002` is closed; `DCL-DR-002-F1` and `DCL-DR-002-F2`
+> are locally fixed and `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally
+> verified. The next manual verification-first `DCL-DR-003` audit is locked to
 > marker
-> `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`. Execution
+> `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -223,13 +223,18 @@ flutter test test/services/shared_preferences_backup_test.dart --reporter compac
   `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`: a v0 stamp
   adds only schema version 1 and preserves every existing preference key,
   value, and primitive type.
-- [ ] Verify first-run migration, idempotence, failed version stamp, migrated
+- [x] Verify `DCL-DR-002-F8` under marker
+  `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`: missing,
+  zero-byte, and whitespace-only local JSON reaches healthy empty state without
+  rewrite, recovery state, corruption artifact, or invented entities.
+- [x] Verify first-run migration, idempotence, failed version stamp, migrated
   v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
 - [x] Confirm failure states never become empty-data success and start-fresh
   never runs without destructive confirmation.
-- [ ] Add RED/GREEN proof for each uncovered behavior.
-- [ ] Use owned Android phone walkthrough evidence only when widget/service
-  proof cannot establish the interaction contract.
+- [x] Add RED/GREEN proof for each product gap and direct executable proof for
+  every evidence-only path.
+- [x] Keep owned Android phone walkthrough evidence unnecessary because current
+  widget/service proof establishes the interaction contract.
 
 **Focused commands:**
 
@@ -450,11 +455,10 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-`DCL-DR-001` is closed after `DR-2026-07-16-006`. `DCL-DR-002` remains open
-after `DR-2026-07-16-013`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F7` are locally verified. After
-this checkpoint is clean, pushed, and aligned, continue the next manual
-local-JSON first-run proof under marker
-`danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`. Prove absent and
-empty stores reach healthy empty state without corruption or invented data. Do
-not select Task 1.3, Task 1.4, or a later phase first.
+`DCL-DR-001` is closed after `DR-2026-07-16-006`; `DCL-DR-002` is closed after
+`DR-2026-07-16-014`. Its F1 and F2 paths are locally fixed and F3 through F8
+are locally verified. After this checkpoint is clean, pushed, and aligned,
+continue the next manual verification-first `DCL-DR-003` CRUD/undo resilience
+audit under marker
+`danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Do not select
+`DCL-DR-004` or a later phase first.

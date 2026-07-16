@@ -1,8 +1,8 @@
 # DCL-DR-002 Migration And Corruption Recovery Matrix
 
-Status: open; no known current product gap; executable-evidence gaps remain
-Latest epoch: `DR-2026-07-16-013`
-Latest marker: `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`
+Status: closed; no current product gap
+Latest epoch: `DR-2026-07-16-014`
+Latest marker: `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`
 Authority base: `dbc12209b9401a485f751a967248532c0cf232da`
 
 ## Scope
@@ -18,7 +18,7 @@ signing, store, release, or iOS work.
 
 | Path | Current source behavior | Named executable evidence | Audit result |
 | --- | --- | --- | --- |
-| Legitimate first run or empty local JSON file | `LocalJsonStorageService._loadFromDisk` reports loaded only when the data file is absent or its content is empty. | No direct file-backed first-run test. | Source-accounted but direct executable evidence is still required before row closure. |
+| Legitimate first run or empty local JSON file | `LocalJsonStorageService._loadFromDisk` reports loaded only when the data file is absent or its trimmed content is empty. It does not rewrite either state or create recovery artifacts. | `missing local JSON loads healthy empty without recovery artifacts`; `empty local JSON loads healthy empty without rewrite or recovery artifacts` | Accounted for. F8 directly proves missing, zero-byte, and whitespace-only files produce healthy empty state across all five entity getters, preserve the original file state/bytes, and create no additional file. |
 | SharedPreferences first run and v0 data preservation | A missing `_schemaVersion` is v0. The v0-to-v1 migration is stamp-only and leaves every existing preference unchanged. | `stamps version key on first run (v0 → v1)`; `handles prefs with no prior version key gracefully`; `v0 stamp preserves every existing preference value and type` | Accounted for. F7 directly proves the only added key is schema version 1 while existing strings, integers, doubles, booleans, and string lists retain their exact values and types. |
 | SharedPreferences idempotence | A stored version at or above the target returns before any migration write. | `is idempotent — second call does not change version`; `skips migration when already at target version` | Accounted for. |
 | SharedPreferences failed version stamp | `_stampVersion` throws when `setInt` returns false, so the caller cannot observe migrated success. | `surfaces failed schema version stamp writes` | Accounted for; the version remains absent. |
@@ -257,3 +257,16 @@ After a clean, pushed, aligned F7 checkpoint, continue only
 - Inspect source first and change product code only if direct file-backed
   evidence proves a current first-run or false-success defect.
 - Do not bundle `DCL-DR-003`, `DCL-DR-004`, or a later phone phase.
+
+## F8 Resolution And Row Closure
+
+- No current product-code gap was found. Missing storage returns loaded without
+  creating a file; zero-byte and whitespace-only storage return loaded without
+  rewriting their bytes.
+- `missing local JSON loads healthy empty without recovery artifacts` and
+  `empty local JSON loads healthy empty without rewrite or recovery artifacts`
+  prove healthy state, null error/recovery state, empty results from all five
+  entity stores, exact main-file preservation, and no extra file artifact.
+- F8 changes tests and current controls only. Every ordered matrix path now has
+  named current executable evidence, the row-closing Full gate passed, and
+  `DCL-DR-002` is closed.

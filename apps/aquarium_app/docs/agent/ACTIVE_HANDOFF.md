@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-013`
-Marker: `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-014`
+Marker: `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -18,7 +18,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `DCL-DR-001-F6` are locally verified. Its complete ordered evidence remains in
   `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - `DCL-DR-002` is now mapped in
-  `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and remains `open`.
+  `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and is `closed`.
 - `DCL-DR-002-F1` is locally fixed under marker
   `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: both
   corrupted and I/O-failed local storage expose the real `retryLoad` action,
@@ -49,7 +49,11 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`: the v0
   stamp adds only schema version 1 and preserves every existing preference key,
   value, and primitive type.
-- F7 changed no product code, schema, provider, dependency, deletion behavior,
+- `DCL-DR-002-F8` is locally verified with no current product gap under marker
+  `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`: missing,
+  zero-byte, and whitespace-only local JSON stores load healthy and empty with
+  no rewrite, corruption artifact, recovery state, or invented entity.
+- F8 changed no product code, schema, provider, dependency, deletion behavior,
   emulator, account, cloud, or release configuration; no later row was selected.
 
 ## Frozen autonomy
@@ -81,13 +85,12 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
   locally fixed and `DCL-DR-001-F4` through `DCL-DR-001-F6` are locally
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
-- `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F7` are locally verified:
-  retries and cancellation stay non-destructive, while confirmed recovery is
-  main-file scoped, failures stay honest, and v0 preferences remain unchanged.
-- The next matrix path is legitimate local-JSON first-run/empty-file evidence.
-  Continue it only under marker
-  `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1` after this F7
+- `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
+  fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
+  matrix path has named executable evidence, and the required Full gate passed.
+- The next locked ledger row is verification-first `DCL-DR-003`. Continue only
+  under marker
+  `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1` after this F8
   checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -133,9 +136,8 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F7 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F8` under marker
-`danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`. Prove a missing or
-empty local JSON store reaches healthy loaded/empty state without corruption,
-false recovery copy, or invented records. Do not start `DCL-DR-003`,
-`DCL-DR-004`, or a later phone phase while `DCL-DR-002` remains open.
+After this F8 checkpoint is clean, pushed, and aligned, begin the read-only
+`DCL-DR-003` create/edit/delete/undo resilience inventory under marker
+`danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Map every current
+path to named source/test evidence before selecting at most one concrete gap.
+Do not bundle `DCL-DR-004` or a later phone phase.
