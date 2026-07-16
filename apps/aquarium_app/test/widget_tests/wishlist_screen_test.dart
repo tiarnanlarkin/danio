@@ -51,6 +51,16 @@ class _FailingRemoveWishlistNotifier extends WishlistNotifier {
   }
 }
 
+class _DeleteBeforeRemoveWishlistNotifier extends WishlistNotifier {
+  _DeleteBeforeRemoveWishlistNotifier(super.ref);
+
+  @override
+  Future<void> removeItem(String id) async {
+    await super.removeItem(id);
+    await super.removeItem(id);
+  }
+}
+
 class _FailingUndoWishlistNotifier extends WishlistNotifier {
   _FailingUndoWishlistNotifier(super.ref);
 
@@ -292,6 +302,51 @@ void main() {
       expect(restoredItem['category'], 'fish');
       expect(restoredItem['quantity'], 6);
     });
+
+    testWidgets(
+      'deleting a stale wishlist item shows error instead of false success',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'wishlist_items':
+              '[{"id":"wishlist-stale-remove","name":"Neon Tetra",'
+              '"category":"fish","species":"Paracheirodon innesi",'
+              '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+              '"quantity":6,"purchased":false,'
+              '"createdAt":"${DateTime.now().toIso8601String()}",'
+              '"purchasedAt":null}]',
+        });
+
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              wishlistProvider.overrideWith(
+                (ref) => _DeleteBeforeRemoveWishlistNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.byIcon(Icons.delete_outline));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Remove Item'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.text('Could not remove Neon Tetra. Try again in a moment.'),
+          findsOneWidget,
+        );
+        expect(find.text('Neon Tetra removed'), findsNothing);
+        expect(find.text('Undo'), findsNothing);
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedItems =
+            jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+        expect(savedItems, isEmpty);
+      },
+    );
 
     testWidgets('failed delete keeps item visible with error feedback', (
       tester,

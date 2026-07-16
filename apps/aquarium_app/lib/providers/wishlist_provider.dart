@@ -140,8 +140,13 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
   }
 
   Future<void> removeItem(String id) async {
+    final current = state;
+    if (!current.any((item) => item.id == id)) {
+      throw StateError('Wishlist item $id was not found.');
+    }
+
     try {
-      final updated = state.where((e) => e.id != id).toList();
+      final updated = current.where((item) => item.id != id).toList();
       await _saveToStorage(updated);
       state = updated;
     } catch (e, stackTrace) {
