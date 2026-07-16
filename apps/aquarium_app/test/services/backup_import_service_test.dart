@@ -12,12 +12,24 @@ class _RecordingStorageService implements StorageService {
   final Map<String, LogEntry> logs = {};
   final Map<String, Task> tasks = {};
   final List<String> savedTankIds = [];
+  final List<List<String>> deletedTankIdBatches = [];
+  final StateError simulatedLogSaveFailure = StateError(
+    'simulated log save failure',
+  );
+  final StateError simulatedTankRollbackFailure = StateError(
+    'simulated tank rollback failure',
+  );
 
   bool failAfterSaveTank = false;
   bool failOnSaveLog = false;
+  bool failOnDeleteAllTanks = false;
 
   @override
   Future<void> deleteAllTanks(List<String> ids) async {
+    deletedTankIdBatches.add(List<String>.unmodifiable(ids));
+    if (failOnDeleteAllTanks) {
+      throw simulatedTankRollbackFailure;
+    }
     final idSet = ids.toSet();
     tanks.removeWhere((id, _) => idSet.contains(id));
     livestock.removeWhere((_, item) => idSet.contains(item.tankId));
@@ -95,7 +107,7 @@ class _RecordingStorageService implements StorageService {
   @override
   Future<void> saveLog(LogEntry item) async {
     if (failOnSaveLog) {
-      throw StateError('simulated log save failure');
+      throw simulatedLogSaveFailure;
     }
     logs[item.id] = item;
   }
@@ -497,6 +509,60 @@ void main() {
         expect(storage.equipment, isEmpty);
         expect(storage.logs, isEmpty);
         expect(storage.tasks, isEmpty);
+      },
+    );
+
+    test(
+      'preserves tank import failure when tank rollback also fails',
+      () async {
+        final storage = _RecordingStorageService()
+          ..failOnSaveLog = true
+          ..failOnDeleteAllTanks = true;
+        final service = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'new-fish',
+            'new-filter',
+            'new-task',
+            'new-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        await expectLater(
+          service.importTankScopedData(_backupData()),
+          throwsA(
+            isA<BackupImportException>()
+                .having(
+                  (error) => error.originalError,
+                  'originalError',
+                  same(storage.simulatedLogSaveFailure),
+                )
+                .having(
+                  (error) => error.originalStackTrace.toString(),
+                  'originalStackTrace',
+                  isNotEmpty,
+                )
+                .having(
+                  (error) => error.rollbackError,
+                  'rollbackError',
+                  same(storage.simulatedTankRollbackFailure),
+                )
+                .having(
+                  (error) => error.toString(),
+                  'toString()',
+                  allOf(
+                    contains('simulated log save failure'),
+                    contains('simulated tank rollback failure'),
+                  ),
+                ),
+          ),
+        );
+
+        expect(storage.deletedTankIdBatches, [
+          ['new-tank'],
+        ]);
       },
     );
 

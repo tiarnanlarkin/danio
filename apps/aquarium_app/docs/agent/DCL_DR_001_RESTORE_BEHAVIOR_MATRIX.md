@@ -1,8 +1,8 @@
 # DCL-DR-001 Restore Behavior Matrix
 
 Status: advanced; `DCL-DR-001` remains open
-Latest epoch: `DR-2026-07-16-004`
-Latest marker: `danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`
+Latest epoch: `DR-2026-07-16-005`
+Latest marker: `danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1`
 Initial marker: `danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1`
 Authority base: `ea0d3c41ad94a90ecc785e34c571eb0839fe558f`
 
@@ -29,9 +29,9 @@ cloud, signing, store, release, or iOS work.
 | Successful tank import | Backup tank and child IDs are preflighted and remapped, relationships remain tank-local, each imported tank is recorded before its save, and success is returned only after all tank-scoped writes finish. | `imports tank-scoped backup data with remapped relationships`; `regenerates imported tank ids that already exist locally`; `regenerates imported child ids that already exist locally` | Accounted for. |
 | No-tank import | Photo extraction returns zero without creating files, tank import returns zero, preference replacement and provider invalidation are skipped, and the screen warns `No tanks found in this backup file.` | `restoreBackup skips photo extraction when a backup has no tanks`; `skips preference restore when backup imports no tanks` | Accounted for; no app-wide preference false write remains. |
 | Tank/child partial write | Any tank-scoped import exception triggers `deleteAllTanks` for the recorded imported IDs, which removes imported parents and children before an import exception is surfaced. A tank ID is recorded before `saveTank` so persist-then-fail is also rolled back. | `rolls back imported tanks and children when a later save fails`; `rolls back a tank when saveTank persists then reports failure` | Accounted for. |
-| Tank rollback failure | `BackupImportException` preserves the initiating error and separately records `rollbackError`, so source control flow says rollback failure cannot replace the import failure. | No named current test forces both an initiating import failure and `deleteAllTanks` failure; the named rollback tests exercise successful rollback only. | Source-explained but not executable closure evidence. This remains an evidence gap after F2. |
+| Tank rollback failure | `BackupImportException` preserves the initiating error and original stack, separately records `rollbackError`, and exposes both errors in its combined diagnostic string, so rollback failure cannot replace the import failure. | `preserves tank import failure when tank rollback also fails` | Accounted for. `DCL-DR-001-F5` forces the initiating save failure and `deleteAllTanks` failure, proves the exact two error objects and original stack remain inspectable, and confirms rollback was attempted for the imported tank. |
 | Preference validation and successful replacement | Restorable entries are type-validated before any clear, existing exportable preferences are snapshotted, current exportable keys are cleared, backup entries are written, and non-exportable keys are ignored. | `restore clears all current exportable keys before writing backup`; `restore ignores non-exportable entries from backup files`; named `restore rejects ... before clearing ...` cases | Accounted for. |
-| Preference partial write and rollback | A failed preference write triggers replacement from the pre-restore snapshot. | `restore rolls back previous preferences when a write fails mid-restore` | Accounted for only when rollback succeeds. One gap is selected below. |
+| Preference partial write and rollback | A failed preference write triggers replacement from the pre-restore snapshot. If snapshot rollback also fails, `SharedPreferencesRestoreException` preserves the initiating and rollback errors with both original stacks. | `restore rolls back previous preferences when a write fails mid-restore`; `restore preserves the initiating error when snapshot rollback also fails` | Accounted for. `DCL-DR-001-F1` closed the error-replacement gap without changing replacement order. |
 | Preference restore failure after tank success | Imported tanks remain, preference failure is returned as a warning state, preference providers are not invalidated, and the screen reports that tanks imported but profile/preferences could not be restored. | `reports malformed preference payloads after importing tanks` | Accounted for; no false all-data success is shown. |
 | Tank-import failure photo cleanup | The import flow calls restored-photo cleanup before rethrowing the original tank import failure. Cleanup failure is logged and cannot replace that original failure. The screen catch repeats only the best-effort helper. | `runs restored photo cleanup when tank import fails`; `preserves tank import failure when restored photo cleanup also fails`; `import failure path cleans newly restored photos`; `restore screen cleanup helper keeps cleanup failures best effort` | Accounted for. |
 | Photo extraction failure cleanup | `restoreBackup` records a destination before writing and deletes all newly recorded paths if extraction throws. `cleanupLastRestoredPhotos` never removes pre-existing local files. | `cleanupLastRestoredPhotos removes only newly restored photos`; `restores same-basename photos without overwriting local files`; no named current test forces extraction to throw after creating a destination. | Source-explained with cleanup identity proof, but the mid-extraction failure branch lacks direct executable evidence before closure. |
@@ -174,15 +174,38 @@ selected ahead of the user-visible F2 boundary.
 - `DCL-DR-001` remains open because simultaneous tank-import/rollback failure
   and mid-extraction cleanup still lack direct executable evidence.
 
+## F5 Slice Boundary Before Code
+
+`DCL-DR-001-F5` is the only selected evidence gap for
+`danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1`.
+
+- Force a later tank-scoped save to fail after one imported tank is recorded.
+- Force the resulting `deleteAllTanks` rollback attempt to fail independently.
+- Prove the initiating error, its original stack, the rollback error, and a
+  diagnostic containing both failures remain inspectable.
+- Implement product code only if executable evidence exposes one concrete
+  error-replacement or rollback-attempt gap.
+
+## F5 Resolution And Verification
+
+- The focused proof passed on unchanged product code; no current F5 product gap
+  was found.
+- `preserves tank import failure when tank rollback also fails` proves the
+  initiating log-save error and tank-rollback error remain the exact separately
+  inspectable objects, the initiating stack remains populated, and the combined
+  diagnostic contains both messages.
+- The proof also confirms one rollback attempt for the recorded imported tank.
+- `DCL-DR-001` remains open only because mid-extraction photo cleanup still
+  lacks direct executable evidence.
+
 ## Next Ordered Evidence Gap
 
-`DCL-DR-001-F5` is the simultaneous tank-import/rollback-failure proof slice
-with marker
-`danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1`. It must
-force one initiating tank-scoped import failure plus `deleteAllTanks` failure,
-then prove the initiating and rollback errors remain separately inspectable.
-Implement only if that executable proof exposes one concrete error-replacement
-or cleanup gap.
+`DCL-DR-001-F6` is the mid-extraction cleanup proof slice with marker
+`danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`. It must force
+photo extraction to fail after at least one destination is created, then prove
+all paths newly created by that attempt are removed without deleting a
+pre-existing local file. Implement only if that executable proof exposes one
+concrete cleanup-identity or partial-file gap.
 
 ## F1 Resolution And Verification
 

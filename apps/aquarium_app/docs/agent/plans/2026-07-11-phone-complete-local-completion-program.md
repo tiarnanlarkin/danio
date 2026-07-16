@@ -8,8 +8,9 @@
 > seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
 > remains `open` and is advanced: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
-> `DCL-DR-001-F3` are locally fixed, and `DCL-DR-001-F4` is locally verified.
-> The next manual task is `DCL-DR-001-F5`, which remains unproven. Execution
+> `DCL-DR-001-F3` are locally fixed; `DCL-DR-001-F4` and `DCL-DR-001-F5` are
+> locally verified. The next manual task is `DCL-DR-001-F6`, which remains
+> unproven. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -162,8 +163,10 @@ block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
   selection feedback accurate without changing import writes.
 - [x] Prove `DCL-DR-001-F4` confirmation cancel has no photo, storage,
   preference, provider, or terminal-feedback side effect.
-- [ ] Prove `DCL-DR-001-F5` simultaneous tank-import/rollback failure, then add
-  direct mid-extraction-cleanup evidence without assuming a product gap.
+- [x] Prove `DCL-DR-001-F5` simultaneous tank-import/rollback failure without
+  assuming a product gap.
+- [ ] Prove `DCL-DR-001-F6` mid-extraction cleanup removes all newly created
+  paths without deleting pre-existing local files.
 - [ ] Close `DCL-DR-001` only when the matrix has no unexplained path and the
   Full gate passes.
 
@@ -417,9 +420,11 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-`DCL-DR-001` remains open after `DR-2026-07-16-004`: `DCL-DR-001-F1` through
-`DCL-DR-001-F3` are locally fixed and `DCL-DR-001-F4` is locally verified,
-while `DCL-DR-001-F5` simultaneous tank-import/rollback failure remains
-unproven. Open that exact-marker proof epoch next and implement only if current
-executable evidence exposes one concrete gap. Do not select Task 1.2, 1.3, or
-1.4 until the restore matrix has no unexplained current path.
+`DCL-DR-001` remains open after `DR-2026-07-16-005`: `DCL-DR-001-F1` through
+`DCL-DR-001-F3` are locally fixed and `DCL-DR-001-F4` plus `DCL-DR-001-F5`
+are locally verified, while `DCL-DR-001-F6` mid-extraction cleanup remains
+unproven under marker
+`danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`. Open that exact
+proof epoch next and implement only if current executable evidence exposes one
+concrete gap. Do not select Task 1.2, 1.3, or 1.4 until the restore matrix has
+no unexplained current path.
