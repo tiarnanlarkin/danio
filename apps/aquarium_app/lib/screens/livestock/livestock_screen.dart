@@ -495,6 +495,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
     try {
       final actions = ref.read(tankActionsProvider);
+      final messenger = ScaffoldMessenger.of(context);
+      var permanentDeleteFailureShown = false;
       final removedAt = DateTime.now();
       final deletedIds = List<String>.from(_selectedLivestockIds);
       final livestockById = {
@@ -508,6 +510,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           onUndoExpired: livestock == null
               ? null
               : () => _saveLivestockRemovalLog(ref, livestock, removedAt),
+          onPermanentDeleteFailed: () {
+            if (permanentDeleteFailureShown) return;
+            permanentDeleteFailureShown = true;
+            messenger.removeCurrentSnackBar();
+            AppFeedback.showErrorViaMessenger(
+              messenger,
+              'Couldn\'t remove one or more livestock. Try again.',
+            );
+          },
         );
       }
 

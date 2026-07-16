@@ -3,17 +3,18 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-029`
+Current epoch: `DR-2026-07-16-030`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-fourteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+fifteen bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
 Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
 Mark Serviced from creating orphan or recreated records under covered stale-ID and
 parent boundaries. They also prevent equipment Undo from leaving a partial
-restore, keep livestock bulk-move counts honest, make review-answer commits authoritative,
-and make lesson progress precede rewards with a real retry after failure.
+restore, keep livestock bulk-move counts honest, surface bulk-removal expiry
+failures, make review-answer commits authoritative, and make lesson progress
+precede rewards with a real retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
 needed for that boundary.
@@ -70,7 +71,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving` | Failure boundaries covered; ordinary success has no exact persistence assertion. |
 | Livestock move | `success feedback reports selected livestock count`; RED/GREEN `bulk move reports actual count when a selected livestock id is missing`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails` | `DCL-DR-003-F15` locally fixed: the provider returns its successful move count and the screen reports that count, so a vanished selection cannot inflate success feedback while existing skip and rollback behavior remains. |
-| Livestock delete/expiry | `failed single removal expiry restores item with feedback`; `expired livestock removal does not log after parent tank deletion`; `expired bulk removal writes timeline logs` | Open: bulk expiry failure restores visibility without feedback; removal logs retain a deleted livestock reference. |
+| Livestock delete/expiry | `failed single removal expiry restores item with feedback`; RED/GREEN `failed bulk removal expiry restores item with feedback`; `expired livestock removal does not log after parent tank deletion`; `expired bulk removal writes timeline logs` | `DCL-DR-003-F16` locally fixed: bulk expiry deduplicates permanent-delete failure feedback, removes obsolete Undo feedback, and leaves failed items restored while successful removals settle. The removal-log relationship finding belongs to `DCL-DR-004` because its fix changes the backup validation contract. |
 
 ## Wishlist, Cost, Review, And Reward Paths
 
@@ -147,11 +148,16 @@ belongs to `DCL-DR-004` and is not selected here.
     a selected ID disappears: fixed and focused GREEN in `DR-2026-07-16-029`
     under marker
     `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`.
-16. `DCL-DR-003-F16` - a failed bulk removal expiry must restore visibility
-    with user-facing failure feedback. Next marker:
+16. `DCL-DR-003-F16` - a failed bulk removal expiry restores visibility with
+    one user-facing retry message: fixed and focused GREEN in
+    `DR-2026-07-16-030` under marker
     `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`.
-17. Remaining removal-log relationship, wishlist/shop stale-ID, and cross-store reward
-    boundaries remain separate future slices.
+17. `DCL-DR-003-F17` - Wishlist Edit must reject an item deleted behind the
+    open sheet before Save. Next marker:
+    `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`.
+18. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+    it changes that row's backup relationship invariant. Wishlist removal,
+    local-shop stale-ID, and cross-store reward boundaries remain later slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

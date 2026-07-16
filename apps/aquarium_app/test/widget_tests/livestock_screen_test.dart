@@ -1172,6 +1172,76 @@ void main() {
       await tester.pump();
     });
 
+    testWidgets('failed bulk removal expiry restores item with feedback', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'bulk-delete-failure-tank';
+      const deletedLivestockId = 'bulk-delete-failure-neons';
+      const restoredLivestockId = 'bulk-delete-failure-corys';
+      final storage = _FailingLivestockDeleteStorage(
+        failingLivestockId: restoredLivestockId,
+      );
+      await storage.saveTank(_makeTank(id: tankId, name: 'Community Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: deletedLivestockId,
+          tankId: tankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: restoredLivestockId,
+          tankId: tankId,
+          name: 'Corydoras',
+          count: 5,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(
+          storage: storage,
+          tankId: tankId,
+          disableAnimations: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.more_vert),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select multiple'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select All'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Livestock'));
+      await tester.pump();
+
+      expect(find.text('2 livestock removed'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pump();
+
+      expect(find.text('Neon Tetra'), findsNothing);
+      expect(find.text('Corydoras'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t remove one or more livestock. Try again.'),
+        findsOneWidget,
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
     testWidgets(
       'expired livestock removal does not log after parent tank deletion',
       (tester) async {
