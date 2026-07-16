@@ -627,6 +627,44 @@ void main() {
       expect(find.text('Rinse prefilter completed!'), findsOneWidget);
     });
 
+    testWidgets('stale task completion does not recreate a deleted task', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-complete-stale-id';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-complete-stale-id',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await svc.deleteTask(task.id);
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+
+      await tester.tap(find.byTooltip('Toggle task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t complete that task. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Rinse prefilter completed!'), findsNothing);
+    });
+
     testWidgets('failed completion log write rolls back task completion', (
       tester,
     ) async {
