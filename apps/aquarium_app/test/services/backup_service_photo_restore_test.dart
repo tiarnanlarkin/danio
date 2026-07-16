@@ -214,6 +214,70 @@ void main() {
     );
 
     test(
+      'restoreBackup cleans new photos and preserves existing files after mid-extraction failure',
+      () async {
+        final zipPath = p.join(
+          tempDir.path,
+          'mid_extraction_failure_backup.zip',
+        );
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {'id': 'tank-existing', 'imageUrl': 'photos/existing.jpg'},
+              {'id': 'tank-new', 'imageUrl': 'photos/new.jpg'},
+              {'id': 'tank-blocked', 'imageUrl': 'photos/blocked.jpg'},
+            ],
+          },
+          files: {
+            'photos/existing.jpg': 'backup existing photo',
+            'photos/new.jpg': 'new backup photo',
+            'photos/blocked.jpg': 'blocked backup photo',
+          },
+        );
+
+        late File restoredNewPhoto;
+        var newPhotoExistedBeforeFailure = false;
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+          onProgress: (status, _) {
+            if (status == 'Restoring photos... (2/3)') {
+              newPhotoExistedBeforeFailure = restoredNewPhoto.existsSync();
+            }
+          },
+        );
+
+        final resolvedData = await restoreService.getBackupData(zipPath);
+        final resolvedTanks = resolvedData['tanks'] as List;
+        final preExistingPhoto = File(
+          resolvedTanks[0]['imageUrl'] as String,
+        );
+        restoredNewPhoto = File(resolvedTanks[1]['imageUrl'] as String);
+        final blockingDirectory = Directory(
+          resolvedTanks[2]['imageUrl'] as String,
+        );
+        await preExistingPhoto.parent.create(recursive: true);
+        await preExistingPhoto.writeAsString('keep existing local photo');
+        await blockingDirectory.create(recursive: true);
+
+        await expectLater(
+          restoreService.restoreBackup(zipPath),
+          throwsA(isA<FileSystemException>()),
+        );
+
+        expect(newPhotoExistedBeforeFailure, isTrue);
+        expect(await restoredNewPhoto.exists(), isFalse);
+        expect(
+          await preExistingPhoto.readAsString(),
+          'keep existing local photo',
+        );
+        expect(await blockingDirectory.exists(), isTrue);
+        expect(restoreService.lastRestoredPhotoPaths, isEmpty);
+      },
+    );
+
+    test(
       'restoreBackup skips photo extraction when a backup has no tanks',
       () async {
         final zipPath = p.join(tempDir.path, 'zero_tank_photo_backup.zip');

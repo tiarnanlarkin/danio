@@ -46,8 +46,8 @@ Closure state is separate from disposition and uses exactly these values:
 
 `PHASE_PARKED` and `EXTERNAL_PARKED` dispositions require `parked` closure
 state. `ACCEPTED_LOCAL_LIMITATION` and `NOT_CURRENT_ARCHIVED` require `closed`.
-Other dispositions may be `open` or `decision_required` as current evidence
-requires.
+Other dispositions may be `open`, `closed`, or `decision_required` as current
+evidence requires.
 
 ## Ledger Rules
 
@@ -94,7 +94,6 @@ Confirmed by the user on 2026-07-11:
 
 | ID | Finding | How Found | Evidence | Disposition | Closure State | Lane | User Input | Done Condition |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DCL-DR-001 | Restore walkthrough and restore failure behavior still need closure evidence beyond the recent photo/import hardening. | The phone completion program begins product work with Phase 1 data resilience; the Finish Map and backlog keep Backup/Data resilience in progress after DS-043. | Phase 1 Task 1.1; `DR-2026-07-16-001` through `DR-2026-07-16-005`; `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`; F1 preserves preference errors, F2 makes export-share status honest and cleans completed ZIPs, F3 proves file-selection outcomes, F4 proves valid-preview cancellation has no restore side effects, and F5 proves simultaneous tank-import/rollback failure preserves both errors. `DCL-DR-001-F6` is next because only mid-extraction photo-cleanup failure remains source-explained but unproven. | `VERIFY_LOCALLY` | open | Data resilience | No | Prove `DCL-DR-001-F6`; fix only a proven cleanup gap, leave no matrix path unexplained, and pass one final Full gate before closure. |
 | DCL-DR-002 | Schema migration and corruption-recovery walkthroughs remain open for complete-local confidence. | Finish Map next actions name restore and migration Android walkthrough QA. | `FINISH_MAP.md` Backup and restore row; `FINISH_MAP.md` next development push; `docs/product/danio-complete-local-current-audit-2026-06-13.md` local data notes. | `VERIFY_LOCALLY` | open | Data resilience | No | Migration/corruption paths are proven by source/test or owned-device walkthrough evidence; any missing behavior is fixed locally and Full gate passes. |
 | DCL-DR-003 | Broader create/edit/delete/undo data-resilience coverage needs a final current proof inventory. | Finish Map `Data resilience` evidence records extensive DS coverage, so remaining work must be proven rather than assumed. | `FINISH_MAP.md` Data resilience row; archived `SLICE_LOG.md` DS-2026-07-04-002 through DS-2026-07-05-043. | `VERIFY_LOCALLY` | open | Data resilience | No | A fresh source/test matrix accounts for current create, edit, delete, bulk-delete, undo, false-success, and orphan boundaries; each proven gap receives its own focused RED/GREEN slice, or the row closes with no-current-gap evidence and Full passes. |
 | DCL-DR-004 | Relationship-mapping import integrity needs a final fresh audit after DS-034 through DS-043. | Recent DS chain closed several direct-import relationship boundaries but the Finish Map still keeps relationship-mapping walkthrough coverage open. | `FINISH_MAP.md` Current Data-Resilience Note; `SLICE_LOG.md` DS-034 through DS-043; DS-2026-07-06-046 tightened direct-import preflight for child rows whose backup tank IDs are not imported; DS-2026-07-06-047 tightened direct-import relationship preflight so missing relationship target IDs are rejected before imported tank saves; DS-2026-07-06-048 tightened direct-import required ID preflight so whitespace-only tank and child record IDs are rejected before imported tank saves. | `VERIFY_LOCALLY` | open | Data resilience | No | Audit proves no remaining current direct import relationship false-success boundary, or one specific boundary is fixed with service tests and Full gate. |
@@ -122,6 +121,7 @@ Confirmed by the user on 2026-07-11:
 
 | ID | Finding | Superseding Evidence | Disposition | Closure State | Rule |
 | --- | --- | --- | --- | --- | --- |
+| DCL-DR-001 | Restore walkthrough and restore failure behavior required a complete current source/test matrix. | Phase 1 Task 1.1; `DR-2026-07-16-001` through `DR-2026-07-16-006`; `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`; F1 through F3 are locally fixed, F4 through F6 are locally verified with no further product gap, every ordered path has named evidence, and the final Full gate passed. | `VERIFY_LOCALLY` | closed | Reopen only if restore behavior changes or fresh evidence exposes an unexplained false-success, rollback, cleanup, error-replacement, or user-feedback path. |
 | DCL-ARCH-001 | The 2026-06-13 Android emulator transport blocker prevented full fresh screen captures during that older audit. | Current Finish Map records 2026-07-04 phone and tablet whole-app maps as locally verified with all 96 `SCREEN_INVENTORY.md` rows passing. | `NOT_CURRENT_ARCHIVED` | closed | Do not use this as a current blocker unless a fresh device preflight reproduces it. |
 | DCL-DR-005 | Future debounced local writers need app-kill flush coverage when new debounced writers are added. | DS-2026-07-05-044 source inventory found the current durable debounced local writers are gems and achievement progress; `main.dart` flushes pending gem writes on paused/inactive/detached, `_AchievementProgressLifecycleListener` flushes achievement progress on paused/detached, and focused lifecycle/persistence tests cover those paths. The current profile lifecycle observer flushes the already-visible profile snapshot after immediate saves, so it is not an open debounced-writer target. | `NOT_CURRENT_ARCHIVED` | closed | No current implementation target remains. Re-open only when a new durable debounced local writer is added or the lifecycle proof changes. |
 | DCL-P1-001 | Fuller dedicated plant inventory and broader seasonal Living Tank variants were optional product-depth expansion. | On 2026-07-11 the user accepted the current data-derived plant, aquascape, decoration, progression, and seasonal cues as sufficient for phone complete-local. | `ACCEPTED_LOCAL_LIMITATION` | closed | Fix concrete defects found by later phone quality passes. Reopen dedicated plant inventory or broader seasonal variants only after fresh user direction. |
@@ -129,12 +129,11 @@ Confirmed by the user on 2026-07-11:
 
 ## Next Ledger Target Rule
 
-`DCL-DR-001` remains the next manual ledger target. `DCL-DR-001-F1` through
-`DCL-DR-001-F3` are locally fixed and `DCL-DR-001-F4` plus `DCL-DR-001-F5`
-are locally verified; `DCL-DR-001-F6` is the last unproven ordered path. Begin
-its exact-marker mid-extraction cleanup proof only after this checkpoint is
-clean, pushed, and aligned. Do not select `DCL-DR-002` or another product row
-until the restore matrix has no unexplained current path.
+`DCL-DR-001` is closed: F1 through F3 are locally fixed and F4 through F6 are
+locally verified. `DCL-DR-002` is the next manual ledger target and remains
+open and unproven. Establish its exact Task 1.2 migration/corruption audit
+marker only after this F6 checkpoint is clean, pushed, and aligned. Do not
+select `DCL-DR-003`, `DCL-DR-004`, or a later phone phase first.
 
 Rows in `parked` or `decision_required` closure state are stop-and-ask items,
 not automatic implementation targets. This ledger records their state and done

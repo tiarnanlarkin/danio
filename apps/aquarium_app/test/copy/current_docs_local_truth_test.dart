@@ -250,6 +250,8 @@ void main() {
       'DCL-DR-001-F4',
       'DCL-DR-001-F5',
       'DCL-DR-001-F6',
+      'DCL-DR-002',
+      '`DCL-DR-001` is `closed`',
       'remains `open`',
       'locally fixed',
       'unproven',
@@ -265,6 +267,8 @@ void main() {
         'DCL-DR-001-F5',
         'DCL-DR-001-F6',
         'restore preserves the initiating error when snapshot rollback also fails',
+        'restoreBackup cleans new photos and preserves existing files after mid-extraction failure',
+        'Status: closed',
       ],
     );
   });
@@ -476,7 +480,7 @@ void main() {
     expect(ids, containsAll(programLedgerIds));
     expect(
       rows.singleWhere((row) => row['ID'] == 'DCL-DR-001')['Closure State'],
-      'open',
+      'closed',
     );
 
     for (final id in {'DCL-A11Y-001', 'DCL-PERF-001'}) {
@@ -540,6 +544,8 @@ void main() {
     expect(program, contains('DCL-DR-001-F4'));
     expect(program, contains('DCL-DR-001-F5'));
     expect(program, contains('DCL-DR-001-F6'));
+    expect(program, contains('DCL-DR-002'));
+    expect(program, contains('closed'));
     expect(program, contains('next manual task'));
     expect(program, contains('open'));
     expect(program, contains('unproven'));
@@ -617,9 +623,9 @@ void main() {
       _markdownSection(finishMap, 'Slice Selection Rule'),
       allOf(
         contains('DCL-DR-001'),
-        contains('DCL-DR-001-F6'),
+        contains('DCL-DR-002'),
         contains('next manual'),
-        contains('locally fixed'),
+        allOf(contains('locally fixed'), contains('closed')),
         contains('unproven'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
@@ -629,9 +635,9 @@ void main() {
       _markdownSection(ledger, 'Next Ledger Target Rule'),
       allOf(
         contains('DCL-DR-001'),
-        contains('DCL-DR-001-F6'),
+        contains('DCL-DR-002'),
         contains('next manual'),
-        contains('locally fixed'),
+        allOf(contains('locally fixed'), contains('closed')),
         contains('unproven'),
         isNot(contains('Task 13')),
         isNot(contains('explicit launch')),
@@ -702,6 +708,8 @@ void main() {
       'DCL-DR-001-F4',
       'DCL-DR-001-F5',
       'DCL-DR-001-F6',
+      'DCL-DR-002',
+      '`DCL-DR-001` is `closed`',
       'remains `open`',
       'locally fixed',
       'unproven',
@@ -719,6 +727,7 @@ void main() {
       'DR-2026-07-16-003',
       'DR-2026-07-16-004',
       'DR-2026-07-16-005',
+      'DR-2026-07-16-006',
       'DCL-DR-001',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
       'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',

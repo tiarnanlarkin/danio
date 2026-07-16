@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-005`
-Marker: `danio-dcl-dr-001-tank-import-rollback-failure-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-006`
+Marker: `danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -13,8 +13,8 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - E0 locks the seven ordered phone phases and finite done conditions across the
   completion program, ledger, Finish Map, forecast, performance, and visual
   baseline authorities.
-- `DCL-DR-001` is advanced but remains open. Its ordered source/test matrix is
-  recorded in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
+- `DCL-DR-001` is `closed`. Its complete ordered source/test matrix and six
+  focused epochs are recorded in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - The audit found and fixed one error-replacement boundary: if preference
   restore and snapshot rollback both fail, the initiating error and rollback
   error now remain separately inspectable with their original stack traces.
@@ -31,9 +31,12 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   initiating tank import and `deleteAllTanks` rollback both fail, the original
   error, original stack, rollback error, and combined diagnostic remain
   inspectable.
+- `DCL-DR-001-F6` is locally proven with no current product gap: one photo file
+  exists before a later extraction failure, then cleanup removes that new file
+  while preserving the pre-existing file and blocking directory.
 - No product code, persisted-data schema, dependency, emulator, account, cloud,
-  release, or device behavior changed in F5.
-- Phase 1 remains on `DCL-DR-001`; no later ledger row was selected.
+  release, or device behavior changed in F6.
+- Phase 1 next advances to `DCL-DR-002`; no later phase was selected.
 
 ## Frozen autonomy
 
@@ -61,15 +64,15 @@ frozen-autonomy state and does not authorize automatic successor tasks.
 
 ## Product authority
 
-- `DCL-DR-001` remains `open`. `DCL-DR-001-F1` through `DCL-DR-001-F3` are
-  locally fixed and `DCL-DR-001-F4` plus `DCL-DR-001-F5` are locally verified
-  with focused executable proof. The row is not closed because one
-  source-explained path still lacks executable evidence.
-- The next manual proof task is `DCL-DR-001-F6` with exact marker
-  `danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`. Force photo
-  extraction to fail after creating a destination, then prove every new path
-  is removed and pre-existing local files remain; this path remains unproven.
-- `DCL-DR-002` remains open and unstarted but is not selected yet.
+- `DCL-DR-001` is `closed`. `DCL-DR-001-F1` through `DCL-DR-001-F3` are
+  locally fixed and `DCL-DR-001-F4` through `DCL-DR-001-F6` are locally
+  verified. Every ordered restore-matrix path has named current evidence and
+  the required final Full gate passed.
+- `DCL-DR-002` remains `open`, unstarted, and unproven. It is the next manual
+  Task 1.2 target for first-run migration, idempotence, failed version stamps,
+  migrated v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
+- No exact `DCL-DR-002` marker exists yet. Establish one only after this F6
+  checkpoint is clean, pushed, and aligned, then audit before assuming a gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
   status. Read them only for the directly relevant row.
@@ -107,14 +110,15 @@ when the chosen task directly requires them.
 - Focused and Visual gates require explicit affected test paths.
 - Product-code epochs get one Full gate on their final settled tree.
 - Docs-only epochs get one Docs gate and no Full gate.
+- A row-closing data-safety epoch runs Full when its ledger done condition
+  explicitly requires it, even when the final proof changes tests/docs only.
 - After an identical fast-forward/push, compare tree IDs and Git alignment; do
   not rerun an identical gate.
 
 ## Next manual action
 
-Continue manually with `DCL-DR-001-F6` under exact marker
-`danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`. Add focused proof
-that a mid-extraction failure removes every newly created path while preserving
-pre-existing local files; implement only if that proof exposes one concrete
-cleanup gap. Do not start `DCL-DR-002`, another ledger row, or a later phone
-phase until the restore matrix has no unexplained path.
+After this F6 checkpoint is clean, pushed, and aligned, continue manually with
+Phase 1 Task 1.2 / `DCL-DR-002`. Establish its exact audit marker from the
+current migration/corruption boundary, then inspect the ordered source and tests
+before assuming a product gap. Do not start `DCL-DR-003`, `DCL-DR-004`, or a
+later phone phase while `DCL-DR-002` remains open.

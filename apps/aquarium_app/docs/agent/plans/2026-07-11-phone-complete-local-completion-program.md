@@ -7,9 +7,9 @@
 > This is the current and only ordered phone completion authority. It preserves
 > seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
-> remains `open` and is advanced: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
-> `DCL-DR-001-F3` are locally fixed; `DCL-DR-001-F4` and `DCL-DR-001-F5` are
-> locally verified. The next manual task is `DCL-DR-001-F6`, which remains
+> is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
+> fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
+> verified. The next manual task is `DCL-DR-002`, which remains open and
 > unproven. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
@@ -165,9 +165,9 @@ block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
   preference, provider, or terminal-feedback side effect.
 - [x] Prove `DCL-DR-001-F5` simultaneous tank-import/rollback failure without
   assuming a product gap.
-- [ ] Prove `DCL-DR-001-F6` mid-extraction cleanup removes all newly created
-  paths without deleting pre-existing local files.
-- [ ] Close `DCL-DR-001` only when the matrix has no unexplained path and the
+- [x] Prove `DCL-DR-001-F6` mid-extraction cleanup removes all newly created
+  photo-file paths without deleting pre-existing local files.
+- [x] Close `DCL-DR-001` only when the matrix has no unexplained path and the
   Full gate passes.
 
 **Focused commands:**
@@ -420,11 +420,10 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-`DCL-DR-001` remains open after `DR-2026-07-16-005`: `DCL-DR-001-F1` through
-`DCL-DR-001-F3` are locally fixed and `DCL-DR-001-F4` plus `DCL-DR-001-F5`
-are locally verified, while `DCL-DR-001-F6` mid-extraction cleanup remains
-unproven under marker
-`danio-dcl-dr-001-mid-extraction-cleanup-proof-2026-07-16/1`. Open that exact
-proof epoch next and implement only if current executable evidence exposes one
-concrete gap. Do not select Task 1.2, 1.3, or 1.4 until the restore matrix has
-no unexplained current path.
+`DCL-DR-001` is closed after `DR-2026-07-16-006`: F1 through F3 are locally
+fixed, F4 through F6 are locally verified, every restore-matrix path has named
+current evidence, and the required final Full gate passes. `DCL-DR-002` is the
+next manual task and remains open and unproven. After the F6 checkpoint is
+clean, pushed, and aligned, establish its exact Task 1.2 migration/corruption
+audit marker, then inspect the ordered source/tests before assuming a product
+gap. Do not select Task 1.3, Task 1.4, or a later phase first.

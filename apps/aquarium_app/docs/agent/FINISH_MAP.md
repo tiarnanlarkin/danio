@@ -89,7 +89,7 @@ animation quota.
 | Guided tools | `DCL-P1-003` | In progress | Major calculators have tank-context handoffs, explanations, warnings, and save/apply paths. | Audit every current tool handoff once; fix only a concrete save/apply defect, or close with no-current-gap evidence. |
 | Multi-tank | none | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | `DCL-P1-004` | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Audit current source labels and save handoffs once; fix only a concrete missing label/context/persistence defect, or close with no-current-gap evidence. |
-| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` maps the current restore matrix and fixes F1 preference error preservation. `DR-2026-07-16-002` fixes F2 share outcomes and completed-ZIP cleanup. `DR-2026-07-16-003` proves file-selection outcomes and accurate access feedback. `DR-2026-07-16-004` proves valid-preview cancellation has no restore writes. `DR-2026-07-16-005` proves simultaneous tank-import/rollback failure preserves both errors and requires no product change. Existing evidence also covers validation, tank/child rollback, referenced-photo-only extraction, best-effort restored-photo cleanup, no-tank preference guards, relationship preflight, migration, corruption recovery, and account-keyed cloud backup copy honesty. | Prove `DCL-DR-001-F6` mid-extraction cleanup, then close `DCL-DR-001` with its required Full gate before selecting `DCL-DR-002`; fix only a concrete gap proven by the current test-first slice. |
+| Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` through `DR-2026-07-16-006` map and close `DCL-DR-001`: F1 through F3 fix preference-error preservation, share outcomes/ZIP cleanup, and inaccessible-selection feedback; F4 through F6 prove cancellation, simultaneous tank-import/rollback failure, and mid-extraction photo cleanup without further product changes. Every restore-matrix path has named current evidence and the final Full gate passes. Existing evidence also covers relationship preflight, migration, corruption recovery, and account-keyed cloud backup copy honesty. | Audit Task 1.2 / `DCL-DR-002` migration and corruption recovery next; establish its exact marker only after the F6 checkpoint is clean and aligned, then fix only a concrete current gap. |
 | Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Audit the current keyless/provider/privacy preference paths once; fix a concrete honesty or persistence defect, or close with no-current-gap evidence. |
 | Global search | none | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | none | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
@@ -285,12 +285,11 @@ rule applies to older accessibility, motion, content, and performance findings.
 
 ## Slice Selection Rule
 
-`DCL-DR-001` remains the next manual development task. `DCL-DR-001-F1` through
-`DCL-DR-001-F3` are locally fixed and `DCL-DR-001-F4` plus `DCL-DR-001-F5`
-are locally verified, while `DCL-DR-001-F6` mid-extraction cleanup remains
-unproven. Begin that exact evidence slice only after this checkpoint is clean,
-pushed, and aligned. Do not select `DCL-DR-002` until the restore matrix has no
-unexplained current path.
+`DCL-DR-001` is closed: F1 through F3 are locally fixed and F4 through F6 are
+locally verified. `DCL-DR-002` is the next manual development task and remains
+open and unproven. Establish its exact Task 1.2 audit marker only after this F6
+checkpoint is clean, pushed, and aligned. Do not select `DCL-DR-003`,
+`DCL-DR-004`, or a later phone phase first.
 
 This map may record a newly discovered regression or higher-risk category, but
 it cannot silently select a different product row. Frozen claim, budget,
