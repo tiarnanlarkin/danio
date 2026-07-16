@@ -583,6 +583,12 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final now = DateTime.now();
 
     try {
+      final durableTank = await storage.getTank(widget.tankId);
+      if (durableTank == null) {
+        throw StateError(
+          'Cannot save quick feeding for missing tank ${widget.tankId}',
+        );
+      }
       await storage.saveLog(
         LogEntry(
           id: uuid.v4(),

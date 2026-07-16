@@ -19,6 +19,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/widgets/core/app_card.dart';
+import 'package:danio/widgets/xp_award_animation.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -232,6 +233,7 @@ Widget _wrapWithStorage({
 Widget _wrapWithPulseProbe({
   required StorageService storage,
   required String tankId,
+  bool showProfileProbe = false,
 }) {
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
@@ -247,6 +249,19 @@ Widget _wrapWithPulseProbe({
                   Text('pulse ${ref.watch(tankFeedingPulseProvider(tankId))}'),
             ),
           ),
+          if (showProfileProbe)
+            Positioned(
+              left: 0,
+              top: 24,
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final profile = ref.watch(userProfileProvider).valueOrNull;
+                  return Text(
+                    profile == null ? 'profile loading' : 'profile ready',
+                  );
+                },
+              ),
+            ),
         ],
       ),
     ),
@@ -856,6 +871,61 @@ void main() {
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.text('pulse 1'), findsOneWidget);
     });
+
+    testWidgets(
+      'quick feeding rejects a missing parent before saving or rewarding',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'livestock-feed-missing-parent';
+        final initialProfile = _makeProfile().copyWith(totalXp: 40);
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(initialProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Stale Tank'));
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: 'livestock-feed-missing-parent-neons',
+            tankId: tankId,
+            name: 'Neon Tetra',
+            count: 8,
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithPulseProbe(
+            storage: storage,
+            tankId: tankId,
+            showProfileProbe: true,
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        expect(find.text('pulse 0'), findsOneWidget);
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await storage.deleteTank(tankId);
+        expect(await storage.getTank(tankId), isNull);
+
+        await tester.tap(find.text('Feed'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(find.text('pulse 0'), findsOneWidget);
+        expect(find.byType(XpAwardAnimation), findsNothing);
+        final persistedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(persistedProfile.totalXp, initialProfile.totalXp);
+        expect(
+          find.text("Couldn't log that feeding. Give it another go!"),
+          findsOneWidget,
+        );
+        expect(find.text('Feeding logged.'), findsNothing);
+      },
+    );
 
     testWidgets('successful feeding log refreshes all-log timeline data', (
       tester,
