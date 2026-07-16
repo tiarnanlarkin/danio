@@ -381,6 +381,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     if (_isCompletingLesson) return;
 
     setState(() => _isCompletingLesson = true);
+    var progressCommitted = false;
+    var hasPostCommitWarning = false;
+    var committedXp = 0;
 
     try {
       // FB-H4: Apply XP boost if active
@@ -454,15 +457,6 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return;
       }
 
-      // Calculate gem rewards (non-practice mode only)
-      final quiz = widget.lesson.quiz;
-      if (quiz != null) {
-        final isPerfect = _correctAnswers == quiz.questions.length;
-        await ref
-            .read(userProfileProvider.notifier)
-            .awardQuizGems(isPerfect: isPerfect);
-      }
-
       // PS-12 FIX: Capture lastActivityDate BEFORE completeLesson updates it
       final previousLastActivityDate = ref
           .read(userProfileProvider)
@@ -474,13 +468,51 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       ref.read(levelUpEventProvider.notifier).suppressNextLevelUp();
 
       // Record completion and XP
-      await ref
+      final completion = await ref
           .read(userProfileProvider.notifier)
           .completeLesson(widget.lesson.id, totalXp);
 
-      final completedProfile = ref.read(userProfileProvider).value;
+      final completedProfile = ref.read(userProfileProvider).valueOrNull;
+      if (completedProfile == null ||
+          !completedProfile.completedLessons.contains(widget.lesson.id)) {
+        throw StateError('Lesson progress was not persisted.');
+      }
+
+      if (!completion.newlyCompleted) {
+        ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
+        if (mounted) {
+          AppFeedback.showNeutralViaMessenger(
+            ScaffoldMessenger.of(context),
+            'Lesson already completed. No new rewards were added.',
+          );
+        }
+        return;
+      }
+      progressCommitted = true;
+      committedXp = totalXp;
+      hasPostCommitWarning = completion.hasPostCommitWarning;
+
+      // Quiz rewards are committed only after lesson progress is durable. This
+      // keeps a failed profile save retryable without duplicating gem rewards.
+      final quiz = widget.lesson.quiz;
+      if (quiz != null) {
+        final isPerfect = _correctAnswers == quiz.questions.length;
+        try {
+          final quizRewardSaved = await ref
+              .read(userProfileProvider.notifier)
+              .awardQuizGems(isPerfect: isPerfect);
+          hasPostCommitWarning = hasPostCommitWarning || !quizRewardSaved;
+        } catch (e, st) {
+          hasPostCommitWarning = true;
+          logError(
+            'Quiz reward failed after lesson progress saved: $e',
+            stackTrace: st,
+            tag: 'LessonScreen',
+          );
+        }
+      }
+
       if (_levelBeforeLesson != null &&
-          completedProfile != null &&
           completedProfile.currentLevel <= _levelBeforeLesson!) {
         ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
       }
@@ -583,6 +615,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       }
 
       if (mounted) {
+        if (hasPostCommitWarning) {
+          AppFeedback.showNeutralViaMessenger(
+            ScaffoldMessenger.of(context),
+            'Lesson saved, but some rewards or activity updates could not be completed.',
+          );
+        }
         AppHaptics.success();
         _showXpAnimation(
           totalXp,
@@ -597,11 +635,20 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         tag: 'LessonScreen',
       );
       if (mounted) {
-        AppFeedback.showError(
-          context,
-          'Couldn\'t save your progress. Try again in a moment.',
-          onRetry: () => _completeLesson(bonusXp: bonusXp),
-        );
+        if (progressCommitted) {
+          AppFeedback.showNeutralViaMessenger(
+            ScaffoldMessenger.of(context),
+            'Lesson saved, but some rewards or activity updates could not be completed.',
+          );
+          AppHaptics.success();
+          _showXpAnimation(committedXp);
+        } else {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t save your progress. Try again in a moment.',
+            onRetry: () => _completeLesson(bonusXp: bonusXp),
+          );
+        }
       }
     } finally {
       if (mounted) {

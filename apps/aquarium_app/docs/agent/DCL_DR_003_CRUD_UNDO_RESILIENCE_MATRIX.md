@@ -3,17 +3,17 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-017`
+Current epoch: `DR-2026-07-16-018`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-three bounded fixes prevent Today Board quick Feed from creating an orphan log,
-prevent equipment Undo from leaving a partial restore, and make review-answer
-commit outcomes authoritative across save, abandon, stale-card, and downstream
-XP-failure boundaries. `DCL-DR-003` remains open because the same inventory
-proved additional independent rollback, orphan, and false-success gaps. They
-must be handled as later single data-safety slices.
+four bounded fixes prevent Today Board quick Feed from creating an orphan log,
+prevent equipment Undo from leaving a partial restore, make review-answer
+commits authoritative, and make normal-lesson progress precede quiz rewards
+with a real retry after profile-write failure. `DCL-DR-003` remains open because
+the same inventory proved additional independent rollback, orphan, and
+false-success gaps. They must be handled as later single data-safety slices.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -79,7 +79,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, and `reset surfaces failed local removals before reporting reset success` | Covered for direct writers; failed compensating refund remains unexplained. |
 | Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Covered for named paths; missing item, expired cleanup, and refund-failure boundaries remain unexplained. |
 | Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, and debug two-store reset rollback tests | Open: cross-store unlock/profile/gem partial failure can leave a durable unlock without a recoverable reward. |
-| Normal lesson rewards | `XP awarded and lesson marked complete after completeLesson`; practice-only failure `practice completion does not claim XP when XP save fails` | Open: quiz gems are awarded before profile completion; a failed profile save followed by Retry can duplicate gems and then report success without durable lesson progress. |
+| Normal lesson rewards | Existing success `XP awarded and lesson marked complete after completeLesson`; practice failure `practice completion does not claim XP when XP save fails`; RED/GREEN `failed normal lesson save retries without duplicate quiz gems or false progress`; `normal lesson no-op cannot claim saved progress`; `already completed normal lesson adds no duplicate rewards`; `post-commit activity failure does not claim lesson progress was unsaved`; `post-commit quiz reward failure preserves saved lesson progress` | `DCL-DR-003-F4` locally fixed: an initial profile-write failure restores the prior profile for Retry and awards no quiz gems or XP success; Retry durably completes once before one quiz reward; `completeLesson` reports newly committed and partial follow-up outcomes, so null/already-completed no-ops add nothing and post-commit activity or reward failures preserve durable progress with honest partial-completion feedback instead of Retry. |
 
 ## Ordered Findings
 
@@ -93,11 +93,14 @@ belongs to `DCL-DR-004` and is not selected here.
    stale-card, abandon-during-save, and downstream XP failure: fixed and focused
    GREEN in `DR-2026-07-16-017` under marker
    `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`.
-4. `DCL-DR-003-F4` - normal lesson retry must not duplicate quiz gems or claim
-   unsaved progress. Next marker:
+4. `DCL-DR-003-F4` - normal lesson retry cannot duplicate quiz gems or claim
+   unsaved progress: fixed and focused GREEN in `DR-2026-07-16-018` under marker
    `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`.
-5. Remaining orphan quick-log, stale task, livestock bulk, wishlist/shop stale-ID,
-   and cross-store reward boundaries remain separate future slices.
+5. `DCL-DR-003-F5` - the remaining Home main-Tank quick Feed path must reject
+   a missing durable parent before saving. Next marker:
+   `danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1`.
+6. Remaining quick-log, stale task, livestock bulk, wishlist/shop stale-ID, and
+   cross-store reward boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-017`
-Marker: `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-018`
+Marker: `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -58,12 +58,13 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   restoration rolls back equipment already restored by the same Undo, while
   route-independent invalidation refreshes watchers after leaving the screen.
 - `DCL-DR-003-F3` is locally fixed under marker
-  `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`: review-card
-  and review-stat save failures attempt two-key compensation, preserve the
-  initiating failure, stay pending, and award no XP. Missing durable cards fail,
-  delayed saves cannot resurrect abandoned sessions, and XP failure cannot retry.
-- F3 changed no schema, dependency, emulator, account, cloud, or release
-  configuration; no second gap or later row was selected.
+  `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`: failed saves
+  stay pending with no XP, and delayed saves cannot resurrect abandoned sessions.
+- `DCL-DR-003-F4` is locally fixed under marker
+  `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`: failed profile
+  saves remain retryable, quiz gems follow durable progress, and no-ops add
+  nothing; post-commit failures keep saved progress with honest partial feedback.
+- F4 added no schema, dependency, emulator, account, cloud, or release change.
 
 ## Frozen autonomy
 
@@ -95,9 +96,9 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; its matrix and F1/F2/F3 fixes are recorded.
+- `DCL-DR-003` remains `open`; its matrix and F1/F2/F3/F4 fixes are recorded.
   Continue its next ordered gap under marker
-  `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1` after this F3
+  `danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1` after this F4
   checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -142,9 +143,8 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F3 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-003-F4` under marker
-`danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`. Prove that a
-failed normal-lesson profile completion followed by Retry cannot duplicate quiz
-gems or claim unsaved lesson progress. Do not bundle another matrix finding,
-`DCL-DR-004`, or a later phase.
+After this F4 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-003-F5` under marker
+`danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1`. Prove the Home
+main-Tank quick Feed action rejects a missing durable parent before saving its
+log. Do not bundle another matrix finding, `DCL-DR-004`, or a later phase.

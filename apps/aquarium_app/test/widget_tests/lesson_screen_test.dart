@@ -15,14 +15,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/lesson_screen.dart';
+import 'package:danio/models/achievements.dart';
 import 'package:danio/models/learning.dart';
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/providers/inventory_provider.dart';
+import 'package:danio/providers/achievement_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/services/notification_scheduler.dart';
 import 'package:danio/utils/navigation_throttle.dart';
 import 'package:danio/widgets/core/app_button.dart';
+import 'package:danio/widgets/xp_award_animation.dart';
 
 // ---------------------------------------------------------------------------
 // Fake SpacedRepetitionNotifier (avoids NotificationService init)
@@ -48,7 +52,59 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
       );
 
   @override
+  Future<void> autoSeedFromLesson({
+    required String lessonId,
+    required List<dynamic> lessonSections,
+    required List<dynamic>? quizQuestions,
+  }) async {}
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _NoopReminderNotificationService implements ReminderNotificationService {
+  @override
+  Future<void> cancelReviewReminder() async {}
+
+  @override
+  Future<void> cancelStreakNotifications() async {}
+
+  @override
+  Future<void> scheduleAllStreakNotifications({
+    required int currentStreak,
+    required int dailyXpGoal,
+    required int todayXp,
+    TimeOfDay? morningTime,
+    TimeOfDay? eveningTime,
+    TimeOfDay? nightTime,
+  }) async {}
+
+  @override
+  Future<void> scheduleReviewReminder({
+    required int dueCardsCount,
+    TimeOfDay? time,
+  }) async {}
+}
+
+class _NoopAchievementChecker extends AchievementChecker {
+  _NoopAchievementChecker(super.ref);
+
+  @override
+  Future<List<AchievementUnlockResult>> checkAfterLesson({
+    required int lessonsCompleted,
+    required int currentStreak,
+    required int totalXp,
+    required int perfectScores,
+    required DateTime lessonCompletedAt,
+    required int lessonDuration,
+    required int lessonScore,
+    required int todayLessonsCompleted,
+    required List<String> completedLessonIds,
+    DateTime? previousLastActivityDate,
+    bool showCelebrations = true,
+  }) async {
+    return const [];
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -108,16 +164,30 @@ const _maxTabletLearningActionWidth = 720.0;
 // Helpers
 // ---------------------------------------------------------------------------
 
-String _profileJson({ExperienceLevel level = ExperienceLevel.beginner}) {
+String _profileJson({
+  ExperienceLevel level = ExperienceLevel.beginner,
+  List<String> completedLessons = const [],
+}) {
   final now = DateTime(2026, 1, 1);
   return jsonEncode(
     UserProfile(
       id: 'profile-1',
       experienceLevel: level,
+      completedLessons: completedLessons,
       createdAt: now,
       updatedAt: now,
     ).toJson(),
   );
+}
+
+List<Map<String, dynamic>> _persistedGemTransactions(
+  SharedPreferences prefs,
+) {
+  final stored = prefs.getString('gems_state');
+  if (stored == null) return const [];
+  final decoded = jsonDecode(stored) as Map<String, dynamic>;
+  return (decoded['transactions'] as List<dynamic>)
+      .cast<Map<String, dynamic>>();
 }
 
 class _ThrowingSetStringPrefs implements SharedPreferences {
@@ -489,6 +559,314 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'failed normal lesson save retries without duplicate quiz gems or false progress',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': _profileJson(),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        var profileWriteAttempts = 0;
+        final failFirstProfileSave = _ThrowingSetStringPrefs(prefs, (key, _) {
+          if (key != 'user_profile') return false;
+          profileWriteAttempts += 1;
+          return profileWriteAttempts == 1;
+        });
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            lesson: _quizLesson,
+            prefs: failFirstProfileSave,
+            overrides: [
+              notificationServiceProvider.overrideWithValue(
+                _NoopReminderNotificationService(),
+              ),
+              achievementCheckerProvider.overrideWith(
+                _NoopAchievementChecker.new,
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await tester.tap(find.text('Open lesson'));
+        await _advance(tester);
+        await tester.tap(find.text('Take Quiz'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Ammonia'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Check Answer'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('See Results'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Complete Lesson'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        final profileAfterFailure = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(
+          profileAfterFailure.completedLessons,
+          isNot(contains('lesson-quiz')),
+        );
+        expect(
+          _persistedGemTransactions(
+            prefs,
+          ).where((entry) => entry['reason'] == 'quizPerfect'),
+          isEmpty,
+          reason: 'Quiz gems must wait for durable lesson progress.',
+        );
+        expect(
+          find.text("Couldn't save your progress. Try again in a moment."),
+          findsOneWidget,
+        );
+        expect(find.byType(XpAwardAnimation), findsNothing);
+
+        await tester.tap(find.text('Retry'));
+        await tester.pump();
+        for (var attempt = 0; attempt < 30; attempt++) {
+          await tester.pump(const Duration(milliseconds: 100));
+          final persistedProfile = UserProfile.fromJson(
+            jsonDecode(prefs.getString('user_profile')!)
+                as Map<String, dynamic>,
+          );
+          final quizRewards = _persistedGemTransactions(
+            prefs,
+          ).where((entry) => entry['reason'] == 'quizPerfect');
+          if (persistedProfile.completedLessons.contains('lesson-quiz') &&
+              quizRewards.length == 1) {
+            break;
+          }
+        }
+
+        final profileAfterRetry = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(profileAfterRetry.completedLessons, contains('lesson-quiz'));
+        expect(
+          _persistedGemTransactions(
+            prefs,
+          ).where((entry) => entry['reason'] == 'quizPerfect'),
+          hasLength(1),
+        );
+      },
+    );
+
+    testWidgets('normal lesson no-op cannot claim saved progress', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          overrides: [
+            notificationServiceProvider.overrideWithValue(
+              _NoopReminderNotificationService(),
+            ),
+            achievementCheckerProvider.overrideWith(
+              _NoopAchievementChecker.new,
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Complete Lesson'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(
+        find.text("Couldn't save your progress. Try again in a moment."),
+        findsOneWidget,
+      );
+      expect(find.byType(XpAwardAnimation), findsNothing);
+    });
+
+    testWidgets('already completed normal lesson adds no duplicate rewards', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': _profileJson(completedLessons: const ['lesson-quiz']),
+      });
+      final prefs = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(
+        _wrapWithLauncher(
+          lesson: _quizLesson,
+          prefs: prefs,
+          overrides: [
+            notificationServiceProvider.overrideWithValue(
+              _NoopReminderNotificationService(),
+            ),
+            achievementCheckerProvider.overrideWith(
+              _NoopAchievementChecker.new,
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+      await tester.tap(find.text('Open lesson'));
+      await _advance(tester);
+      await tester.tap(find.text('Take Quiz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ammonia'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Check Answer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('See Results'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Complete Lesson'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(
+        find.text('Lesson already completed. No new rewards were added.'),
+        findsOneWidget,
+      );
+      expect(_persistedGemTransactions(prefs), isEmpty);
+      expect(find.byType(XpAwardAnimation), findsNothing);
+    });
+
+    testWidgets(
+      'post-commit activity failure does not claim lesson progress was unsaved',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': _profileJson(),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        var profileWriteAttempts = 0;
+        final failActivityProfileSave = _ThrowingSetStringPrefs(prefs, (
+          key,
+          _,
+        ) {
+          if (key != 'user_profile') return false;
+          profileWriteAttempts += 1;
+          return profileWriteAttempts == 2;
+        });
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            lesson: _quizLesson,
+            prefs: failActivityProfileSave,
+            overrides: [
+              notificationServiceProvider.overrideWithValue(
+                _NoopReminderNotificationService(),
+              ),
+              achievementCheckerProvider.overrideWith(
+                _NoopAchievementChecker.new,
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        await tester.tap(find.text('Open lesson'));
+        await _advance(tester);
+        await tester.tap(find.text('Take Quiz'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Ammonia'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Check Answer'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('See Results'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Complete Lesson'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        final persistedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(persistedProfile.completedLessons, contains('lesson-quiz'));
+        expect(
+          find.text(
+            'Lesson saved, but some rewards or activity updates could not be completed.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text("Couldn't save your progress. Try again in a moment."),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(
+          _persistedGemTransactions(
+            prefs,
+          ).where((entry) => entry['reason'] == 'quizPerfect'),
+          hasLength(1),
+        );
+      },
+    );
+
+    testWidgets(
+      'post-commit quiz reward failure preserves saved lesson progress',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': _profileJson(),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        var gemWriteAttempts = 0;
+        final failQuizRewardSave = _ThrowingSetStringPrefs(prefs, (key, _) {
+          if (key != 'gems_state') return false;
+          gemWriteAttempts += 1;
+          return gemWriteAttempts == 2;
+        });
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            lesson: _quizLesson,
+            prefs: failQuizRewardSave,
+            overrides: [
+              notificationServiceProvider.overrideWithValue(
+                _NoopReminderNotificationService(),
+              ),
+              achievementCheckerProvider.overrideWith(
+                _NoopAchievementChecker.new,
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        await tester.tap(find.text('Open lesson'));
+        await _advance(tester);
+        await tester.tap(find.text('Take Quiz'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Ammonia'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Check Answer'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('See Results'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Complete Lesson'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        final persistedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(persistedProfile.completedLessons, contains('lesson-quiz'));
+        expect(
+          find.text(
+            'Lesson saved, but some rewards or activity updates could not be completed.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text("Couldn't save your progress. Try again in a moment."),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        final transactions = _persistedGemTransactions(prefs);
+        expect(
+          transactions.where((entry) => entry['reason'] == 'lessonComplete'),
+          hasLength(1),
+        );
+        expect(
+          transactions.where((entry) => entry['reason'] == 'quizPerfect'),
+          isEmpty,
+        );
+      },
+    );
 
     testWidgets('renders image sections with asset and caption', (
       tester,

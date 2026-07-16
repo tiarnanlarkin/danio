@@ -32,6 +32,16 @@ final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) {
 
 const _uuid = Uuid();
 
+class LessonCompletionResult {
+  const LessonCompletionResult({
+    required this.newlyCompleted,
+    this.hasPostCommitWarning = false,
+  });
+
+  final bool newlyCompleted;
+  final bool hasPostCommitWarning;
+}
+
 /// Provider for user profile management
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
@@ -259,15 +269,21 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   /// Award XP and handle streak logic (with streak freeze support)
   /// Persists local profile progress immediately.
   /// If xpBoostActive is true, the XP amount will be doubled
-  Future<void> recordActivity({int xp = 0, bool xpBoostActive = false}) async {
+  Future<void> recordActivity({
+    int xp = 0,
+    bool xpBoostActive = false,
+    bool preserveProfileOnFailure = false,
+  }) async {
     // Apply XP boost multiplier via single helper
     final effectiveXp = _applyXp(xp, xpBoostActive: xpBoostActive);
+    UserProfile? profileBeforeActivity;
     try {
       // Read state fresh for each activity write to avoid stale snapshots.
       // If another XP operation completed between caller setup and here,
       // using an earlier capture would silently overwrite newer state.
       var c = state.value;
       if (c == null) return;
+      profileBeforeActivity = c;
 
       // Reset streak freeze weekly if needed
       if (c.shouldResetStreakFreeze) {
@@ -419,7 +435,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         );
       }
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = preserveProfileOnFailure && profileBeforeActivity != null
+          ? AsyncValue.data(profileBeforeActivity)
+          : AsyncValue.error(e, st);
       rethrow;
     }
   }
@@ -547,14 +565,30 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     return (weeklyXP: weeklyXP, weekStartDate: newWeekStart, league: league);
   }
 
-  /// Mark a lesson as completed
-  Future<void> completeLesson(String lessonId, int xpReward) async {
+  /// Mark a lesson as completed.
+  ///
+  /// Reports whether this call committed new lesson progress and whether a
+  /// later reward or activity update needs honest UI feedback.
+  Future<LessonCompletionResult> completeLesson(
+    String lessonId,
+    int xpReward,
+  ) async {
+    UserProfile? profileBeforeSave;
+    UserProfile? committedProfile;
+    var profileSaved = false;
+    var hasPostCommitWarning = false;
+
     try {
       final current = state.value;
-      if (current == null) return;
+      if (current == null) {
+        return const LessonCompletionResult(newlyCompleted: false);
+      }
+      profileBeforeSave = current;
 
       // Don't double-count if already completed
-      if (current.completedLessons.contains(lessonId)) return;
+      if (current.completedLessons.contains(lessonId)) {
+        return const LessonCompletionResult(newlyCompleted: false);
+      }
 
       // Create new lesson progress entry
       final now = DateTime.now();
@@ -599,36 +633,66 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         dailyXpHistory: updatedHistory,
         updatedAt: now,
       );
+      committedProfile = updated;
 
       await _saveImmediate(updated);
+      profileSaved = true;
       state = AsyncValue.data(updated);
 
       // Award gems for lesson completion
       final gemsNotifier = ref.read(gemsProvider.notifier);
-      await gemsNotifier.addGems(
+      final lessonRewardSaved = await gemsNotifier.addGems(
         amount: GemRewards.lessonComplete,
         reason: GemEarnReason.lessonComplete,
       );
+      hasPostCommitWarning = !lessonRewardSaved;
 
       // Check for level up and award bonus gems
       if (updated.currentLevel > previousLevel) {
         final levelUpGems = GemRewards.getLevelUpReward(updated.currentLevel);
-        await gemsNotifier.addGems(
+        final levelRewardSaved = await gemsNotifier.addGems(
           amount: levelUpGems,
           reason: GemEarnReason.levelUp,
           customReason: 'Level up to ${updated.levelTitle}',
         );
+        hasPostCommitWarning = hasPostCommitWarning || !levelRewardSaved;
       }
 
       /// XP Flow: xp: 0 is intentional — base XP already added above.
       /// recordActivity() handles streak bonus, daily goal, weekly reset.
       /// See addXp() for the full XP flow documentation.
-      await recordActivity(xp: 0);
+      await recordActivity(xp: 0, preserveProfileOnFailure: true);
 
       // AUTO-SEED REVIEW CARDS: Create spaced repetition cards for this lesson
       await _createReviewCardsForLesson(lessonId);
+      return LessonCompletionResult(
+        newlyCompleted: true,
+        hasPostCommitWarning: hasPostCommitWarning,
+      );
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      final durableProfile = committedProfile;
+      if (profileSaved && durableProfile != null) {
+        final latestProfile = state.valueOrNull;
+        state = AsyncValue.data(
+          latestProfile != null &&
+                  latestProfile.completedLessons.contains(lessonId)
+              ? latestProfile
+              : durableProfile,
+        );
+        logError(
+          'Lesson follow-up failed after progress saved: $e',
+          stackTrace: st,
+          tag: 'UserProfileProvider',
+        );
+        return const LessonCompletionResult(
+          newlyCompleted: true,
+          hasPostCommitWarning: true,
+        );
+      }
+      final retryableProfile = profileBeforeSave;
+      state = !profileSaved && retryableProfile != null
+          ? AsyncValue.data(retryableProfile)
+          : AsyncValue.error(e, st);
       rethrow;
     }
   }
@@ -808,23 +872,27 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await recordActivity(xp: 0); // XP already added above
   }
 
-  /// Award gems for quiz performance
-  Future<void> awardQuizGems({required bool isPerfect}) async {
+  /// Award gems for quiz performance.
+  ///
+  /// A gem-store failure must not erase already committed profile progress.
+  Future<bool> awardQuizGems({required bool isPerfect}) async {
+    final committedProfile = state.valueOrNull;
     try {
       final gemsNotifier = ref.read(gemsProvider.notifier);
       if (isPerfect) {
-        await gemsNotifier.addGems(
+        return await gemsNotifier.addGems(
           amount: GemRewards.quizPerfect,
           reason: GemEarnReason.quizPerfect,
         );
-      } else {
-        await gemsNotifier.addGems(
-          amount: GemRewards.quizPass,
-          reason: GemEarnReason.quizPass,
-        );
       }
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      return await gemsNotifier.addGems(
+        amount: GemRewards.quizPass,
+        reason: GemEarnReason.quizPass,
+      );
+    } catch (_) {
+      if (committedProfile != null) {
+        state = AsyncValue.data(committedProfile);
+      }
       rethrow;
     }
   }
