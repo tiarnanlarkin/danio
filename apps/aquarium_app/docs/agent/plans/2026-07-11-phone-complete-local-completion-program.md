@@ -10,8 +10,9 @@
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
 > verified. `DCL-DR-002` remains open; `DCL-DR-002-F1` and `DCL-DR-002-F2`
-> are locally fixed, and the next manual corrupt-JSON retry proof is locked to
-> marker `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`. Execution
+> are locally fixed, `DCL-DR-002-F3` is locally verified, and the next manual
+> start-fresh cancel/back proof is locked to marker
+> `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -201,6 +202,10 @@ flutter test test/services/shared_preferences_backup_test.dart --reporter compac
   `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1` so failed corrupt-file
   backup exposes no recovery path or copy assurance while the original remains
   until explicit start fresh; preserve successful-copy path and wording.
+- [x] Verify `DCL-DR-002-F3` under marker
+  `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`: unchanged malformed
+  real-file retry stays blocked without empty success, while a schema-v2 repair
+  becomes readable only through `retryLoad` and is not rewritten.
 - [ ] Verify first-run migration, idempotence, failed version stamp, migrated
   v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
 - [ ] Confirm failure states never become empty-data success and start-fresh
@@ -429,10 +434,11 @@ Every implementation slice must:
 ## Next Manual Epoch
 
 `DCL-DR-001` is closed after `DR-2026-07-16-006`. `DCL-DR-002` remains open
-after `DR-2026-07-16-008`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-fixed so both storage errors expose honest recovery actions and a corrupt-file
-path is advertised only after copy success. After this checkpoint is clean,
-pushed, and aligned, continue the next manual corrupt-JSON retry proof under
-marker `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`. Prove a
-repaired real file succeeds only through `retryLoad` and an unchanged malformed
-reread remains blocked. Do not select Task 1.3, Task 1.4, or a later phase first.
+after `DR-2026-07-16-009`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
+fixed, and `DCL-DR-002-F3` is locally verified so real-file retry cannot turn
+unchanged corruption into empty success or rewrite a valid repair. After this
+checkpoint is clean, pushed, and aligned, continue the next manual start-fresh
+cancel/back proof under marker
+`danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`. Prove cancel or
+back leaves the service/file/provider state untouched. Do not select Task 1.3,
+Task 1.4, or a later phase first.

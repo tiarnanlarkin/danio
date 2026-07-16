@@ -431,6 +431,130 @@ void main() {
       expect(await file.exists(), isTrue);
       expect(await file.readAsString(), malformedJson);
     });
+
+    test(
+      'unchanged malformed JSON retry stays corrupted and blocks empty success',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        const malformedJson = '{"tanks":';
+        await file.writeAsString(malformedJson);
+
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+
+        expect(service.state, StorageState.corrupted);
+        expect(service.hasError, isTrue);
+        expect(service.lastError?.state, StorageState.corrupted);
+        final latestRecoveryCopy = File(
+          service.lastError!.corruptedFilePath!,
+        );
+        expect(await latestRecoveryCopy.exists(), isTrue);
+        expect(await latestRecoveryCopy.readAsString(), malformedJson);
+        expect(await file.exists(), isTrue);
+        expect(await file.readAsString(), malformedJson);
+        await expectLater(
+          service.getAllTanks(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+
+        final recoveryCopies = root.listSync().whereType<File>().where(
+          (candidate) => candidate.path.contains('.corrupted.'),
+        );
+        expect(recoveryCopies, isNotEmpty);
+        for (final recoveryCopy in recoveryCopies) {
+          expect(await recoveryCopy.readAsString(), malformedJson);
+        }
+      },
+    );
+
+    test(
+      'repaired malformed JSON succeeds only through retry without rewriting repair',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        const malformedJson = '{"tanks":';
+        await file.writeAsString(malformedJson);
+
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+        final recoveryPath = service.lastError!.corruptedFilePath!;
+        final recoveryCopy = File(recoveryPath);
+        expect(await recoveryCopy.exists(), isTrue);
+        expect(await recoveryCopy.readAsString(), malformedJson);
+        final recoveryPathsBeforeRepair = root
+            .listSync()
+            .whereType<File>()
+            .where((candidate) => candidate.path.contains('.corrupted.'))
+            .map((candidate) => candidate.path)
+            .toSet();
+
+        final createdAt = DateTime.utc(2026, 1, 1);
+        final repairedJson = jsonEncode({
+          'version': 2,
+          'tanks': {
+            'repaired-tank': {
+              'id': 'repaired-tank',
+              'name': 'Repaired Tank',
+              'type': 'freshwater',
+              'volumeLitres': 75,
+              'startDate': createdAt.toIso8601String(),
+              'targets': {
+                'tempMin': 24,
+                'tempMax': 26,
+                'phMin': 6.8,
+                'phMax': 7.4,
+              },
+              'createdAt': createdAt.toIso8601String(),
+              'updatedAt': createdAt.toIso8601String(),
+            },
+          },
+          'livestock': <String, dynamic>{},
+          'equipment': <String, dynamic>{},
+          'logs': <String, dynamic>{},
+          'tasks': <String, dynamic>{},
+        });
+        await file.writeAsString(repairedJson);
+
+        await expectLater(
+          service.getAllTanks(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+        expect(await file.readAsString(), repairedJson);
+
+        await service.retryLoad();
+        final tanks = await service.getAllTanks();
+
+        expect(service.state, StorageState.loaded);
+        expect(service.hasError, isFalse);
+        expect(service.lastError, isNull);
+        expect(tanks, hasLength(1));
+        expect(tanks.single.id, 'repaired-tank');
+        expect(tanks.single.name, 'Repaired Tank');
+        expect(await file.readAsString(), repairedJson);
+        expect(await recoveryCopy.exists(), isTrue);
+        expect(await recoveryCopy.readAsString(), malformedJson);
+        final recoveryPathsAfterRetry = root
+            .listSync()
+            .whereType<File>()
+            .where((candidate) => candidate.path.contains('.corrupted.'))
+            .map((candidate) => candidate.path)
+            .toSet();
+        expect(recoveryPathsAfterRetry, recoveryPathsBeforeRepair);
+      },
+    );
   });
 
   group('LocalJsonStorageService singleton', () {

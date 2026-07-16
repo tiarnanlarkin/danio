@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-008`
-Marker: `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`
+Product epoch: `DR-2026-07-16-009`
+Marker: `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -45,9 +45,14 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   backup no longer exposes a nonexistent recovery path, and the card/dialog
   warn honestly while keeping the damaged original until explicit start fresh.
   Successful copies retain their path and copy-preserved wording.
-- No persisted-data schema, provider, dependency, deletion behavior, emulator,
-  account, cloud, or release configuration changed in F2. No later Phase 1 row
-  was selected.
+- `DCL-DR-002-F3` is locally verified with no current product gap under marker
+  `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`: an unchanged real
+  malformed file remains corrupted and blocks empty-data reads after retry,
+  while a schema-v2 repair remains blocked until `retryLoad`, then loads without
+  rewriting the repair or creating another corruption copy.
+- No product code, persisted-data schema, provider, dependency, deletion
+  behavior, emulator, account, cloud, or release configuration changed in F3.
+  No later Phase 1 row was selected.
 
 ## Frozen autonomy
 
@@ -80,12 +85,13 @@ frozen-autonomy state and does not authorize automatic successor tasks.
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
 - `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed under their recorded markers: both storage error states expose honest
-  recovery actions, and only a successfully created corrupt-file copy is
-  advertised to the user.
-- The next matrix path is direct repaired-versus-still-malformed `retryLoad`
-  service evidence. Continue it only under marker
-  `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1` after this F2
+  fixed, and `DCL-DR-002-F3` is locally verified under their recorded markers:
+  both storage error states expose honest recovery actions, only a successfully
+  created corrupt-file copy is advertised, and real-file retry cannot normalize
+  unchanged corruption to empty success.
+- The next matrix path is start-fresh cancel/back zero-clear evidence. Continue
+  it only under marker
+  `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1` after this F3
   checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -131,11 +137,10 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F2 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F3` under marker
-`danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`. Use real malformed
-local JSON to prove a repaired file succeeds only through `retryLoad` and an
-unchanged malformed reread remains blocked, without destructive writes or
-empty-data false success. Do not bundle start-fresh or another matrix gap, and
-do not start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while
-`DCL-DR-002` remains open.
+After this F3 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F4` under marker
+`danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`. Prove cancelling
+or backing out of the destructive start-fresh dialog performs no service clear,
+file deletion, provider refresh, or success feedback. Do not bundle confirmed
+deletion or recovery failure, and do not start `DCL-DR-003`, `DCL-DR-004`, or a
+later phone phase while `DCL-DR-002` remains open.
