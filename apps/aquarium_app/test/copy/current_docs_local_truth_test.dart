@@ -258,12 +258,14 @@ void main() {
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
       'DCL-DR-002-F4',
-      'DR-2026-07-16-010',
+      'DCL-DR-002-F5',
+      'DR-2026-07-16-011',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
     ]);
@@ -301,6 +303,9 @@ void main() {
         'canceling start fresh preserves corrupted storage and provider state',
         'system back dismisses start fresh without recovery side effects',
         'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
+        'DCL-DR-002-F5',
+        'start fresh deletes only corrupt main and exposes healthy empty storage',
+        'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
         'Status: open',
       ],
     );
@@ -586,6 +591,7 @@ void main() {
     expect(program, contains('DCL-DR-002-F2'));
     expect(program, contains('DCL-DR-002-F3'));
     expect(program, contains('DCL-DR-002-F4'));
+    expect(program, contains('DCL-DR-002-F5'));
     expect(
       program,
       contains(
@@ -606,6 +612,12 @@ void main() {
       program,
       contains(
         'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
+      ),
+    );
+    expect(
+      program,
+      contains(
+        'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       ),
     );
     expect(program, contains('closed'));
@@ -688,10 +700,9 @@ void main() {
         allOf(
           contains('DCL-DR-002-F1'),
           contains('DCL-DR-002-F2'),
-          allOf(
-            contains('DCL-DR-002-F3'),
-            contains('DCL-DR-002-F4'),
-          ),
+          contains('DCL-DR-002-F3'),
+          contains('DCL-DR-002-F4'),
+          contains('DCL-DR-002-F5'),
         ),
         contains('next manual'),
         allOf(
@@ -699,7 +710,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('start-fresh-scoped-deletion'),
+        contains('start-fresh-failure'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -714,10 +725,9 @@ void main() {
         allOf(
           contains('DCL-DR-002-F1'),
           contains('DCL-DR-002-F2'),
-          allOf(
-            contains('DCL-DR-002-F3'),
-            contains('DCL-DR-002-F4'),
-          ),
+          contains('DCL-DR-002-F3'),
+          contains('DCL-DR-002-F4'),
+          contains('DCL-DR-002-F5'),
         ),
         contains('next manual'),
         allOf(
@@ -725,7 +735,7 @@ void main() {
           contains('locally verified'),
           contains('closed'),
         ),
-        contains('start-fresh-scoped-deletion'),
+        contains('start-fresh-failure'),
         allOf(
           isNot(contains('Task 13')),
           isNot(contains('explicit launch')),
@@ -804,12 +814,14 @@ void main() {
       'DCL-DR-002-F2',
       'DCL-DR-002-F3',
       'DCL-DR-002-F4',
-      'DR-2026-07-16-010',
+      'DCL-DR-002-F5',
+      'DR-2026-07-16-011',
       'danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1',
       'danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1',
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
       'locally fixed',
       'locally verified',
       'Next manual action',
@@ -831,6 +843,7 @@ void main() {
       'DR-2026-07-16-008',
       'DR-2026-07-16-009',
       'DR-2026-07-16-010',
+      'DR-2026-07-16-011',
       'DCL-DR-001',
       'DCL-DR-002',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
@@ -844,6 +857,7 @@ void main() {
       'danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1',
       'danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1',
+      'danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1',
     ]);
   });
 }

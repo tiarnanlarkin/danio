@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-010`
-Marker: `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-011`
+Marker: `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -13,27 +13,10 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - E0 locks the seven ordered phone phases and finite done conditions across the
   completion program, ledger, Finish Map, forecast, performance, and visual
   baseline authorities.
-- `DCL-DR-001` is `closed`. Its complete ordered source/test matrix and six
-  focused epochs are recorded in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
-- The audit found and fixed one error-replacement boundary: if preference
-  restore and snapshot rollback both fail, the initiating error and rollback
-  error now remain separately inspectable with their original stack traces.
-- `DCL-DR-001-F2` is locally fixed: only affirmative share success records
-  `Last backup`; dismissed and unavailable outcomes get honest terminal
-  warnings; completed ZIP cleanup now covers success, returned non-success,
-  thrown share errors, and unmount while sharing.
-- `DCL-DR-001-F3` is locally fixed: cancel and empty picker outcomes return
-  idle without writes; pathless selections and Android `unknown_path` failures
-  get access-specific feedback instead of being mislabeled as corrupt backups.
-- `DCL-DR-001-F4` is locally proven with no current product gap: cancelling a
-  valid preview returns idle before photo, tank, preference, or provider writes.
-- `DCL-DR-001-F5` is locally proven with no current product gap: when an
-  initiating tank import and `deleteAllTanks` rollback both fail, the original
-  error, original stack, rollback error, and combined diagnostic remain
-  inspectable.
-- `DCL-DR-001-F6` is locally proven with no current product gap: one photo file
-  exists before a later extraction failure, then cleanup removes that new file
-  while preserving the pre-existing file and blocking directory.
+- `DCL-DR-001` is `closed`: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
+  `DCL-DR-001-F3` are locally fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and
+  `DCL-DR-001-F6` are locally verified. Its complete ordered evidence remains in
+  `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - `DCL-DR-002` is now mapped in
   `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md` and remains `open`.
 - `DCL-DR-002-F1` is locally fixed under marker
@@ -54,7 +37,11 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`: both the
   explicit Cancel action and system back dismiss the destructive dialog with
   zero recovery calls, provider refreshes, state changes, or success feedback.
-- F4 changed no product code, schema, provider, dependency, deletion behavior,
+- `DCL-DR-002-F5` is locally verified with no current product gap under marker
+  `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`: real-file
+  recovery deletes only the corrupt main store, preserves recovery/sibling
+  evidence, clears all five entity maps, and only then exposes healthy emptiness.
+- F5 changed no product code, schema, provider, dependency, deletion behavior,
   emulator, account, cloud, or release configuration; no later row was selected.
 
 ## Frozen autonomy
@@ -87,13 +74,12 @@ charge, or alter frozen autonomy or authorize automatic successor tasks.
   verified. Every ordered restore-matrix path has named current evidence and
   the required final Full gate passed.
 - `DCL-DR-002` remains `open`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed, and `DCL-DR-002-F3` and `DCL-DR-002-F4` are locally verified under
-  their recorded markers: both storage error states expose honest recovery
-  actions, only a real copy is advertised, retry cannot normalize unchanged
-  corruption to empty success, and cancellation cannot reach destructive work.
-- The next matrix path is confirmed start-fresh scoped-deletion evidence.
+  fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally verified:
+  retries and cancellation stay non-destructive, while confirmed recovery is
+  main-file scoped and cannot expose empty success before deletion.
+- The next matrix path is start-fresh failure/no-false-success evidence.
   Continue it only under marker
-  `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1` after this F4
+  `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1` after this F5
   checkpoint is clean, pushed, and aligned; do not assume a product gap.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -139,12 +125,10 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After this F4 checkpoint is clean, pushed, and aligned, continue
-`DCL-DR-002-F5` under marker
-`danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`. Use a real
-temporary local-storage directory to prove confirmed recovery deletes only the
-corrupt main file, preserves its recovery copy and unrelated siblings, clears
-the service maps, and reports healthy empty success only after deletion. Do not
-bundle recovery failure or first-run/preference evidence, and do not start
-`DCL-DR-003`, `DCL-DR-004`, or a later phone phase while `DCL-DR-002` remains
-open.
+After this F5 checkpoint is clean, pushed, and aligned, continue
+`DCL-DR-002-F6` under marker
+`danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Force confirmed
+recovery to fail and prove the recovery error/card remains retryable with no
+provider refresh or false success. Do not bundle preference or first-run proof,
+and do not start `DCL-DR-003`, `DCL-DR-004`, or a later phone phase while
+`DCL-DR-002` remains open.

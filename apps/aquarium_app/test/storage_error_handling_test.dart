@@ -433,6 +433,113 @@ void main() {
     });
 
     test(
+      'start fresh deletes only corrupt main and exposes healthy empty storage',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        final tank = _makeTank();
+        final now = DateTime.utc(2026, 1, 1);
+        await service.saveTank(tank);
+        await service.saveLivestock(_makeLivestock(tankId: tank.id));
+        await service.saveEquipment(
+          Equipment(
+            id: 'equipment-1',
+            tankId: tank.id,
+            type: EquipmentType.filter,
+            name: 'Test filter',
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        await service.saveLog(
+          LogEntry(
+            id: 'log-1',
+            tankId: tank.id,
+            type: LogType.observation,
+            timestamp: now,
+            notes: 'Test observation',
+            createdAt: now,
+          ),
+        );
+        await service.saveTask(
+          Task(
+            id: 'task-1',
+            tankId: tank.id,
+            title: 'Test task',
+            recurrence: RecurrenceType.weekly,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+
+        final payload = jsonDecode(await file.readAsString());
+        expect(payload, isA<Map<String, dynamic>>());
+        final tanks = (payload as Map<String, dynamic>)['tanks'] as Map;
+        for (var index = 0; index < 11; index++) {
+          tanks['broken-$index'] = <String, dynamic>{'id': 42};
+        }
+        final corruptedJson = jsonEncode(payload);
+        await file.writeAsString(corruptedJson);
+
+        final sibling = File(
+          '${root.path}${Platform.pathSeparator}keep-me.txt',
+        );
+        const siblingContent = 'unrelated sibling content';
+        await sibling.writeAsString(siblingContent);
+        final siblingDirectory = Directory(
+          '${root.path}${Platform.pathSeparator}keep-directory',
+        );
+        await siblingDirectory.create();
+        final nestedSibling = File(
+          '${siblingDirectory.path}${Platform.pathSeparator}nested.txt',
+        );
+        const nestedContent = 'unrelated nested content';
+        await nestedSibling.writeAsString(nestedContent);
+
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+        expect(service.state, StorageState.corrupted);
+        expect(service.hasError, isTrue);
+        expect(await file.exists(), isTrue);
+        expect(await file.readAsString(), corruptedJson);
+        await expectLater(
+          service.getAllTanks(),
+          throwsA(isA<StorageCorruptionException>()),
+        );
+
+        final recoveryPath = service.lastError!.corruptedFilePath!;
+        final recoveryCopy = File(recoveryPath);
+        expect(await recoveryCopy.exists(), isTrue);
+        expect(await recoveryCopy.readAsString(), corruptedJson);
+
+        await service.recoverFromCorruption();
+
+        expect(await file.exists(), isFalse);
+        expect(await recoveryCopy.exists(), isTrue);
+        expect(await recoveryCopy.readAsString(), corruptedJson);
+        expect(await sibling.exists(), isTrue);
+        expect(await sibling.readAsString(), siblingContent);
+        expect(await siblingDirectory.exists(), isTrue);
+        expect(await nestedSibling.exists(), isTrue);
+        expect(await nestedSibling.readAsString(), nestedContent);
+        expect(service.state, StorageState.loaded);
+        expect(service.isHealthy, isTrue);
+        expect(service.hasError, isFalse);
+        expect(service.lastError, isNull);
+        expect(await service.getAllTanks(), isEmpty);
+        expect(await service.getLivestockForTank(tank.id), isEmpty);
+        expect(await service.getEquipmentForTank(tank.id), isEmpty);
+        expect(await service.getLogsForTank(tank.id), isEmpty);
+        expect(await service.getTasksForTank(tank.id), isEmpty);
+        expect(await file.exists(), isFalse);
+      },
+    );
+
+    test(
       'unchanged malformed JSON retry stays corrupted and blocks empty success',
       () async {
         final service = LocalJsonStorageService();

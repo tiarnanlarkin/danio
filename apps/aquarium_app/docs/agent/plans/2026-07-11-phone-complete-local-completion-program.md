@@ -10,10 +10,10 @@
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
 > verified. `DCL-DR-002` remains open; `DCL-DR-002-F1` and `DCL-DR-002-F2`
-> are locally fixed, `DCL-DR-002-F3` and `DCL-DR-002-F4` are locally verified,
-> and the next manual confirmed start-fresh scoped-deletion proof is locked to
+> are locally fixed, `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally
+> verified, and the next manual start-fresh failure proof is locked to
 > marker
-> `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`. Execution
+> `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Execution
 > and gate mechanics defer to the
 > current lean Verified Slice contract.
 
@@ -211,6 +211,10 @@ flutter test test/services/shared_preferences_backup_test.dart --reporter compac
   `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`: explicit
   Cancel and system back leave corruption state intact with zero recovery,
   provider refresh, or success feedback.
+- [x] Verify `DCL-DR-002-F5` under marker
+  `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`: confirmed
+  real-file recovery deletes only the corrupt main store, preserves recovery
+  and unrelated sibling evidence, clears all maps, and then reports empty.
 - [ ] Verify first-run migration, idempotence, failed version stamp, migrated
   v0 data, corrupted JSON, retry, and confirmed start-fresh behavior.
 - [ ] Confirm failure states never become empty-data success and start-fresh
@@ -439,11 +443,10 @@ Every implementation slice must:
 ## Next Manual Epoch
 
 `DCL-DR-001` is closed after `DR-2026-07-16-006`. `DCL-DR-002` remains open
-after `DR-2026-07-16-010`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-fixed, and `DCL-DR-002-F3` and `DCL-DR-002-F4` are locally verified so retry
-cannot normalize unchanged corruption and cancel/back cannot reach destructive
-recovery. After this checkpoint is clean, pushed, and aligned, continue the next
-manual confirmed start-fresh scoped-deletion proof under marker
-`danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`. Prove only
-the corrupt main file is deleted and empty success follows deletion. Do not
+after `DR-2026-07-16-011`; `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
+fixed, and `DCL-DR-002-F3` through `DCL-DR-002-F5` are locally verified. After
+this checkpoint is clean, pushed, and aligned, continue the next manual
+start-fresh failure proof under marker
+`danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`. Prove recovery
+failure remains retryable and cannot report success or refresh providers. Do not
 select Task 1.3, Task 1.4, or a later phase first.
