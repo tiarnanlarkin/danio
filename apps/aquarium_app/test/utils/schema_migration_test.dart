@@ -43,6 +43,40 @@ void main() {
       expect(prefs.getInt('_schemaVersion'), 1);
     });
 
+    test(
+      'v0 stamp preserves every existing preference value and type',
+      () async {
+        final seededValues = <String, Object>{
+          'legacyString': 'freshwater',
+          'legacyInt': 42,
+          'legacyDouble': 7.25,
+          'legacyBool': true,
+          'legacyStringList': <String>['danio', 'rasbora'],
+        };
+        SharedPreferences.setMockInitialValues(seededValues);
+        final prefs = await SharedPreferences.getInstance();
+        final originalKeys = prefs.getKeys();
+        final originalValues = <String, Object?>{
+          for (final key in originalKeys) key: prefs.get(key),
+        };
+        final originalTypes = <String, Type>{
+          for (final key in originalKeys) key: prefs.get(key).runtimeType,
+        };
+
+        await SchemaMigration.runIfNeeded(prefs);
+
+        expect(prefs.getInt('_schemaVersion'), 1);
+        expect(
+          prefs.getKeys(),
+          unorderedEquals(<String>{...originalKeys, '_schemaVersion'}),
+        );
+        for (final key in originalKeys) {
+          expect(prefs.get(key), equals(originalValues[key]), reason: key);
+          expect(prefs.get(key).runtimeType, originalTypes[key], reason: key);
+        }
+      },
+    );
+
     test('is idempotent — second call does not change version', () async {
       final prefs = await SharedPreferences.getInstance();
 
