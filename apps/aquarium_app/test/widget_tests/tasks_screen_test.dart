@@ -155,6 +155,20 @@ class _TaskSaveFailsStorage extends _DelegatingStorageService {
   }
 }
 
+class _TaskDeleteFailsStorage extends _DelegatingStorageService {
+  _TaskDeleteFailsStorage(super.delegate, {required this.failingTaskId});
+
+  final String failingTaskId;
+
+  @override
+  Future<void> deleteTask(String id) async {
+    if (id == failingTaskId) {
+      throw StateError('task delete failed');
+    }
+    await super.deleteTask(id);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -383,6 +397,59 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'failed primary delete keeps task visible with error feedback',
+      (
+        tester,
+      ) async {
+        const tankId = 'tank-task-delete-failure';
+        const taskId = 'task-delete-failure';
+        final svc = InMemoryStorageService();
+        final failingStorage = _TaskDeleteFailsStorage(
+          svc,
+          failingTaskId: taskId,
+        );
+        await svc.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: taskId,
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: failingStorage, tankId: tankId),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete').last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete Task'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        final remainingTasks = await svc.getTasksForTank(tankId);
+        expect(remainingTasks, hasLength(1));
+        expect(remainingTasks.single.id, task.id);
+        expect(find.text('Rinse prefilter'), findsOneWidget);
+        expect(
+          find.text("Couldn't delete that task. Give it another go!"),
+          findsOneWidget,
+        );
+        expect(find.text('Task deleted'), findsNothing);
+        expect(find.text('Undo'), findsNothing);
+      },
+    );
 
     testWidgets('deleting a task shows undo and restores the task', (
       tester,

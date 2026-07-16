@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-021`
+Current epoch: `DR-2026-07-16-022`
 
 ## Decision
 
@@ -13,6 +13,9 @@ and Home Quick Water Test from creating orphan logs, prevent equipment Undo
 from leaving a partial restore, make review-answer commits authoritative, and
 make normal-lesson progress precede quiz rewards with a real retry after
 profile-write failure.
+`DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
+the durable task and exposes only honest failure feedback; no product change was
+needed for that boundary.
 `DCL-DR-003` remains open because the same inventory proved additional
 independent rollback, orphan, and false-success gaps. They must be handled as
 later single data-safety slices.
@@ -48,7 +51,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Home Quick Water Test | Existing non-blocking XP proof `quick water test treats XP failure as non-blocking`; RED/GREEN `quick water test rejects a missing parent before saving or rewarding` | `DCL-DR-003-F7` locally fixed: `getTank` now precedes `saveLog`, so a stale sheet stays open with failure feedback and cannot create an orphan log, XP, or success feedback. |
 | Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
-| Task delete/undo | `deleting a task shows undo and restores the task`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Undo covered; the primary delete-write failure has no exact test. |
+| Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
 | Task completion | `completing a task shows success feedback`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | Initial rollback covered; stale task/parent and later equipment-step failures remain open. |
 | Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback` | Save failure covered; a stale task or missing parent can still be recreated. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
@@ -113,10 +116,14 @@ belongs to `DCL-DR-004` and is not selected here.
    parent before saving or rewarding: fixed and focused GREEN in
    `DR-2026-07-16-021` under marker
    `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`.
-8. `DCL-DR-003-F8` - prove that a primary task-delete write failure keeps the
-   task visible with honest feedback. Next marker:
+8. `DCL-DR-003-F8` - a primary task-delete write failure keeps the task visible
+   with honest feedback and cannot expose success/Undo: directly GREEN in
+   `DR-2026-07-16-022` under marker
    `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`.
-9. Remaining stale task, livestock bulk, wishlist/shop stale-ID, and
+9. `DCL-DR-003-F9` - a completion action must not recreate a task deleted
+   behind the visible card. Next marker:
+   `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`.
+10. Remaining task-parent/equipment, livestock bulk, wishlist/shop stale-ID, and
    cross-store reward boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
