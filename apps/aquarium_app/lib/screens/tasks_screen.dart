@@ -184,6 +184,10 @@ class TasksScreen extends ConsumerWidget {
     final equipmentLogId = _uuid.v4();
 
     try {
+      final parentTank = await storage.getTank(tankId);
+      if (parentTank == null) {
+        throw StateError('Cannot complete a task for missing tank $tankId');
+      }
       final currentTasks = await storage.getTasksForTank(tankId);
       if (!currentTasks.any((currentTask) => currentTask.id == task.id)) {
         throw StateError('Cannot complete missing task ${task.id}');

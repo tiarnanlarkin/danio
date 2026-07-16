@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-023`
-Marker: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`
+Product epoch: `DR-2026-07-16-024`
+Marker: `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -63,9 +63,9 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F6` fixed: `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`; Livestock Feed rejects a missing parent before saving or rewarding.
 - `DCL-DR-003-F7` fixed: `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`; Home Quick Water Test rejects a missing parent before saving or rewarding.
 - `DCL-DR-003-F8` verified: `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`; failed deletion keeps the task visible with no success or Undo.
-- `DCL-DR-003-F9` fixed: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`;
-  stale Completion cannot recreate a task or create completion side effects.
-- F9 added no schema, dependency, emulator, account, cloud, or release change.
+- `DCL-DR-003-F9` fixed: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`; stale Tasks Completion cannot recreate a task or create completion side effects.
+- `DCL-DR-003-F10` fixed: `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`; Tasks Completion rejects a missing tank before writing.
+- F10 added no schema, dependency, emulator, account, cloud, or release change.
 
 ## Frozen autonomy
 
@@ -97,9 +97,9 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9 fixes and F8 proof are recorded.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F10 fixes and F8 proof are recorded.
   Continue its next ordered gap under marker
-  `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1` after F9
+  `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1` after F10
   checkpoint is clean, pushed, and aligned.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -144,7 +144,7 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After clean F9 alignment, continue `DCL-DR-003-F10` under marker
-`danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`;
-reject Completion when the durable tank is missing even if the task remains.
-Do not bundle equipment-completion rollback or a later task action.
+After clean F10 alignment, continue `DCL-DR-003-F11` under marker
+`danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`;
+prevent stale Tank Detail Completion from recreating a deleted task or servicing
+linked equipment. Do not bundle its missing-parent or later rollback boundary.

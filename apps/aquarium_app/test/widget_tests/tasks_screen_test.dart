@@ -141,6 +141,20 @@ class _CompletionLogFailsStorage extends _DelegatingStorageService {
   }
 }
 
+class _MissingTankStorage extends _DelegatingStorageService {
+  _MissingTankStorage(super.delegate, {required this.missingTankId});
+
+  final String missingTankId;
+
+  @override
+  Future<Tank?> getTank(String id) async {
+    if (id == missingTankId) {
+      return null;
+    }
+    return super.getTank(id);
+  }
+}
+
 class _TaskSaveFailsStorage extends _DelegatingStorageService {
   _TaskSaveFailsStorage(super.delegate, {required this.failingTaskId});
 
@@ -657,6 +671,53 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t complete that task. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Rinse prefilter completed!'), findsNothing);
+    });
+
+    testWidgets('task completion rejects a missing parent before writing', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-complete-missing-parent';
+      final svc = InMemoryStorageService();
+      final missingTankStorage = _MissingTankStorage(
+        svc,
+        missingTankId: tankId,
+      );
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-complete-missing-parent',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: missingTankStorage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      expect(await missingTankStorage.getTank(tankId), isNull);
+      expect(await svc.getTasksForTank(tankId), hasLength(1));
+
+      await tester.tap(find.byTooltip('Toggle task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      final storedTask = (await svc.getTasksForTank(tankId)).single;
+      expect(storedTask.completionCount, 0);
+      expect(storedTask.lastCompletedAt, isNull);
       expect(await svc.getLogsForTank(tankId), isEmpty);
       expect(
         find.text('Couldn\'t complete that task. Try again.'),

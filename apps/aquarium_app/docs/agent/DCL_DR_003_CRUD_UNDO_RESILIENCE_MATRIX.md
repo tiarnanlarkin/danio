@@ -3,16 +3,16 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-16-023`
+Current epoch: `DR-2026-07-16-024`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-eight bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
-Home Quick Water Test, and stale task Completion from creating orphan/recreated
-records, prevent equipment Undo from leaving a partial restore, make
-review-answer commits authoritative, and make normal-lesson progress precede
-quiz rewards with a real retry after profile-write failure.
+nine bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
+Home Quick Water Test, and Tasks-screen Completion from creating orphan or
+recreated records when its task or tank is stale, prevent equipment Undo from
+leaving a partial restore, make review-answer commits authoritative, and make
+normal-lesson progress precede quiz rewards with a real retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
 needed for that boundary.
@@ -52,7 +52,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
-| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | `DCL-DR-003-F9` locally fixed: current-ID preflight precedes the first write, so a deleted task stays deleted with no log or success. Missing-parent and later equipment-step failures remain open. |
+| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion` | `DCL-DR-003-F9/F10` locally fixed for Tasks: parent and current-ID preflights precede the first write, so a stale task/tank yields no mutation, log, or success. Tank Detail stale task/parent and later equipment-step boundaries remain open. |
 | Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback` | Save failure covered; a stale task or missing parent can still be recreated. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
 | Bulk log/task deletion | No current user-facing operation. | Not applicable. |
@@ -120,14 +120,18 @@ belongs to `DCL-DR-004` and is not selected here.
    with honest feedback and cannot expose success/Undo: directly GREEN in
    `DR-2026-07-16-022` under marker
    `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`.
-9. `DCL-DR-003-F9` - a completion action cannot recreate a task deleted behind
+9. `DCL-DR-003-F9` - Tasks Completion cannot recreate a task deleted behind
    the visible card: fixed and focused GREEN in `DR-2026-07-16-023` under marker
    `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`.
-10. `DCL-DR-003-F10` - Completion must reject a missing durable parent even if
-    the task record remains. Next marker:
+10. `DCL-DR-003-F10` - Tasks Completion rejects a missing durable parent even
+    when its task record remains: fixed and focused GREEN in
+    `DR-2026-07-16-024` under marker
     `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`.
-11. Remaining equipment, livestock bulk, wishlist/shop stale-ID, and
-   cross-store reward boundaries remain separate future slices.
+11. `DCL-DR-003-F11` - Tank Detail Completion must not recreate a task deleted
+    behind its visible card or service linked equipment. Next marker:
+    `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`.
+12. Remaining task-parent/equipment, livestock bulk, wishlist/shop stale-ID, and
+    cross-store reward boundaries remain separate future slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown
