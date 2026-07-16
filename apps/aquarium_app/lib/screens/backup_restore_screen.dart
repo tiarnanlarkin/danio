@@ -6,6 +6,7 @@ import '../widgets/core/bubble_loader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -25,6 +26,9 @@ import '../utils/logger.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import 'tab_navigator.dart';
+
+const _backupFileAccessFailureMessage =
+    "Danio couldn't access that backup file. Choose it again or try another ZIP.";
 
 const double _maxBackupRestoreReadableWidth = 720;
 
@@ -623,7 +627,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       final filePath = result.files.single.path;
       if (filePath == null) {
-        throw Exception('Could not access selected file');
+        if (mounted) {
+          AppFeedback.showError(context, _backupFileAccessFailureMessage);
+        }
+        return;
       }
 
       final backupService = BackupService(
@@ -730,7 +737,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Import failed. The file may be invalid or corrupted.',
+          e is PlatformException && e.code == 'unknown_path'
+              ? _backupFileAccessFailureMessage
+              : 'Import failed. The file may be invalid or corrupted.',
         );
       }
     } finally {

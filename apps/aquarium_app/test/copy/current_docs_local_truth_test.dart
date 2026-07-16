@@ -247,6 +247,7 @@ void main() {
       'DCL-DR-001',
       'DCL-DR-001-F2',
       'DCL-DR-001-F3',
+      'DCL-DR-001-F4',
       'remains `open`',
       'locally fixed',
       'unproven',
@@ -258,6 +259,7 @@ void main() {
         'DCL-DR-001-F1',
         'DCL-DR-001-F2',
         'DCL-DR-001-F3',
+        'DCL-DR-001-F4',
       ],
     );
   });
@@ -530,6 +532,7 @@ void main() {
     expect(program, contains('Roadmap authority lock - E0'));
     expect(program, contains('DCL-DR-001-F2'));
     expect(program, contains('DCL-DR-001-F3'));
+    expect(program, contains('DCL-DR-001-F4'));
     expect(program, contains('next manual task'));
     expect(program, contains('open'));
     expect(program, contains('unproven'));
@@ -607,7 +610,7 @@ void main() {
       _markdownSection(finishMap, 'Slice Selection Rule'),
       allOf(
         contains('DCL-DR-001'),
-        contains('DCL-DR-001-F3'),
+        contains('DCL-DR-001-F4'),
         contains('next manual'),
         contains('locally fixed'),
         contains('unproven'),
@@ -619,7 +622,7 @@ void main() {
       _markdownSection(ledger, 'Next Ledger Target Rule'),
       allOf(
         contains('DCL-DR-001'),
-        contains('DCL-DR-001-F3'),
+        contains('DCL-DR-001-F4'),
         contains('next manual'),
         contains('locally fixed'),
         contains('unproven'),
@@ -689,6 +692,7 @@ void main() {
       'DCL-DR-001',
       'DCL-DR-001-F2',
       'DCL-DR-001-F3',
+      'DCL-DR-001-F4',
       'remains `open`',
       'locally fixed',
       'unproven',
@@ -703,10 +707,12 @@ void main() {
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
       'DR-2026-07-16-001',
       'DR-2026-07-16-002',
+      'DR-2026-07-16-003',
       'DCL-DR-001',
       'danio-dcl-dr-001-restore-matrix-audit-2026-07-15/1',
       'danio-dcl-dr-001-export-share-outcome-2026-07-16/1',
       'danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1',
+      'danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1',
     ]);
   });
 }

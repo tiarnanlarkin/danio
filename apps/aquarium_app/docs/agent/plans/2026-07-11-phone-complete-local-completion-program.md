@@ -7,9 +7,9 @@
 > This is the current and only ordered phone completion authority. It preserves
 > seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
 > frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
-> remains `open` and is advanced: `DCL-DR-001-F1` and `DCL-DR-001-F2` are
-> locally fixed, while `DCL-DR-001-F3` is the next manual task and remains
-> unproven. Execution and gate mechanics defer to the
+> remains `open` and is advanced: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
+> `DCL-DR-001-F3` are locally fixed. The next manual task is `DCL-DR-001-F4`,
+> which remains unproven. Execution and gate mechanics defer to the
 > current lean Verified Slice contract.
 
 **Goal:** Finish Danio as a polished, resilient, local-first Android phone app
@@ -157,9 +157,11 @@ block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
 - [x] For the single selected F2 gap, prove returned non-success share state
   RED, make share feedback honest, and account for completed-ZIP cleanup on
   success, returned non-success, throw, and unmount.
-- [ ] Prove `DCL-DR-001-F3` picker cancel/pathlessness, then add direct
-  confirmation-cancel, simultaneous tank-import/rollback-failure, and
-  mid-extraction-cleanup evidence without assuming a product gap.
+- [x] Prove `DCL-DR-001-F3` picker cancel/pathlessness and make inaccessible
+  selection feedback accurate without changing import writes.
+- [ ] Prove `DCL-DR-001-F4` confirmation cancel, then add direct simultaneous
+  tank-import/rollback-failure and mid-extraction-cleanup evidence without
+  assuming a product gap.
 - [ ] Close `DCL-DR-001` only when the matrix has no unexplained path and the
   Full gate passes.
 
@@ -413,9 +415,9 @@ Every implementation slice must:
 
 ## Next Manual Epoch
 
-`DCL-DR-001` remains open after `DR-2026-07-16-002`: `DCL-DR-001-F1` and
-`DCL-DR-001-F2` are locally fixed, while `DCL-DR-001-F3` picker
-cancel/pathlessness remains unproven. Open that exact-marker proof epoch next
-and implement only if current executable evidence exposes one concrete gap. Do
-not select Task 1.2, 1.3, or 1.4 until the restore matrix has no unexplained
-current path.
+`DCL-DR-001` remains open after `DR-2026-07-16-003`: `DCL-DR-001-F1`,
+`DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally fixed, while `DCL-DR-001-F4`
+confirmation cancellation remains unproven. Open that exact-marker proof epoch
+next and implement only if current executable evidence exposes one concrete
+gap. Do not select Task 1.2, 1.3, or 1.4 until the restore matrix has no
+unexplained current path.

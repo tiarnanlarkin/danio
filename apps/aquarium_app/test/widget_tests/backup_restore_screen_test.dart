@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -55,6 +56,108 @@ class _StartedExport {
 
   final String zipPath;
   final bool existedAtShare;
+}
+
+class _FakeFilePicker extends FilePicker {
+  _FakeFilePicker(this.result, {this.error});
+
+  final FilePickerResult? result;
+  final Object? error;
+  int pickCalls = 0;
+  FileType? requestedType;
+  List<String>? requestedExtensions;
+  bool? requestedAllowMultiple;
+
+  @override
+  Future<FilePickerResult?> pickFiles({
+    String? dialogTitle,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    Function(FilePickerStatus)? onFileLoading,
+    bool allowCompression = true,
+    int compressionQuality = 30,
+    bool allowMultiple = false,
+    bool withData = false,
+    bool withReadStream = false,
+    bool lockParentWindow = false,
+    bool readSequential = false,
+  }) async {
+    pickCalls += 1;
+    requestedType = type;
+    requestedExtensions = allowedExtensions;
+    requestedAllowMultiple = allowMultiple;
+    if (error != null) {
+      throw error!;
+    }
+    return result;
+  }
+}
+
+class _WriteTrackingStorageService extends _RecoverableStorageService {
+  _WriteTrackingStorageService() {
+    state = StorageState.loaded;
+    lastError = null;
+  }
+
+  int importWriteCount = 0;
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    importWriteCount += 1;
+    await super.saveTank(tank);
+  }
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    importWriteCount += 1;
+    await super.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) async {
+    importWriteCount += 1;
+    await super.saveEquipment(equipment);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    importWriteCount += 1;
+    await super.saveLog(log);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    importWriteCount += 1;
+    await super.saveTask(task);
+  }
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    importWriteCount += 1;
+    await super.deleteAllTanks(ids);
+  }
+}
+
+Future<_FakeFilePicker> _startImportWithPickerResult(
+  WidgetTester tester, {
+  required FilePickerResult? result,
+  required StorageService storage,
+  Object? error,
+}) async {
+  final originalFilePicker = FilePicker.platform;
+  final fakeFilePicker = _FakeFilePicker(result, error: error);
+  FilePicker.platform = fakeFilePicker;
+  addTearDown(() => FilePicker.platform = originalFilePicker);
+
+  await tester.pumpWidget(_wrap(storage: storage));
+  await tester.pump();
+  await tester.pump(const Duration(seconds: 1));
+  await tester.tap(find.text('Select Backup File'));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
+
+  return fakeFilePicker;
 }
 
 Future<_StartedExport> _startExport(
@@ -274,6 +377,7 @@ class _RecoverableStorageService
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    FilePickerIO.registerWith();
   });
 
   group('BackupRestoreScreen - basic rendering', () {
@@ -583,6 +687,127 @@ void main() {
       expect(export.existedAtShare, isTrue);
       expect(File(export.zipPath).existsSync(), isFalse);
     });
+  });
+
+  group('BackupRestoreScreen - file selection outcomes', () {
+    testWidgets('picker cancel returns idle without restore writes', (
+      tester,
+    ) async {
+      final storage = _WriteTrackingStorageService();
+      final picker = await _startImportWithPickerResult(
+        tester,
+        result: null,
+        storage: storage,
+      );
+      final preferences = await SharedPreferences.getInstance();
+
+      expect(picker.pickCalls, 1);
+      expect(picker.requestedType, FileType.custom);
+      expect(picker.requestedExtensions, ['zip']);
+      expect(picker.requestedAllowMultiple, isFalse);
+      expect(storage.importWriteCount, 0);
+      expect(preferences.getKeys(), isEmpty);
+      expect(find.text('Select Backup File'), findsOneWidget);
+      expect(find.text('Importing...'), findsNothing);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(find.text('Import Backup?'), findsNothing);
+      expect(
+        find.text('Import failed. The file may be invalid or corrupted.'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('empty picker result returns idle without restore writes', (
+      tester,
+    ) async {
+      final storage = _WriteTrackingStorageService();
+      final picker = await _startImportWithPickerResult(
+        tester,
+        result: const FilePickerResult([]),
+        storage: storage,
+      );
+      final preferences = await SharedPreferences.getInstance();
+
+      expect(picker.pickCalls, 1);
+      expect(storage.importWriteCount, 0);
+      expect(preferences.getKeys(), isEmpty);
+      expect(find.text('Select Backup File'), findsOneWidget);
+      expect(find.text('Importing...'), findsNothing);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(find.text('Import Backup?'), findsNothing);
+      expect(
+        find.text('Import failed. The file may be invalid or corrupted.'),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+      'pathless selection returns idle with access feedback and no writes',
+      (tester) async {
+        final storage = _WriteTrackingStorageService();
+        final picker = await _startImportWithPickerResult(
+          tester,
+          result: FilePickerResult([
+            PlatformFile(name: 'danio-backup.zip', size: 1024),
+          ]),
+          storage: storage,
+        );
+        final preferences = await SharedPreferences.getInstance();
+
+        expect(picker.pickCalls, 1);
+        expect(storage.importWriteCount, 0);
+        expect(preferences.getKeys(), isEmpty);
+        expect(find.text('Select Backup File'), findsOneWidget);
+        expect(find.text('Importing...'), findsNothing);
+        expect(find.byType(LinearProgressIndicator), findsNothing);
+        expect(find.text('Import Backup?'), findsNothing);
+        expect(
+          find.text(
+            "Danio couldn't access that backup file. Choose it again or try another ZIP.",
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Import failed. The file may be invalid or corrupted.'),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'unknown-path picker error returns idle with access feedback and no writes',
+      (tester) async {
+        final storage = _WriteTrackingStorageService();
+        final picker = await _startImportWithPickerResult(
+          tester,
+          result: null,
+          storage: storage,
+          error: PlatformException(
+            code: 'unknown_path',
+            message: 'Failed to retrieve path.',
+          ),
+        );
+        final preferences = await SharedPreferences.getInstance();
+
+        expect(picker.pickCalls, 1);
+        expect(storage.importWriteCount, 0);
+        expect(preferences.getKeys(), isEmpty);
+        expect(find.text('Select Backup File'), findsOneWidget);
+        expect(find.text('Importing...'), findsNothing);
+        expect(find.byType(LinearProgressIndicator), findsNothing);
+        expect(find.text('Import Backup?'), findsNothing);
+        expect(
+          find.text(
+            "Danio couldn't access that backup file. Choose it again or try another ZIP.",
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Import failed. The file may be invalid or corrupted.'),
+          findsNothing,
+        );
+      },
+    );
   });
 
   group('BackupRestoreScreen - local storage recovery', () {

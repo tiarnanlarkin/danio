@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-002`
-Marker: `danio-dcl-dr-001-export-share-outcome-2026-07-16/1`
+Product epoch: `DR-2026-07-16-003`
+Marker: `danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -22,7 +22,10 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `Last backup`; dismissed and unavailable outcomes get honest terminal
   warnings; completed ZIP cleanup now covers success, returned non-success,
   thrown share errors, and unmount while sharing.
-- No persisted-data schema, dependency, import, emulator, account, cloud,
+- `DCL-DR-001-F3` is locally fixed: cancel and empty picker outcomes return
+  idle without writes; pathless selections and Android `unknown_path` failures
+  get access-specific feedback instead of being mislabeled as corrupt backups.
+- No persisted-data schema, dependency, import-write, emulator, account, cloud,
   release, or device behavior changed.
 - Phase 1 remains on `DCL-DR-001`; no later ledger row was selected.
 
@@ -52,13 +55,14 @@ frozen-autonomy state and does not authorize automatic successor tasks.
 
 ## Product authority
 
-- `DCL-DR-001` remains `open`. `DCL-DR-001-F1` and `DCL-DR-001-F2` are locally
-  fixed with focused RED/GREEN proof. The row is not closed because four
+- `DCL-DR-001` remains `open`. `DCL-DR-001-F1`, `DCL-DR-001-F2`, and
+  `DCL-DR-001-F3` are locally fixed with focused RED/GREEN proof. The row is
+  not closed because three
   source-explained paths still lack executable evidence.
-- The next manual proof task is `DCL-DR-001-F3` with exact marker
-  `danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`. Picker cancel
-  and selected-item-without-path behavior remain unproven; test both before
-  assuming a product gap or changing code.
+- The next manual proof task is `DCL-DR-001-F4` with exact marker
+  `danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`. Confirmation
+  cancellation remains source-explained but unproven; drive that dialog branch
+  and prove no photo, tank, or preference write before assuming a product gap.
 - `DCL-DR-002` remains open and unstarted but is not selected yet.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -102,9 +106,8 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Continue manually with `DCL-DR-001-F3` under exact marker
-`danio-dcl-dr-001-file-selection-outcome-proof-2026-07-16/1`. Add focused
-picker-cancel and selected-item-without-path evidence first; implement only if
-that proof exposes one concrete current gap. Do not start `DCL-DR-002`, another
-ledger row, or a later phone phase until the restore matrix has no unexplained
-path.
+Continue manually with `DCL-DR-001-F4` under exact marker
+`danio-dcl-dr-001-confirmation-cancel-proof-2026-07-16/1`. Add focused
+confirmation-cancel/no-write evidence first; implement only if that proof
+exposes one concrete current gap. Do not start `DCL-DR-002`, another ledger
+row, or a later phone phase until the restore matrix has no unexplained path.
