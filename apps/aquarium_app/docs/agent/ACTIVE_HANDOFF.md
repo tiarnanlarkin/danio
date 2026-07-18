@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-19
-Product epoch: `DR-2026-07-19-047`
-Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-18/4`
+Product epoch: `DR-2026-07-19-048`
+Marker: `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -67,7 +67,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F27` was ranked in `DR-2026-07-18-041` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/1` and is locally fixed in `DR-2026-07-18-042` under marker `danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`: `TasksScreen` catches and logs post-commit profile/XP failure, refreshes profile and primary providers, preserves one durable task completion and completion log with XP unchanged, and warns without Retry.
 - `DCL-DR-003-F28` was ranked in `DR-2026-07-18-043` under `danio-dcl-dr-003-next-finding-triage-2026-07-18/2` and is locally fixed in `DR-2026-07-18-044` under marker `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`: dual log-save/rollback failure preserves both causes, clears stale Retry feedback, warns about uncertain persistence without Retry, and locks every save entry in the open sheet. `failed bulk-add rollback reports uncertainty and blocks duplicate retry` plus `stale bulk-add retry cannot bypass uncertain persistence lock` prove the boundary.
 - `DCL-DR-003-F29` was ranked in `DR-2026-07-18-045` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/3` and is locally fixed in `DR-2026-07-18-046` under marker `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`: `TankCreateCompensationException` preserves the initiating default-task save error, failed tank-delete compensation, and possibly durable tank ID while invalidating tank/task authority. `CreateTankScreen` clears Retry feedback, warns that the tank may already exist with incomplete default tasks, and locks both visible Create buttons plus stale callbacks after uncertainty. `createTank preserves task-save and rollback failures when cleanup is uncertain`, `failed tank-create rollback reports uncertainty and blocks duplicate retry`, `stale tank-create retry cannot bypass uncertain persistence lock`, and `clean tank-create compensation retains safe Retry` prove the uncertain and definitively compensated paths.
-- `DCL-DR-003-F30` was ranked in `DR-2026-07-19-047` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/4` and remains unimplemented under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`: Equipment Add saves a fresh-ID row before maintenance-task sync. The executable baseline `failed maintenance-task sync rolls back new equipment` proves only successful deletion compensation. If task sync and equipment deletion both fail, the rollback error is only logged, ordinary failure remains retryable, and another Add generates a second UUID while the first row may still be durable. Implement only this boundary test-first: preserve both causes and the possibly durable equipment ID, refresh equipment/task authority, warn without Retry, lock visible and stale Add submissions after uncertainty, and retain safe Retry after definitive cleanup. RED/GREEN names are `failed equipment-add rollback reports uncertainty and blocks duplicate retry`, `stale equipment-add retry cannot bypass uncertain persistence lock`, and `clean equipment-add compensation retains safe Retry`.
+- `DCL-DR-003-F30` was ranked in `DR-2026-07-19-047` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/4` and is locally fixed in `DR-2026-07-19-048` under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentAddCompensationException` preserves the initiating maintenance-task synchronization error, failed equipment-delete rollback, and possibly durable equipment ID. Equipment and task authority refresh after uncertainty; the sheet clears Retry, warns that the equipment may already exist with an incomplete maintenance task, and locks visible and stale Add submissions. Definitive deletion compensation retains safe Retry. `failed maintenance-task sync rolls back new equipment`, `failed equipment-add rollback reports uncertainty and blocks duplicate retry`, `stale equipment-add retry cannot bypass uncertain persistence lock`, and `clean equipment-add compensation retains safe Retry` are GREEN. DCL-DR-003 remains open.
 
 ## Frozen autonomy
 
@@ -98,7 +98,7 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9-F29 fixes and F8 proof are recorded. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed; F30 is ranked and unimplemented, additional findings remain, and no row closure is inferred.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F30 fixes and F8 proof are recorded. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, and F30 is locally fixed; additional findings remain, and no row closure is inferred. DCL-DR-003 remains open.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -141,8 +141,8 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Handoff only. Do not create a successor task automatically. Route a separate
-Tier 2 `DCL-DR-003-F30` epoch under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`.
-Use the three named RED/GREEN widget contracts; change only Equipment Add, then run its focused test file, one independent settled-diff review, and Full.
-Keep edit/service, task completion, bulk, wishlist/cost, missing catalog,
-backup relationships, and `DCL-DR-004` out. Keep the row open; infer no closure.
+Handoff only. Do not create a successor task automatically. The originating
+coordinator should inspect the F30 closeout and route a separate next-finding
+triage epoch. Keep equipment edit/service, task completion, bulk,
+wishlist/cost, missing catalog, backup relationships, and `DCL-DR-004` out.
+DCL-DR-003 remains open; infer no closure.

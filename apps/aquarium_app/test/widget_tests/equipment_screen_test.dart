@@ -17,6 +17,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/theme/app_theme.dart';
+import 'package:danio/widgets/core/app_button.dart';
 import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
@@ -297,6 +298,46 @@ class _SaveTaskFailsStorage extends _DeleteTaskFailsStorage {
   @override
   Future<void> saveTask(Task task) async {
     throw StateError('task save failed');
+  }
+}
+
+class _EquipmentAddFailureStorage extends _SaveTaskFailsStorage {
+  _EquipmentAddFailureStorage(
+    super._delegate, {
+    Set<int> failingDeleteCalls = const <int>{},
+    this.taskFailures = 1,
+  }) : failingDeleteCalls = Set<int>.unmodifiable(failingDeleteCalls);
+
+  final Set<int> failingDeleteCalls;
+  final int taskFailures;
+  final List<String> savedEquipmentIds = <String>[];
+  int saveEquipmentCalls = 0;
+  int saveTaskCalls = 0;
+  int deleteEquipmentCalls = 0;
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) async {
+    saveEquipmentCalls += 1;
+    savedEquipmentIds.add(equipment.id);
+    await _delegate.saveEquipment(equipment);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    saveTaskCalls += 1;
+    if (saveTaskCalls <= taskFailures) {
+      throw StateError('maintenance task sync failed');
+    }
+    await _delegate.saveTask(task);
+  }
+
+  @override
+  Future<void> deleteEquipment(String id) async {
+    deleteEquipmentCalls += 1;
+    if (failingDeleteCalls.contains(deleteEquipmentCalls)) {
+      throw StateError('equipment delete rollback failed');
+    }
+    await _delegate.deleteEquipment(id);
   }
 }
 
@@ -599,6 +640,189 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Sponge filter added.'), findsNothing);
+    });
+
+    testWidgets(
+      'failed equipment-add rollback reports uncertainty and blocks duplicate retry',
+      (tester) async {
+        const tankId = 'tank-equipment-add-rollback-uncertain';
+        final delegate = InMemoryStorageService();
+        final storage = _EquipmentAddFailureStorage(
+          delegate,
+          failingDeleteCalls: const <int>{1},
+          taskFailures: 99,
+        );
+        await delegate.saveTank(_makeTank(id: tankId));
+        final debugMessages = <String>[];
+        final previousDebugPrint = debugPrint;
+        debugPrint = (String? message, {int? wrapWidth}) {
+          if (message != null) debugMessages.add(message);
+        };
+        addTearDown(() => debugPrint = previousDebugPrint);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Add Equipment'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Uncertain canister filter',
+        );
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Maintenance interval (days)'),
+          '30',
+        );
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        debugPrint = previousDebugPrint;
+        final storedEquipment = await delegate.getEquipmentForTank(tankId);
+        expect(storedEquipment, hasLength(1));
+        expect(storage.saveEquipmentCalls, 1);
+        expect(storage.saveTaskCalls, 1);
+        expect(storage.deleteEquipmentCalls, 1);
+        expect(storage.savedEquipmentIds.toSet(), hasLength(1));
+        expect(await delegate.getTasksForTank(tankId), isEmpty);
+        expect(
+          find.textContaining('equipment may already exist'),
+          findsOneWidget,
+        );
+        expect(
+          find.textContaining('maintenance task may be incomplete'),
+          findsOneWidget,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Uncertain canister filter added.'), findsNothing);
+        expect(
+          tester
+              .widget<AppButton>(find.widgetWithText(AppButton, 'Add'))
+              .onPressed,
+          isNull,
+        );
+
+        final combinedLog = debugMessages.join('\n');
+        expect(combinedLog, contains('maintenance task sync failed'));
+        expect(combinedLog, contains('equipment delete rollback failed'));
+        expect(combinedLog, contains(storage.savedEquipmentIds.single));
+      },
+    );
+
+    testWidgets(
+      'stale equipment-add retry cannot bypass uncertain persistence lock',
+      (tester) async {
+        const tankId = 'tank-equipment-add-stale-retry';
+        final delegate = InMemoryStorageService();
+        final storage = _EquipmentAddFailureStorage(
+          delegate,
+          failingDeleteCalls: const <int>{2},
+          taskFailures: 99,
+        );
+        await delegate.saveTank(_makeTank(id: tankId));
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Add Equipment'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Stale retry filter',
+        );
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Maintenance interval (days)'),
+          '30',
+        );
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        final retryAction = tester.widget<SnackBarAction>(
+          find.widgetWithText(SnackBarAction, 'Retry'),
+        );
+        final staleRetry = retryAction.onPressed;
+
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        staleRetry();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(storage.saveEquipmentCalls, 2);
+        expect(storage.saveTaskCalls, 2);
+        expect(storage.deleteEquipmentCalls, 2);
+        expect(storage.savedEquipmentIds.toSet(), hasLength(2));
+        expect(await delegate.getEquipmentForTank(tankId), hasLength(1));
+        expect(await delegate.getTasksForTank(tankId), isEmpty);
+        expect(
+          find.textContaining('equipment may already exist'),
+          findsOneWidget,
+        );
+        expect(find.text('Retry'), findsNothing);
+      },
+    );
+
+    testWidgets('clean equipment-add compensation retains safe Retry', (
+      tester,
+    ) async {
+      const tankId = 'tank-equipment-add-clean-compensation';
+      final delegate = InMemoryStorageService();
+      final storage = _EquipmentAddFailureStorage(delegate, taskFailures: 1);
+      await delegate.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Equipment'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Retry canister filter',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Maintenance interval (days)'),
+        '30',
+      );
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await delegate.getEquipmentForTank(tankId), isEmpty);
+      expect(await delegate.getTasksForTank(tankId), isEmpty);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.textContaining('equipment may already exist'), findsNothing);
+      expect(find.text('Retry canister filter added.'), findsNothing);
+
+      final retryAction = tester.widget<SnackBarAction>(
+        find.widgetWithText(SnackBarAction, 'Retry'),
+      );
+      retryAction.onPressed();
+      await tester.pump();
+      await _advance(tester);
+
+      expect(await delegate.getEquipmentForTank(tankId), hasLength(1));
+      expect(await delegate.getTasksForTank(tankId), hasLength(1));
+      expect(storage.saveEquipmentCalls, 2);
+      expect(storage.saveTaskCalls, 2);
+      expect(storage.deleteEquipmentCalls, 1);
+      expect(storage.savedEquipmentIds.toSet(), hasLength(2));
+      expect(find.text('Add Equipment'), findsNothing);
     });
 
     testWidgets(

@@ -33,6 +33,25 @@ import '../widgets/mascot/mascot_widgets.dart';
 const _uuid = Uuid();
 const double _maxEquipmentReadableWidth = 720;
 
+class EquipmentAddCompensationException implements Exception {
+  final Object initiatingError;
+  final Object rollbackError;
+  final String possiblyDurableEquipmentId;
+
+  EquipmentAddCompensationException({
+    required this.initiatingError,
+    required this.rollbackError,
+    required this.possiblyDurableEquipmentId,
+  });
+
+  @override
+  String toString() {
+    return 'Equipment add failed ($initiatingError) and equipment rollback '
+        'failed ($rollbackError); equipment $possiblyDurableEquipmentId may '
+        'still be durable.';
+  }
+}
+
 String _maintenanceTaskId(String equipmentId) =>
     'equip_${equipmentId}_maintenance';
 
@@ -813,6 +832,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
   late TextEditingController _intervalController;
   late EquipmentType _type;
   bool _isSaving = false;
+  bool _persistenceUncertain = false;
 
   @override
   void initState() {
@@ -910,7 +930,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
               const SizedBox(height: AppSpacing.lg),
               AppButton(
-                onPressed: _isSaving ? null : _save,
+                onPressed: _isSaving || _persistenceUncertain ? null : _save,
                 label: widget.existing != null ? 'Save' : 'Add',
                 isLoading: _isSaving,
                 isFullWidth: true,
@@ -948,6 +968,8 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
   }
 
   Future<void> _save() async {
+    if (_isSaving || _persistenceUncertain) return;
+
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       AppFeedback.showWarning(context, 'Please enter a name');
@@ -1053,11 +1075,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       }
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
-      logError(
-        'EquipmentScreen: equipment save failed: $e',
-        stackTrace: st,
-        tag: 'EquipmentScreen',
-      );
+      Object reportedError = e;
       if (equipmentSaved && pendingEquipment != null) {
         final storage = widget.ref.read(storageServiceProvider);
         try {
@@ -1073,15 +1091,43 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
             stackTrace: rollbackStack,
             tag: 'EquipmentScreen',
           );
+          if (widget.existing == null) {
+            reportedError = EquipmentAddCompensationException(
+              initiatingError: e,
+              rollbackError: rollbackError,
+              possiblyDurableEquipmentId: pendingEquipment.id,
+            );
+          }
         }
       }
+      final persistenceUncertain =
+          reportedError is EquipmentAddCompensationException;
+      logError(
+        'EquipmentScreen: equipment save failed: $reportedError',
+        stackTrace: st,
+        tag: 'EquipmentScreen',
+      );
       widget.ref.invalidate(equipmentProvider(widget.tankId));
       widget.ref.invalidate(tasksProvider(widget.tankId));
       if (mounted) {
-        AppFeedback.showError(
-          context,
-          'Couldn\'t do that. Give it another go!',
-        );
+        if (persistenceUncertain) {
+          _persistenceUncertain = true;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          AppFeedback.showWarning(
+            context,
+            'Equipment add didn\'t finish. This equipment may already exist, '
+            'and its maintenance task may be incomplete. Close this form and '
+            'check your equipment and tasks before trying again.',
+          );
+        } else {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t do that. Give it another go!',
+            onRetry: widget.existing == null ? _save : null,
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
