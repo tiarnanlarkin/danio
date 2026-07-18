@@ -217,11 +217,19 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
       // Handle provider errors (atomic transaction failures)
       if (!mounted) return;
 
-      DanioSnackBar.error(
-        context,
-        'Oops! We hit a snag. Give it another go!',
-        onRetry: () => _handlePurchase(item),
-      );
+      if (e is InventoryPurchaseRefundException) {
+        DanioSnackBar.error(
+          context,
+          'This purchase wasn\'t saved, and we couldn\'t confirm your gem refund. '
+          'Your gem balance may be uncertain. Close and reopen Danio before buying again.',
+        );
+      } else {
+        DanioSnackBar.error(
+          context,
+          'Oops! We hit a snag. Give it another go!',
+          onRetry: () => _handlePurchase(item),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isPurchasing = false);

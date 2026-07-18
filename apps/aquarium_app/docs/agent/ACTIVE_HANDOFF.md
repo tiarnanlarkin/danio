@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
 Status: manual lean workflow; Phase 1 data resilience in progress
-Updated: 2026-07-16
-Product epoch: `DR-2026-07-16-037`
-Marker: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`
+Updated: 2026-07-18
+Product epoch: `DR-2026-07-18-038`
+Marker: `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -65,7 +65,8 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F8` verified: `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`; failed deletion keeps the task visible with no success or Undo.
 - `DCL-DR-003-F9` fixed: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`; stale Tasks Completion cannot recreate a task or create completion side effects.
 - `DCL-DR-003-F10` fixed: `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F11` fixed: `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`.
-- `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`; `DCL-DR-003-F22` fixed: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`; `DCL-DR-003-F23` fixed: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
+- `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`; `DCL-DR-003-F22` fixed: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`; `DCL-DR-003-F23` fixed in `DR-2026-07-16-037`: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
+- `DCL-DR-003-F24` fixed: `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`; Gem Shop preserves inventory-save and refund failures for diagnosis, warns when the persisted gem refund is uncertain, and omits unsafe immediate Retry only for that uncertain path.
 
 ## Frozen autonomy
 
@@ -97,8 +98,8 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9-F23 fixes and F8 proof are recorded.
-  Continue F24 under `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F24 fixes and F8 proof are recorded.
+  Continue F25 under `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -143,7 +144,7 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After clean F23 alignment, continue `DCL-DR-003-F24` under marker
-`danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`; preserve
-both Gem Shop inventory-save and refund failures, then warn about the uncertain
-gem balance without offering an unsafe immediate Retry.
+After clean F24 alignment, continue `DCL-DR-003-F25` under marker
+`danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`;
+prove the Inventory screen's fire-and-forget expired-item cleanup failure path,
+then fix only that boundary if it can escape without visible feedback.

@@ -78,9 +78,9 @@ class ShopService {
 
   /// Purchase an item from the shop.
   ///
-  /// Delegates to [InventoryNotifier.purchaseItem] which has compensating-refund
-  /// logic: if gems are deducted but inventory save fails, gems are automatically
-  /// refunded so the user never loses currency without receiving the item.
+  /// Delegates to [InventoryNotifier.purchaseItem], which attempts a compensating
+  /// refund if the inventory save fails and surfaces both failures when refund
+  /// durability cannot be confirmed.
   Future<PurchaseResult> purchaseItem(ShopItem item) async {
     final canPurchaseResult = canPurchase(item);
     if (!canPurchaseResult.success) {

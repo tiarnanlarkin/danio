@@ -17,6 +17,24 @@ final inventoryProvider =
       return InventoryNotifier(ref);
     });
 
+class InventoryPurchaseRefundException implements Exception {
+  const InventoryPurchaseRefundException({
+    required this.inventorySaveError,
+    required this.inventorySaveStackTrace,
+    required this.refundError,
+    required this.refundStackTrace,
+  });
+
+  final Object inventorySaveError;
+  final StackTrace inventorySaveStackTrace;
+  final Object refundError;
+  final StackTrace refundStackTrace;
+
+  @override
+  String toString() =>
+      'Inventory save failed: $inventorySaveError; gem refund failed: $refundError';
+}
+
 class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   InventoryNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
@@ -106,8 +124,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   /// Purchase an item from the shop.
   ///
   /// Uses a compensating-refund pattern: if gems are deducted but the
-  /// inventory save fails, the gems are automatically refunded so the user
-  /// never loses currency without receiving the item.
+  /// inventory save fails, a refund is attempted. If that refund also fails,
+  /// both failures are surfaced so the UI can warn that the balance is uncertain.
   Future<bool> purchaseItem(ShopItem item) async {
     // Guard: if inventory hasn't loaded, purchasing would wipe existing items.
     if (!state.hasValue) {
@@ -189,12 +207,29 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         stackTrace: st,
         tag: 'InventoryProvider',
       );
-      // Compensating refund: inventory save failed, give gems back
-      await gemsNotifier.refund(
-        amount: item.gemCost,
-        itemId: item.id,
-        itemName: item.name,
-      );
+      // Compensating refund: inventory save failed, give gems back.
+      try {
+        await gemsNotifier.refund(
+          amount: item.gemCost,
+          itemId: item.id,
+          itemName: item.name,
+        );
+      } catch (refundError, refundStackTrace) {
+        logError(
+          'InventoryProvider: compensating gem refund failed: $refundError',
+          stackTrace: refundStackTrace,
+          tag: 'InventoryProvider',
+        );
+        Error.throwWithStackTrace(
+          InventoryPurchaseRefundException(
+            inventorySaveError: e,
+            inventorySaveStackTrace: st,
+            refundError: refundError,
+            refundStackTrace: refundStackTrace,
+          ),
+          st,
+        );
+      }
       rethrow;
     }
   }

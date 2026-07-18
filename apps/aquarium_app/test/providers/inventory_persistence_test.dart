@@ -318,6 +318,65 @@ void main() {
     );
 
     test(
+      'purchaseItem preserves inventory and refund failures for diagnosis',
+      () async {
+        final originalGems = _gemsState();
+        const badge = ShopItem(
+          id: 'badge_early_bird',
+          name: 'Early Bird Badge',
+          description: 'Permanent badge',
+          emoji: 'AM',
+          category: ShopItemCategory.cosmetics,
+          type: ShopItemType.profileBadge,
+          gemCost: 10,
+          isConsumable: false,
+          orderIndex: 20,
+        );
+        SharedPreferences.setMockInitialValues({
+          'gems_state': jsonEncode(originalGems.toJson()),
+          'gems_cumulative': jsonEncode({'earned': 0, 'spent': 0}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        var gemsStateWrites = 0;
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(prefs, (key, _) {
+                if (key == 'shop_inventory') return true;
+                if (key == 'gems_state') {
+                  gemsStateWrites += 1;
+                  return gemsStateWrites == 2;
+                }
+                return false;
+              });
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _waitForLoad(container);
+
+        Object? purchaseFailure;
+        try {
+          await container.read(inventoryProvider.notifier).purchaseItem(badge);
+        } catch (error) {
+          purchaseFailure = error;
+        }
+
+        expect(purchaseFailure, isNotNull);
+        expect(purchaseFailure.toString(), contains('shop_inventory'));
+        expect(purchaseFailure.toString(), contains('gems_state'));
+        expect(container.read(inventoryProvider).valueOrNull, isEmpty);
+        expect(prefs.getString('shop_inventory'), isNull);
+        final persistedGems = GemsState.fromJson(
+          jsonDecode(prefs.getString('gems_state')!) as Map<String, dynamic>,
+        );
+        expect(persistedGems.balance, 90);
+      },
+    );
+
+    test(
       'purchaseItem rejects owned permanent items before spending gems',
       () async {
         final ownedBadge = InventoryItem(
