@@ -56,7 +56,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      ref.read(inventoryProvider.notifier).cleanupExpiredItems();
+      unawaited(_cleanupExpiredItems());
     });
   }
 
@@ -64,6 +64,23 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _cleanupExpiredItems() async {
+    try {
+      await ref.read(inventoryProvider.notifier).cleanupExpiredItems();
+    } catch (e, st) {
+      logError(
+        'InventoryScreen: failed to clean up expired items: $e',
+        stackTrace: st,
+        tag: 'InventoryScreen',
+      );
+      if (!mounted) return;
+      DanioSnackBar.error(
+        context,
+        'Couldn\'t update expired items. Try again.',
+      );
+    }
   }
 
   @override

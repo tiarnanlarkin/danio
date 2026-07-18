@@ -3,20 +3,24 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-18-038`
+Current epoch: `DR-2026-07-18-039`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-twenty-three bounded fixes prevent Today Board, Home main-Tank, Livestock quick Feed,
-Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and Equipment
-Mark Serviced from creating orphan or recreated records under covered stale-ID and
-parent boundaries. They also prevent equipment Undo from leaving a partial
-restore, keep livestock bulk-move counts honest, surface bulk-removal expiry
-failures, stop stale wishlist and local-shop edits/removals from reporting success,
-report a durable wishlist purchase honestly when its budget update and rollback both fail, make review-answer
-  commits authoritative, bind Cost Tracker deletion to stable expense IDs, prevent a redundant Review completion mirror from creating false failure, preserve both sides of a failed Gem Shop refund compensation while suppressing unsafe Retry, and make lesson progress precede rewards with a real
-  retry after failure.
+twenty-four bounded fixes prevent Today Board, Home main-Tank, Livestock quick
+Feed, Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and
+Equipment Mark Serviced from creating orphan or recreated records under covered
+stale-ID and parent boundaries. They also prevent equipment Undo from leaving a
+partial restore, keep livestock bulk-move counts honest, surface bulk-removal
+expiry failures, stop stale wishlist and local-shop edits/removals from reporting
+success, report a durable wishlist purchase honestly when its budget update and
+rollback both fail, make review-answer commits authoritative, bind Cost Tracker
+deletion to stable expense IDs, prevent a redundant Review completion mirror from
+creating false failure, preserve both sides of a failed Gem Shop refund
+compensation while suppressing unsafe Retry, report failed Inventory startup
+cleanup without changing persisted data, and make lesson progress precede rewards
+with a real retry after failure.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
 needed for that boundary.
@@ -89,7 +93,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Review answer/update | Success remains covered by scheduling/model tests and `records fallback answer and advances using returned result`; RED/GREEN `recordSessionResult keeps the answer pending when review-card save fails`; `recordSessionResult restores the card when review-stats save fails`; `recordSessionResult rejects a session card missing from saved cards`; `recordSessionResult does not resurrect an abandoned session after save`; `failed review save neither advances nor awards XP`; `failed XP save does not retry an already recorded answer` | `DCL-DR-003-F3` locally fixed: two-key save compensation preserves the initiating failure, only the still-active session advances, missing durable cards fail, review-save failure awards no XP and stays retryable, and downstream XP failure cannot retry the durable answer. |
 | Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; RED/GREEN `completeSession does not fail after durable count and streak when stats mirror rejects save`; `exit dialog abandons active session before popping` | `DCL-DR-003-F23` locally fixed: answers already persist cards/review totals and the streak key is authoritative, so completion no longer performs a redundant late mirror save that could suppress honest completion feedback after its durable commits. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, `purchaseItem preserves inventory and refund failures for diagnosis`, Gem Shop refund-success/refund-failure widget proofs, and `reset surfaces failed local removals before reporting reset success` | Direct writers are covered. `DCL-DR-003-F24` locally fixed the cross-provider purchase path: simultaneous inventory-save/refund failure retains both errors and warns that the gem balance may be uncertain without immediate Retry; successful refund keeps the safe generic Retry and does not overstate uncertainty. |
-| Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart` | Refund failure is covered by F24. `DCL-DR-003-F25` is selected because `InventoryScreen.initState` launches expired-item cleanup without awaiting or handling its persistence failure, so the user-visible failure boundary is unexplained. Missing catalog-item handling remains a later evidence boundary. |
+| Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart`; RED/GREEN `expired item cleanup failure shows feedback without changing inventory` | Refund failure is covered by F24. `DCL-DR-003-F25` is locally fixed: `InventoryScreen` awaits startup cleanup inside a self-contained handler, logs persistence failure, preserves the stored inventory, and shows retryable feedback without letting the error escape. Missing catalog-item handling remains a later evidence boundary. |
 | Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, and debug two-store reset rollback tests | Open: cross-store unlock/profile/gem partial failure can leave a durable unlock without a recoverable reward. |
 | Normal lesson rewards | Existing success `XP awarded and lesson marked complete after completeLesson`; practice failure `practice completion does not claim XP when XP save fails`; RED/GREEN `failed normal lesson save retries without duplicate quiz gems or false progress`; `normal lesson no-op cannot claim saved progress`; `already completed normal lesson adds no duplicate rewards`; `post-commit activity failure does not claim lesson progress was unsaved`; `post-commit quiz reward failure preserves saved lesson progress` | `DCL-DR-003-F4` locally fixed: an initial profile-write failure restores the prior profile for Retry and awards no quiz gems or XP success; Retry durably completes once before one quiz reward; `completeLesson` reports newly committed and partial follow-up outcomes, so null/already-completed no-ops add nothing and post-commit activity or reward failures preserve durable progress with honest partial-completion feedback instead of Retry. |
 
@@ -184,9 +188,11 @@ belongs to `DCL-DR-004` and is not selected here.
     without unsafe immediate Retry; successful refunds retain the safe path.
     Fixed and focused GREEN in `DR-2026-07-18-038` under marker
     `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`.
-25. `DCL-DR-003-F25` - prove whether fire-and-forget Inventory expired-item
-    cleanup can fail without visible feedback, then fix only that boundary if
-    required. Next marker:
+25. `DCL-DR-003-F25` - fire-and-forget Inventory expired-item cleanup could
+    escape on persistence failure with no visible feedback. The screen now
+    awaits cleanup inside a caught handler, logs the failure, preserves stored
+    inventory, and shows retryable feedback: fixed and focused GREEN in
+    `DR-2026-07-18-039` under marker
     `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`.
 26. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Other cross-store

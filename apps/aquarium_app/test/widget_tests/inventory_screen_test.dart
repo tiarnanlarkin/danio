@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/inventory_screen_test.dart
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:danio/models/shop_item.dart';
 import 'package:danio/models/tank_decoration.dart';
 import 'package:danio/models/tank.dart';
 import 'package:danio/models/user_profile.dart';
+import 'package:danio/providers/inventory_provider.dart';
 import 'package:danio/providers/room_theme_provider.dart';
 import 'package:danio/providers/room_theme_unlock_provider.dart';
 import 'package:danio/providers/tank_decoration_provider.dart';
@@ -423,6 +425,74 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'expired item cleanup failure shows feedback without changing inventory',
+      (tester) async {
+        final item = ShopCatalog.getById('xp_boost_1h')!;
+        final expiredItem = InventoryItem(
+          itemId: item.id,
+          quantity: 1,
+          expiresAt: DateTime(2026, 6, 18, 12),
+          purchasedAt: DateTime(2026, 6, 18, 11),
+          isActive: true,
+        );
+        final inventoryJson = jsonEncode([expiredItem.toJson()]);
+
+        SharedPreferences.setMockInitialValues({
+          'shop_inventory': inventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'shop_inventory',
+        );
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith(
+              (ref) async => throwingPrefs,
+            ),
+            roomThemeProvider.overrideWith(
+              (ref) => _TestRoomThemeNotifier(ref, RoomThemeType.golden),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final inventorySub = container.listen(
+          inventoryProvider,
+          (_, __) {},
+        );
+        addTearDown(inventorySub.close);
+        for (var i = 0; i < 20; i++) {
+          if (container.read(inventoryProvider).hasValue) break;
+          await tester.pump();
+        }
+        expect(container.read(inventoryProvider).hasValue, isTrue);
+
+        Object? uncaughtError;
+        await runZonedGuarded(
+          () async {
+            await tester.pumpWidget(
+              UncontrolledProviderScope(
+                container: container,
+                child: const MaterialApp(home: InventoryScreen()),
+              ),
+            );
+            await _advance(tester);
+          },
+          (error, _) {
+            uncaughtError = error;
+          },
+        );
+
+        expect(uncaughtError, isNull);
+        expect(
+          find.text('Couldn\'t update expired items. Try again.'),
+          findsOneWidget,
+        );
+        expect(prefs.getString('shop_inventory'), inventoryJson);
+      },
+    );
 
     testWidgets(
       'failed item use shows retry feedback and keeps the item visible',
