@@ -3,12 +3,12 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-18-039`
+Current epoch: `DR-2026-07-18-040`
 
 ## Decision
 
 The fresh current-source inventory disproved a no-current-gap close. The first
-twenty-four bounded fixes prevent Today Board, Home main-Tank, Livestock quick
+twenty-five bounded fixes prevent Today Board, Home main-Tank, Livestock quick
 Feed, Home Quick Water Test, Tasks/Tank Detail Completion and Snooze, and
 Equipment Mark Serviced from creating orphan or recreated records under covered
 stale-ID and parent boundaries. They also prevent equipment Undo from leaving a
@@ -20,7 +20,13 @@ deletion to stable expense IDs, prevent a redundant Review completion mirror fro
 creating false failure, preserve both sides of a failed Gem Shop refund
 compensation while suppressing unsafe Retry, report failed Inventory startup
 cleanup without changing persisted data, and make lesson progress precede rewards
-with a real retry after failure.
+with a real retry after failure. Achievement unlocks now settle profile XP and
+gems before terminal progress or feedback, preserving retry after either write
+fails. A durable gem-transaction idempotency key distinguishes settled rewards
+from profile-only partial commits: settled rewards catch progress up without
+repeated unlock feedback, while failed profile or gem-state compensation first
+surfaces both causes as uncertainty and a healthy reload completes only the
+missing side before terminal progress or feedback.
 `DCL-DR-003-F8` directly verifies that a primary delete-write failure preserves
 the durable task and exposes only honest failure feedback; no product change was
 needed for that boundary.
@@ -94,7 +100,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; RED/GREEN `completeSession does not fail after durable count and streak when stats mirror rejects save`; `exit dialog abandons active session before popping` | `DCL-DR-003-F23` locally fixed: answers already persist cards/review totals and the streak key is authoritative, so completion no longer performs a redundant late mirror save that could suppress honest completion feedback after its durable commits. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, `purchaseItem preserves inventory and refund failures for diagnosis`, Gem Shop refund-success/refund-failure widget proofs, and `reset surfaces failed local removals before reporting reset success` | Direct writers are covered. `DCL-DR-003-F24` locally fixed the cross-provider purchase path: simultaneous inventory-save/refund failure retains both errors and warns that the gem balance may be uncertain without immediate Retry; successful refund keeps the safe generic Retry and does not overstate uncertainty. |
 | Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart`; RED/GREEN `expired item cleanup failure shows feedback without changing inventory` | Refund failure is covered by F24. `DCL-DR-003-F25` is locally fixed: `InventoryScreen` awaits startup cleanup inside a self-contained handler, logs persistence failure, preserves the stored inventory, and shows retryable feedback without letting the error escape. Missing catalog-item handling remains a later evidence boundary. |
-| Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, and debug two-store reset rollback tests | Open: cross-store unlock/profile/gem partial failure can leave a durable unlock without a recoverable reward. |
+| Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, debug two-store reset rollback tests, and RED/GREEN `failed profile write leaves first lesson reward recoverable on retry`; `failed gem cumulative write leaves first lesson reward recoverable after reload`; `failed profile compensation surfaces both achievement reward errors`; `failed gem rollback surfaces uncertainty without duplicate retry`; `settled profile reward catches progress up silently after reload` | `DCL-DR-003-F26` locally fixed for the covered cross-store unlock path: profile XP/ID and an idempotently keyed gem transaction plus cumulative receipt settle before terminal progress, so retry/reload reaches exactly one bronze `first_lesson` reward (+50 XP, +5 gems) and later checks add nothing. A settled receipt makes stale progress a non-rewarding catch-up. Failed profile or gem-state compensation exposes both causes first; a healthy reload repairs only the missing gem/cumulative side before progress or feedback and cannot duplicate XP, balance, or transaction. |
 | Normal lesson rewards | Existing success `XP awarded and lesson marked complete after completeLesson`; practice failure `practice completion does not claim XP when XP save fails`; RED/GREEN `failed normal lesson save retries without duplicate quiz gems or false progress`; `normal lesson no-op cannot claim saved progress`; `already completed normal lesson adds no duplicate rewards`; `post-commit activity failure does not claim lesson progress was unsaved`; `post-commit quiz reward failure preserves saved lesson progress` | `DCL-DR-003-F4` locally fixed: an initial profile-write failure restores the prior profile for Retry and awards no quiz gems or XP success; Retry durably completes once before one quiz reward; `completeLesson` reports newly committed and partial follow-up outcomes, so null/already-completed no-ops add nothing and post-commit activity or reward failures preserve durable progress with honest partial-completion feedback instead of Retry. |
 
 ## Ordered Findings
@@ -194,9 +200,18 @@ belongs to `DCL-DR-004` and is not selected here.
     inventory, and shows retryable feedback: fixed and focused GREEN in
     `DR-2026-07-18-039` under marker
     `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`.
-26. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
-    it changes that row's backup relationship invariant. Other cross-store
-    reward boundaries remain later slices.
+26. `DCL-DR-003-F26` - achievement unlock profile/XP and gem persistence now
+    settle before terminal progress, celebration, or notification; failed
+    profile writes remain retryable, failed gem writes compensate the profile,
+    and a keyed gem receipt distinguishes settled rewards from profile-only
+    partial commits. Compensation failure preserves both errors as explicit
+    uncertainty; healthy reload repairs only the missing side before terminal
+    progress or feedback.
+    Fixed and focused GREEN in `DR-2026-07-18-040` under marker
+    `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`.
+27. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+    it changes that row's backup relationship invariant. Missing-catalog and
+    other unexplained boundaries remain later slices.
 
 `DCL-DR-003` must remain open until every open product finding is fixed or
 disproved and every unexplained evidence boundary is either covered or shown

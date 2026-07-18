@@ -59,6 +59,7 @@ class AchievementService {
     required UserProfile userProfile,
     required AchievementStats stats,
     required Map<String, AchievementProgress> progressMap,
+    required Set<String> settledRewardAchievementIds,
   }) {
     final List<AchievementUnlockResult> results = [];
 
@@ -75,6 +76,7 @@ class AchievementService {
         progress: progress,
         stats: stats,
         userProfile: userProfile,
+        settledRewardAchievementIds: settledRewardAchievementIds,
       );
 
       if (result != null) {
@@ -91,6 +93,7 @@ class AchievementService {
     required AchievementProgress progress,
     required AchievementStats stats,
     required UserProfile userProfile,
+    required Set<String> settledRewardAchievementIds,
   }) {
     int newCount = progress.currentCount;
     bool shouldUnlock = false;
@@ -475,12 +478,15 @@ class AchievementService {
     // Return result if there's a change
     if (updatedProgress.currentCount != progress.currentCount ||
         updatedProgress.isUnlocked != progress.isUnlocked) {
+      final rewardAlreadySettled =
+          userProfile.achievements.contains(achievement.id) &&
+          settledRewardAchievementIds.contains(achievement.id);
+      final wasJustUnlocked =
+          shouldUnlock && !progress.isUnlocked && !rewardAlreadySettled;
       return AchievementUnlockResult(
         achievement: achievement,
-        wasJustUnlocked: shouldUnlock && !progress.isUnlocked,
-        xpAwarded: (shouldUnlock && !progress.isUnlocked)
-            ? achievement.rarity.xpReward
-            : 0,
+        wasJustUnlocked: wasJustUnlocked,
+        xpAwarded: wasJustUnlocked ? achievement.rarity.xpReward : 0,
         progress: updatedProgress,
       );
     }

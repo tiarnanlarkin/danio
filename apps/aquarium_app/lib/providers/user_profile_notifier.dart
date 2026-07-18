@@ -42,6 +42,23 @@ class LessonCompletionResult {
   final bool hasPostCommitWarning;
 }
 
+class AchievementRewardCompensationException implements Exception {
+  const AchievementRewardCompensationException({
+    required this.rewardError,
+    required this.profileCompensationError,
+  });
+
+  final Object rewardError;
+  final Object profileCompensationError;
+
+  @override
+  String toString() {
+    return 'Achievement reward failed ($rewardError) and profile compensation '
+        'also failed ($profileCompensationError); achievement reward state is '
+        'uncertain.';
+  }
+}
+
 /// Provider for user profile management
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
@@ -929,8 +946,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
 
-    // Don't double-count
-    if (current.achievements.contains(achievementId)) return;
+    final achievementAlreadyRecorded = current.achievements.contains(
+      achievementId,
+    );
 
     // Use canonical AchievementDefinitions as the source of truth.
     final newAchievement = AchievementDefinitions.getById(achievementId);
@@ -945,27 +963,62 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             league: current.league,
           );
 
-    final updated = current.copyWith(
-      achievements: [...current.achievements, achievementId],
-      totalXp: current.totalXp + bonusXp,
-      weeklyXP: weeklyUpdate.weeklyXP,
-      weekStartDate: weeklyUpdate.weekStartDate,
-      league: weeklyUpdate.league,
-      updatedAt: DateTime.now(),
-    );
+    if (!achievementAlreadyRecorded) {
+      final updated = current.copyWith(
+        achievements: [...current.achievements, achievementId],
+        totalXp: current.totalXp + bonusXp,
+        weeklyXP: weeklyUpdate.weeklyXP,
+        weekStartDate: weeklyUpdate.weekStartDate,
+        league: weeklyUpdate.league,
+        updatedAt: DateTime.now(),
+      );
 
-    await _saveImmediate(updated);
-    state = AsyncValue.data(updated);
+      await _saveImmediate(updated);
+      state = AsyncValue.data(updated);
+    }
 
     // Award gems for achievement
     if (newAchievement != null) {
-      final gemsNotifier = ref.read(gemsProvider.notifier);
-      final gemReward = GemRewards.getAchievementReward(newAchievement.rarity);
-      await gemsNotifier.addGems(
-        amount: gemReward,
-        reason: GemEarnReason.achievementUnlock,
-        customReason: 'Achievement: ${newAchievement.name}',
-      );
+      try {
+        final gemsNotifier = ref.read(gemsProvider.notifier);
+        final gemReward = GemRewards.getAchievementReward(
+          newAchievement.rarity,
+        );
+        final rewardSaved = await gemsNotifier.addGems(
+          amount: gemReward,
+          reason: GemEarnReason.achievementUnlock,
+          customReason: 'Achievement: ${newAchievement.name}',
+          idempotencyKey: achievementRewardIdempotencyKey(achievementId),
+        );
+        if (!rewardSaved) {
+          throw StateError('Achievement gem reward was not persisted.');
+        }
+      } catch (rewardError, rewardStack) {
+        if (rewardError is GemsPersistenceCompensationException) {
+          Error.throwWithStackTrace(rewardError, rewardStack);
+        }
+        if (achievementAlreadyRecorded) {
+          Error.throwWithStackTrace(rewardError, rewardStack);
+        }
+        try {
+          await _saveImmediate(current);
+          state = AsyncValue.data(current);
+        } catch (profileCompensationError, compensationStack) {
+          final uncertainError = AchievementRewardCompensationException(
+            rewardError: rewardError,
+            profileCompensationError: profileCompensationError,
+          );
+          logError(
+            'UserProfileProvider: achievement profile compensation failed: '
+            '$profileCompensationError',
+            stackTrace: compensationStack,
+            tag: 'UserProfileProvider',
+          );
+          state = AsyncValue.error(uncertainError, compensationStack);
+          Error.throwWithStackTrace(uncertainError, rewardStack);
+        }
+        Error.throwWithStackTrace(rewardError, rewardStack);
+      }
     }
   }
 

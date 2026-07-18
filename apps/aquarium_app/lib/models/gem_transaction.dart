@@ -27,6 +27,7 @@ class GemTransaction {
   final int amount; // Positive for earn, negative for spend
   final String? reason; // GemEarnReason or item name
   final String? itemId; // If spending, which item was purchased
+  final String? idempotencyKey; // Stable identity for retryable rewards
   final DateTime timestamp;
   final int balanceAfter; // Balance after this transaction
 
@@ -36,6 +37,7 @@ class GemTransaction {
     required this.amount,
     this.reason,
     this.itemId,
+    this.idempotencyKey,
     required this.timestamp,
     required this.balanceAfter,
   });
@@ -46,6 +48,7 @@ class GemTransaction {
     'amount': amount,
     'reason': reason,
     'itemId': itemId,
+    if (idempotencyKey != null) 'idempotencyKey': idempotencyKey,
     'timestamp': timestamp.toIso8601String(),
     'balanceAfter': balanceAfter,
   };
@@ -60,6 +63,7 @@ class GemTransaction {
       amount: json['amount'] as int,
       reason: json['reason'] as String?,
       itemId: json['itemId'] as String?,
+      idempotencyKey: json['idempotencyKey'] as String?,
       timestamp: DateTime.parse(json['timestamp'] as String),
       balanceAfter: json['balanceAfter'] as int,
     );

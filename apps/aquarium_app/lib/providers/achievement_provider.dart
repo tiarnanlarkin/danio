@@ -22,6 +22,7 @@ import '../widgets/core/app_dialog.dart';
 import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
+import 'gems_provider.dart';
 import 'settings_provider.dart';
 import '../utils/logger.dart';
 
@@ -440,11 +441,38 @@ class AchievementChecker {
       );
 
       final progressMap = ref.read(achievementProgressProvider);
+      final gemsState = ref.read(gemsProvider).valueOrNull;
+      if (userProfile.achievements.isNotEmpty && gemsState == null) {
+        throw Exception('Cannot check achievements: Gems state not loaded');
+      }
+      final settledRewardAchievementIds = <String>{};
+      final gemsNotifier = ref.read(gemsProvider.notifier);
+      for (final achievementId in userProfile.achievements) {
+        final idempotencyKey = achievementRewardIdempotencyKey(achievementId);
+        final hasAppliedKey = gemsNotifier.isIdempotencyKeyApplied(
+          idempotencyKey,
+        );
+        final achievement = AchievementDefinitions.getById(achievementId);
+        final hasLegacyReward =
+            achievement != null &&
+            gemsState?.transactions.any(
+                  (transaction) =>
+                      transaction.idempotencyKey == null &&
+                      transaction.amount ==
+                          GemRewards.getAchievementReward(achievement.rarity) &&
+                      transaction.reason == 'Achievement: ${achievement.name}',
+                ) ==
+                true;
+        if (hasAppliedKey || hasLegacyReward) {
+          settledRewardAchievementIds.add(achievementId);
+        }
+      }
 
       final results = AchievementService.checkAchievements(
         userProfile: userProfile,
         stats: enrichedStats,
         progressMap: progressMap,
+        settledRewardAchievementIds: settledRewardAchievementIds,
       );
 
       // Update progress for all changed achievements
@@ -454,10 +482,6 @@ class AchievementChecker {
         for (final result in results) {
           updates[result.achievement.id] = result.progress;
         }
-
-        await ref
-            .read(achievementProgressProvider.notifier)
-            .updateMultiple(updates);
 
         // Update user profile with newly unlocked achievement IDs
         // Gems are awarded ONLY via unlockAchievement() to prevent double-awarding.
@@ -473,6 +497,12 @@ class AchievementChecker {
                 .read(userProfileProvider.notifier)
                 .unlockAchievement(result.achievement.id);
           }
+
+          // Terminal progress follows profile, XP, and gem settlement so a
+          // failed reward remains eligible for a later retry.
+          await ref
+              .read(achievementProgressProvider.notifier)
+              .updateMultiple(updates);
 
           // Show celebration for each unlocked achievement
           // 3.34 FIX: Show a single summary dialog for multiple unlocks
@@ -517,6 +547,10 @@ class AchievementChecker {
               }
             }
           }
+        } else {
+          await ref
+              .read(achievementProgressProvider.notifier)
+              .updateMultiple(updates);
         }
       }
 

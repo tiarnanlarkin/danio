@@ -10,6 +10,10 @@ import '../utils/logger.dart';
 
 const _uuid = Uuid();
 
+String achievementRewardIdempotencyKey(String achievementId) {
+  return 'achievement_reward:$achievementId';
+}
+
 /// Provider for gem economy management
 final gemsProvider = StateNotifierProvider<GemsNotifier, AsyncValue<GemsState>>(
   (ref) {
@@ -68,6 +72,22 @@ class _GemsSaveException implements Exception {
   String toString() => 'Failed to save gems data: $cause';
 }
 
+class GemsPersistenceCompensationException implements Exception {
+  const GemsPersistenceCompensationException({
+    required this.saveError,
+    required this.rollbackError,
+  });
+
+  final Object saveError;
+  final Object rollbackError;
+
+  @override
+  String toString() {
+    return 'Gem save failed ($saveError) and gems_state rollback also failed '
+        '($rollbackError); gem persistence is uncertain.';
+  }
+}
+
 class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   final Ref ref;
   GemsNotifier(this.ref) : super(const AsyncValue.loading()) {
@@ -81,6 +101,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   bool _adding = false;
   int _cumulativeEarned = 0;
   int _cumulativeSpent = 0;
+  Set<String> _appliedIdempotencyKeys = {};
   Timer? _saveDebounce;
   Timer? _cumulativeSaveDebounce;
 
@@ -119,6 +140,12 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         final cumulative = jsonDecode(cumulativeJson) as Map<String, dynamic>;
         _cumulativeEarned = cumulative['earned'] as int? ?? 0;
         _cumulativeSpent = cumulative['spent'] as int? ?? 0;
+        _appliedIdempotencyKeys = {
+          for (final key
+              in cumulative['appliedIdempotencyKeys'] as List<dynamic>? ??
+                  const <dynamic>[])
+            if (key is String) key,
+        };
       } else {
         // Backfill from existing transaction history on first load
         _cumulativeEarned = gemsState.transactions
@@ -127,6 +154,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         _cumulativeSpent = gemsState.transactions
             .where((t) => t.type == GemTransactionType.spend)
             .fold(0, (sum, t) => sum + t.amount.abs());
+        _appliedIdempotencyKeys = {
+          for (final transaction in gemsState.transactions)
+            if (transaction.idempotencyKey != null) transaction.idempotencyKey!,
+        };
         await _saveCumulative(prefs);
       }
 
@@ -152,7 +183,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     await _setStringOrThrow(
       prefs,
       _cumulativeKey,
-      jsonEncode({'earned': _cumulativeEarned, 'spent': _cumulativeSpent}),
+      jsonEncode({
+        'earned': _cumulativeEarned,
+        'spent': _cumulativeSpent,
+        'appliedIdempotencyKeys': _appliedIdempotencyKeys.toList()..sort(),
+      }),
     );
   }
 
@@ -236,15 +271,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
   Future<void> _restorePersistedGemsState(GemsState gemsState) async {
     try {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      List<GemTransaction> transactions = gemsState.transactions;
-      if (transactions.length > _maxTransactions) {
-        transactions = transactions.take(_maxTransactions).toList();
-        gemsState = gemsState.copyWith(transactions: transactions);
-      }
-      final rollbackJson = jsonEncode(gemsState.toJson());
-      if (prefs.getString(_key) == rollbackJson) return;
-      await _setStringOrThrow(prefs, _key, rollbackJson);
+      await _restorePersistedGemsStateOrThrow(gemsState);
     } catch (e, st) {
       logError(
         'GemsProvider: rollback save failed: $e',
@@ -254,8 +281,24 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     }
   }
 
+  Future<void> _restorePersistedGemsStateOrThrow(GemsState gemsState) async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    List<GemTransaction> transactions = gemsState.transactions;
+    if (transactions.length > _maxTransactions) {
+      transactions = transactions.take(_maxTransactions).toList();
+      gemsState = gemsState.copyWith(transactions: transactions);
+    }
+    final rollbackJson = jsonEncode(gemsState.toJson());
+    if (prefs.getString(_key) == rollbackJson) return;
+    await _setStringOrThrow(prefs, _key, rollbackJson);
+  }
+
   /// Get current gem balance
   int get balance => state.value?.balance ?? 0;
+
+  bool isIdempotencyKeyApplied(String idempotencyKey) {
+    return _appliedIdempotencyKeys.contains(idempotencyKey);
+  }
 
   /// Add gems (earn)
   /// Returns true if successful, false if a concurrent add is in progress.
@@ -263,6 +306,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     required int amount,
     required GemEarnReason reason,
     String? customReason,
+    String? idempotencyKey,
   }) async {
     if (amount <= 0) return false;
 
@@ -273,6 +317,9 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     if (_adding) return false;
     _adding = true;
     final originalCumulativeEarned = _cumulativeEarned;
+    final originalAppliedIdempotencyKeys = Set<String>.of(
+      _appliedIdempotencyKeys,
+    );
     GemsState? originalState;
 
     try {
@@ -287,6 +334,27 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         state = AsyncValue.data(current);
       }
       originalState = current;
+      if (idempotencyKey != null &&
+          current.transactions.any(
+            (transaction) => transaction.idempotencyKey == idempotencyKey,
+          )) {
+        final existingTransaction = current.transactions.firstWhere(
+          (transaction) => transaction.idempotencyKey == idempotencyKey,
+        );
+        if (existingTransaction.type != GemTransactionType.earn ||
+            existingTransaction.amount != amount) {
+          throw StateError(
+            'Gem idempotency key collision for $idempotencyKey.',
+          );
+        }
+        if (!_appliedIdempotencyKeys.contains(idempotencyKey)) {
+          _cumulativeEarned += existingTransaction.amount;
+          _appliedIdempotencyKeys.add(idempotencyKey);
+          final prefs = await ref.read(sharedPreferencesProvider.future);
+          await _saveCumulative(prefs);
+        }
+        return true;
+      }
 
       final now = DateTime.now();
       final newBalance = current.balance + amount;
@@ -296,6 +364,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         type: GemTransactionType.earn,
         amount: amount,
         reason: customReason ?? reason.name,
+        idempotencyKey: idempotencyKey,
         timestamp: now,
         balanceAfter: newBalance,
       );
@@ -307,6 +376,9 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
           : updatedTransactions;
 
       _cumulativeEarned += amount;
+      if (idempotencyKey != null) {
+        _appliedIdempotencyKeys.add(idempotencyKey);
+      }
       final updatedState = current.copyWith(
         balance: newBalance,
         transactions: cappedTransactions,
@@ -318,9 +390,26 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       return true;
     } catch (e, st) {
       _cumulativeEarned = originalCumulativeEarned;
+      _appliedIdempotencyKeys = originalAppliedIdempotencyKeys;
       final rollbackState = originalState;
       if (rollbackState != null) {
-        await _restorePersistedGemsStateIfNeeded(e, rollbackState);
+        try {
+          if (e is _GemsSaveException && e.gemsStateWritten) {
+            await _restorePersistedGemsStateOrThrow(rollbackState);
+          }
+        } catch (rollbackError, rollbackStack) {
+          final uncertainError = GemsPersistenceCompensationException(
+            saveError: e,
+            rollbackError: rollbackError,
+          );
+          logError(
+            'GemsProvider: rollback save failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'GemsProvider',
+          );
+          state = AsyncValue.error(uncertainError, rollbackStack);
+          Error.throwWithStackTrace(uncertainError, st);
+        }
       }
       state = AsyncValue.error(e, st);
       rethrow;
