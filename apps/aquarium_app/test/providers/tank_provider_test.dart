@@ -1,3 +1,5 @@
+import 'dart:async';
+
 // Tests for TankProvider and TankActions.
 //
 // Covers:
@@ -155,6 +157,51 @@ class _SaveDefaultTaskFailsStorage extends _TestStorageService {
       throw StateError('task save failed');
     }
     await super.saveTask(task);
+  }
+}
+
+class _SaveDefaultTaskAndTankDeleteFailStorage extends _TestStorageService {
+  final taskSaveError = StateError('task save failed');
+  final tankDeleteError = StateError('tank delete failed');
+  final tankSaved = Completer<String>();
+  final resumeDefaultTaskSaves = Completer<void>();
+  int getAllTanksCalls = 0;
+  int getTasksForTankCalls = 0;
+  var _saveTaskCount = 0;
+
+  @override
+  Future<List<Tank>> getAllTanks() {
+    getAllTanksCalls += 1;
+    return super.getAllTanks();
+  }
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) {
+    getTasksForTankCalls += 1;
+    return super.getTasksForTank(tankId);
+  }
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    await super.saveTank(tank);
+    tankSaved.complete(tank.id);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    if (_saveTaskCount == 0) {
+      await resumeDefaultTaskSaves.future;
+    }
+    _saveTaskCount += 1;
+    if (_saveTaskCount == 2) {
+      throw taskSaveError;
+    }
+    await super.saveTask(task);
+  }
+
+  @override
+  Future<void> deleteTank(String id) async {
+    throw tankDeleteError;
   }
 }
 
@@ -384,6 +431,72 @@ void main() {
         expect(await storage.getAllTanks(), isEmpty);
         expect(await storage.getTasksForTank(null), isEmpty);
         expect(await container.read(tanksProvider.future), isEmpty);
+      },
+    );
+
+    test(
+      'createTank preserves task-save and rollback failures when cleanup is uncertain',
+      () async {
+        final storage = _SaveDefaultTaskAndTankDeleteFailStorage();
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        final tanksSubscription = container.listen(
+          tanksProvider,
+          (_, __) {},
+        );
+        addTearDown(tanksSubscription.close);
+        expect(await container.read(tanksProvider.future), isEmpty);
+
+        Object? thrown;
+        final createFuture = container
+            .read(tankActionsProvider)
+            .createTank(
+              name: 'Uncertain Tank',
+              type: TankType.freshwater,
+              volumeLitres: 95,
+            );
+        final possiblyDurableTankId = await storage.tankSaved.future;
+        final tasksSubscription = container.listen(
+          tasksProvider(possiblyDurableTankId),
+          (_, __) {},
+        );
+        addTearDown(tasksSubscription.close);
+        expect(
+          await container.read(tasksProvider(possiblyDurableTankId).future),
+          isEmpty,
+        );
+        storage.resumeDefaultTaskSaves.complete();
+
+        try {
+          await createFuture;
+        } catch (error) {
+          thrown = error;
+        }
+        await _settle();
+
+        expect(thrown, isA<TankCreateCompensationException>());
+        final uncertainty = thrown! as TankCreateCompensationException;
+        expect(uncertainty.initiatingError, same(storage.taskSaveError));
+        expect(uncertainty.rollbackError, same(storage.tankDeleteError));
+        expect(storage.getAllTanksCalls, greaterThanOrEqualTo(2));
+        expect(storage.getTasksForTankCalls, greaterThanOrEqualTo(2));
+
+        final storedTanks = await storage.getAllTanks();
+        expect(storedTanks, hasLength(1));
+        expect(
+          uncertainty.possiblyDurableTankId,
+          possiblyDurableTankId,
+        );
+        expect(await storage.getTasksForTank(storedTanks.single.id), isEmpty);
+        expect(
+          (await container.read(tanksProvider.future)).single.id,
+          storedTanks.single.id,
+        );
+        expect(
+          await container.read(tasksProvider(storedTanks.single.id).future),
+          isEmpty,
+        );
       },
     );
   });

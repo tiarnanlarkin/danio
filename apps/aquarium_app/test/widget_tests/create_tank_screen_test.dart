@@ -19,6 +19,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/celebration_service.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/services/xp_animation_service.dart';
+import 'package:danio/widgets/core/app_button.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -37,7 +38,7 @@ Widget _wrap({SetupMode mode = SetupMode.guided, String initialName = ''}) {
 
 Widget _wrapWithLauncher({
   SetupMode mode = SetupMode.guided,
-  InMemoryStorageService? storage,
+  StorageService? storage,
   SharedPreferences? prefs,
   bool showProfileProbe = false,
 }) {
@@ -208,10 +209,184 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _WidgetTestStorageService implements StorageService {
+  final Map<String, Tank> _tanks = {};
+  final Map<String, Livestock> _livestock = {};
+  final Map<String, Equipment> _equipment = {};
+  final Map<String, LogEntry> _logs = {};
+  final Map<String, Task> _tasks = {};
+
+  @override
+  Future<List<Tank>> getAllTanks() async => _tanks.values.toList();
+
+  @override
+  Future<Tank?> getTank(String id) async => _tanks[id];
+
+  @override
+  Future<void> saveTank(Tank tank) async => _tanks[tank.id] = tank;
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) async {
+    for (final tank in tanks) {
+      _tanks[tank.id] = tank;
+    }
+  }
+
+  @override
+  Future<void> deleteTank(String id) async {
+    _tanks.remove(id);
+    _livestock.removeWhere((_, value) => value.tankId == id);
+    _equipment.removeWhere((_, value) => value.tankId == id);
+    _logs.removeWhere((_, value) => value.tankId == id);
+    _tasks.removeWhere((_, value) => value.tankId == id);
+  }
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    for (final id in ids) {
+      await deleteTank(id);
+    }
+  }
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) async =>
+      _livestock.values.where((item) => item.tankId == tankId).toList();
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async =>
+      _livestock[livestock.id] = livestock;
+
+  @override
+  Future<void> deleteLivestock(String id) async => _livestock.remove(id);
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) async =>
+      _equipment.values.where((item) => item.tankId == tankId).toList();
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) async =>
+      _equipment[equipment.id] = equipment;
+
+  @override
+  Future<void> deleteEquipment(String id) async => _equipment.remove(id);
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
+    var logs = _logs.values.where((item) => item.tankId == tankId).toList();
+    if (after != null) {
+      logs = logs.where((item) => item.timestamp.isAfter(after)).toList();
+    }
+    logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    return limit == null ? logs : logs.take(limit).toList();
+  }
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) async => null;
+
+  @override
+  Future<void> saveLog(LogEntry log) async => _logs[log.id] = log;
+
+  @override
+  Future<void> deleteLog(String id) async => _logs.remove(id);
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) async => tankId == null
+      ? _tasks.values.toList()
+      : _tasks.values.where((item) => item.tankId == tankId).toList();
+
+  @override
+  Future<void> saveTask(Task task) async => _tasks[task.id] = task;
+
+  @override
+  Future<void> deleteTask(String id) async => _tasks.remove(id);
+}
+
+class _TankCreateRollbackUncertainStorage extends _WidgetTestStorageService {
+  final savedTankIds = <String>[];
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    savedTankIds.add(tank.id);
+    await super.saveTank(tank);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    throw StateError('default task save failed');
+  }
+
+  @override
+  Future<void> deleteTank(String id) async {
+    throw StateError('tank delete rollback failed');
+  }
+}
+
+class _CleanThenUncertainTankCreateStorage extends _WidgetTestStorageService {
+  final savedTankIds = <String>[];
+  int deleteTankCalls = 0;
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    savedTankIds.add(tank.id);
+    await super.saveTank(tank);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    throw StateError('default task save failed');
+  }
+
+  @override
+  Future<void> deleteTank(String id) async {
+    deleteTankCalls += 1;
+    if (deleteTankCalls > 1) {
+      throw StateError('tank delete rollback failed');
+    }
+    await super.deleteTank(id);
+  }
+}
+
+class _FailFirstDefaultTaskSaveStorage extends _WidgetTestStorageService {
+  final savedTankIds = <String>[];
+  var _hasFailed = false;
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    savedTankIds.add(tank.id);
+    await super.saveTank(tank);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    if (!_hasFailed) {
+      _hasFailed = true;
+      throw StateError('default task save failed');
+    }
+    await super.saveTask(task);
+  }
+}
+
 Future<void> _openTankForm(WidgetTester tester) async {
   await tester.tap(find.text('Open tank form'));
   await tester.pumpAndSettle();
   expect(find.byType(CreateTankScreen), findsOneWidget);
+}
+
+Future<void> _submitGuidedTank(WidgetTester tester, String name) async {
+  await tester.enterText(find.byType(TextFormField).first, name);
+  await tester.pump();
+  await tester.tap(find.text('Next'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('60L'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Next'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Create Tank'));
+  await tester.pumpAndSettle();
 }
 
 // ---------------------------------------------------------------------------
@@ -512,6 +687,92 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.byType(CreateTankScreen), findsNothing);
       expect(find.text('Open tank form'), findsOneWidget);
+    });
+
+    testWidgets(
+      'failed tank-create rollback reports uncertainty and blocks duplicate retry',
+      (tester) async {
+        final storage = _TankCreateRollbackUncertainStorage();
+        await tester.pumpWidget(_wrapWithLauncher(storage: storage));
+        await _openTankForm(tester);
+
+        await _submitGuidedTank(tester, 'Uncertain Tank');
+
+        final unsafeRetry = find.text('Retry');
+        if (unsafeRetry.evaluate().isNotEmpty) {
+          await tester.tap(unsafeRetry);
+          await tester.pumpAndSettle();
+        }
+
+        expect(
+          storage.savedTankIds.toSet(),
+          hasLength(1),
+          reason: 'Uncertain cleanup must not create a second tank UUID.',
+        );
+        expect(await storage.getAllTanks(), hasLength(1));
+        expect(find.byType(CreateTankScreen), findsOneWidget);
+        expect(find.textContaining('tank may already exist'), findsOneWidget);
+        expect(
+          find.textContaining('default tasks may be incomplete'),
+          findsOneWidget,
+        );
+        expect(find.text('Retry'), findsNothing);
+
+        final createButton = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'Create Tank'),
+        );
+        expect(createButton.onPressed, isNull);
+        expect(storage.savedTankIds.toSet(), hasLength(1));
+      },
+    );
+
+    testWidgets(
+      'stale tank-create retry cannot bypass uncertain persistence lock',
+      (tester) async {
+        final storage = _CleanThenUncertainTankCreateStorage();
+        await tester.pumpWidget(_wrapWithLauncher(storage: storage));
+        await _openTankForm(tester);
+
+        await _submitGuidedTank(tester, 'Stale Retry Tank');
+
+        final retryAction = tester.widget<SnackBarAction>(
+          find.widgetWithText(SnackBarAction, 'Retry'),
+        );
+        final staleRetry = retryAction.onPressed;
+        staleRetry();
+        await tester.pumpAndSettle();
+
+        staleRetry();
+        await tester.pumpAndSettle();
+
+        expect(storage.savedTankIds, hasLength(2));
+        expect(await storage.getAllTanks(), hasLength(1));
+        expect(find.textContaining('tank may already exist'), findsOneWidget);
+        expect(find.text('Retry'), findsNothing);
+      },
+    );
+
+    testWidgets('clean tank-create compensation retains safe Retry', (
+      tester,
+    ) async {
+      final storage = _FailFirstDefaultTaskSaveStorage();
+      await tester.pumpWidget(_wrapWithLauncher(storage: storage));
+      await _openTankForm(tester);
+
+      await _submitGuidedTank(tester, 'Retry Tank');
+
+      expect(await storage.getAllTanks(), isEmpty);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.textContaining('tank may already exist'), findsNothing);
+
+      await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
+
+      final storedTanks = await storage.getAllTanks();
+      expect(storedTanks, hasLength(1));
+      expect(storage.savedTankIds, hasLength(2));
+      expect(await storage.getTasksForTank(storedTanks.single.id), isNotEmpty);
+      expect(find.byType(CreateTankScreen), findsNothing);
     });
 
     testWidgets(

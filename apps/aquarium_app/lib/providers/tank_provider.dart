@@ -69,6 +69,24 @@ class TankDeleteFailureFeedback {
   TankDeleteFailureFeedback(this.message);
 }
 
+class TankCreateCompensationException implements Exception {
+  final Object initiatingError;
+  final Object rollbackError;
+  final String possiblyDurableTankId;
+
+  TankCreateCompensationException({
+    required this.initiatingError,
+    required this.rollbackError,
+    required this.possiblyDurableTankId,
+  });
+
+  @override
+  String toString() {
+    return 'Tank creation failed ($initiatingError) and tank rollback failed '
+        '($rollbackError); tank $possiblyDurableTankId may still be durable.';
+  }
+}
+
 final tankDeleteFailureFeedbackProvider =
     StateProvider<TankDeleteFailureFeedback?>((ref) => null);
 
@@ -357,10 +375,12 @@ class TankActions {
 
       return tank;
     } catch (e, st) {
+      Object? tankRollbackError;
       if (tankSaved && createdTank != null) {
         try {
           await _storage.deleteTank(createdTank.id);
         } catch (rollbackError, rollbackStack) {
+          tankRollbackError = rollbackError;
           logError(
             'TankProvider.createTank rollback tank delete failed: $rollbackError',
             stackTrace: rollbackStack,
@@ -381,6 +401,20 @@ class TankActions {
         _ref.invalidate(tanksProvider);
         _ref.invalidate(tankProvider(createdTank.id));
         _ref.invalidate(tasksProvider(createdTank.id));
+      }
+      if (tankRollbackError != null && createdTank != null) {
+        final uncertainError = TankCreateCompensationException(
+          initiatingError: e,
+          rollbackError: tankRollbackError,
+          possiblyDurableTankId: createdTank.id,
+        );
+        logError(
+          'TankProvider.createTank failed with uncertain cleanup: '
+          '$uncertainError',
+          stackTrace: st,
+          tag: 'TankProvider',
+        );
+        Error.throwWithStackTrace(uncertainError, st);
       }
       logError(
         'TankProvider.createTank failed: $e',

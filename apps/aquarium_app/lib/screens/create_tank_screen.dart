@@ -51,6 +51,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   int _currentPage = 0;
   bool _isCreating = false;
+  bool _persistenceUncertain = false;
   bool _discardConfirmed = false;
 
   // Form values
@@ -219,7 +220,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 else
                   AppButton(
                     label: 'Create Tank',
-                    onPressed: _canProceed() && !_isCreating
+                    onPressed:
+                        _canProceed() && !_isCreating && !_persistenceUncertain
                         ? _createTank
                         : null,
                     variant: AppButtonVariant.primary,
@@ -397,7 +399,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppButton(
               label: 'Create Tank',
-              onPressed: _canCreateExpert() && !_isCreating
+              onPressed:
+                  _canCreateExpert() && !_isCreating && !_persistenceUncertain
                   ? _createTank
                   : null,
               variant: AppButtonVariant.primary,
@@ -463,6 +466,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   }
 
   Future<void> _createTank() async {
+    if (_isCreating || _persistenceUncertain) return;
     if (!_canProceed()) return;
     if (!_formKey.currentState!.validate()) return;
 
@@ -589,20 +593,34 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         }
       }
     } catch (e, st) {
+      final persistenceUncertain = e is TankCreateCompensationException;
       logError(
         'CreateTankScreen: tank creation failed: $e',
         stackTrace: st,
         tag: 'CreateTankScreen',
       );
       if (mounted) {
-        AppHaptics.error(
-          enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-        );
-        AppFeedback.showError(
-          context,
-          'Couldn\'t create your tank right now. Give it another go!',
-          onRetry: _createTank,
-        );
+        if (persistenceUncertain) {
+          _persistenceUncertain = true;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          AppFeedback.showWarning(
+            context,
+            'Tank creation didn\'t finish. This tank may already exist, and '
+            'its default tasks may be incomplete. Close this wizard and check '
+            'your tanks and tasks before trying again.',
+          );
+        } else {
+          AppHaptics.error(
+            enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+          );
+          AppFeedback.showError(
+            context,
+            'Couldn\'t create your tank right now. Give it another go!',
+            onRetry: _createTank,
+          );
+        }
       }
     } finally {
       if (mounted) {

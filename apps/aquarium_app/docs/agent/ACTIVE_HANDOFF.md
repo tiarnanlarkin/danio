@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-18
-Product epoch: `DR-2026-07-18-045`
-Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-18/3`
+Product epoch: `DR-2026-07-18-046`
+Marker: `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -66,7 +66,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F26` fixed in `DR-2026-07-18-040` under marker `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`; failed profile writes remain retryable, ordinary gem persistence failure compensates the profile before provider-reload retry, and a durable gem-reward idempotency marker separates settled rewards from profile-only partial commits. Failed profile or gem-state compensation surfaces both causes as explicit uncertainty, leaves progress nonterminal, and a later healthy reload settles the missing side exactly once before celebration or notification.
 - `DCL-DR-003-F27` was ranked in `DR-2026-07-18-041` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/1` and is locally fixed in `DR-2026-07-18-042` under marker `danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`: `TasksScreen` catches and logs post-commit profile/XP failure, refreshes profile and primary providers, preserves one durable task completion and completion log with XP unchanged, and warns without Retry.
 - `DCL-DR-003-F28` was ranked in `DR-2026-07-18-043` under `danio-dcl-dr-003-next-finding-triage-2026-07-18/2` and is locally fixed in `DR-2026-07-18-044` under marker `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`: dual log-save/rollback failure preserves both causes, clears stale Retry feedback, warns about uncertain persistence without Retry, and locks every save entry in the open sheet. `failed bulk-add rollback reports uncertainty and blocks duplicate retry` plus `stale bulk-add retry cannot bypass uncertain persistence lock` prove the boundary.
-- `DCL-DR-003-F29` is ranked for implementation in `DR-2026-07-18-045` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/3`: `TankActions.createTank` can durably save a fresh-ID tank, fail while saving its default tasks, then fail to delete the partial tank; the rollback failure is only logged and `CreateTankScreen` presents an immediate Retry that creates another UUID. Existing evidence proves successful compensation only. Implementation marker: `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`; required widget boundary: `failed tank-create rollback reports uncertainty and blocks duplicate retry`. No product fix was made here.
+- `DCL-DR-003-F29` was ranked in `DR-2026-07-18-045` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/3` and is locally fixed in `DR-2026-07-18-046` under marker `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`: `TankCreateCompensationException` preserves the initiating default-task save error, failed tank-delete compensation, and possibly durable tank ID while invalidating tank/task authority. `CreateTankScreen` clears Retry feedback, warns that the tank may already exist with incomplete default tasks, and locks both visible Create buttons plus stale callbacks after uncertainty. `createTank preserves task-save and rollback failures when cleanup is uncertain`, `failed tank-create rollback reports uncertainty and blocks duplicate retry`, `stale tank-create retry cannot bypass uncertain persistence lock`, and `clean tank-create compensation retains safe Retry` prove the uncertain and definitively compensated paths.
 
 ## Frozen autonomy
 
@@ -97,7 +97,7 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9-F28 fixes, F8 proof, and ranked F29 are recorded. F27 is locally fixed, F28 is locally fixed, F29 remains unimplemented, additional findings remain, and no row closure is inferred.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F29 fixes and F8 proof are recorded. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, additional findings remain, and no row closure is inferred.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -140,11 +140,9 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Handoff only. Do not create a successor task automatically. Paste this into a separate manual implementation session:
-
-```text
-# Danio DCL-DR-003-F29 Tank-Create Rollback Uncertainty | Marker: danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1 | Saved project: C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project | Actual repository: C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo
-Use the installed danio-autonomous-slice-runner skill; rebuild live Git authority and read the exact five-file startup set. Reconcile moved truth first. Keep one writer and read-only auditors. Implement only F29 test-first: a default-task save plus failed tank-delete compensation can leave the first UUID durable while the wizard offers a duplicating Retry. Keep equipment, bulk move, other findings, missing catalog, backup relationships, and DCL-DR-004 out.
-RED: in test/providers/tank_provider_test.dart add `createTank preserves task-save and rollback failures when cleanup is uncertain`, requiring a typed result with both causes and the possibly durable tank ID. In test/widget_tests/create_tank_screen_test.dart add `failed tank-create rollback reports uncertainty and blocks duplicate retry`, proving the current Retry can generate a second UUID.
-GREEN: preserve ordinary Retry after definitive compensation; after failed compensation preserve both errors, refresh tank/task authority, warn the tank may exist, expose no Retry, and block second submission. Run Focused with both paths, independent read-only review, then one Full. Update ACTIVE_HANDOFF.md, SLICE_LOG.md, and the matrix without closure. Use short branch, clean commit, fast-forward main, one non-force push, cleanup, aligned-main proof, handoff-only, no successor.
-```
+Handoff only. Do not create a successor task automatically. The originating
+coordinator should inspect the clean `DR-2026-07-18-046` closeout under marker
+`danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`, then
+route a separate manual next-finding triage epoch. Keep `DCL-DR-003` open and
+do not pull equipment add, livestock bulk move, missing-catalog handling,
+backup relationships, or any `DCL-DR-004` change into this completed slice.
