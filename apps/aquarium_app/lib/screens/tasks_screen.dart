@@ -314,12 +314,23 @@ class TasksScreen extends ConsumerWidget {
 
     // Award XP for completing a maintenance task (with boost if active)
     final isBoostActive = ref.read(xpBoostActiveProvider);
-    await ref
-        .read(userProfileProvider.notifier)
-        .recordActivity(
-          xp: XpRewards.taskComplete,
-          xpBoostActive: isBoostActive,
-        );
+    var progressUpdated = true;
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(
+            xp: XpRewards.taskComplete,
+            xpBoostActive: isBoostActive,
+          );
+    } catch (e, st) {
+      progressUpdated = false;
+      logError(
+        'TasksScreen: profile activity update failed after task completion: $e',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
+      ref.invalidate(userProfileProvider);
+    }
 
     ref.invalidate(tasksProvider(tankId));
     ref.invalidate(equipmentProvider(tankId));
@@ -327,7 +338,14 @@ class TasksScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
-      AppFeedback.showSuccess(context, '${task.title} completed!');
+      if (progressUpdated) {
+        AppFeedback.showSuccess(context, '${task.title} completed!');
+      } else {
+        AppFeedback.showWarning(
+          context,
+          '${task.title} completed, but progress couldn\'t update.',
+        );
+      }
     }
   }
 

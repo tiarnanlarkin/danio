@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/tasks_screen_test.dart
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/tasks_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 
@@ -31,6 +34,81 @@ Tank _makeTank({String id = 'tank-1'}) => Tank(
   updatedAt: _now,
 );
 
+UserProfile _makeProfile() => UserProfile(
+  id: 'tasks-profile',
+  experienceLevel: ExperienceLevel.beginner,
+  primaryTankType: TankType.freshwater,
+  goals: const [UserGoal.keepFishAlive],
+  hasStreakFreeze: false,
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setDouble(String key, double value) =>
+      _delegate.setDouble(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) =>
+      _delegate.setStringList(key, value);
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
+  Future<bool> clear() => _delegate.clear();
+
+  @override
+  Future<void> reload() => _delegate.reload();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap({InMemoryStorageService? storage, String tankId = 'tank-1'}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
@@ -46,6 +124,46 @@ Widget _wrapWithStorage({
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: TasksScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapWithProfile({
+  required InMemoryStorageService storage,
+  required SharedPreferences prefs,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
+    child: MaterialApp(
+      home: Scaffold(
+        body: Column(
+          children: [
+            Consumer(
+              builder: (context, ref, _) {
+                final profile = ref.watch(userProfileProvider).valueOrNull;
+                return Text(
+                  profile == null ? 'profile loading' : 'profile ready',
+                );
+              },
+            ),
+            Consumer(
+              builder: (context, ref, _) {
+                final tasks = ref.watch(tasksProvider(tankId)).valueOrNull;
+                return Text(
+                  tasks == null
+                      ? 'tasks loading'
+                      : 'task completions: ${tasks.isEmpty ? 0 : tasks.first.completionCount}',
+                );
+              },
+            ),
+            Expanded(child: TasksScreen(tankId: tankId)),
+          ],
+        ),
+      ),
+    ),
   );
 }
 
@@ -640,6 +758,74 @@ void main() {
       expect(completedTasks.single.completionCount, 1);
       expect(find.text('Rinse prefilter completed!'), findsOneWidget);
     });
+
+    testWidgets(
+      'profile activity failure does not report durable task completion as failed',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_makeProfile().toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        const tankId = 'tank-task-complete-profile-failure';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: 'task-complete-profile-failure',
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await storage.saveTask(task);
+
+        await tester.pumpWidget(
+          _wrapWithProfile(
+            storage: storage,
+            prefs: throwingPrefs,
+            tankId: tankId,
+          ),
+        );
+        await _advance(tester);
+        expect(find.text('profile ready'), findsOneWidget);
+        expect(find.text('task completions: 0'), findsOneWidget);
+
+        await tester.tap(find.byTooltip('Toggle task'));
+        await _advance(tester);
+
+        expect(tester.takeException(), isNull);
+        final storedTask = (await storage.getTasksForTank(tankId)).single;
+        expect(storedTask.completionCount, 1);
+        final completionLogs = (await storage.getLogsForTank(
+          tankId,
+        )).where((log) => log.type == LogType.taskCompleted).toList();
+        expect(completionLogs, hasLength(1));
+        final persistedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(persistedProfile.totalXp, 0);
+        expect(
+          find.text(
+            'Rinse prefilter completed, but progress couldn\'t update.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Couldn\'t complete that task. Try again.'),
+          findsNothing,
+        );
+        expect(find.text('Rinse prefilter completed!'), findsNothing);
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('task completions: 1'), findsOneWidget);
+      },
+    );
 
     testWidgets('stale task completion does not recreate a deleted task', (
       tester,
