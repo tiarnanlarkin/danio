@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-18-044`
+Current epoch: `DR-2026-07-18-045`
 
 ## Decision
 
@@ -37,6 +37,13 @@ needed for that boundary.
 Source and test inspection in `DR-2026-07-18-043` ranked
 `DCL-DR-003-F28`; it is locally fixed in `DR-2026-07-18-044` under marker
 `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`.
+Fresh current matrix, source, and executable-test inspection in
+`DR-2026-07-18-045` ranked `DCL-DR-003-F29` under marker
+`danio-dcl-dr-003-next-finding-triage-2026-07-18/3`. A default-task save can
+fail after a fresh-ID tank is durable; if the subsequent tank-delete
+compensation also fails, the rollback cause is only logged and the wizard
+offers a Retry that creates another UUID. The implementation marker is
+`danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`.
 `DCL-DR-003` remains open because the same inventory proved additional
 independent rollback, orphan, and false-success gaps. They must be handled as
 later single data-safety slices.
@@ -56,7 +63,7 @@ belongs to `DCL-DR-004` and is not selected here.
 
 | Path | Named current evidence | Result |
 | --- | --- | --- |
-| Tank create plus default tasks | `creates a new tank and persists it to storage`; `creates default tasks along with the tank`; `rolls back tank and partial default tasks if default task save fails`; `successful guided creation closes the wizard` | Covered. |
+| Tank create plus default tasks | `creates a new tank and persists it to storage`; `creates default tasks along with the tank`; `rolls back tank and partial default tasks if default task save fails`; `successful guided creation closes the wizard` | `DCL-DR-003-F29` ranked: current evidence proves clean compensation only. If default-task persistence fails and `deleteTank` compensation also fails, `TankActions.createTank` loses the rollback cause and `CreateTankScreen` offers a duplicate-producing Retry even though the first UUID may remain durable. |
 | Demo tank replacement/seed | `cleans up partial first-run demo data if seeding fails`; `replaces existing demo tanks without removing real tanks`; `restores previous demo data if replacement creation fails` | Covered. |
 | Tank edit | `updates tank and persists changes`; `rejects missing tank ids before saving an edit`; `successful save closes without dirty-change prompt` | Covered. |
 | Tank single delete/undo/expiry failure | `soft-deleted tank is excluded from tanksProvider`; `undoing soft-delete restores tank in tanksProvider`; `soft-delete does not remove tank from storage immediately`; `failed permanent soft delete restores tank visibility`; `failed delete expiry restores tank with retry feedback` | Covered. |
@@ -236,7 +243,42 @@ belongs to `DCL-DR-004` and is not selected here.
     `failed bulk-add rollback reports uncertainty and blocks duplicate retry`
     and `stale bulk-add retry cannot bypass uncertain persistence lock` prove
     the possibly durable row cannot be duplicated in that sheet.
-29. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+29. `DCL-DR-003-F29` - new-tank creation can report clean failure and expose an
+    unsafe Retry after default-task persistence fails and tank-delete
+    compensation also fails. `TankActions.createTank` currently logs the
+    rollback failure and rethrows only the initiating task-save error;
+    `CreateTankScreen` then offers `onRetry: _createTank`, whose fresh UUID can
+    duplicate the possibly durable top-level tank and leave incomplete default
+    tasks. Existing `rolls back tank and partial default tasks if default task
+    save fails` covers successful compensation only. Ranked in
+    `DR-2026-07-18-045` under marker
+    `danio-dcl-dr-003-next-finding-triage-2026-07-18/3`; implementation remains
+    pending under
+    `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`.
+
+    Rank rationale: this boundary outranks equipment add because every tank
+    creation writes default tasks and the uncertain object is the top-level
+    parent; it outranks livestock bulk move because that path retains stable
+    IDs and has no immediate Retry action. Wishlist add, compensated purchase,
+    Cost Tracker currency, and mixed-expiry omissions currently lack exact
+    evidence but fresh source did not prove a higher current product defect.
+
+    Focused RED/GREEN contract:
+
+    - In `test/providers/tank_provider_test.dart`, add
+      `createTank preserves task-save and rollback failures when cleanup is uncertain`.
+      Inject a later default-task save failure plus failed tank deletion and
+      prove a typed uncertainty result retains the initiating error, rollback
+      error, and possibly durable tank ID.
+    - In `test/widget_tests/create_tank_screen_test.dart`, add
+      `failed tank-create rollback reports uncertainty and blocks duplicate retry`.
+      Prove uncertain persistence warns that the tank may already exist, offers
+      no immediate Retry, refreshes tank/task authority, and cannot submit a
+      second UUID from the open wizard.
+    - Preserve the current ordinary error plus Retry when compensation is known
+      to have succeeded. Run Focused with both affected paths, then one final
+      Full gate because the implementation is a data-safety product epoch.
+30. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 
