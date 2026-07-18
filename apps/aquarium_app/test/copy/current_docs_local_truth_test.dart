@@ -1300,4 +1300,27 @@ void main() {
       ],
     );
   });
+
+  test('DCL-DR-003 records the current F30 triage epoch', () {
+    const currentFindingTruth = [
+      'DR-2026-07-19-047',
+      'danio-dcl-dr-003-next-finding-triage-2026-07-18/4',
+      'DCL-DR-003-F30',
+      'danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1',
+      'failed maintenance-task sync rolls back new equipment',
+      'failed equipment-add rollback reports uncertainty and blocks duplicate retry',
+      'stale equipment-add retry cannot bypass uncertain persistence lock',
+      'clean equipment-add compensation retains safe Retry',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      currentFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      currentFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', currentFindingTruth);
+  });
 }

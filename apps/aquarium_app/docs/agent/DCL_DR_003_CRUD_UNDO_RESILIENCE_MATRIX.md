@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-18-046`
+Current epoch: `DR-2026-07-19-047`
 
 ## Decision
 
@@ -46,6 +46,16 @@ fail after a fresh-ID tank is durable. It is locally fixed in
 dual task-save/tank-delete failure now preserves both causes and the possibly
 durable tank ID, refreshes provider authority, warns without Retry, and locks
 the open wizard against another UUID.
+Fresh current matrix, source, and executable-test inspection in
+`DR-2026-07-19-047` ranked `DCL-DR-003-F30` under marker
+`danio-dcl-dr-003-next-finding-triage-2026-07-18/4`. Equipment Add durably
+saves a new UUID before maintenance-task sync. The executable test
+`failed maintenance-task sync rolls back new equipment` proves only successful
+equipment-delete compensation. If task sync and that deletion both fail, the
+rollback cause is only logged and the still-open sheet permits another Add with
+a fresh UUID while the first row may remain durable. F30 remains unimplemented
+under marker
+`danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`.
 `DCL-DR-003` remains open because the same inventory proved additional
 independent rollback, orphan, and false-success gaps. They must be handled as
 later single data-safety slices.
@@ -91,7 +101,7 @@ belongs to `DCL-DR-004` and is not selected here.
 
 | Path | Named current evidence | Result |
 | --- | --- | --- |
-| Equipment create | `adding equipment shows success feedback`; `failed maintenance-task sync rolls back new equipment`; `profile activity failure after equipment add does not report add failure`; `missing tank ids do not create orphan equipment` | Covered. |
+| Equipment create | `adding equipment shows success feedback`; `failed maintenance-task sync rolls back new equipment`; `profile activity failure after equipment add does not report add failure`; `missing tank ids do not create orphan equipment` | `DCL-DR-003-F30` ranked and unimplemented: clean maintenance-task failure compensation is covered, but dual task-sync/equipment-delete failure hides the rollback cause and leaves ordinary Add retry able to generate a second UUID while the first equipment row may remain durable. |
 | Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
 | Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved` | Covered. |
 | Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted`; RED/GREEN `failed maintenance-task undo rolls back restored equipment`; RED/GREEN `undo after leaving screen refreshes equipment watchers` | `DCL-DR-003-F2` locally fixed: a failed maintenance-task restore removes equipment already restored by the same Undo, retains honest failure feedback, and route-independent invalidation refreshes active watchers after the Equipment route closes. |
@@ -264,7 +274,31 @@ belongs to `DCL-DR-004` and is not selected here.
     duplicate retry`, `stale tank-create retry cannot bypass uncertain
     persistence lock`, and `clean tank-create compensation retains safe Retry`
     are GREEN. `DCL-DR-003` remains open.
-30. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+30. `DCL-DR-003-F30` - Equipment Add can leave a fresh-ID equipment row
+    durable when maintenance-task sync fails and equipment-delete compensation
+    also fails, while the open sheet reports ordinary retryable failure and a
+    later Add creates another UUID. Ranked in `DR-2026-07-19-047` under marker
+    `danio-dcl-dr-003-next-finding-triage-2026-07-18/4`; remains unimplemented
+    under marker
+    `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`.
+
+    Current source in `equipment_screen.dart` sets `equipmentSaved` after
+    `saveEquipment`, then calls `_syncEquipmentMaintenanceTask`; its catch logs
+    but discards a failed `deleteEquipment` rollback and leaves the sheet open.
+    `_save` creates its UUID inside each submission. The executable baseline
+    `failed maintenance-task sync rolls back new equipment` covers only a
+    successful rollback and therefore does not exercise the uncertain path.
+
+    This ranks above remaining evidence-only boundaries because it is a direct
+    user-reachable duplicate-write risk. The focused implementation contract is
+    to preserve the initiating task-sync error, rollback error, and possibly
+    durable equipment ID; invalidate equipment and task authority; warn without
+    Retry; and lock visible and stale Add submissions after uncertainty. Prove
+    RED then GREEN with `failed equipment-add rollback reports uncertainty and blocks duplicate retry`,
+    `stale equipment-add retry cannot bypass uncertain persistence lock`, and
+    `clean equipment-add compensation retains safe Retry`. Do not broaden into
+    equipment edit/service, task completion, or another matrix finding.
+31. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 
