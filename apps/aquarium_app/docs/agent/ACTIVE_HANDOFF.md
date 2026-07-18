@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-18
-Product epoch: `DR-2026-07-18-043`
-Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-18/2`
+Product epoch: `DR-2026-07-18-044`
+Marker: `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -65,7 +65,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F25` fixed in `DR-2026-07-18-039` under marker `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`; `expired item cleanup failure shows feedback without changing inventory` proves that boundary.
 - `DCL-DR-003-F26` fixed in `DR-2026-07-18-040` under marker `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`; failed profile writes remain retryable, ordinary gem persistence failure compensates the profile before provider-reload retry, and a durable gem-reward idempotency marker separates settled rewards from profile-only partial commits. Failed profile or gem-state compensation surfaces both causes as explicit uncertainty, leaves progress nonterminal, and a later healthy reload settles the missing side exactly once before celebration or notification.
 - `DCL-DR-003-F27` was ranked in `DR-2026-07-18-041` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/1` and is locally fixed in `DR-2026-07-18-042` under marker `danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`: `TasksScreen` catches and logs post-commit profile/XP failure, refreshes profile and primary providers, preserves one durable task completion and completion log with XP unchanged, and warns without Retry.
-- `DCL-DR-003-F28` is ranked next in `DR-2026-07-18-043` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/2`: Livestock bulk-add hides failed compensation and offers a duplicating Retry. F28 is ranked next and remains unimplemented under `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`.
+- `DCL-DR-003-F28` was ranked in `DR-2026-07-18-043` under `danio-dcl-dr-003-next-finding-triage-2026-07-18/2` and is locally fixed in `DR-2026-07-18-044` under marker `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`: dual log-save/rollback failure preserves both causes, clears stale Retry feedback, warns about uncertain persistence without Retry, and locks every save entry in the open sheet. `failed bulk-add rollback reports uncertainty and blocks duplicate retry` plus `stale bulk-add retry cannot bypass uncertain persistence lock` prove the boundary.
 
 ## Frozen autonomy
 
@@ -97,8 +97,8 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F7/F9-F27 fixes and F8 proof are recorded.
-  F27 is locally fixed, F28 remains unimplemented, and no row closure is inferred.
+- `DCL-DR-003` remains `open`; F1-F7/F9-F28 fixes and F8 proof are recorded.
+  F27 is locally fixed, F28 is locally fixed, and additional matrix findings remain; no row closure is inferred.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -143,6 +143,6 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Implement only `DCL-DR-003-F28` test-first in a separate Tier 2 epoch under
-`danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`.
-Keep missing-catalog and `DCL-DR-004` out; infer no closure or successor task.
+Handoff only. In a separate manual `DCL-DR-003` triage epoch, rank exactly one
+remaining current finding. Keep missing-catalog and `DCL-DR-004` out, preserve
+the one-writer boundary, and infer no row closure.

@@ -405,6 +405,71 @@ class _SaveLogFailsStorage extends _FailingLivestockDeleteStorage {
   }
 }
 
+class _SaveLogAndRollbackFailOnceStorage
+    extends _FailingLivestockDeleteStorage {
+  _SaveLogAndRollbackFailOnceStorage() : super(failingLivestockId: '');
+
+  int saveLivestockCalls = 0;
+  int saveLogCalls = 0;
+  int deleteLivestockCalls = 0;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    saveLivestockCalls++;
+    await _delegate.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    saveLogCalls++;
+    if (saveLogCalls == 1) {
+      throw StateError('initial log save failed');
+    }
+    await _delegate.saveLog(log);
+  }
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    deleteLivestockCalls++;
+    if (deleteLivestockCalls == 1) {
+      throw StateError('livestock rollback failed');
+    }
+    await _delegate.deleteLivestock(id);
+  }
+}
+
+class _CleanThenUncertainBulkAddStorage extends _FailingLivestockDeleteStorage {
+  _CleanThenUncertainBulkAddStorage() : super(failingLivestockId: '');
+
+  int saveLivestockCalls = 0;
+  int saveLogCalls = 0;
+  int deleteLivestockCalls = 0;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    saveLivestockCalls++;
+    await _delegate.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    saveLogCalls++;
+    if (saveLogCalls <= 2) {
+      throw StateError('log save failed on attempt $saveLogCalls');
+    }
+    await _delegate.saveLog(log);
+  }
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    deleteLivestockCalls++;
+    if (deleteLivestockCalls == 2) {
+      throw StateError('second livestock rollback failed');
+    }
+    await _delegate.deleteLivestock(id);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -799,6 +864,117 @@ void main() {
       );
       expect(find.text('Added 2 livestock entries.'), findsNothing);
     });
+
+    testWidgets(
+      'failed bulk-add rollback reports uncertainty and blocks duplicate retry',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'livestock-bulk-rollback-failure-tank';
+        final storage = _SaveLogAndRollbackFailOnceStorage();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Uncertain Tank'));
+
+        await tester.pumpWidget(
+          _wrapBulkAddDialog(storage: storage, tankId: tankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.enterText(
+          find.byType(TextField).last,
+          'Neon Tetra, 10',
+        );
+        await tester.pump();
+        await tester.tap(find.text('Add (1) livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(await storage.getLivestockForTank(tankId), hasLength(1));
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(storage.saveLivestockCalls, 1);
+        expect(storage.saveLogCalls, 1);
+        expect(storage.deleteLivestockCalls, 1);
+        expect(
+          find.text(
+            'Bulk add didn\'t finish, and some livestock may already be saved. '
+            'Close this form and check your livestock before trying again.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Retry'), findsNothing);
+
+        await tester.tap(find.text('Add (1) livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(storage.saveLivestockCalls, 1);
+        expect(storage.saveLogCalls, 1);
+        expect(await storage.getLivestockForTank(tankId), hasLength(1));
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(find.text('Added 1 livestock entries.'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'stale bulk-add retry cannot bypass uncertain persistence lock',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'livestock-bulk-stale-retry-tank';
+        final storage = _CleanThenUncertainBulkAddStorage();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Retry Tank'));
+
+        await tester.pumpWidget(
+          _wrapBulkAddDialog(storage: storage, tankId: tankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.enterText(find.byType(TextField).last, 'Neon Tetra, 10');
+        await tester.pump();
+        await tester.tap(find.text('Add (1) livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(await storage.getLivestockForTank(tankId), isEmpty);
+        expect(storage.saveLivestockCalls, 1);
+        expect(storage.saveLogCalls, 1);
+        expect(storage.deleteLivestockCalls, 1);
+        expect(find.text('Retry'), findsOneWidget);
+        final staleRetry = tester.widget<SnackBarAction>(
+          find.byType(SnackBarAction),
+        );
+
+        await tester.tap(find.text('Add (1) livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(await storage.getLivestockForTank(tankId), hasLength(1));
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(storage.saveLivestockCalls, 2);
+        expect(storage.saveLogCalls, 2);
+        expect(storage.deleteLivestockCalls, 2);
+
+        staleRetry.onPressed();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(storage.saveLivestockCalls, 2);
+        expect(storage.saveLogCalls, 2);
+        expect(storage.deleteLivestockCalls, 2);
+        expect(await storage.getLivestockForTank(tankId), hasLength(1));
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(find.text('Retry'), findsNothing);
+        expect(
+          find.text(
+            'Bulk add didn\'t finish, and some livestock may already be saved. '
+            'Close this form and check your livestock before trying again.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Added 1 livestock entries.'), findsNothing);
+      },
+    );
 
     testWidgets('bulk add rejects missing parent tanks before saving', (
       tester,

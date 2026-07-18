@@ -32,6 +32,7 @@ class _LivestockBulkAddDialogState
     extends ConsumerState<LivestockBulkAddDialog> {
   final _controller = TextEditingController();
   bool _isSaving = false;
+  bool _persistenceUncertain = false;
   List<_BulkItem> _items = const [];
   String? _parseError;
 
@@ -118,7 +119,7 @@ class _LivestockBulkAddDialogState
             ],
             const SizedBox(height: AppSpacing.md),
             AppButton(
-              onPressed: _isSaving ? null : _save,
+              onPressed: _isSaving || _persistenceUncertain ? null : _save,
               label:
                   'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock',
               leadingIcon: Icons.playlist_add,
@@ -132,6 +133,8 @@ class _LivestockBulkAddDialogState
   }
 
   Future<void> _save() async {
+    if (_isSaving || _persistenceUncertain) return;
+
     if (_items.isEmpty) {
       AppFeedback.showWarning(context, 'Add at least one line to continue');
       return;
@@ -180,9 +183,22 @@ class _LivestockBulkAddDialogState
           await storage.saveLog(log);
           savedLogIds.add(log.id);
         }
-      } catch (_) {
-        await _rollbackBulkAdd(storage, savedLivestockIds, savedLogIds);
-        rethrow;
+      } catch (error, stackTrace) {
+        final rollbackErrors = await _rollbackBulkAdd(
+          storage,
+          savedLivestockIds,
+          savedLogIds,
+        );
+        if (rollbackErrors.isNotEmpty) {
+          Error.throwWithStackTrace(
+            _BulkAddCompensationException(
+              initiatingError: error,
+              rollbackErrors: rollbackErrors,
+            ),
+            stackTrace,
+          );
+        }
+        Error.throwWithStackTrace(error, stackTrace);
       }
 
       ref.invalidate(livestockProvider(widget.tankId));
@@ -224,17 +240,30 @@ class _LivestockBulkAddDialogState
         }
       }
     } catch (e, st) {
+      final persistenceUncertain = e is _BulkAddCompensationException;
       logError(
         'LivestockBulkAddDialog: bulk save failed: $e',
         stackTrace: st,
         tag: 'LivestockBulkAddDialog',
       );
       if (mounted) {
-        AppFeedback.showError(
-          context,
-          'Couldn\'t add that right now. Try again!',
-          onRetry: _save,
-        );
+        if (persistenceUncertain) {
+          _persistenceUncertain = true;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          AppFeedback.showWarning(
+            context,
+            'Bulk add didn\'t finish, and some livestock may already be saved. '
+            'Close this form and check your livestock before trying again.',
+          );
+        } else {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t add that right now. Try again!',
+            onRetry: _save,
+          );
+        }
       }
       ref.invalidate(livestockProvider(widget.tankId));
       ref.invalidate(logsProvider(widget.tankId));
@@ -244,15 +273,18 @@ class _LivestockBulkAddDialogState
     }
   }
 
-  Future<void> _rollbackBulkAdd(
+  Future<List<Object>> _rollbackBulkAdd(
     StorageService storage,
     List<String> livestockIds,
     List<String> logIds,
   ) async {
+    final rollbackErrors = <Object>[];
+
     for (final logId in logIds.reversed) {
       try {
         await storage.deleteLog(logId);
       } catch (e, st) {
+        rollbackErrors.add(e);
         logError(
           'LivestockBulkAddDialog: rollback log delete failed: $e',
           stackTrace: st,
@@ -265,6 +297,7 @@ class _LivestockBulkAddDialogState
       try {
         await storage.deleteLivestock(livestockId);
       } catch (e, st) {
+        rollbackErrors.add(e);
         logError(
           'LivestockBulkAddDialog: rollback livestock delete failed: $e',
           stackTrace: st,
@@ -272,6 +305,8 @@ class _LivestockBulkAddDialogState
         );
       }
     }
+
+    return rollbackErrors;
   }
 
   _ParseResult _parseItems(String raw) {
@@ -350,4 +385,20 @@ class _ParseResult {
   final String? error;
 
   const _ParseResult({required this.items, this.error});
+}
+
+class _BulkAddCompensationException implements Exception {
+  _BulkAddCompensationException({
+    required this.initiatingError,
+    required List<Object> rollbackErrors,
+  }) : rollbackErrors = List<Object>.unmodifiable(rollbackErrors);
+
+  final Object initiatingError;
+  final List<Object> rollbackErrors;
+
+  @override
+  String toString() {
+    return 'Bulk add failed ($initiatingError) and rollback failed '
+        '(${rollbackErrors.join('; ')}); livestock persistence is uncertain.';
+  }
 }
