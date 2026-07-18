@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-18
-Product epoch: `DR-2026-07-18-040`
-Marker: `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`
+Product epoch: `DR-2026-07-18-041`
+Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-18/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -63,7 +63,8 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`; `DCL-DR-003-F22` fixed: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`; `DCL-DR-003-F23` fixed in `DR-2026-07-16-037`: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
 - `DCL-DR-003-F24` fixed: `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`; Gem Shop preserves inventory-save and refund failures for diagnosis, warns when the persisted gem refund is uncertain, and omits unsafe immediate Retry only for that uncertain path.
 - `DCL-DR-003-F25` fixed in `DR-2026-07-18-039` under marker `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`; `expired item cleanup failure shows feedback without changing inventory` proves that boundary.
-- `DCL-DR-003-F26` fixed in `DR-2026-07-18-040`; failed profile writes remain retryable, ordinary gem persistence failure compensates the profile before provider-reload retry, and a durable gem-reward idempotency marker separates settled rewards from profile-only partial commits. Failed profile or gem-state compensation surfaces both causes as explicit uncertainty, leaves progress nonterminal, and a later healthy reload settles the missing side exactly once before celebration or notification.
+- `DCL-DR-003-F26` fixed in `DR-2026-07-18-040` under marker `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`; failed profile writes remain retryable, ordinary gem persistence failure compensates the profile before provider-reload retry, and a durable gem-reward idempotency marker separates settled rewards from profile-only partial commits. Failed profile or gem-state compensation surfaces both causes as explicit uncertainty, leaves progress nonterminal, and a later healthy reload settles the missing side exactly once before celebration or notification.
+- `DCL-DR-003-F27` is ranked next and remains unimplemented under marker `danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`: `TasksScreen` completion has an unguarded profile/XP persistence failure after durable task and log writes.
 
 ## Frozen autonomy
 
@@ -96,7 +97,7 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
 - `DCL-DR-003` remains `open`; F1-F7/F9-F26 fixes and F8 proof are recorded.
-  F26 is complete; select any later finding only in a separate bounded epoch.
+  F27 is ranked next and remains unimplemented; no row closure is inferred.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -141,6 +142,7 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-After clean F26 alignment, stop. In a separate manual `DCL-DR-003` triage epoch,
-rank and name exactly one remaining matrix finding; do not infer row closure or
-pull in missing-catalog or deferred `DCL-DR-004` work.
+Implement exactly `DCL-DR-003-F27` in a separate Tier 2 epoch under marker
+`danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`; prove
+`TasksScreen` completion stays settled and honest on post-commit profile/XP
+failure; keep missing-catalog and deferred `DCL-DR-004` out; infer no closure.
