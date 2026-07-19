@@ -1273,8 +1273,11 @@ void main() {
         'DR-2026-07-16-020',
         'DR-2026-07-16-021',
         'DR-2026-07-16-029',
+        'DR-2026-07-16-030',
         'DCL-DR-003-F15',
+        'DCL-DR-003-F16',
         'danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1',
+        'danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1',
         'WF-2026-07-15-019',
         'DCL-DR-003-F2',
         'DCL-DR-003-F3',
@@ -1460,4 +1463,98 @@ void main() {
     );
     _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
+
+  test(
+    'DCL-DR-003 ranks only F34 Tank Detail completion rollback uncertainty',
+    () {
+      const sharedFindingTruth = [
+        'DR-2026-07-19-055',
+        'DCL-DR-003-F34',
+        'danio-dcl-dr-003-next-finding-triage-2026-07-19/8',
+        'failed tank-detail task rollback reports uncertain completion without unsafe retry',
+        'danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1',
+      ];
+      const settledBoundaryTruth = [
+        'failed completion log write rolls back task completion',
+        'DCL-DR-003 remains open',
+      ];
+
+      final handoffRecord =
+          _markdownSection(
+                _source('docs/agent/ACTIVE_HANDOFF.md'),
+                'Current state',
+              )
+              .split('\n')
+              .singleWhere(
+                (line) => line.contains('`DCL-DR-003-F34`'),
+              );
+      final matrixSource = _source(
+        'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      );
+      const matrixRecordStart =
+          'Fresh current matrix, source, and executable-test inspection in\n'
+          '`DR-2026-07-19-055`';
+      final matrixStart = matrixSource.indexOf(matrixRecordStart);
+      expect(matrixStart, greaterThanOrEqualTo(0));
+      final matrixEnd = matrixSource.indexOf(
+        '\nThis matrix covers `DCL-DR-003` only.',
+        matrixStart,
+      );
+      expect(matrixEnd, greaterThan(matrixStart));
+      final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
+      final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+          .split('\n')
+          .singleWhere((line) => line.startsWith('| DR-2026-07-19-055 |'));
+      String normalized(String value) => value.replaceAll(RegExp(r'\s+'), ' ');
+
+      for (final entry in <(String, String)>[
+        ('ACTIVE_HANDOFF F34 bullet', handoffRecord),
+        ('DCL-DR-003 epoch 055 narrative', matrixRecord),
+        ('SLICE_LOG epoch 055 row', sliceLogRecord),
+      ]) {
+        for (final value in sharedFindingTruth) {
+          expect(
+            normalized(entry.$2),
+            contains(value),
+            reason: '${entry.$1}: $value',
+          );
+        }
+        final findingIds = RegExp(
+          r'DCL-DR-003-F\d+',
+        ).allMatches(entry.$2).map((match) => match.group(0)).toSet();
+        expect(
+          findingIds,
+          equals({'DCL-DR-003-F34'}),
+          reason: '${entry.$1} must rank exactly one finding',
+        );
+      }
+
+      for (final value in settledBoundaryTruth) {
+        expect(
+          normalized(handoffRecord),
+          contains(value),
+          reason: 'handoff: $value',
+        );
+        expect(
+          normalized(matrixRecord),
+          contains(value),
+          reason: 'matrix: $value',
+        );
+        expect(
+          normalized(sliceLogRecord),
+          contains(value),
+          reason: 'slice log: $value',
+        );
+      }
+      expect(normalized(matrixRecord), contains('task completion log failed'));
+      expect(normalized(matrixRecord), contains('task rollback failed'));
+      expect(
+        normalized(matrixRecord),
+        contains('completion count reached two'),
+      );
+      expect(sliceLogRecord, contains('completion count reached two'));
+      expect(sliceLogRecord, contains('probe removed'));
+      expect(sliceLogRecord, contains('No closure/successor'));
+    },
+  );
 }

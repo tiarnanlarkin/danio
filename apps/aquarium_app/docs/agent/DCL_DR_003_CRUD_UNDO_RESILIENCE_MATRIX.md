@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-054`
+Current epoch: `DR-2026-07-19-055`
 
 ## Decision
 
@@ -110,6 +110,23 @@ DCL-DR-003 remains open. Equipment Mark Serviced compensation, task/equipment
 follow-ups, wishlist/cost, other bulk paths, and omission-only evidence gaps
 remain outside this epoch.
 
+Fresh current matrix, source, and executable-test inspection in
+`DR-2026-07-19-055` ranked only `DCL-DR-003-F34` under marker
+`danio-dcl-dr-003-next-finding-triage-2026-07-19/8`. Tank Detail persists a
+completed task before its completion log. If `task completion log failed` and
+restoring the original task then throws `task rollback failed`, the rollback
+cause is logged and discarded, the task remains completed, and the UI says
+`Try again`. Existing `failed completion log write rolls back task completion`
+proves only successful restoration. Temporary RED `failed tank-detail task
+rollback reports uncertain completion without unsafe retry` repeated the
+still-active action after that uncertain first attempt; the completion count
+reached two while both attempts omitted the rollback cause. The probe was
+removed. F34 remains unimplemented under
+`danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1`.
+DCL-DR-003 remains open. The parallel Tasks screen rollback boundary,
+Equipment Mark Serviced, Wishlist replay, single-livestock-add, and all other
+unexplained boundaries remain separate and unranked.
+
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
 
@@ -142,7 +159,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
-| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion`; `profile activity failure does not report durable task completion as failed` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail from stale task IDs and missing parents before task, log, equipment, XP, or success effects. `DCL-DR-003-F27` is locally fixed for `TasksScreen` only: post-commit profile/XP failure is caught and logged, profile and primary providers refresh, the durable task completion and log remain exactly once with XP unchanged, and partial-success feedback offers no Retry. |
+| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion`; `profile activity failure does not report durable task completion as failed` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail from stale task IDs and missing parents before task, log, equipment, XP, or success effects. `DCL-DR-003-F27` is locally fixed for `TasksScreen` only: post-commit profile/XP failure remains settled. `DCL-DR-003-F34` is ranked only in `DR-2026-07-19-055`: Tank Detail discards a failed task rollback after completion-log failure, leaves a durable completion, and permits another completion while saying `Try again`. Required RED/GREEN: `failed tank-detail task rollback reports uncertain completion without unsafe retry`; keep the clean-compensation test GREEN. The parallel Tasks screen rollback boundary remains separate. |
 | Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback`; RED/GREEN `stale task snooze does not recreate a deleted task` | `DCL-DR-003-F14` locally fixed: the durable task-ID check precedes `saveTask`, so a stale dialog cannot recreate a task or report success. Supported parent deletion cascades tasks, so the same missing-ID preflight covers that settled state. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
 | Bulk log/task deletion | No current user-facing operation. | Not applicable. |
@@ -390,7 +407,21 @@ belongs to `DCL-DR-004` and is not selected here.
     settled-diff review found no findings after the stale-callback proof was
     strengthened; the unchanged final Full gate passed after the two recorded
     recovery attempts. DCL-DR-003 remains open; no second finding is ranked here.
-34. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+34. `DCL-DR-003-F34` - ranked only in `DR-2026-07-19-055` under marker
+    `danio-dcl-dr-003-next-finding-triage-2026-07-19/8` and remains
+    unimplemented under
+    `danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1`.
+    Tank Detail can durably complete a task, fail its completion log, fail to
+    restore the original task, discard that rollback cause, and still say
+    `Try again`. Existing `failed completion log write rolls back task completion`
+    proves only definitive compensation. Temporary RED `failed tank-detail task
+    rollback reports uncertain completion without unsafe retry` repeated the
+    still-active action and the completion count reached two; the probe was
+    removed. Preserve both causes and task/tank context, refresh affected
+    authority, warn without success/Retry/`Try again`, and lock visible plus
+    stale completion callbacks only for the uncertain path. DCL-DR-003 remains
+    open; the parallel Tasks screen path and every other candidate stay separate.
+35. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 
