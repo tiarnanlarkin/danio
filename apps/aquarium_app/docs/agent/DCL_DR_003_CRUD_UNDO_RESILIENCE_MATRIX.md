@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-056`
+Current epoch: `DR-2026-07-19-058`
 
 ## Decision
 
@@ -110,6 +110,8 @@ DCL-DR-003 remains open. Equipment Mark Serviced compensation, task/equipment
 follow-ups, wishlist/cost, other bulk paths, and omission-only evidence gaps
 remain outside this epoch.
 
+The historical boundary remains explicit: `DCL-DR-003-F27` is locally fixed for `TasksScreen` only, while F34 remains the separate Tank Detail fix.
+
 Fresh current matrix, source, and executable-test inspection in
 `DR-2026-07-19-055` ranked only `DCL-DR-003-F34` under marker
 `danio-dcl-dr-003-next-finding-triage-2026-07-19/8`. Tank Detail persists a
@@ -137,6 +139,21 @@ and stale completion callbacks are locked. `failed tank-detail task rollback
 reports uncertain completion without unsafe retry` is GREEN, while `failed
 completion log write rolls back task completion` keeps clean compensation
 GREEN. DCL-DR-003 remains open; no second finding is ranked.
+
+Implementation epoch `DR-2026-07-19-058` locally fixed only
+`DCL-DR-003-F35` under
+`danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1`.
+`TasksScreenTaskCompletionCompensationException` preserves both errors and
+task/tank context when completion-log persistence and original-task restoration
+both fail. The path leaves one durable completion without a completion log; tank,
+task, equipment, recent-log, and full-log authority reloads even after leaving
+Tasks; feedback has no success, Retry, or `Try again`; and in-flight, visible,
+and stale completion callbacks cannot repeat the write. `failed Tasks task
+rollback reports uncertain completion without unsafe retry`, `in-flight task
+completion ignores a repeated stale callback`, `uncertain completion reloads
+authority after leaving Tasks`, and the clean `failed completion log write rolls
+back task completion` proof are GREEN. DCL-DR-003 remains open, with Equipment
+Mark Serviced compensation next; no second finding is ranked.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -170,7 +187,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Other water-test shortcuts | Today Board, Tank Detail, Cycling Assistant, intelligence, charts, and stage actions route to `AddLogScreen`; its save path checks `getTank` before writing. | Covered by `missing tank ids do not create orphan log entries`; no second direct quick-water writer remains. |
 | Task add/edit | `adding a task shows success feedback`; `stale task edit ids are not recreated by save`; `missing tank ids do not create orphan tasks` | Covered. |
 | Task delete/undo | `deleting a task shows undo and restores the task`; `failed primary delete keeps task visible with error feedback`; `undo does not restore a task after its parent tank was deleted`; `failed delete undo keeps task deleted with error feedback` | Covered: failed primary deletion preserves the task and cannot expose success/Undo; both Undo failure boundaries remain honest. |
-| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion`; `profile activity failure does not report durable task completion as failed`; `failed tank-detail task rollback reports uncertain completion without unsafe retry` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail preflight. `DCL-DR-003-F27` is locally fixed for `TasksScreen` only: post-commit profile/XP failure remains settled. `DCL-DR-003-F34` is locally fixed in `DR-2026-07-19-056`: dual Tank Detail log/rollback failure preserves both causes and task/tank context, refreshes task/equipment/log authority, warns without success or retry, and locks visible/stale callbacks after one durable completion. Clean compensation remains GREEN. The parallel Tasks rollback boundary remains separate. |
+| Task completion | `completing a task shows success feedback`; `stale task completion does not recreate a deleted task`; `task completion rejects a missing parent before writing`; `stale tank-detail equipment-task completion does not recreate task or service equipment`; `tank-detail task completion rejects a missing parent before writing`; both Tasks and Tank Detail versions of `failed completion log write rolls back task completion`; `profile activity failure does not report durable task completion as failed`; `failed tank-detail task rollback reports uncertain completion without unsafe retry`; `failed Tasks task rollback reports uncertain completion without unsafe retry`; `in-flight task completion ignores a repeated stale callback`; `uncertain completion reloads authority after leaving Tasks` | `DCL-DR-003-F9/F10` protect Tasks; `DCL-DR-003-F11/F12` protect Tank Detail preflight. `DCL-DR-003-F27` settles late Tasks profile/XP failure. `DCL-DR-003-F34` settles Tank Detail dual failure. `DCL-DR-003-F35` is locally fixed in `DR-2026-07-19-058`: Tasks dual failure preserves both errors and task/tank context, explicitly reloads tank/task/equipment/recent-log/full-log authority even after route exit, warns without success or unsafe retry, and locks in-flight, visible, and stale callbacks after one durable completion. Clean compensation remains GREEN. |
 | Task snooze | `snoozing a task shows success feedback`; `failed snooze keeps task unchanged with error feedback`; RED/GREEN `stale task snooze does not recreate a deleted task` | `DCL-DR-003-F14` locally fixed: the durable task-ID check precedes `saveTask`, so a stale dialog cannot recreate a task or report success. Supported parent deletion cascades tasks, so the same missing-ID preflight covers that settled state. |
 | Cycling/species task creation | `guided action creates a phase-aware cycling reminder`; `missing tank ids do not create orphan cycling reminders`; `species detail creates a tank care task`; `stale tank selections do not create orphan species care tasks` | Covered. |
 | Bulk log/task deletion | No current user-facing operation. | Not applicable. |
@@ -430,7 +447,20 @@ belongs to `DCL-DR-004` and is not selected here.
     and `failed completion log write rolls back task completion` are GREEN.
     DCL-DR-003 remains open; no second finding is ranked, and the parallel Tasks
     path and every other candidate stay separate.
-35. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+35. `DCL-DR-003-F35` - locally fixed only in `DR-2026-07-19-058` under
+    `danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1`.
+    `TasksScreenTaskCompletionCompensationException` preserves the initiating
+    completion-log error/stack, failed original-task restoration error/stack,
+    and task/tank IDs. The uncertain path leaves one durable completion without
+    a completion log, reloads tank/task/equipment/recent-log/full-log authority
+    even after the Tasks route is left, warns without success, Retry, or `Try
+    again`, and locks in-flight, visible, and stale completion callbacks.
+    `failed Tasks task rollback reports uncertain completion without unsafe
+    retry`, `in-flight task completion ignores a repeated stale callback`,
+    `uncertain completion reloads authority after leaving Tasks`, and clean
+    compensation are GREEN. DCL-DR-003 remains open; Equipment Mark Serviced
+    compensation is next, and no second finding is ranked.
+36. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 

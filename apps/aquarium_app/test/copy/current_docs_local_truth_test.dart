@@ -1599,7 +1599,7 @@ void main() {
       final matrixStart = matrixSource.indexOf(matrixRecordStart);
       expect(matrixStart, greaterThanOrEqualTo(0));
       final matrixEnd = matrixSource.indexOf(
-        '\nThis matrix covers `DCL-DR-003` only.',
+        '\nImplementation epoch `DR-2026-07-19-058`',
         matrixStart,
       );
       expect(matrixEnd, greaterThan(matrixStart));
@@ -1670,7 +1670,6 @@ void main() {
       'DCL-DR-003 remains open',
       'no second finding',
     ];
-
     _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       fixedFindingTruth,
@@ -1682,5 +1681,101 @@ void main() {
       'Tasks completion compensation',
       'Never create an automatic successor task.',
     ]);
+  });
+
+  test('DCL-DR-003 records only the fixed F35 Tasks uncertainty epoch', () {
+    const fixedFindingTruth = [
+      'DR-2026-07-19-058',
+      'DCL-DR-003-F35',
+      'danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1',
+      'TasksScreenTaskCompletionCompensationException',
+      'failed Tasks task rollback reports uncertain completion without unsafe retry',
+      'in-flight task completion ignores a repeated stale callback',
+      'uncertain completion reloads authority after leaving Tasks',
+      'one durable completion',
+      'both errors and task/tank context',
+      'tank, task, equipment, recent-log, and full-log authority',
+      'in-flight, visible, and stale completion callbacks',
+      'no success, Retry, or `Try again`',
+      'DCL-DR-003 remains open',
+      'Equipment Mark Serviced compensation next',
+      'no second finding',
+    ];
+    const sliceLogTruth = [
+      'DR-2026-07-19-058',
+      'DCL-DR-003-F35',
+      'danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1',
+      'TasksScreenTaskCompletionCompensationException',
+      'failed Tasks task rollback reports uncertain completion without unsafe retry',
+      'uncertain completion reloads authority after leaving Tasks',
+      'one durable completion',
+      'DCL-DR-003 remains open',
+      'Equipment Mark Serviced compensation next',
+      'no second finding',
+    ];
+
+    final matrixSource = _source(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+    );
+    const matrixRecordStart = 'Implementation epoch `DR-2026-07-19-058`';
+    final matrixStart = matrixSource.indexOf(matrixRecordStart);
+    expect(matrixStart, greaterThanOrEqualTo(0));
+    final matrixEnd = matrixSource.indexOf(
+      '\nThis matrix covers `DCL-DR-003` only.',
+      matrixStart,
+    );
+    expect(matrixEnd, greaterThan(matrixStart));
+    final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
+    final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+        .split('\n')
+        .singleWhere((line) => line.startsWith('| DR-2026-07-19-058 |'));
+
+    final normalizedMatrix = matrixRecord.replaceAll(RegExp(r'\s+'), ' ');
+    for (final value in fixedFindingTruth) {
+      expect(
+        normalizedMatrix,
+        contains(value),
+        reason: 'DCL-DR-003 epoch 058 narrative: $value',
+      );
+    }
+    final normalizedLog = sliceLogRecord.replaceAll(RegExp(r'\s+'), ' ');
+    for (final value in sliceLogTruth) {
+      expect(
+        normalizedLog,
+        contains(value),
+        reason: 'SLICE_LOG epoch 058 row: $value',
+      );
+    }
+    for (final entry in <(String, String)>[
+      ('DCL-DR-003 epoch 058 narrative', matrixRecord),
+      ('SLICE_LOG epoch 058 row', sliceLogRecord),
+    ]) {
+      final findingIds = RegExp(
+        r'DCL-DR-003-F\d+',
+      ).allMatches(entry.$2).map((match) => match.group(0)).toSet();
+      expect(
+        findingIds,
+        equals({'DCL-DR-003-F35'}),
+        reason: '${entry.$1} must record exactly one finding',
+      );
+    }
+
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
+      'Implementation epoch: `DR-2026-07-19-058`',
+      '`DCL-DR-003-F1`',
+      'through `DCL-DR-003-F35` are settled evidence',
+      'Equipment Mark Serviced compensation next',
+      'Never create an automatic successor task.',
+    ]);
+    for (final path in [
+      'docs/agent/FINISH_MAP.md',
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+    ]) {
+      _expectContainsAll(path, [
+        'F1 through F35',
+        'Equipment Mark Serviced compensation next',
+        'DCL-DR-003` remains open',
+      ]);
+    }
   });
 }

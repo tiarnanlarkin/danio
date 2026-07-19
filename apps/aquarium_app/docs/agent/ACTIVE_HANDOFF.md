@@ -1,9 +1,10 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; phone release-candidate authority reset
+Status: manual lean workflow; Tasks completion compensation implemented
 Updated: 2026-07-19
-Documentation epoch: `DR-2026-07-19-057`
-Marker: `danio-phone-rc-authority-reset-2026-07-19/1`
+Implementation epoch: `DR-2026-07-19-058`
+Marker: `danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1`
+Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current authority
@@ -27,13 +28,15 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Fresh post-F34 Full gate on the unchanged checkpoint passed on 2026-07-19:
   signing-secret guard, dependency validation, custom lint, 2,263 tests,
   analyze, and debug APK build; `GATE_TOTAL|PASS|183016|Full`.
+- Epoch 058 began from clean, aligned `main` at `62969de3` with one worktree
+  and no competing writer.
 - `DCL-DR-001` is `closed` in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - `DCL-DR-002` is `closed` in
   `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
 - `DCL-DR-003` remains `open` in
   `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`. Findings `DCL-DR-003-F1`
-  through `DCL-DR-003-F34` are settled evidence. F34 is complete and must not
-  reopen without contradictory live evidence.
+  through `DCL-DR-003-F35` are settled evidence. F34 is complete and F35 is
+  complete; neither may reopen without contradictory live evidence.
 - `DCL-DR-004` remains after DCL-DR-003 and owns the livestock-removal backup
   tombstone relationship.
 
@@ -41,8 +44,8 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 The ten planned product/test epochs are:
 
-1. Tasks completion compensation.
-2. Equipment Mark Serviced compensation.
+1. Tasks completion compensation - complete in `DR-2026-07-19-058`.
+2. Equipment Mark Serviced compensation next.
 3. Single livestock-add compensation.
 4. Backup tombstone relationship.
 5. Fish ID activity consent.
@@ -91,10 +94,13 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Close `DR-2026-07-19-057` as documentation-only authority work on clean pushed
-`main`. Then allocate the next live epoch and implement only Tasks completion
-compensation test-first: prove simultaneous completion-log and task-restore
-failure, preserve both causes, refresh task/tank/log authority, block stale
-callbacks, report uncertainty honestly, and omit unsafe Retry.
+Integrate `DR-2026-07-19-058` on clean pushed `main`. Focused, Docs, Full, and
+three independent read-only reviews pass. The RED/GREEN proves
+`DCL-DR-003-F35`: one durable completion, no completion log, both errors and
+task/tank context retained, authoritative tank/task/equipment/log reload even
+after leaving Tasks, and in-flight/visible/stale completion locks without unsafe
+Retry. Then allocate one new epoch for Equipment Mark Serviced
+compensation next. Keep single livestock-add and Wishlist replay separate; do
+not rank or implement either in epoch 058.
 
 Stop after `DCL-RC-001` closes with the final APK/evidence packet and no P0/P1.

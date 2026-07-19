@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/tasks_screen_test.dart
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -125,6 +126,41 @@ Widget _wrapWithStorage({
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: TasksScreen(tankId: tankId)),
   );
+}
+
+Widget _wrapWithRouteHost({
+  required StorageService storage,
+  required String tankId,
+  required GlobalKey<_TasksRouteHostState> hostKey,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: _TasksRouteHost(key: hostKey, tankId: tankId),
+  );
+}
+
+class _TasksRouteHost extends StatefulWidget {
+  const _TasksRouteHost({super.key, required this.tankId});
+
+  final String tankId;
+
+  @override
+  State<_TasksRouteHost> createState() => _TasksRouteHostState();
+}
+
+class _TasksRouteHostState extends State<_TasksRouteHost> {
+  var _showTasks = true;
+
+  void leaveTasks() => setState(() => _showTasks = false);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: _showTasks
+          ? TasksScreen(tankId: widget.tankId)
+          : const Scaffold(body: SizedBox.shrink()),
+    );
+  }
 }
 
 Widget _wrapWithProfile({
@@ -254,6 +290,108 @@ class _CompletionLogFailsStorage extends _DelegatingStorageService {
   Future<void> saveLog(LogEntry log) async {
     if (log.type == LogType.taskCompleted) {
       throw StateError('task completion log failed');
+    }
+    await super.saveLog(log);
+  }
+}
+
+class _CompletionLogAndTaskRollbackFailStorage
+    extends _DelegatingStorageService {
+  _CompletionLogAndTaskRollbackFailStorage(
+    super.delegate, {
+    this.blockCompletionLog = false,
+  });
+
+  final bool blockCompletionLog;
+  final completionLogError = StateError('task completion log failed');
+  final taskRollbackError = StateError('task rollback failed');
+  final completionLogStarted = Completer<void>();
+  final releaseCompletionLog = Completer<void>();
+  var _taskRollbackPending = false;
+  int successfulTaskWrites = 0;
+  int maximumCompletionCount = 0;
+  int getTankCalls = 0;
+  int getTasksForTankCalls = 0;
+  int getEquipmentForTankCalls = 0;
+  int getLogsForTankCalls = 0;
+  int recentLogReads = 0;
+  int fullLogReads = 0;
+
+  @override
+  Future<Tank?> getTank(String id) async {
+    getTankCalls++;
+    return super.getTank(id);
+  }
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) async {
+    getTasksForTankCalls++;
+    return super.getTasksForTank(tankId);
+  }
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) async {
+    getEquipmentForTankCalls++;
+    return super.getEquipmentForTank(tankId);
+  }
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
+    getLogsForTankCalls++;
+    if (limit == 50 && after == null) recentLogReads++;
+    if (limit == null && after == null) fullLogReads++;
+    return super.getLogsForTank(tankId, limit: limit, after: after);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    if (_taskRollbackPending) {
+      _taskRollbackPending = false;
+      throw taskRollbackError;
+    }
+    successfulTaskWrites++;
+    maximumCompletionCount = task.completionCount > maximumCompletionCount
+        ? task.completionCount
+        : maximumCompletionCount;
+    await super.saveTask(task);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.taskCompleted) {
+      _taskRollbackPending = true;
+      if (!completionLogStarted.isCompleted) completionLogStarted.complete();
+      if (blockCompletionLog) await releaseCompletionLog.future;
+      throw completionLogError;
+    }
+    await super.saveLog(log);
+  }
+}
+
+class _BlockingCompletionLogStorage extends _DelegatingStorageService {
+  _BlockingCompletionLogStorage(super.delegate);
+
+  final completionLogStarted = Completer<void>();
+  final releaseCompletionLog = Completer<void>();
+  int completionTaskWrites = 0;
+  int completionLogAttempts = 0;
+
+  @override
+  Future<void> saveTask(Task task) async {
+    if (task.completionCount > 0) completionTaskWrites++;
+    await super.saveTask(task);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.taskCompleted) {
+      completionLogAttempts++;
+      if (!completionLogStarted.isCompleted) completionLogStarted.complete();
+      await releaseCompletionLog.future;
     }
     await super.saveLog(log);
   }
@@ -951,6 +1089,255 @@ void main() {
       );
       expect(find.text('Rinse prefilter completed!'), findsNothing);
     });
+
+    testWidgets(
+      'failed Tasks task rollback reports uncertain completion without unsafe retry',
+      (tester) async {
+        const tankId = 'tank-tasks-complete-rollback-uncertain';
+        const taskId = 'task-tasks-complete-rollback-uncertain';
+        final svc = InMemoryStorageService();
+        final failingStorage = _CompletionLogAndTaskRollbackFailStorage(svc);
+        await svc.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: taskId,
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+        final debugMessages = <String>[];
+        final previousDebugPrint = debugPrint;
+        debugPrint = (String? message, {int? wrapWidth}) {
+          if (message != null) debugMessages.add(message);
+        };
+        addTearDown(() => debugPrint = previousDebugPrint);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: failingStorage, tankId: tankId),
+        );
+        await _advance(tester);
+        final taskTile = find.ancestor(
+          of: find.text('Rinse prefilter'),
+          matching: find.byType(ListTile),
+        );
+        final completeTaskButton = find.descendant(
+          of: taskTile,
+          matching: find.byTooltip('Toggle task'),
+        );
+        final completeTaskIconButton = find.ancestor(
+          of: find.descendant(
+            of: taskTile,
+            matching: find.byIcon(Icons.check_circle_outline),
+          ),
+          matching: find.byType(IconButton),
+        );
+        final staleComplete = tester
+            .widget<IconButton>(completeTaskIconButton)
+            .onPressed;
+        expect(staleComplete, isNotNull);
+        final tankReadsBefore = failingStorage.getTankCalls;
+        final taskReadsBefore = failingStorage.getTasksForTankCalls;
+        final equipmentReadsBefore = failingStorage.getEquipmentForTankCalls;
+        final recentLogReadsBefore = failingStorage.recentLogReads;
+        final fullLogReadsBefore = failingStorage.fullLogReads;
+
+        await tester.tap(completeTaskButton);
+        await _advance(tester);
+
+        expect(
+          find.text(
+            'Rinse prefilter may already have been completed. Its activity '
+            'log wasn\'t saved, and task restoration is uncertain. Check this '
+            'tank\'s tasks and recent activity.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Couldn\'t complete that task. Try again.'),
+          findsNothing,
+        );
+        expect(
+          find.textContaining(RegExp('try again', caseSensitive: false)),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Rinse prefilter completed!'), findsNothing);
+
+        staleComplete!();
+        await _advance(tester);
+
+        debugPrint = previousDebugPrint;
+        expect(tester.takeException(), isNull);
+        final storedTask = (await svc.getTasksForTank(tankId)).single;
+        expect(storedTask.completionCount, 1);
+        expect(storedTask.lastCompletedAt, isNotNull);
+        expect(failingStorage.successfulTaskWrites, 1);
+        expect(failingStorage.maximumCompletionCount, 1);
+        expect(await svc.getLogsForTank(tankId), isEmpty);
+        final visibleTaskTile = find.ancestor(
+          of: find.text('Rinse prefilter'),
+          matching: find.byType(ListTile),
+        );
+        final visibleCompleteTaskIconButton = find.ancestor(
+          of: find.descendant(
+            of: visibleTaskTile,
+            matching: find.byIcon(Icons.check_circle_outline),
+          ),
+          matching: find.byType(IconButton),
+        );
+        expect(
+          tester.widget<IconButton>(visibleCompleteTaskIconButton).onPressed,
+          isNull,
+        );
+        expect(
+          failingStorage.getTankCalls,
+          greaterThanOrEqualTo(tankReadsBefore + 2),
+        );
+        expect(
+          failingStorage.getTasksForTankCalls,
+          greaterThanOrEqualTo(taskReadsBefore + 2),
+        );
+        expect(
+          failingStorage.getEquipmentForTankCalls,
+          greaterThan(equipmentReadsBefore),
+        );
+        expect(failingStorage.recentLogReads, recentLogReadsBefore + 1);
+        expect(failingStorage.fullLogReads, fullLogReadsBefore + 1);
+
+        final combinedLog = debugMessages.join('\n');
+        expect(
+          combinedLog,
+          contains('TasksScreenTaskCompletionCompensationException'),
+        );
+        expect(combinedLog, contains('task completion log failed'));
+        expect(combinedLog, contains('task rollback failed'));
+        expect(combinedLog, contains(taskId));
+        expect(combinedLog, contains(tankId));
+      },
+    );
+
+    testWidgets('in-flight task completion ignores a repeated stale callback', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-complete-in-flight';
+      final svc = InMemoryStorageService();
+      final blockingStorage = _BlockingCompletionLogStorage(svc);
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-complete-in-flight',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: blockingStorage, tankId: tankId),
+      );
+      await _advance(tester);
+      final completeTaskButton = find.ancestor(
+        of: find.byIcon(Icons.check_circle_outline),
+        matching: find.byType(IconButton),
+      );
+      final capturedComplete = tester
+          .widget<IconButton>(completeTaskButton)
+          .onPressed;
+      expect(capturedComplete, isNotNull);
+
+      capturedComplete!();
+      await blockingStorage.completionLogStarted.future;
+      capturedComplete();
+      await tester.pump();
+
+      expect(blockingStorage.completionTaskWrites, 1);
+      expect(blockingStorage.completionLogAttempts, 1);
+
+      blockingStorage.releaseCompletionLog.complete();
+      await _advance(tester);
+
+      final storedTask = (await svc.getTasksForTank(tankId)).single;
+      expect(storedTask.completionCount, 1);
+      expect(
+        (await svc.getLogsForTank(
+          tankId,
+        )).where((log) => log.type == LogType.taskCompleted),
+        hasLength(1),
+      );
+      expect(blockingStorage.completionTaskWrites, 1);
+      expect(blockingStorage.completionLogAttempts, 1);
+      expect(find.text('Rinse prefilter completed!'), findsOneWidget);
+    });
+
+    testWidgets(
+      'uncertain completion reloads authority after leaving Tasks',
+      (tester) async {
+        const tankId = 'tank-task-complete-unmounted';
+        final svc = InMemoryStorageService();
+        final failingStorage = _CompletionLogAndTaskRollbackFailStorage(
+          svc,
+          blockCompletionLog: true,
+        );
+        final hostKey = GlobalKey<_TasksRouteHostState>();
+        await svc.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: 'task-complete-unmounted',
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+
+        await tester.pumpWidget(
+          _wrapWithRouteHost(
+            storage: failingStorage,
+            tankId: tankId,
+            hostKey: hostKey,
+          ),
+        );
+        await _advance(tester);
+        final completeTaskButton = find.ancestor(
+          of: find.byIcon(Icons.check_circle_outline),
+          matching: find.byType(IconButton),
+        );
+        final capturedComplete = tester
+            .widget<IconButton>(completeTaskButton)
+            .onPressed;
+        expect(capturedComplete, isNotNull);
+
+        capturedComplete!();
+        await failingStorage.completionLogStarted.future;
+        hostKey.currentState!.leaveTasks();
+        await tester.pump();
+        failingStorage.releaseCompletionLog.complete();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(tester.takeException(), isNull);
+        final storedTask = (await svc.getTasksForTank(tankId)).single;
+        expect(storedTask.completionCount, 1);
+        expect(await svc.getLogsForTank(tankId), isEmpty);
+        expect(failingStorage.getTankCalls, greaterThanOrEqualTo(2));
+        expect(failingStorage.getTasksForTankCalls, greaterThanOrEqualTo(3));
+        expect(failingStorage.getEquipmentForTankCalls, 1);
+        expect(failingStorage.recentLogReads, 1);
+        expect(failingStorage.fullLogReads, 1);
+      },
+    );
 
     testWidgets('snoozing a task shows success feedback', (tester) async {
       const tankId = 'tank-task-snooze-feedback';

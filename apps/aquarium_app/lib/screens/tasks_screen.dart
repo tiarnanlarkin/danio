@@ -24,13 +24,49 @@ import '../utils/logger.dart';
 const _uuid = Uuid();
 const double _maxTasksReadableWidth = 720;
 
-class TasksScreen extends ConsumerWidget {
+class TasksScreenTaskCompletionCompensationException implements Exception {
+  TasksScreenTaskCompletionCompensationException({
+    required this.initiatingError,
+    required this.initiatingStackTrace,
+    required this.rollbackError,
+    required this.rollbackStackTrace,
+    required this.taskId,
+    required this.tankId,
+  });
+
+  final Object initiatingError;
+  final StackTrace initiatingStackTrace;
+  final Object rollbackError;
+  final StackTrace rollbackStackTrace;
+  final String taskId;
+  final String tankId;
+
+  @override
+  String toString() {
+    return 'TasksScreenTaskCompletionCompensationException: task completion '
+        'failed for task $taskId in tank $tankId ($initiatingError), and '
+        'restoring the original task also failed ($rollbackError); completion '
+        'is uncertain.';
+  }
+}
+
+class TasksScreen extends ConsumerStatefulWidget {
   final String tankId;
 
   const TasksScreen({super.key, required this.tankId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends ConsumerState<TasksScreen> {
+  final Set<String> _inFlightTaskCompletionIds = <String>{};
+  final Set<String> _uncertainTaskCompletionIds = <String>{};
+
+  String get tankId => widget.tankId;
+
+  @override
+  Widget build(BuildContext context) {
     final tasksAsync = ref.watch(tasksProvider(tankId));
 
     return Scaffold(
@@ -141,7 +177,11 @@ class TasksScreen extends ConsumerWidget {
                 return _TasksReadableFrame(
                   child: _TaskCard(
                     task: t,
-                    onComplete: () => _completeTask(context, ref, t),
+                    onComplete:
+                        _inFlightTaskCompletionIds.contains(t.id) ||
+                            _uncertainTaskCompletionIds.contains(t.id)
+                        ? null
+                        : () => _completeTask(context, t),
                     onSnooze: () => _showSnoozeDialog(context, ref, t),
                     onEdit: () => _showEditDialog(context, ref, t),
                     onDelete: () => _confirmDelete(context, ref, t),
@@ -168,10 +208,18 @@ class TasksScreen extends ConsumerWidget {
 
   Future<void> _completeTask(
     BuildContext context,
-    WidgetRef ref,
     Task task,
   ) async {
-    final storage = ref.read(storageServiceProvider);
+    if (!mounted ||
+        _inFlightTaskCompletionIds.contains(task.id) ||
+        _uncertainTaskCompletionIds.contains(task.id)) {
+      return;
+    }
+    final completionTankId = tankId;
+    setState(() => _inFlightTaskCompletionIds.add(task.id));
+
+    final container = ProviderScope.containerOf(context, listen: false);
+    final storage = container.read(storageServiceProvider);
     final now = DateTime.now();
 
     final completed = task.complete();
@@ -184,11 +232,13 @@ class TasksScreen extends ConsumerWidget {
     final equipmentLogId = _uuid.v4();
 
     try {
-      final parentTank = await storage.getTank(tankId);
+      final parentTank = await storage.getTank(completionTankId);
       if (parentTank == null) {
-        throw StateError('Cannot complete a task for missing tank $tankId');
+        throw StateError(
+          'Cannot complete a task for missing tank $completionTankId',
+        );
       }
-      final currentTasks = await storage.getTasksForTank(tankId);
+      final currentTasks = await storage.getTasksForTank(completionTankId);
       if (!currentTasks.any((currentTask) => currentTask.id == task.id)) {
         throw StateError('Cannot complete missing task ${task.id}');
       }
@@ -199,7 +249,7 @@ class TasksScreen extends ConsumerWidget {
       await storage.saveLog(
         LogEntry(
           id: completionLogId,
-          tankId: tankId,
+          tankId: completionTankId,
           type: LogType.taskCompleted,
           timestamp: now,
           title: task.title,
@@ -213,7 +263,7 @@ class TasksScreen extends ConsumerWidget {
 
       // If this task is tied to equipment maintenance, update equipment + log it.
       if (task.relatedEquipmentId != null) {
-        final equipment = await storage.getEquipmentForTank(tankId);
+        final equipment = await storage.getEquipmentForTank(completionTankId);
         Equipment? e;
         for (final x in equipment) {
           if (x.id == task.relatedEquipmentId) {
@@ -230,7 +280,7 @@ class TasksScreen extends ConsumerWidget {
           await storage.saveLog(
             LogEntry(
               id: equipmentLogId,
-              tankId: tankId,
+              tankId: completionTankId,
               type: LogType.equipmentMaintenance,
               timestamp: now,
               title: 'Serviced ${e.name}',
@@ -244,11 +294,7 @@ class TasksScreen extends ConsumerWidget {
         }
       }
     } catch (e, st) {
-      logError(
-        'TasksScreen: task completion failed: $e',
-        stackTrace: st,
-        tag: 'TasksScreen',
-      );
+      Object reportedError = e;
 
       if (equipmentLogSaved) {
         try {
@@ -291,32 +337,74 @@ class TasksScreen extends ConsumerWidget {
           await storage.saveTask(task);
         } catch (rollbackError, rollbackStack) {
           logError(
-            'TasksScreen: task rollback failed: $rollbackError',
+            'TasksScreen: task rollback failed for task ${task.id} in tank '
+            '$completionTankId: $rollbackError',
             stackTrace: rollbackStack,
             tag: 'TasksScreen',
+          );
+          reportedError = TasksScreenTaskCompletionCompensationException(
+            initiatingError: e,
+            initiatingStackTrace: st,
+            rollbackError: rollbackError,
+            rollbackStackTrace: rollbackStack,
+            taskId: task.id,
+            tankId: completionTankId,
           );
         }
       }
 
-      ref.invalidate(tasksProvider(tankId));
-      ref.invalidate(equipmentProvider(tankId));
-      ref.invalidate(logsProvider(tankId));
-      ref.invalidate(allLogsProvider(tankId));
+      final completionUncertain =
+          reportedError is TasksScreenTaskCompletionCompensationException;
+      if (mounted) {
+        setState(() {
+          _inFlightTaskCompletionIds.remove(task.id);
+          if (completionUncertain) {
+            _uncertainTaskCompletionIds.add(task.id);
+          }
+        });
+      }
+      if (completionUncertain) {
+        await _reloadTaskCompletionAuthority(container, completionTankId);
+      } else {
+        container.invalidate(tasksProvider(completionTankId));
+        container.invalidate(equipmentProvider(completionTankId));
+        container.invalidate(logsProvider(completionTankId));
+        container.invalidate(allLogsProvider(completionTankId));
+      }
+
+      logError(
+        'TasksScreen: task completion failed for task ${task.id} in tank '
+        '$completionTankId: $reportedError',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
 
       if (context.mounted) {
-        DanioSnackBar.error(
-          context,
-          'Couldn\'t complete that task. Try again.',
-        );
+        if (completionUncertain) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          DanioSnackBar.warning(
+            context,
+            '${task.title} may already have been completed. Its activity log '
+            'wasn\'t saved, and task restoration is uncertain. Check this '
+            'tank\'s tasks and recent activity.',
+          );
+        } else {
+          DanioSnackBar.error(
+            context,
+            'Couldn\'t complete that task. Try again.',
+          );
+        }
       }
       return;
     }
 
     // Award XP for completing a maintenance task (with boost if active)
-    final isBoostActive = ref.read(xpBoostActiveProvider);
+    final isBoostActive = container.read(xpBoostActiveProvider);
     var progressUpdated = true;
     try {
-      await ref
+      await container
           .read(userProfileProvider.notifier)
           .recordActivity(
             xp: XpRewards.taskComplete,
@@ -329,13 +417,17 @@ class TasksScreen extends ConsumerWidget {
         stackTrace: st,
         tag: 'TasksScreen',
       );
-      ref.invalidate(userProfileProvider);
+      container.invalidate(userProfileProvider);
     }
 
-    ref.invalidate(tasksProvider(tankId));
-    ref.invalidate(equipmentProvider(tankId));
-    ref.invalidate(logsProvider(tankId));
-    ref.invalidate(allLogsProvider(tankId));
+    container.invalidate(tasksProvider(completionTankId));
+    container.invalidate(equipmentProvider(completionTankId));
+    container.invalidate(logsProvider(completionTankId));
+    container.invalidate(allLogsProvider(completionTankId));
+
+    if (mounted) {
+      setState(() => _inFlightTaskCompletionIds.remove(task.id));
+    }
 
     if (context.mounted) {
       if (progressUpdated) {
@@ -346,6 +438,34 @@ class TasksScreen extends ConsumerWidget {
           '${task.title} completed, but progress couldn\'t update.',
         );
       }
+    }
+  }
+
+  Future<void> _reloadTaskCompletionAuthority(
+    ProviderContainer container,
+    String completionTankId,
+  ) async {
+    container.invalidate(tankProvider(completionTankId));
+    container.invalidate(tasksProvider(completionTankId));
+    container.invalidate(equipmentProvider(completionTankId));
+    container.invalidate(logsProvider(completionTankId));
+    container.invalidate(allLogsProvider(completionTankId));
+
+    try {
+      await Future.wait<Object?>([
+        container.read(tankProvider(completionTankId).future),
+        container.read(tasksProvider(completionTankId).future),
+        container.read(equipmentProvider(completionTankId).future),
+        container.read(logsProvider(completionTankId).future),
+        container.read(allLogsProvider(completionTankId).future),
+      ]);
+    } catch (e, st) {
+      logError(
+        'TasksScreen: authoritative task completion reload failed for tank '
+        '$completionTankId: $e',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
     }
   }
 
@@ -701,7 +821,7 @@ class _SectionHeader extends StatelessWidget {
 
 class _TaskCard extends StatelessWidget {
   final Task task;
-  final VoidCallback onComplete;
+  final VoidCallback? onComplete;
   final VoidCallback onSnooze;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
