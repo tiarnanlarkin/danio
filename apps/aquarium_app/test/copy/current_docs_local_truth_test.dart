@@ -1171,6 +1171,7 @@ void main() {
       'reconciliation plan',
     ]);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
+      'DR-2026-07-19-056',
       'DR-2026-07-16-016',
       'DR-2026-07-16-017',
       'DR-2026-07-16-018',
@@ -1182,7 +1183,6 @@ void main() {
       'DR-2026-07-16-027',
       'DR-2026-07-16-028',
       'DR-2026-07-16-030',
-      'DR-2026-07-16-031',
       'DR-2026-07-16-032',
       'DR-2026-07-16-033',
       'DR-2026-07-16-034',
@@ -1216,6 +1216,7 @@ void main() {
       'DCL-DR-003-F27',
       'DCL-DR-003-F28',
       'DCL-DR-003-F29',
+      'DCL-DR-003-F34',
       'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
       'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
       'danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1',
@@ -1247,7 +1248,25 @@ void main() {
       'danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1',
       'danio-dcl-dr-003-next-finding-triage-2026-07-18/3',
       'danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1',
+      'danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1',
     ]);
+    final currentSliceRows = _source('docs/agent/SLICE_LOG.md')
+        .split('\n')
+        .where((line) => line.startsWith('| DR-') || line.startsWith('| WF-'))
+        .toList();
+    expect(currentSliceRows, hasLength(25));
+    expect(
+      currentSliceRows.where(
+        (line) => line.startsWith('| DR-2026-07-19-056 |'),
+      ),
+      hasLength(1),
+    );
+    expect(
+      currentSliceRows.any(
+        (line) => line.startsWith('| DR-2026-07-16-031 |'),
+      ),
+      isFalse,
+    );
     _expectContainsAll(
       'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
       [
@@ -1274,10 +1293,13 @@ void main() {
         'DR-2026-07-16-021',
         'DR-2026-07-16-029',
         'DR-2026-07-16-030',
+        'DR-2026-07-16-031',
         'DCL-DR-003-F15',
         'DCL-DR-003-F16',
+        'DCL-DR-003-F17',
         'danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1',
         'danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1',
+        'danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1',
         'WF-2026-07-15-019',
         'DCL-DR-003-F2',
         'DCL-DR-003-F3',
@@ -1465,7 +1487,7 @@ void main() {
   });
 
   test(
-    'DCL-DR-003 ranks only F34 Tank Detail completion rollback uncertainty',
+    'DCL-DR-003 preserves the single F34 ranking history',
     () {
       const sharedFindingTruth = [
         'DR-2026-07-19-055',
@@ -1479,15 +1501,6 @@ void main() {
         'DCL-DR-003 remains open',
       ];
 
-      final handoffRecord =
-          _markdownSection(
-                _source('docs/agent/ACTIVE_HANDOFF.md'),
-                'Current state',
-              )
-              .split('\n')
-              .singleWhere(
-                (line) => line.contains('`DCL-DR-003-F34`'),
-              );
       final matrixSource = _source(
         'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       );
@@ -1508,7 +1521,6 @@ void main() {
       String normalized(String value) => value.replaceAll(RegExp(r'\s+'), ' ');
 
       for (final entry in <(String, String)>[
-        ('ACTIVE_HANDOFF F34 bullet', handoffRecord),
         ('DCL-DR-003 epoch 055 narrative', matrixRecord),
         ('SLICE_LOG epoch 055 row', sliceLogRecord),
       ]) {
@@ -1531,11 +1543,6 @@ void main() {
 
       for (final value in settledBoundaryTruth) {
         expect(
-          normalized(handoffRecord),
-          contains(value),
-          reason: 'handoff: $value',
-        );
-        expect(
           normalized(matrixRecord),
           contains(value),
           reason: 'matrix: $value',
@@ -1557,4 +1564,33 @@ void main() {
       expect(sliceLogRecord, contains('No closure/successor'));
     },
   );
+
+  test('DCL-DR-003 records the fixed F34 Tank Detail uncertainty epoch', () {
+    const fixedFindingTruth = [
+      'DR-2026-07-19-056',
+      'DCL-DR-003-F34',
+      'danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1',
+      'TankDetailTaskCompletionCompensationException',
+      'failed tank-detail task rollback reports uncertain completion without unsafe retry',
+      'failed completion log write rolls back task completion',
+      'one durable completion',
+      'both causes with task/tank context',
+      'task, equipment, and log authority refreshes',
+      'visible and stale completion callbacks',
+      'no success, Retry, or `Try again`',
+      'DCL-DR-003 remains open',
+      'no second finding',
+    ];
+
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', fixedFindingTruth);
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      fixedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
+      'Handoff only; do not create a successor.',
+      'No next finding is selected or ranked.',
+    ]);
+  });
 }

@@ -56,6 +56,32 @@ import 'widgets/trends_section.dart';
 
 const _uuid = Uuid();
 
+class TankDetailTaskCompletionCompensationException implements Exception {
+  TankDetailTaskCompletionCompensationException({
+    required this.initiatingError,
+    required this.initiatingStackTrace,
+    required this.rollbackError,
+    required this.rollbackStackTrace,
+    required this.taskId,
+    required this.tankId,
+  });
+
+  final Object initiatingError;
+  final StackTrace initiatingStackTrace;
+  final Object rollbackError;
+  final StackTrace rollbackStackTrace;
+  final String taskId;
+  final String tankId;
+
+  @override
+  String toString() {
+    return 'TankDetailTaskCompletionCompensationException: task completion '
+        'failed for task $taskId in tank $tankId ($initiatingError), and '
+        'restoring the original task also failed ($rollbackError); completion '
+        'is uncertain.';
+  }
+}
+
 /// Tank detail screen displaying comprehensive tank information and management tools.
 ///
 /// Displays a dashboard with tank overview, parameters, livestock, equipment,
@@ -74,7 +100,7 @@ const _uuid = Uuid();
 /// - Tank analytics and charts
 /// - Cycling status tracking
 /// - Journal access and tank-specific management
-class TankDetailScreen extends ConsumerWidget {
+class TankDetailScreen extends ConsumerStatefulWidget {
   /// Unique identifier for the tank to display.
   final String tankId;
 
@@ -82,6 +108,15 @@ class TankDetailScreen extends ConsumerWidget {
   ///
   /// The [tankId] parameter is required and must reference a valid tank.
   const TankDetailScreen({super.key, required this.tankId});
+
+  @override
+  ConsumerState<TankDetailScreen> createState() => _TankDetailScreenState();
+}
+
+class _TankDetailScreenState extends ConsumerState<TankDetailScreen> {
+  final Set<String> _uncertainTaskCompletionIds = <String>{};
+
+  String get tankId => widget.tankId;
 
   // Skeleton loading builders
   static Widget _buildTaskSkeletonPreview() {
@@ -207,12 +242,14 @@ class TankDetailScreen extends ConsumerWidget {
     );
   }
 
-  static Future<void> _completeTask(
+  Future<void> _completeTask(
     BuildContext context,
     WidgetRef ref,
     Task task,
     String tankId,
   ) async {
+    if (_uncertainTaskCompletionIds.contains(task.id)) return;
+
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
@@ -286,11 +323,7 @@ class TankDetailScreen extends ConsumerWidget {
         }
       }
     } catch (e, st) {
-      logError(
-        'TankDetailScreen: task completion failed: $e',
-        stackTrace: st,
-        tag: 'TankDetailScreen',
-      );
+      Object reportedError = e;
 
       if (equipmentLogSaved) {
         try {
@@ -333,11 +366,26 @@ class TankDetailScreen extends ConsumerWidget {
           await storage.saveTask(task);
         } catch (rollbackError, rollbackStack) {
           logError(
-            'TankDetailScreen: task rollback failed: $rollbackError',
+            'TankDetailScreen: task rollback failed for task ${task.id} in '
+            'tank $tankId: $rollbackError',
             stackTrace: rollbackStack,
             tag: 'TankDetailScreen',
           );
+          reportedError = TankDetailTaskCompletionCompensationException(
+            initiatingError: e,
+            initiatingStackTrace: st,
+            rollbackError: rollbackError,
+            rollbackStackTrace: rollbackStack,
+            taskId: task.id,
+            tankId: tankId,
+          );
         }
+      }
+
+      final completionUncertain =
+          reportedError is TankDetailTaskCompletionCompensationException;
+      if (completionUncertain && mounted) {
+        setState(() => _uncertainTaskCompletionIds.add(task.id));
       }
 
       ref.invalidate(tasksProvider(tankId));
@@ -345,11 +393,30 @@ class TankDetailScreen extends ConsumerWidget {
       ref.invalidate(logsProvider(tankId));
       ref.invalidate(allLogsProvider(tankId));
 
+      logError(
+        'TankDetailScreen: task completion failed for task ${task.id} in tank '
+        '$tankId: $reportedError',
+        stackTrace: st,
+        tag: 'TankDetailScreen',
+      );
+
       if (context.mounted) {
-        DanioSnackBar.error(
-          context,
-          'Couldn\'t complete that task. Try again.',
-        );
+        if (completionUncertain) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          DanioSnackBar.warning(
+            context,
+            '${task.title} may already have been completed. Its activity log '
+            'wasn\'t saved, and task restoration is uncertain. Check this '
+            'tank\'s tasks and recent activity.',
+          );
+        } else {
+          DanioSnackBar.error(
+            context,
+            'Couldn\'t complete that task. Try again.',
+          );
+        }
       }
       return;
     }
@@ -420,7 +487,7 @@ class TankDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final tankAsync = ref.watch(tankProvider(tankId));
     final logsRecentAsync = ref.watch(logsProvider(tankId));
     final logsAllAsync = ref.watch(allLogsProvider(tankId));
@@ -1032,7 +1099,17 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     data: (tasks) => TaskPreview(
-                      tasks: tasks.take(3).toList(),
+                      tasks: tasks
+                          .take(3)
+                          .map(
+                            (task) =>
+                                _uncertainTaskCompletionIds.contains(
+                                  task.id,
+                                )
+                                ? task.copyWith(isEnabled: false)
+                                : task,
+                          )
+                          .toList(),
                       onComplete: (t) => _completeTask(context, ref, t, tankId),
                     ),
                   ),
