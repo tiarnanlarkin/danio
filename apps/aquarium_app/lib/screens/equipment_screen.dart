@@ -75,6 +75,55 @@ class EquipmentDeleteCompensationException implements Exception {
   }
 }
 
+class EquipmentServiceRollbackFailure {
+  EquipmentServiceRollbackFailure({
+    required this.phase,
+    required this.error,
+    required this.stackTrace,
+  });
+
+  final String phase;
+  final Object error;
+  final StackTrace stackTrace;
+
+  @override
+  String toString() => '$phase failed ($error)';
+}
+
+class EquipmentServiceCompensationException implements Exception {
+  EquipmentServiceCompensationException({
+    required this.initiatingError,
+    required this.initiatingStackTrace,
+    required List<EquipmentServiceRollbackFailure> rollbackFailures,
+    required this.equipmentId,
+    required this.tankId,
+    required this.maintenanceTaskId,
+    required this.maintenanceLogId,
+    required this.taskCompletionLogId,
+  }) : rollbackFailures = List.unmodifiable(rollbackFailures);
+
+  final Object initiatingError;
+  final StackTrace initiatingStackTrace;
+  final List<EquipmentServiceRollbackFailure> rollbackFailures;
+  final String equipmentId;
+  final String tankId;
+  final String maintenanceTaskId;
+  final String maintenanceLogId;
+  final String? taskCompletionLogId;
+
+  @override
+  String toString() {
+    final failures = rollbackFailures.join('; ');
+    final logContext = taskCompletionLogId == null
+        ? 'service log $maintenanceLogId'
+        : 'service log $maintenanceLogId and task log $taskCompletionLogId';
+    return 'EquipmentServiceCompensationException: marking equipment '
+        '$equipmentId in tank $tankId as serviced failed ($initiatingError), '
+        'and compensation was incomplete: $failures. Maintenance task '
+        '$maintenanceTaskId and $logContext may be inconsistent.';
+  }
+}
+
 String _maintenanceTaskId(String equipmentId) =>
     'equip_${equipmentId}_maintenance';
 
@@ -142,10 +191,20 @@ Future<void> _syncEquipmentMaintenanceTask(
   await storage.saveTask(task);
 }
 
-class EquipmentScreen extends ConsumerWidget {
+class EquipmentScreen extends ConsumerStatefulWidget {
   final String tankId;
 
   const EquipmentScreen({super.key, required this.tankId});
+
+  @override
+  ConsumerState<EquipmentScreen> createState() => _EquipmentScreenState();
+}
+
+class _EquipmentScreenState extends ConsumerState<EquipmentScreen> {
+  final Set<String> _inFlightServiceIds = <String>{};
+  final Set<String> _uncertainServiceIds = <String>{};
+
+  String get tankId => widget.tankId;
 
   Widget _buildSkeletonList() {
     final placeholders = SkeletonPlaceholders.equipmentList;
@@ -170,7 +229,7 @@ class EquipmentScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final equipmentAsync = ref.watch(equipmentProvider(tankId));
     final showAddFab = equipmentAsync.maybeWhen(
       data: (equipment) => equipment.isNotEmpty,
@@ -263,7 +322,11 @@ class EquipmentScreen extends ConsumerWidget {
                         child: _EquipmentCard(
                           equipment: e,
                           onEdit: () => _showEditDialog(context, ref, e),
-                          onService: () => _markServiced(context, ref, e),
+                          onService:
+                              _inFlightServiceIds.contains(e.id) ||
+                                  _uncertainServiceIds.contains(e.id)
+                              ? null
+                              : () => _markServiced(context, e),
                           onHistory: () =>
                               _showEquipmentHistoryDialog(context, e),
                           onDelete: () => _confirmDelete(context, ref, e),
@@ -314,25 +377,34 @@ class EquipmentScreen extends ConsumerWidget {
 
   Future<void> _markServiced(
     BuildContext context,
-    WidgetRef ref,
     Equipment equipment,
   ) async {
-    final storage = ref.read(storageServiceProvider);
+    if (!mounted ||
+        _inFlightServiceIds.contains(equipment.id) ||
+        _uncertainServiceIds.contains(equipment.id)) {
+      return;
+    }
+    final serviceTankId = tankId;
+    setState(() => _inFlightServiceIds.add(equipment.id));
+
+    final container = ProviderScope.containerOf(context, listen: false);
+    final storage = container.read(storageServiceProvider);
     final now = DateTime.now();
     final updated = equipment.copyWith(lastServiced: now, updatedAt: now);
     final taskId = _maintenanceTaskId(equipment.id);
+    final maintenanceLogId = _uuid.v4();
+    String? taskCompletionLogId;
 
     var equipmentSaved = false;
-    var maintenanceLogSaved = false;
+    var maintenanceLogAttempted = false;
     var maintenanceTaskChanged = false;
-    String? maintenanceLogId;
     Task? originalMaintenanceTask;
     try {
-      final currentEquipment = await storage.getEquipmentForTank(tankId);
+      final currentEquipment = await storage.getEquipmentForTank(serviceTankId);
       if (!currentEquipment.any((item) => item.id == equipment.id)) {
         throw StateError('Cannot service missing equipment ${equipment.id}');
       }
-      final originalTasks = await storage.getTasksForTank(tankId);
+      final originalTasks = await storage.getTasksForTank(serviceTankId);
       for (final task in originalTasks) {
         if (task.id == taskId) {
           originalMaintenanceTask = task;
@@ -344,11 +416,11 @@ class EquipmentScreen extends ConsumerWidget {
       equipmentSaved = true;
 
       // Log the maintenance event.
-      maintenanceLogId = _uuid.v4();
+      maintenanceLogAttempted = true;
       await storage.saveLog(
         LogEntry(
           id: maintenanceLogId,
-          tankId: tankId,
+          tankId: serviceTankId,
           type: LogType.equipmentMaintenance,
           timestamp: now,
           title: 'Serviced ${equipment.name}',
@@ -357,12 +429,10 @@ class EquipmentScreen extends ConsumerWidget {
           createdAt: now,
         ),
       );
-      maintenanceLogSaved = true;
-
       // Keep the auto maintenance task in sync and mark it completed.
       await _syncEquipmentMaintenanceTask(storage, updated);
       maintenanceTaskChanged = true;
-      final tasks = await storage.getTasksForTank(tankId);
+      final tasks = await storage.getTasksForTank(serviceTankId);
       Task? maintenanceTask;
       for (final t in tasks) {
         if (t.id == taskId) {
@@ -377,10 +447,12 @@ class EquipmentScreen extends ConsumerWidget {
         );
         await storage.saveTask(completedTask);
 
+        final completionLogId = _uuid.v4();
+        taskCompletionLogId = completionLogId;
         await storage.saveLog(
           LogEntry(
-            id: _uuid.v4(),
-            tankId: tankId,
+            id: completionLogId,
+            tankId: serviceTankId,
             type: LogType.taskCompleted,
             timestamp: now,
             title: maintenanceTask.title,
@@ -392,10 +464,14 @@ class EquipmentScreen extends ConsumerWidget {
         );
       }
 
-      ref.invalidate(equipmentProvider(tankId));
-      ref.invalidate(tasksProvider(tankId));
-      ref.invalidate(logsProvider(tankId));
-      ref.invalidate(allLogsProvider(tankId));
+      container.invalidate(equipmentProvider(serviceTankId));
+      container.invalidate(tasksProvider(serviceTankId));
+      container.invalidate(logsProvider(serviceTankId));
+      container.invalidate(allLogsProvider(serviceTankId));
+
+      if (mounted) {
+        setState(() => _inFlightServiceIds.remove(equipment.id));
+      }
 
       if (context.mounted) {
         AppFeedback.showSuccess(
@@ -404,6 +480,27 @@ class EquipmentScreen extends ConsumerWidget {
         );
       }
     } catch (e, st) {
+      final rollbackFailures = <EquipmentServiceRollbackFailure>[];
+      final attemptedTaskCompletionLogId = taskCompletionLogId;
+      if (attemptedTaskCompletionLogId != null) {
+        try {
+          await storage.deleteLog(attemptedTaskCompletionLogId);
+        } catch (rollbackError, rollbackStack) {
+          rollbackFailures.add(
+            EquipmentServiceRollbackFailure(
+              phase: 'task completion log deletion',
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            ),
+          );
+          logError(
+            'EquipmentScreen: task completion log rollback failed: '
+            '$rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'EquipmentScreen',
+          );
+        }
+      }
       if (maintenanceTaskChanged) {
         try {
           if (originalMaintenanceTask != null) {
@@ -412,6 +509,13 @@ class EquipmentScreen extends ConsumerWidget {
             await storage.deleteTask(taskId);
           }
         } catch (rollbackError, rollbackStack) {
+          rollbackFailures.add(
+            EquipmentServiceRollbackFailure(
+              phase: 'maintenance task restoration',
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            ),
+          );
           logError(
             'EquipmentScreen: service task rollback failed: $rollbackError',
             stackTrace: rollbackStack,
@@ -419,10 +523,17 @@ class EquipmentScreen extends ConsumerWidget {
           );
         }
       }
-      if (maintenanceLogSaved && maintenanceLogId != null) {
+      if (maintenanceLogAttempted) {
         try {
           await storage.deleteLog(maintenanceLogId);
         } catch (rollbackError, rollbackStack) {
+          rollbackFailures.add(
+            EquipmentServiceRollbackFailure(
+              phase: 'service log deletion',
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            ),
+          );
           logError(
             'EquipmentScreen: service log rollback failed: $rollbackError',
             stackTrace: rollbackStack,
@@ -434,6 +545,13 @@ class EquipmentScreen extends ConsumerWidget {
         try {
           await storage.saveEquipment(equipment);
         } catch (rollbackError, rollbackStack) {
+          rollbackFailures.add(
+            EquipmentServiceRollbackFailure(
+              phase: 'equipment restoration',
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            ),
+          );
           logError(
             'EquipmentScreen: service rollback failed: $rollbackError',
             stackTrace: rollbackStack,
@@ -441,21 +559,90 @@ class EquipmentScreen extends ConsumerWidget {
           );
         }
       }
-      ref.invalidate(equipmentProvider(tankId));
-      ref.invalidate(tasksProvider(tankId));
-      ref.invalidate(logsProvider(tankId));
-      ref.invalidate(allLogsProvider(tankId));
+
+      final serviceUncertain = rollbackFailures.isNotEmpty;
+      final reportedError = serviceUncertain
+          ? EquipmentServiceCompensationException(
+              initiatingError: e,
+              initiatingStackTrace: st,
+              rollbackFailures: rollbackFailures,
+              equipmentId: equipment.id,
+              tankId: serviceTankId,
+              maintenanceTaskId: taskId,
+              maintenanceLogId: maintenanceLogId,
+              taskCompletionLogId: taskCompletionLogId,
+            )
+          : e;
+
+      if (mounted) {
+        setState(() {
+          _inFlightServiceIds.remove(equipment.id);
+          if (serviceUncertain) {
+            _uncertainServiceIds.add(equipment.id);
+          }
+        });
+      }
+      if (serviceUncertain) {
+        await _reloadEquipmentServiceAuthority(container, serviceTankId);
+      } else {
+        container.invalidate(equipmentProvider(serviceTankId));
+        container.invalidate(tasksProvider(serviceTankId));
+        container.invalidate(logsProvider(serviceTankId));
+        container.invalidate(allLogsProvider(serviceTankId));
+      }
       logError(
-        'EquipmentScreen: mark serviced failed: $e',
+        'EquipmentScreen: mark serviced failed for equipment ${equipment.id} '
+        'in tank $serviceTankId: $reportedError',
         stackTrace: st,
         tag: 'EquipmentScreen',
       );
       if (context.mounted) {
-        AppFeedback.showError(
-          context,
-          'Could not mark ${equipment.name} as serviced. Try again in a moment.',
-        );
+        if (serviceUncertain) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          DanioSnackBar.warning(
+            context,
+            '${equipment.name} may already have been marked as serviced. Its '
+            'service history or maintenance task may be incomplete, and '
+            'restoration is uncertain. Check this tank\'s equipment, tasks, '
+            'and recent activity.',
+          );
+        } else {
+          AppFeedback.showError(
+            context,
+            'Could not mark ${equipment.name} as serviced. Try again in a moment.',
+          );
+        }
       }
+    }
+  }
+
+  Future<void> _reloadEquipmentServiceAuthority(
+    ProviderContainer container,
+    String serviceTankId,
+  ) async {
+    container.invalidate(tankProvider(serviceTankId));
+    container.invalidate(equipmentProvider(serviceTankId));
+    container.invalidate(tasksProvider(serviceTankId));
+    container.invalidate(logsProvider(serviceTankId));
+    container.invalidate(allLogsProvider(serviceTankId));
+
+    try {
+      await Future.wait<Object?>([
+        container.read(tankProvider(serviceTankId).future),
+        container.read(equipmentProvider(serviceTankId).future),
+        container.read(tasksProvider(serviceTankId).future),
+        container.read(logsProvider(serviceTankId).future),
+        container.read(allLogsProvider(serviceTankId).future),
+      ]);
+    } catch (e, st) {
+      logError(
+        'EquipmentScreen: authoritative service reload failed for tank '
+        '$serviceTankId: $e',
+        stackTrace: st,
+        tag: 'EquipmentScreen',
+      );
     }
   }
 
@@ -720,7 +907,7 @@ class _EquipmentReadableFrame extends StatelessWidget {
 class _EquipmentCard extends StatelessWidget {
   final Equipment equipment;
   final VoidCallback onEdit;
-  final VoidCallback onService;
+  final VoidCallback? onService;
   final VoidCallback onHistory;
   final VoidCallback onDelete;
 
@@ -782,8 +969,9 @@ class _EquipmentCard extends StatelessWidget {
             trailing: PopupMenuButton(
               itemBuilder: (_) => [
                 if (equipment.maintenanceIntervalDays != null)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'service',
+                    enabled: onService != null,
                     child: Text('Mark Serviced'),
                   ),
                 const PopupMenuItem(value: 'history', child: Text('History')),
@@ -791,7 +979,7 @@ class _EquipmentCard extends StatelessWidget {
                 const PopupMenuItem(value: 'delete', child: Text('Remove')),
               ],
               onSelected: (value) {
-                if (value == 'service') onService();
+                if (value == 'service') onService?.call();
                 if (value == 'history') onHistory();
                 if (value == 'edit') onEdit();
                 if (value == 'delete') onDelete();

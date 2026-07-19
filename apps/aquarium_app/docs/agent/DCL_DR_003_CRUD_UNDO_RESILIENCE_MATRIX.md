@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-058`
+Current epoch: `DR-2026-07-19-059`
 
 ## Decision
 
@@ -155,6 +155,26 @@ authority after leaving Tasks`, and the clean `failed completion log write rolls
 back task completion` proof are GREEN. DCL-DR-003 remains open, with Equipment
 Mark Serviced compensation next; no second finding is ranked.
 
+Implementation epoch `DR-2026-07-19-059` locally fixed only
+`DCL-DR-003-F36` under
+`danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1`.
+`EquipmentServiceCompensationException` preserves the initiating persistence
+error/stack, all rollback errors and stacks, and the equipment, tank, task, and
+log identifiers when Mark Serviced cannot settle safely. Attempted service and
+task log IDs are compensated even when their saves throw, leaving zero residual
+service history rows after route re-entry. Tank, equipment, task, recent-log,
+and full-log authority reloads even after leaving Equipment. Feedback has no
+success, Retry, or `Try again`,
+and in-flight, visible, and stale Mark Serviced callbacks cannot repeat the
+write. `failed service log rollback reports uncertain service without unsafe
+retry`, `in-flight equipment service ignores a repeated stale callback`,
+`uncertain equipment service reloads authority after leaving Equipment`, and
+`failed service task rollback reports uncertain service without unsafe retry`
+are GREEN alongside both clean-compensation proofs. The final 33-test Focused
+gate plus analyze, three independent reviews, reset-assisted Full with 2,273
+tests/lint/analyze/APK, and final Docs gate pass. DCL-DR-003 remains open, with
+single livestock-add compensation next; no second finding is ranked.
+
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
 
@@ -200,7 +220,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
 | Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved`; `failed equipment-delete rollback reports orphan uncertainty` | `DCL-DR-003-F31` locally fixed in `DR-2026-07-19-050`: `EquipmentDeleteCompensationException` preserves both causes and identifies the deleted equipment plus possibly orphaned maintenance task. Equipment/task authority refreshes; uncertain feedback says the equipment is gone and its maintenance task may remain, with no success, Undo, or Retry. Definitive compensation remains unchanged. |
 | Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted`; RED/GREEN `failed maintenance-task undo rolls back restored equipment`; RED/GREEN `undo after leaving screen refreshes equipment watchers` | `DCL-DR-003-F2` locally fixed: a failed maintenance-task restore removes equipment already restored by the same Undo, retains honest failure feedback, and route-independent invalidation refreshes active watchers after the Equipment route closes. |
-| Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; RED/GREEN `stale equipment service does not recreate deleted equipment` | `DCL-DR-003-F13` locally fixed: the durable equipment-ID check precedes all service writes, so a stale card cannot recreate equipment, mutate its task, add logs, or report success. Supported tank deletion atomically removes equipment/tasks, so the same preflight also rejects the settled parent-deletion state; no separate current parent-only path remains. |
+| Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; `stale equipment service does not recreate deleted equipment`; `failed service log rollback reports uncertain service without unsafe retry`; `in-flight equipment service ignores a repeated stale callback`; `uncertain equipment service reloads authority after leaving Equipment`; `failed service task rollback reports uncertain service without unsafe retry` | `DCL-DR-003-F13` retains the durable equipment-ID preflight. `DCL-DR-003-F36` is locally fixed in `DR-2026-07-19-059`: dual persistence/rollback failure preserves every cause/stack and affected ID, compensates both attempted log IDs, reloads tank/equipment/task/recent-log/full-log authority after route exit, warns without success or unsafe Retry, and locks repeated Mark Serviced callbacks. Route re-entry leaves zero residual service history rows; clean compensation remains GREEN. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving`; RED/GREEN `failed bulk-add rollback reports uncertainty and blocks duplicate retry`; RED/GREEN `stale bulk-add retry cannot bypass uncertain persistence lock` | `DCL-DR-003-F28` is locally fixed: ordinary successful rollback retains generic Retry, while failed compensation preserves both causes, clears queued/active Retry feedback, warns about uncertain persistence without Retry, locks every save entry, and leaves the possibly durable row visible after provider refresh. |
 | Livestock move | `success feedback reports selected livestock count`; RED/GREEN `bulk move reports actual count when a selected livestock id is missing`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails`; RED/GREEN `bulk move preserves initiating and rollback failures when compensation is uncertain`; RED/GREEN `failed bulk-move rollback reports partial-move uncertainty without unsafe retry` | `DCL-DR-003-F15` remains fixed for count/stale-ID behavior. `DCL-DR-003-F32` is locally fixed in `DR-2026-07-19-052`: `LivestockBulkMoveCompensationException` preserves both causes, uncertain IDs, and source/target context; source and target tank and livestock authority refreshes, stale selection exits, and the UI warns about a possible split without success or Retry. Definitive compensation remains unchanged. DCL-DR-003 remains open. |
@@ -460,7 +480,24 @@ belongs to `DCL-DR-004` and is not selected here.
     `uncertain completion reloads authority after leaving Tasks`, and clean
     compensation are GREEN. DCL-DR-003 remains open; Equipment Mark Serviced
     compensation is next, and no second finding is ranked.
-36. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+36. `DCL-DR-003-F36` - locally fixed only in `DR-2026-07-19-059` under
+    `danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1`.
+    `EquipmentServiceCompensationException` preserves the initiating error and
+    stack, all keyed rollback errors and stacks, and the equipment, tank,
+    maintenance-task, service-log, and task-completion-log identifiers. The
+    persisted-then-failed service-log RED plus failed equipment restoration left
+    a residual history row behind generic try-again feedback. The fixed path
+    compensates attempted service and task log IDs even when their saves throw,
+    leaves zero residual service history rows after route re-entry, reloads
+    tank/equipment/task/recent-log/full-log authority even after route exit,
+    warns without success, Retry, or `Try again`, and locks
+    in-flight, visible, and stale Mark Serviced callbacks. A second executable
+    variant proves task-completion-log failure plus failed task restoration is
+    reported with both causes and no duplicate. The four named uncertainty,
+    callback, and route-exit proofs plus both clean compensation tests are GREEN.
+    DCL-DR-003 remains open; single livestock-add compensation is next, and no
+    second finding is ranked.
+37. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 

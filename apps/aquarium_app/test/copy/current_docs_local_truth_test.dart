@@ -1721,7 +1721,7 @@ void main() {
     final matrixStart = matrixSource.indexOf(matrixRecordStart);
     expect(matrixStart, greaterThanOrEqualTo(0));
     final matrixEnd = matrixSource.indexOf(
-      '\nThis matrix covers `DCL-DR-003` only.',
+      '\nImplementation epoch `DR-2026-07-19-059`',
       matrixStart,
     );
     expect(matrixEnd, greaterThan(matrixStart));
@@ -1759,12 +1759,93 @@ void main() {
         reason: '${entry.$1} must record exactly one finding',
       );
     }
+  });
+
+  test('DCL-DR-003 records only the fixed F36 Equipment service epoch', () {
+    const fixedFindingTruth = [
+      'DR-2026-07-19-059',
+      'DCL-DR-003-F36',
+      'danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1',
+      'EquipmentServiceCompensationException',
+      'failed service log rollback reports uncertain service without unsafe retry',
+      'in-flight equipment service ignores a repeated stale callback',
+      'uncertain equipment service reloads authority after leaving Equipment',
+      'failed service task rollback reports uncertain service without unsafe retry',
+      'Attempted service and task log IDs are compensated',
+      'zero residual service history rows after route re-entry',
+      'all rollback errors and stacks',
+      'equipment, tank, task, and log identifiers',
+      'Tank, equipment, task, recent-log, and full-log authority',
+      'in-flight, visible, and stale Mark Serviced callbacks',
+      'no success, Retry, or `Try again`',
+      'DCL-DR-003 remains open',
+      'single livestock-add compensation next',
+      'no second finding',
+    ];
+    const sliceLogTruth = [
+      'DR-2026-07-19-059',
+      'DCL-DR-003-F36',
+      'danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1',
+      'EquipmentServiceCompensationException',
+      'failed service log rollback reports uncertain service without unsafe retry',
+      'failed service task rollback reports uncertain service without unsafe retry',
+      'zero residual service history rows after route re-entry',
+      'DCL-DR-003 remains open',
+      'single livestock-add compensation next',
+      'no second finding',
+    ];
+
+    final matrixSource = _source(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+    );
+    const matrixRecordStart = 'Implementation epoch `DR-2026-07-19-059`';
+    final matrixStart = matrixSource.indexOf(matrixRecordStart);
+    expect(matrixStart, greaterThanOrEqualTo(0));
+    final matrixEnd = matrixSource.indexOf(
+      '\nThis matrix covers `DCL-DR-003` only.',
+      matrixStart,
+    );
+    expect(matrixEnd, greaterThan(matrixStart));
+    final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
+    final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+        .split('\n')
+        .singleWhere((line) => line.startsWith('| DR-2026-07-19-059 |'));
+
+    final normalizedMatrix = matrixRecord.replaceAll(RegExp(r'\s+'), ' ');
+    for (final value in fixedFindingTruth) {
+      expect(
+        normalizedMatrix,
+        contains(value),
+        reason: 'DCL-DR-003 epoch 059 narrative: $value',
+      );
+    }
+    final normalizedLog = sliceLogRecord.replaceAll(RegExp(r'\s+'), ' ');
+    for (final value in sliceLogTruth) {
+      expect(
+        normalizedLog,
+        contains(value),
+        reason: 'SLICE_LOG epoch 059 row: $value',
+      );
+    }
+    for (final entry in <(String, String)>[
+      ('DCL-DR-003 epoch 059 narrative', matrixRecord),
+      ('SLICE_LOG epoch 059 row', sliceLogRecord),
+    ]) {
+      final findingIds = RegExp(
+        r'DCL-DR-003-F\d+',
+      ).allMatches(entry.$2).map((match) => match.group(0)).toSet();
+      expect(
+        findingIds,
+        equals({'DCL-DR-003-F36'}),
+        reason: '${entry.$1} must record exactly one finding',
+      );
+    }
 
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
-      'Implementation epoch: `DR-2026-07-19-058`',
+      'Implementation epoch: `DR-2026-07-19-059`',
       '`DCL-DR-003-F1`',
-      'through `DCL-DR-003-F35` are settled evidence',
-      'Equipment Mark Serviced compensation next',
+      'through `DCL-DR-003-F36` are settled evidence',
+      'single livestock-add compensation next',
       'Never create an automatic successor task.',
     ]);
     for (final path in [
@@ -1772,10 +1853,36 @@ void main() {
       'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
     ]) {
       _expectContainsAll(path, [
-        'F1 through F35',
-        'Equipment Mark Serviced compensation next',
+        'F1 through F36',
+        'single livestock-add compensation next',
         'DCL-DR-003` remains open',
       ]);
     }
+
+    final currentLog = _source('docs/agent/SLICE_LOG.md');
+    final overflowLog = _source(
+      'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
+    );
+    expect(
+      RegExp(
+        r'^\| DR-2026-07-19-059 \|',
+        multiLine: true,
+      ).allMatches(currentLog),
+      hasLength(1),
+    );
+    expect(
+      RegExp(
+        r'^\| DR-2026-07-16-034 \|',
+        multiLine: true,
+      ).allMatches(currentLog),
+      isEmpty,
+    );
+    expect(
+      RegExp(
+        r'^\| DR-2026-07-16-034 \|',
+        multiLine: true,
+      ).allMatches(overflowLog),
+      hasLength(1),
+    );
   });
 }

@@ -131,7 +131,7 @@ Widget _wrapWithStorage({
 }
 
 Widget _wrapWithLauncher({
-  required InMemoryStorageService storage,
+  required StorageService storage,
   String tankId = 'tank-1',
   SharedPreferences? prefs,
   bool showProfileProbe = false,
@@ -516,6 +516,127 @@ class _SaveLogFailsStorage implements StorageService {
 
   @override
   Future<void> saveTask(Task task) => _delegate.saveTask(task);
+}
+
+class _ServiceCompensationProbeStorage extends _SaveLogFailsStorage {
+  _ServiceCompensationProbeStorage(
+    super.delegate, {
+    this.failServiceLog = false,
+    this.failEquipmentRollback = false,
+    this.failTaskCompletedLog = false,
+    this.failTaskRollback = false,
+    this.blockServiceLog = false,
+  }) : super(failingLogType: LogType.equipmentMaintenance);
+
+  final bool failServiceLog;
+  final bool failEquipmentRollback;
+  final bool failTaskCompletedLog;
+  final bool failTaskRollback;
+  final bool blockServiceLog;
+  final Completer<void> serviceLogStarted = Completer<void>();
+  final Completer<void> releaseServiceLog = Completer<void>();
+
+  int saveEquipmentCalls = 0;
+  int successfulEquipmentWrites = 0;
+  int serviceLogAttempts = 0;
+  int successfulServiceLogs = 0;
+  int taskCompletedLogAttempts = 0;
+  int durableTaskCompletedLogs = 0;
+  int logDeleteAttempts = 0;
+  int saveTaskCalls = 0;
+  int getTankCalls = 0;
+  int getEquipmentForTankCalls = 0;
+  int getTasksForTankCalls = 0;
+  int recentLogReads = 0;
+  int fullLogReads = 0;
+  final List<String> attemptedServiceLogIds = <String>[];
+  final List<String> attemptedTaskCompletedLogIds = <String>[];
+
+  @override
+  Future<Tank?> getTank(String id) {
+    getTankCalls += 1;
+    return _delegate.getTank(id);
+  }
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) {
+    getEquipmentForTankCalls += 1;
+    return _delegate.getEquipmentForTank(tankId);
+  }
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) {
+    getTasksForTankCalls += 1;
+    return _delegate.getTasksForTank(tankId);
+  }
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) {
+    if (limit == 50) {
+      recentLogReads += 1;
+    } else if (limit == null) {
+      fullLogReads += 1;
+    }
+    return _delegate.getLogsForTank(tankId, limit: limit, after: after);
+  }
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) async {
+    saveEquipmentCalls += 1;
+    if (failEquipmentRollback && saveEquipmentCalls == 2) {
+      throw StateError('equipment service rollback failed');
+    }
+    successfulEquipmentWrites += 1;
+    await _delegate.saveEquipment(equipment);
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    saveTaskCalls += 1;
+    if (failTaskRollback && saveTaskCalls == 3) {
+      throw StateError('equipment service task rollback failed');
+    }
+    await _delegate.saveTask(task);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.equipmentMaintenance) {
+      serviceLogAttempts += 1;
+      attemptedServiceLogIds.add(log.id);
+      if (!serviceLogStarted.isCompleted) {
+        serviceLogStarted.complete();
+      }
+      if (blockServiceLog) {
+        await releaseServiceLog.future;
+      }
+      if (failServiceLog) {
+        await _delegate.saveLog(log);
+        successfulServiceLogs += 1;
+        throw StateError('equipment service log failed');
+      }
+      successfulServiceLogs += 1;
+    } else if (log.type == LogType.taskCompleted) {
+      taskCompletedLogAttempts += 1;
+      attemptedTaskCompletedLogIds.add(log.id);
+      if (failTaskCompletedLog) {
+        await _delegate.saveLog(log);
+        durableTaskCompletedLogs += 1;
+        throw StateError('equipment service task log failed');
+      }
+    }
+    await _delegate.saveLog(log);
+  }
+
+  @override
+  Future<void> deleteLog(String id) async {
+    logDeleteAttempts += 1;
+    await _delegate.deleteLog(id);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1346,8 +1467,7 @@ void main() {
       (tester) async {
         const tankId = 'tank-equipment-delete-rollback-uncertain';
         const equipmentId = 'equip-delete-rollback-uncertain';
-        const taskId =
-            'equip_equip-delete-rollback-uncertain_maintenance';
+        const taskId = 'equip_equip-delete-rollback-uncertain_maintenance';
         final delegate = InMemoryStorageService();
         final storage = _EquipmentDeleteFailureStorage(
           delegate,
@@ -1543,6 +1663,425 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'failed service log rollback reports uncertain service without unsafe retry',
+      (tester) async {
+        const tankId = 'tank-equipment-service-rollback-failure';
+        const equipmentId = 'equip-service-rollback-failure';
+        final lastServiced = _now.subtract(const Duration(days: 30));
+        final delegate = InMemoryStorageService();
+        final storage = _ServiceCompensationProbeStorage(
+          delegate,
+          failServiceLog: true,
+          failEquipmentRollback: true,
+        );
+        await delegate.saveTank(_makeTank(id: tankId));
+        final equipment = Equipment(
+          id: equipmentId,
+          tankId: tankId,
+          type: EquipmentType.filter,
+          name: 'Canister filter',
+          maintenanceIntervalDays: 14,
+          lastServiced: lastServiced,
+          createdAt: _now.subtract(const Duration(days: 60)),
+          updatedAt: _now.subtract(const Duration(days: 30)),
+        );
+        await delegate.saveEquipment(equipment);
+        final debugMessages = <String>[];
+        final previousDebugPrint = debugPrint;
+        debugPrint = (String? message, {int? wrapWidth}) {
+          if (message != null) debugMessages.add(message);
+        };
+        addTearDown(() => debugPrint = previousDebugPrint);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+        final menuButton = tester.widget<PopupMenuButton<String>>(
+          find.byType(PopupMenuButton<String>).first,
+        );
+        final staleOnSelected = menuButton.onSelected;
+        expect(staleOnSelected, isNotNull);
+        final tankReadsBefore = storage.getTankCalls;
+        final equipmentReadsBefore = storage.getEquipmentForTankCalls;
+        final taskReadsBefore = storage.getTasksForTankCalls;
+        final recentLogReadsBefore = storage.recentLogReads;
+        final fullLogReadsBefore = storage.fullLogReads;
+
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Mark Serviced'));
+        await _advance(tester);
+
+        expect(
+          find.text(
+            'Canister filter may already have been marked as serviced. Its '
+            'service history or maintenance task may be incomplete, and '
+            'restoration is uncertain. Check this tank\'s equipment, tasks, '
+            'and recent activity.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Could not mark Canister filter as serviced. Try again in a moment.',
+          ),
+          findsNothing,
+        );
+        expect(
+          find.textContaining(RegExp('try again', caseSensitive: false)),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Canister filter marked as serviced'), findsNothing);
+
+        staleOnSelected!('service');
+        await _advance(tester);
+
+        debugPrint = previousDebugPrint;
+        expect(tester.takeException(), isNull);
+        final storedEquipment = (await delegate.getEquipmentForTank(
+          tankId,
+        )).single;
+        expect(storedEquipment.lastServiced, isNot(lastServiced));
+        expect(storage.saveEquipmentCalls, 2);
+        expect(storage.successfulEquipmentWrites, 1);
+        expect(storage.serviceLogAttempts, 1);
+        expect(storage.successfulServiceLogs, 1);
+        expect(
+          (await delegate.getLogsForTank(tankId)).where(
+            (log) => log.type == LogType.equipmentMaintenance,
+          ),
+          isEmpty,
+        );
+        expect(storage.logDeleteAttempts, 1);
+        expect(storage.getTankCalls, greaterThan(tankReadsBefore));
+        expect(
+          storage.getEquipmentForTankCalls,
+          greaterThanOrEqualTo(equipmentReadsBefore + 2),
+        );
+        expect(
+          storage.getTasksForTankCalls,
+          greaterThanOrEqualTo(taskReadsBefore + 2),
+        );
+        expect(storage.recentLogReads, recentLogReadsBefore + 1);
+        expect(storage.fullLogReads, fullLogReadsBefore + 1);
+
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        final serviceMenuItem = tester.widget<PopupMenuItem<String>>(
+          find
+              .ancestor(
+                of: find.text('Mark Serviced'),
+                matching: find.byType(PopupMenuItem<String>),
+              )
+              .first,
+        );
+        expect(serviceMenuItem.enabled, isFalse);
+
+        final combinedLog = debugMessages.join('\n');
+        expect(combinedLog, contains('EquipmentServiceCompensationException'));
+        expect(combinedLog, contains('equipment service log failed'));
+        expect(combinedLog, contains('equipment service rollback failed'));
+        expect(combinedLog, contains(equipmentId));
+        expect(combinedLog, contains(tankId));
+        expect(combinedLog, contains(storage.attemptedServiceLogIds.single));
+        expect(storage.attemptedTaskCompletedLogIds, isEmpty);
+        expect(combinedLog, isNot(contains('task log')));
+      },
+    );
+
+    testWidgets(
+      'in-flight equipment service ignores a repeated stale callback',
+      (tester) async {
+        const tankId = 'tank-equipment-service-in-flight';
+        final delegate = InMemoryStorageService();
+        final storage = _ServiceCompensationProbeStorage(
+          delegate,
+          blockServiceLog: true,
+        );
+        addTearDown(() {
+          if (!storage.releaseServiceLog.isCompleted) {
+            storage.releaseServiceLog.complete();
+          }
+        });
+        await delegate.saveTank(_makeTank(id: tankId));
+        final lastServiced = _now.subtract(const Duration(days: 30));
+        await delegate.saveEquipment(
+          Equipment(
+            id: 'equip-service-in-flight',
+            tankId: tankId,
+            type: EquipmentType.filter,
+            name: 'Canister filter',
+            maintenanceIntervalDays: 14,
+            lastServiced: lastServiced,
+            createdAt: _now.subtract(const Duration(days: 60)),
+            updatedAt: _now.subtract(const Duration(days: 30)),
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+        final capturedOnSelected = tester
+            .widget<PopupMenuButton<String>>(
+              find.byType(PopupMenuButton<String>).first,
+            )
+            .onSelected;
+        expect(capturedOnSelected, isNotNull);
+
+        capturedOnSelected!('service');
+        await storage.serviceLogStarted.future;
+        capturedOnSelected('service');
+        await tester.pump();
+
+        expect(storage.saveEquipmentCalls, 1);
+        expect(storage.serviceLogAttempts, 1);
+
+        storage.releaseServiceLog.complete();
+        await _advance(tester);
+
+        final storedEquipment = (await delegate.getEquipmentForTank(
+          tankId,
+        )).single;
+        expect(storedEquipment.lastServiced, isNot(lastServiced));
+        expect(storage.saveEquipmentCalls, 1);
+        expect(storage.serviceLogAttempts, 1);
+        expect(storage.successfulServiceLogs, 1);
+        expect(storage.taskCompletedLogAttempts, 1);
+        expect(
+          (await delegate.getLogsForTank(tankId)).where(
+            (log) => log.type == LogType.equipmentMaintenance,
+          ),
+          hasLength(1),
+        );
+        expect(
+          (await delegate.getLogsForTank(tankId)).where(
+            (log) => log.type == LogType.taskCompleted,
+          ),
+          hasLength(1),
+        );
+        expect(find.text('Canister filter marked as serviced'), findsOneWidget);
+        await tester.pumpAndSettle();
+      },
+    );
+
+    testWidgets(
+      'uncertain equipment service reloads authority after leaving Equipment',
+      (tester) async {
+        const tankId = 'tank-equipment-service-unmounted';
+        final delegate = InMemoryStorageService();
+        final storage = _ServiceCompensationProbeStorage(
+          delegate,
+          failServiceLog: true,
+          failEquipmentRollback: true,
+          blockServiceLog: true,
+        );
+        addTearDown(() {
+          if (!storage.releaseServiceLog.isCompleted) {
+            storage.releaseServiceLog.complete();
+          }
+        });
+        await delegate.saveTank(_makeTank(id: tankId));
+        await delegate.saveEquipment(
+          Equipment(
+            id: 'equip-service-unmounted',
+            tankId: tankId,
+            type: EquipmentType.filter,
+            name: 'Canister filter',
+            maintenanceIntervalDays: 14,
+            lastServiced: _now.subtract(const Duration(days: 30)),
+            createdAt: _now.subtract(const Duration(days: 60)),
+            updatedAt: _now.subtract(const Duration(days: 30)),
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+        await tester.tap(find.text('Open equipment'));
+        await tester.pumpAndSettle();
+        final capturedOnSelected = tester
+            .widget<PopupMenuButton<String>>(
+              find.byType(PopupMenuButton<String>).first,
+            )
+            .onSelected;
+        expect(capturedOnSelected, isNotNull);
+        final tankReadsBefore = storage.getTankCalls;
+        final equipmentReadsBefore = storage.getEquipmentForTankCalls;
+        final taskReadsBefore = storage.getTasksForTankCalls;
+        final recentLogReadsBefore = storage.recentLogReads;
+        final fullLogReadsBefore = storage.fullLogReads;
+
+        capturedOnSelected!('service');
+        await storage.serviceLogStarted.future;
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+        expect(find.text('Open equipment'), findsOneWidget);
+
+        storage.releaseServiceLog.complete();
+        await _advance(tester);
+
+        expect(tester.takeException(), isNull);
+        expect(storage.saveEquipmentCalls, 2);
+        expect(storage.serviceLogAttempts, 1);
+        expect(storage.getTankCalls, greaterThan(tankReadsBefore));
+        expect(
+          storage.getEquipmentForTankCalls,
+          greaterThanOrEqualTo(equipmentReadsBefore + 2),
+        );
+        expect(
+          storage.getTasksForTankCalls,
+          greaterThanOrEqualTo(taskReadsBefore + 2),
+        );
+        expect(storage.recentLogReads, recentLogReadsBefore + 1);
+        expect(storage.fullLogReads, fullLogReadsBefore + 1);
+        expect(
+          (await delegate.getLogsForTank(tankId)).where(
+            (log) => log.type == LogType.equipmentMaintenance,
+          ),
+          isEmpty,
+        );
+        expect(storage.logDeleteAttempts, 1);
+
+        await tester.tap(find.text('Open equipment'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Mark Serviced'));
+        await _advance(tester);
+
+        expect(storage.serviceLogAttempts, 2);
+        expect(storage.logDeleteAttempts, 2);
+        expect(
+          (await delegate.getLogsForTank(tankId)).where(
+            (log) => log.type == LogType.equipmentMaintenance,
+          ),
+          isEmpty,
+        );
+      },
+    );
+
+    testWidgets(
+      'failed service task rollback reports uncertain service without unsafe retry',
+      (tester) async {
+        const tankId = 'tank-equipment-service-task-rollback';
+        const equipmentId = 'equip-service-task-rollback';
+        const taskId = 'equip_equip-service-task-rollback_maintenance';
+        final lastServiced = _now.subtract(const Duration(days: 30));
+        final originalDueDate = _now.subtract(const Duration(days: 1));
+        final delegate = InMemoryStorageService();
+        final storage = _ServiceCompensationProbeStorage(
+          delegate,
+          failTaskCompletedLog: true,
+          failTaskRollback: true,
+        );
+        await delegate.saveTank(_makeTank(id: tankId));
+        await delegate.saveEquipment(
+          Equipment(
+            id: equipmentId,
+            tankId: tankId,
+            type: EquipmentType.filter,
+            name: 'Canister filter',
+            maintenanceIntervalDays: 14,
+            lastServiced: lastServiced,
+            createdAt: _now.subtract(const Duration(days: 60)),
+            updatedAt: _now.subtract(const Duration(days: 30)),
+          ),
+        );
+        await delegate.saveTask(
+          Task(
+            id: taskId,
+            tankId: tankId,
+            title: 'Service Canister filter',
+            description: 'Maintenance for Filter',
+            recurrence: RecurrenceType.custom,
+            intervalDays: 14,
+            dueDate: originalDueDate,
+            priority: TaskPriority.normal,
+            isEnabled: true,
+            isAutoGenerated: true,
+            relatedEquipmentId: equipmentId,
+            createdAt: _now.subtract(const Duration(days: 60)),
+            updatedAt: _now.subtract(const Duration(days: 30)),
+          ),
+        );
+        final debugMessages = <String>[];
+        final previousDebugPrint = debugPrint;
+        debugPrint = (String? message, {int? wrapWidth}) {
+          if (message != null) debugMessages.add(message);
+        };
+        addTearDown(() => debugPrint = previousDebugPrint);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await _advance(tester);
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Mark Serviced'));
+        await _advance(tester);
+
+        expect(
+          find.text(
+            'Canister filter may already have been marked as serviced. Its '
+            'service history or maintenance task may be incomplete, and '
+            'restoration is uncertain. Check this tank\'s equipment, tasks, '
+            'and recent activity.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.textContaining(RegExp('try again', caseSensitive: false)),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Canister filter marked as serviced'), findsNothing);
+
+        debugPrint = previousDebugPrint;
+        expect(tester.takeException(), isNull);
+        final storedEquipment = (await delegate.getEquipmentForTank(
+          tankId,
+        )).single;
+        final storedTask = (await delegate.getTasksForTank(tankId)).single;
+        final storedLogs = await delegate.getLogsForTank(tankId);
+        expect(storedEquipment.lastServiced, lastServiced);
+        expect(storedTask.completionCount, 1);
+        expect(storedTask.lastCompletedAt, isNotNull);
+        expect(storedTask.dueDate, isNot(originalDueDate));
+        expect(
+          storedLogs.where(
+            (log) => log.type == LogType.equipmentMaintenance,
+          ),
+          isEmpty,
+        );
+        expect(
+          storedLogs.where((log) => log.type == LogType.taskCompleted),
+          isEmpty,
+        );
+        expect(storage.logDeleteAttempts, 2);
+        expect(storage.saveTaskCalls, 3);
+        expect(storage.taskCompletedLogAttempts, 1);
+        expect(storage.durableTaskCompletedLogs, 1);
+
+        final combinedLog = debugMessages.join('\n');
+        expect(combinedLog, contains('EquipmentServiceCompensationException'));
+        expect(combinedLog, contains('equipment service task log failed'));
+        expect(combinedLog, contains('equipment service task rollback failed'));
+        expect(combinedLog, contains(equipmentId));
+        expect(combinedLog, contains(tankId));
+        expect(combinedLog, contains(taskId));
+        expect(combinedLog, contains(storage.attemptedServiceLogIds.single));
+        expect(
+          combinedLog,
+          contains(storage.attemptedTaskCompletedLogIds.single),
+        );
+      },
+    );
 
     testWidgets('failed service task log restores equipment and task', (
       tester,

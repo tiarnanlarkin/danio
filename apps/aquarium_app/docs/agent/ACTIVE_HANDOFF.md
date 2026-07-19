@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; Tasks completion compensation implemented
+Status: manual lean workflow; Equipment service compensation implemented
 Updated: 2026-07-19
-Implementation epoch: `DR-2026-07-19-058`
-Marker: `danio-dcl-dr-003-tasks-completion-rollback-uncertainty-proof-2026-07-19/1`
+Implementation epoch: `DR-2026-07-19-059`
+Marker: `danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -28,15 +28,22 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Fresh post-F34 Full gate on the unchanged checkpoint passed on 2026-07-19:
   signing-secret guard, dependency validation, custom lint, 2,263 tests,
   analyze, and debug APK build; `GATE_TOTAL|PASS|183016|Full`.
-- Epoch 058 began from clean, aligned `main` at `62969de3` with one worktree
+- Epoch 059 began from clean, aligned `main` at `68ba8518` with one worktree
   and no competing writer.
+- Epoch 059 final verification is clean: 33 Equipment tests plus analyze passed
+  through Focused (`GATE_TOTAL|PASS|17480|Focused`); three independent read-only
+  reviews have no remaining findings; reset-assisted Full passed custom lint,
+  2,273 tests, analyze, and debug APK build
+  (`GATE_TOTAL|PASS|181202|Full`); final Docs passed 23 contract/signing checks
+  (`GATE_TOTAL|PASS|5833|Docs`).
 - `DCL-DR-001` is `closed` in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - `DCL-DR-002` is `closed` in
   `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
 - `DCL-DR-003` remains `open` in
   `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`. Findings `DCL-DR-003-F1`
-  through `DCL-DR-003-F35` are settled evidence. F34 is complete and F35 is
-  complete; neither may reopen without contradictory live evidence.
+  through `DCL-DR-003-F36` are settled evidence. F34 is complete and must not
+  reopen without contradictory live evidence. F35 and F36 are also complete;
+  none may reopen without contradictory live evidence.
 - `DCL-DR-004` remains after DCL-DR-003 and owns the livestock-removal backup
   tombstone relationship.
 
@@ -45,8 +52,8 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 The ten planned product/test epochs are:
 
 1. Tasks completion compensation - complete in `DR-2026-07-19-058`.
-2. Equipment Mark Serviced compensation next.
-3. Single livestock-add compensation.
+2. Equipment Mark Serviced compensation - complete in `DR-2026-07-19-059`.
+3. Single livestock-add compensation next.
 4. Backup tombstone relationship.
 5. Fish ID activity consent.
 6. Compatibility activity consent.
@@ -94,13 +101,14 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Integrate `DR-2026-07-19-058` on clean pushed `main`. Focused, Docs, Full, and
-three independent read-only reviews pass. The RED/GREEN proves
-`DCL-DR-003-F35`: one durable completion, no completion log, both errors and
-task/tank context retained, authoritative tank/task/equipment/log reload even
-after leaving Tasks, and in-flight/visible/stale completion locks without unsafe
-Retry. Then allocate one new epoch for Equipment Mark Serviced
-compensation next. Keep single livestock-add and Wishlist replay separate; do
-not rank or implement either in epoch 058.
+`DR-2026-07-19-059` closes `DCL-DR-003-F36`. Focused RED/GREEN proves
+`DCL-DR-003-F36`: persisted-then-failed service history plus failed equipment
+restoration preserves every failure/stack and affected ID; attempted service
+and task log IDs are compensated; route re-entry leaves zero residual service
+history rows; tank/equipment/task/log authority reloads after route exit; and
+in-flight/visible/stale Mark Serviced callbacks lock without unsafe Retry.
+Focused, Docs, Full, and three independent reviews pass. On clean aligned main,
+allocate one new epoch for single livestock-add compensation next. Keep Wishlist
+replay separate; do not rank or implement it in epoch 059.
 
 Stop after `DCL-RC-001` closes with the final APK/evidence packet and no P0/P1.
