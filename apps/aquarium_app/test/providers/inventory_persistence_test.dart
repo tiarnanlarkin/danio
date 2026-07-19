@@ -82,6 +82,50 @@ class _FalseRemovePrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _UncertainInventoryUsePrefs implements SharedPreferences {
+  _UncertainInventoryUsePrefs(
+    this._delegate, {
+    required this.effectError,
+    required this.effectStackTrace,
+    required this.restoreError,
+    required this.restoreStackTrace,
+  });
+
+  final SharedPreferences _delegate;
+  final Object effectError;
+  final StackTrace effectStackTrace;
+  final Object restoreError;
+  final StackTrace restoreStackTrace;
+
+  int inventoryReads = 0;
+  int profileReads = 0;
+  int inventoryWrites = 0;
+
+  @override
+  String? getString(String key) {
+    if (key == 'shop_inventory') inventoryReads += 1;
+    if (key == 'user_profile') profileReads += 1;
+    return _delegate.getString(key);
+  }
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (key == 'shop_inventory') {
+      inventoryWrites += 1;
+      if (inventoryWrites > 1) {
+        return Error.throwWithStackTrace(restoreError, restoreStackTrace);
+      }
+    }
+    if (key == 'user_profile') {
+      return Error.throwWithStackTrace(effectError, effectStackTrace);
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final gemsState = container.read(gemsProvider);
@@ -261,6 +305,162 @@ void main() {
           jsonEncode(originalProfile.toJson()),
         );
         expect(prefs.getString('shop_inventory'), originalInventoryJson);
+      },
+    );
+
+    test(
+      'useItem preserves effect and rollback failures when inventory restore is uncertain',
+      () async {
+        final originalProfile = _profile();
+        final ownedItem = InventoryItem(
+          itemId: 'streak_freeze',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final originalInventoryJson = jsonEncode([ownedItem.toJson()]);
+        final effectError = StateError('profile effect failed');
+        final effectStackTrace = StackTrace.fromString('profile effect stack');
+        final restoreError = StateError('inventory restore failed');
+        final restoreStackTrace = StackTrace.fromString(
+          'inventory restore stack',
+        );
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+          'shop_inventory': originalInventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final uncertainPrefs = _UncertainInventoryUsePrefs(
+          prefs,
+          effectError: effectError,
+          effectStackTrace: effectStackTrace,
+          restoreError: restoreError,
+          restoreStackTrace: restoreStackTrace,
+        );
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith(
+              (ref) async => uncertainPrefs,
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final inventorySub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(inventorySub.close);
+        final profileSub = container.listen(userProfileProvider, (_, __) {});
+        addTearDown(profileSub.close);
+        await _waitForLoad(container);
+
+        Object? useFailure;
+        StackTrace? useFailureStackTrace;
+        try {
+          await container
+              .read(inventoryProvider.notifier)
+              .useItem('streak_freeze');
+        } catch (error, stackTrace) {
+          useFailure = error;
+          useFailureStackTrace = stackTrace;
+        }
+
+        expect(useFailure, isNotNull);
+        expect(
+          useFailure.runtimeType.toString(),
+          'InventoryUseCompensationException',
+          reason: '$useFailure\n$useFailureStackTrace',
+        );
+        expect(useFailure, isA<InventoryUseCompensationException>());
+        final uncertainty = useFailure! as InventoryUseCompensationException;
+        expect(uncertainty.effectError, same(effectError));
+        expect(
+          uncertainty.effectStackTrace.toString(),
+          effectStackTrace.toString(),
+        );
+        expect(uncertainty.restoreFailures, hasLength(1));
+        expect(uncertainty.restoreFailures.single.error, same(restoreError));
+        expect(
+          uncertainty.restoreFailures.single.stackTrace.toString(),
+          restoreStackTrace.toString(),
+        );
+        expect(uncertainty.itemId, 'streak_freeze');
+        expect(uncertainty.itemName, 'Streak Freeze');
+        expect(uncertainty.itemType, ShopItemType.streakFreeze);
+        expect(
+          useFailureStackTrace.toString(),
+          effectStackTrace.toString(),
+        );
+
+        await _waitForLoad(container);
+        expect(uncertainPrefs.inventoryReads, greaterThanOrEqualTo(2));
+        expect(uncertainPrefs.profileReads, greaterThanOrEqualTo(2));
+        expect(container.read(inventoryProvider).valueOrNull, isEmpty);
+        expect(
+          container.read(userProfileProvider).valueOrNull?.hasStreakFreeze,
+          isFalse,
+        );
+        expect(
+          jsonDecode(prefs.getString('shop_inventory')!) as List<dynamic>,
+          isEmpty,
+        );
+        expect(
+          jsonDecode(prefs.getString('user_profile')!)['hasStreakFreeze'],
+          isFalse,
+        );
+        expect(
+          await container
+              .read(inventoryProvider.notifier)
+              .useItem('streak_freeze'),
+          isFalse,
+        );
+      },
+    );
+
+    test(
+      'useItem restores inventory after profile effect failure when compensation succeeds',
+      () async {
+        final originalProfile = _profile();
+        final ownedItem = InventoryItem(
+          itemId: 'streak_freeze',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final originalInventoryJson = jsonEncode([ownedItem.toJson()]);
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+          'shop_inventory': originalInventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith(
+              (ref) async => throwingPrefs,
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final inventorySub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(inventorySub.close);
+        final profileSub = container.listen(userProfileProvider, (_, __) {});
+        addTearDown(profileSub.close);
+        await _waitForLoad(container);
+
+        await expectLater(
+          container.read(inventoryProvider.notifier).useItem('streak_freeze'),
+          throwsA(isA<StateError>()),
+        );
+
+        final restoredInventory = container.read(inventoryProvider).valueOrNull;
+        expect(restoredInventory, hasLength(1));
+        expect(restoredInventory?.single.itemId, ownedItem.itemId);
+        expect(restoredInventory?.single.quantity, ownedItem.quantity);
+        expect(restoredInventory?.single.purchasedAt, ownedItem.purchasedAt);
+        expect(prefs.getString('shop_inventory'), originalInventoryJson);
+        expect(
+          container.read(userProfileProvider).valueOrNull?.hasStreakFreeze,
+          isFalse,
+        );
       },
     );
 

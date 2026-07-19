@@ -24,6 +24,7 @@ import 'package:danio/screens/inventory_screen.dart';
 import 'package:danio/services/room_theme_unlock_service.dart';
 import 'package:danio/services/tank_decoration_unlock_service.dart';
 import 'package:danio/theme/room_themes.dart';
+import 'package:danio/widgets/core/app_button.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -529,6 +530,90 @@ void main() {
         );
         expect(find.text(item.name), findsOneWidget);
         expect(prefs.getString('shop_inventory'), inventoryJson);
+      },
+    );
+
+    testWidgets(
+      'failed consumable rollback reports lost-item uncertainty without unsafe retry',
+      (tester) async {
+        final item = ShopCatalog.getById('streak_freeze')!;
+        final owned = InventoryItem(
+          itemId: item.id,
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final remainingItem = InventoryItem(
+          itemId: 'xp_boost_1h',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 13),
+        );
+
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_profile().toJson()),
+          'shop_inventory': jsonEncode([
+            owned.toJson(),
+            remainingItem.toJson(),
+          ]),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        var inventoryWrites = 0;
+        final throwingPrefs = _ThrowingSetStringPrefs(prefs, (key, _) {
+          if (key == 'shop_inventory') {
+            inventoryWrites += 1;
+            return inventoryWrites > 1;
+          }
+          return key == 'user_profile';
+        });
+
+        await tester.pumpWidget(_wrap(prefs: throwingPrefs));
+        await _advance(tester);
+
+        final useButtons = find.widgetWithText(AppButton, 'USE');
+        final staleUse = tester.widget<AppButton>(useButtons.at(1)).onPressed;
+        expect(staleUse, isNotNull);
+
+        await tester.tap(useButtons.first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Use Now'));
+        await _advance(tester);
+
+        expect(
+          find.text(
+            'Streak Freeze may have been consumed without applying its effect. '
+            'Inventory restoration is uncertain.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Couldn\'t use that item. Try again.'),
+          findsNothing,
+        );
+        expect(
+          find.textContaining(RegExp('try again', caseSensitive: false)),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Streak freeze activated!'), findsNothing);
+        expect(find.text('2x XP Boost'), findsOneWidget);
+        final lockedUseButton = tester.widget<AppButton>(
+          find.widgetWithText(AppButton, 'USE'),
+        );
+        expect(lockedUseButton.onPressed, isNull);
+        await tester.tap(find.widgetWithText(AppButton, 'USE'));
+        await tester.pumpAndSettle();
+        expect(find.text('Use Now'), findsNothing);
+
+        staleUse!();
+        await tester.pumpAndSettle();
+        expect(find.text('Use Now'), findsNothing);
+
+        final persistedInventory =
+            jsonDecode(prefs.getString('shop_inventory')!) as List<dynamic>;
+        expect(persistedInventory, hasLength(1));
+        expect(
+          (persistedInventory.single as Map<String, dynamic>)['itemId'],
+          remainingItem.itemId,
+        );
       },
     );
   });

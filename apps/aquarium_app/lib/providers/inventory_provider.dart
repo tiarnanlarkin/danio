@@ -35,6 +35,45 @@ class InventoryPurchaseRefundException implements Exception {
       'Inventory save failed: $inventorySaveError; gem refund failed: $refundError';
 }
 
+class InventoryRestoreFailure {
+  const InventoryRestoreFailure({
+    required this.error,
+    required this.stackTrace,
+  });
+
+  final Object error;
+  final StackTrace stackTrace;
+}
+
+class InventoryUseCompensationException implements Exception {
+  InventoryUseCompensationException({
+    required this.effectError,
+    required this.effectStackTrace,
+    required List<InventoryRestoreFailure> restoreFailures,
+    required this.itemId,
+    required this.itemName,
+    required this.itemType,
+  }) : restoreFailures = List<InventoryRestoreFailure>.unmodifiable(
+         restoreFailures,
+       );
+
+  final Object effectError;
+  final StackTrace effectStackTrace;
+  final List<InventoryRestoreFailure> restoreFailures;
+  final String itemId;
+  final String itemName;
+  final ShopItemType itemType;
+
+  @override
+  String toString() {
+    final restoreErrors = restoreFailures
+        .map((failure) => failure.error)
+        .join('; ');
+    return 'Inventory effect failed for $itemName ($itemId, $itemType): '
+        '$effectError; inventory restoration failed: $restoreErrors';
+  }
+}
+
 class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   InventoryNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
@@ -290,11 +329,16 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
           return false;
         }
       } catch (e, st) {
+        InventoryRestoreFailure? restoreFailure;
         if (consumptionSaved) {
           try {
             await _save(currentInventory);
             state = AsyncValue.data(currentInventory);
           } catch (rollbackError, rollbackStack) {
+            restoreFailure = InventoryRestoreFailure(
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            );
             logError(
               'InventoryProvider: failed to restore inventory after item effect failure: $rollbackError',
               stackTrace: rollbackStack,
@@ -307,6 +351,21 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
           stackTrace: st,
           tag: 'InventoryProvider',
         );
+        if (restoreFailure != null) {
+          ref.invalidate(userProfileProvider);
+          ref.invalidateSelf();
+          Error.throwWithStackTrace(
+            InventoryUseCompensationException(
+              effectError: e,
+              effectStackTrace: st,
+              restoreFailures: [restoreFailure],
+              itemId: shopItem.id,
+              itemName: shopItem.name,
+              itemType: shopItem.type,
+            ),
+            st,
+          );
+        }
         rethrow;
       }
 

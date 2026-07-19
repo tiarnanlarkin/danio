@@ -1181,7 +1181,6 @@ void main() {
       'DR-2026-07-16-026',
       'DR-2026-07-16-027',
       'DR-2026-07-16-028',
-      'DR-2026-07-16-029',
       'DR-2026-07-16-030',
       'DR-2026-07-16-031',
       'DR-2026-07-16-032',
@@ -1203,7 +1202,6 @@ void main() {
       'DCL-DR-002',
       'DCL-DR-003-F13',
       'DCL-DR-003-F14',
-      'DCL-DR-003-F15',
       'DCL-DR-003-F16',
       'DCL-DR-003-F17',
       'DCL-DR-003-F18',
@@ -1232,7 +1230,6 @@ void main() {
       'danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1',
       'danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1',
-      'danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1',
       'danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1',
       'danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1',
@@ -1275,6 +1272,9 @@ void main() {
         'DR-2026-07-16-019',
         'DR-2026-07-16-020',
         'DR-2026-07-16-021',
+        'DR-2026-07-16-029',
+        'DCL-DR-003-F15',
+        'danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1',
         'WF-2026-07-15-019',
         'DCL-DR-003-F2',
         'DCL-DR-003-F3',
@@ -1417,10 +1417,6 @@ void main() {
     ];
 
     _expectContainsAll(
-      'docs/agent/ACTIVE_HANDOFF.md',
-      rankedFindingTruth,
-    );
-    _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       rankedFindingTruth,
     );
@@ -1429,8 +1425,7 @@ void main() {
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       [
         'ranked only in `DR-2026-07-19-053`',
-        'Inventory consumable use',
-        'higher-risk current defect',
+        'every inventory-restore failure/stack',
         'remain outside',
       ],
     );
@@ -1440,5 +1435,29 @@ void main() {
       'inventory rollback failed',
       'No closure/successor',
     ]);
+  });
+
+  test('DCL-DR-003 records the fixed F33 inventory-use uncertainty epoch', () {
+    const fixedFindingTruth = [
+      'DR-2026-07-19-054',
+      'DCL-DR-003-F33',
+      'danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1',
+      'InventoryUseCompensationException',
+      'useItem preserves effect and rollback failures when inventory restore is uncertain',
+      'useItem restores inventory after profile effect failure when compensation succeeds',
+      'failed consumable rollback reports lost-item uncertainty without unsafe retry',
+      'inventory and profile authority',
+      'DCL-DR-003 remains open',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      fixedFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      fixedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
 }

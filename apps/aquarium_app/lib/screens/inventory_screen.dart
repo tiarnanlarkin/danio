@@ -49,6 +49,7 @@ class InventoryScreen extends ConsumerStatefulWidget {
 class _InventoryScreenState extends ConsumerState<InventoryScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _inventoryUseUncertain = false;
 
   @override
   void initState() {
@@ -187,7 +188,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   emptyTitle: 'No Consumables',
                   emptyMessage: 'Visit the Gem Shop to buy power-ups!',
                   showUseButton: true,
-                  onUse: _handleUseItem,
+                  onUse: _inventoryUseUncertain ? null : _handleUseItem,
                 ),
                 _InventoryGrid(
                   items: activeItems,
@@ -214,12 +215,13 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   }
 
   Future<void> _handleUseItem(InventoryItem item) async {
+    if (_inventoryUseUncertain) return;
     final shopItem = ShopCatalog.getById(item.itemId);
     if (shopItem == null) return;
 
     // Show confirmation dialog
     final confirmed = await _showUseDialog(shopItem, item);
-    if (!confirmed) return;
+    if (!confirmed || _inventoryUseUncertain) return;
 
     // Use the item
     final inventoryNotifier = ref.read(inventoryProvider.notifier);
@@ -233,6 +235,15 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
         tag: 'InventoryScreen',
       );
       if (!mounted) return;
+      if (e is InventoryUseCompensationException) {
+        setState(() => _inventoryUseUncertain = true);
+        DanioSnackBar.warning(
+          context,
+          '${e.itemName} may have been consumed without applying its effect. '
+          'Inventory restoration is uncertain.',
+        );
+        return;
+      }
       DanioSnackBar.error(context, 'Couldn\'t use that item. Try again.');
       return;
     }
@@ -1020,7 +1031,7 @@ class _InventoryItemCard extends StatelessWidget {
               if (showUseButton && item.quantity > 0)
                 AppButton(
                   label: 'USE',
-                  onPressed: () => onUse?.call(item),
+                  onPressed: onUse == null ? null : () => onUse!(item),
                   variant: AppButtonVariant.primary,
                   isFullWidth: true,
                   size: AppButtonSize.small,

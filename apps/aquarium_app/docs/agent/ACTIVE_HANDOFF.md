@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-19
-Product epoch: `DR-2026-07-19-053`
-Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-19/7`
+Product epoch: `DR-2026-07-19-054`
+Marker: `danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -70,7 +70,7 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F30` is locally fixed in `DR-2026-07-19-048` under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentAddCompensationException`; `failed maintenance-task sync rolls back new equipment`; `failed equipment-add rollback reports uncertainty and blocks duplicate retry`; `stale equipment-add retry cannot bypass uncertain persistence lock`; `clean equipment-add compensation retains safe Retry`. DCL-DR-003 remains open.
 - `DCL-DR-003-F31` is locally fixed in `DR-2026-07-19-050` under `danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentDeleteCompensationException`; `failed maintenance-task deletion keeps equipment saved`; `failed equipment-delete rollback reports orphan uncertainty`; the equipment is gone and its maintenance task may remain. DCL-DR-003 remains open.
 - `DCL-DR-003-F32` is locally fixed in `DR-2026-07-19-052` under `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`: `LivestockBulkMoveCompensationException`; `rolls back earlier moves when a later save fails`; `bulk move preserves initiating and rollback failures when compensation is uncertain`; `failed bulk-move rollback reports partial-move uncertainty without unsafe retry`; source and target tank and livestock authority refreshes. DCL-DR-003 remains open.
-- `DCL-DR-003-F33` was ranked only in `DR-2026-07-19-053` under `danio-dcl-dr-003-next-finding-triage-2026-07-19/7` and remains unimplemented. Inventory consumable use persists removal first; dual effect/restore failure discards the rollback error, reports only the effect error, and leaves try-again guidance after the item is absent. Existing `useItem surfaces inventory save failures before applying profile effect` and `failed item use shows retry feedback and keeps the item visible` cover write one. Temporary RED `useItem preserves effect and rollback failures when inventory restore is uncertain` proved persisted/provider `[]`, absent effect, false retry, and omitted `shop_inventory`; the probe was removed. Implement `failed consumable rollback reports lost-item uncertainty without unsafe retry`. DCL-DR-003 remains open; no closure is inferred.
+- `DCL-DR-003-F33` is locally fixed in `DR-2026-07-19-054` under `danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1`: `InventoryUseCompensationException` preserves the profile-effect error/stack, every inventory-restore failure/stack, and Streak Freeze ID/name/type context. Failed restoration leaves the item absent, refreshes inventory and profile authority, and warns that it may have been consumed without its effect while locking stale use callbacks without success or Retry. `useItem preserves effect and rollback failures when inventory restore is uncertain`, `useItem restores inventory after profile effect failure when compensation succeeds`, and `failed consumable rollback reports lost-item uncertainty without unsafe retry` prove the boundary. The final 62-test Focused gate and analyze passed; independent settled-diff review found no findings after its stale-callback proof was strengthened; the unchanged final Full gate passed after the two recorded recovery attempts. DCL-DR-003 remains open; no closure is inferred.
 
 ## Frozen autonomy
 
@@ -101,7 +101,7 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F26 are settled. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, F30 is locally fixed, F31 is locally fixed, and F32 is locally fixed. F33 is the one ranked unimplemented finding from `DR-2026-07-19-053`. No row closure is inferred.
+- `DCL-DR-003` remains `open`; F1-F26 are settled. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, F30 is locally fixed, F31 is locally fixed, F32 is locally fixed, and F33 is locally fixed. No row closure is inferred and no second finding was ranked in this epoch.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -144,6 +144,5 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Handoff only; do not create a successor. Implement only `DCL-DR-003-F33` in a separate Tier 2 epoch under `danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1`.
-Write `useItem preserves effect and rollback failures when inventory restore is uncertain` first: let the initial `shop_inventory` consumption write succeed, make the Streak Freeze `user_profile` effect fail, then make the `shop_inventory` restore fail. RED must prove empty persisted/provider inventory, absent effect, false retry, and omitted restore cause. Preserve both errors/stacks and item ID in an explicit uncertain-use outcome; refresh inventory/profile authority; add `failed consumable rollback reports lost-item uncertainty without unsafe retry` and warn that the item may have been consumed without benefit, with no success, Retry action, or try-again guidance. Keep initial-save failure and successful compensation regression GREEN.
-Likely files: `lib/providers/inventory_provider.dart`, `lib/screens/inventory_screen.dart`, `test/providers/inventory_persistence_test.dart`, `test/widget_tests/inventory_screen_test.dart`, and current-doc closeout. Keep F1-F32, missing catalog, backup relationships/DCL-DR-004, Equipment Mark Serviced compensation, parked hot reload, frozen autonomy, and all parked external scope out. Do not infer closure or rank a second finding.
+Handoff only; do not create a successor. After the F33 branch is verified, fast-forwarded, pushed, and clean, use a separate manual triage epoch to inspect the remaining `DCL-DR-003` matrix/source/test boundaries and rank at most one fresh current finding. Do not infer DCL-DR-003 closure from F33.
+Keep F1-F33 regression context, missing catalog handling, backup relationships and all `DCL-DR-004` work, Equipment Mark Serviced, Wishlist replay, single-livestock-add, parked hot reload, frozen autonomy, and all parked external scope out until a separate authority-backed task selects one of them.
