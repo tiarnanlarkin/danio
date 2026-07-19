@@ -224,6 +224,67 @@ class _BulkMoveLivestockSaveFailsStorage extends _TestStorageService {
   }
 }
 
+class _BulkMoveLivestockSaveAndRollbackFailStorage extends _TestStorageService {
+  _BulkMoveLivestockSaveAndRollbackFailStorage({
+    required this.movedLivestockId,
+    required this.failingLivestockId,
+    required this.sourceTankId,
+    required this.targetTankId,
+  });
+
+  final String movedLivestockId;
+  final String failingLivestockId;
+  final String sourceTankId;
+  final String targetTankId;
+  final initiatingError = StateError('livestock save failed');
+  final rollbackError = StateError('livestock rollback failed');
+  final getTankCalls = <String, int>{};
+  final getLivestockForTankCalls = <String, int>{};
+  int getAllTanksCalls = 0;
+  var _firstMovePersisted = false;
+
+  @override
+  Future<List<Tank>> getAllTanks() {
+    getAllTanksCalls += 1;
+    return super.getAllTanks();
+  }
+
+  @override
+  Future<Tank?> getTank(String id) {
+    getTankCalls.update(id, (count) => count + 1, ifAbsent: () => 1);
+    return super.getTank(id);
+  }
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) {
+    getLivestockForTankCalls.update(
+      tankId,
+      (count) => count + 1,
+      ifAbsent: () => 1,
+    );
+    return super.getLivestockForTank(tankId);
+  }
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    if (livestock.id == movedLivestockId && livestock.tankId == targetTankId) {
+      await super.saveLivestock(livestock);
+      _firstMovePersisted = true;
+      return;
+    }
+    if (livestock.id == failingLivestockId &&
+        livestock.tankId == targetTankId) {
+      throw initiatingError;
+    }
+    if (_firstMovePersisted &&
+        livestock.id == movedLivestockId &&
+        livestock.tankId == sourceTankId) {
+      throw rollbackError;
+    }
+    await super.saveLivestock(livestock);
+  }
+}
+
 class _AddDemoTankLivestockSaveFailsStorage extends _TestStorageService {
   _AddDemoTankLivestockSaveFailsStorage({required this.previousDemoTankId});
 
@@ -1183,5 +1244,138 @@ void main() {
       );
       expect(targetLivestock, isEmpty);
     });
+
+    test(
+      'bulk move preserves initiating and rollback failures when compensation is uncertain',
+      () async {
+        const sourceTankId = 'bulk-move-uncertain-source';
+        const targetTankId = 'bulk-move-uncertain-target';
+        const movedLivestockId = 'bulk-move-uncertain-neons';
+        const failingLivestockId = 'bulk-move-uncertain-corys';
+        final storage = _BulkMoveLivestockSaveAndRollbackFailStorage(
+          movedLivestockId: movedLivestockId,
+          failingLivestockId: failingLivestockId,
+          sourceTankId: sourceTankId,
+          targetTankId: targetTankId,
+        );
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        final now = DateTime.now();
+        await storage.saveTank(
+          _makeTank(id: sourceTankId, name: 'Source Tank'),
+        );
+        await storage.saveTank(
+          _makeTank(id: targetTankId, name: 'Target Tank'),
+        );
+        await storage.saveLivestock(
+          Livestock(
+            id: movedLivestockId,
+            tankId: sourceTankId,
+            commonName: 'Neon Tetra',
+            count: 8,
+            dateAdded: now,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        await storage.saveLivestock(
+          Livestock(
+            id: failingLivestockId,
+            tankId: sourceTankId,
+            commonName: 'Corydoras',
+            count: 5,
+            dateAdded: now,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+
+        final tanksSubscription = container.listen(
+          tanksProvider,
+          (_, __) {},
+          fireImmediately: true,
+        );
+        final sourceTankSubscription = container.listen(
+          tankProvider(sourceTankId),
+          (_, __) {},
+          fireImmediately: true,
+        );
+        final targetTankSubscription = container.listen(
+          tankProvider(targetTankId),
+          (_, __) {},
+          fireImmediately: true,
+        );
+        final sourceLivestockSubscription = container.listen(
+          livestockProvider(sourceTankId),
+          (_, __) {},
+          fireImmediately: true,
+        );
+        final targetLivestockSubscription = container.listen(
+          livestockProvider(targetTankId),
+          (_, __) {},
+          fireImmediately: true,
+        );
+        addTearDown(tanksSubscription.close);
+        addTearDown(sourceTankSubscription.close);
+        addTearDown(targetTankSubscription.close);
+        addTearDown(sourceLivestockSubscription.close);
+        addTearDown(targetLivestockSubscription.close);
+        await Future.wait([
+          container.read(tanksProvider.future),
+          container.read(tankProvider(sourceTankId).future),
+          container.read(tankProvider(targetTankId).future),
+          container.read(livestockProvider(sourceTankId).future),
+          container.read(livestockProvider(targetTankId).future),
+        ]);
+
+        Object? thrown;
+        try {
+          await container
+              .read(tankActionsProvider)
+              .bulkMoveLivestock(
+                [movedLivestockId, failingLivestockId],
+                sourceTankId,
+                targetTankId,
+              );
+        } catch (error) {
+          thrown = error;
+        }
+        await _settle();
+
+        expect(storage.getAllTanksCalls, 2);
+        expect(storage.getTankCalls[sourceTankId], 3);
+        expect(storage.getTankCalls[targetTankId], 3);
+        expect(storage.getLivestockForTankCalls[sourceTankId], 3);
+        expect(storage.getLivestockForTankCalls[targetTankId], 2);
+
+        expect(
+          (await storage.getLivestockForTank(
+            sourceTankId,
+          )).map((livestock) => livestock.id),
+          [failingLivestockId],
+        );
+        expect(
+          (await storage.getLivestockForTank(
+            targetTankId,
+          )).map((livestock) => livestock.id),
+          [movedLivestockId],
+        );
+        expect(thrown, isA<LivestockBulkMoveCompensationException>());
+        final uncertainty = thrown! as LivestockBulkMoveCompensationException;
+        expect(uncertainty.initiatingError, same(storage.initiatingError));
+        expect(uncertainty.rollbackErrors, [same(storage.rollbackError)]);
+        expect(
+          uncertainty.rollbackFailures.single.livestockId,
+          movedLivestockId,
+        );
+        expect(uncertainty.uncertainLivestockIds, {
+          movedLivestockId,
+          failingLivestockId,
+        });
+        expect(uncertainty.sourceTankId, sourceTankId);
+        expect(uncertainty.targetTankId, targetTankId);
+      },
+    );
   });
 }

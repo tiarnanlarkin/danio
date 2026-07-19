@@ -456,16 +456,34 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         );
       }
     } catch (e, st) {
+      final persistenceUncertain = e is LivestockBulkMoveCompensationException;
       logError(
         'LivestockScreen: bulk move failed: $e',
         stackTrace: st,
         tag: 'LivestockScreen',
       );
       if (context.mounted) {
-        AppFeedback.showError(
-          context,
-          'Couldn\'t move that right now. Try again!',
-        );
+        if (persistenceUncertain) {
+          setState(() {
+            _isSelectMode = false;
+            _selectedLivestockIds.clear();
+          });
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          AppFeedback.showWarning(
+            context,
+            'Bulk move didn\'t finish. '
+            '${e.uncertainLivestockIds.length} selected livestock may now be '
+            'split between this tank and ${selectedTank.name}. Refresh both '
+            'tanks before moving livestock again.',
+          );
+        } else {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t move that right now. Try again!',
+          );
+        }
       }
     }
   }

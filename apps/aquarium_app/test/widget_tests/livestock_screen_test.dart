@@ -470,6 +470,41 @@ class _CleanThenUncertainBulkAddStorage extends _FailingLivestockDeleteStorage {
   }
 }
 
+class _BulkMoveSaveAndRollbackFailStorage
+    extends _FailingLivestockDeleteStorage {
+  _BulkMoveSaveAndRollbackFailStorage({
+    required this.movedLivestockId,
+    required this.moveFailingLivestockId,
+    required this.sourceTankId,
+    required this.targetTankId,
+  }) : super(failingLivestockId: '');
+
+  final String movedLivestockId;
+  final String moveFailingLivestockId;
+  final String sourceTankId;
+  final String targetTankId;
+  var _firstMovePersisted = false;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    if (livestock.id == movedLivestockId && livestock.tankId == targetTankId) {
+      await _delegate.saveLivestock(livestock);
+      _firstMovePersisted = true;
+      return;
+    }
+    if (livestock.id == moveFailingLivestockId &&
+        livestock.tankId == targetTankId) {
+      throw StateError('livestock save failed');
+    }
+    if (_firstMovePersisted &&
+        livestock.id == movedLivestockId &&
+        livestock.tankId == sourceTankId) {
+      throw StateError('livestock rollback failed');
+    }
+    await _delegate.saveLivestock(livestock);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -1277,6 +1312,103 @@ void main() {
         );
         expect(find.text('Moved 1 livestock to Bedroom Tank'), findsOneWidget);
         expect(find.text('Moved 2 livestock to Bedroom Tank'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'failed bulk-move rollback reports partial-move uncertainty without unsafe retry',
+      (tester) async {
+        suppressAvatarError();
+        const sourceTankId = 'bulk-move-uncertain-source';
+        const targetTankId = 'bulk-move-uncertain-target';
+        const movedLivestockId = 'bulk-move-uncertain-neons';
+        const failingLivestockId = 'bulk-move-uncertain-corys';
+        final storage = _BulkMoveSaveAndRollbackFailStorage(
+          movedLivestockId: movedLivestockId,
+          moveFailingLivestockId: failingLivestockId,
+          sourceTankId: sourceTankId,
+          targetTankId: targetTankId,
+        );
+        await storage.saveTank(
+          _makeTank(id: sourceTankId, name: 'Living Room Tank'),
+        );
+        await storage.saveTank(
+          _makeTank(id: targetTankId, name: 'Bedroom Tank'),
+        );
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: movedLivestockId,
+            tankId: sourceTankId,
+            name: 'Neon Tetra',
+            count: 8,
+          ),
+        );
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: failingLivestockId,
+            tankId: sourceTankId,
+            name: 'Corydoras',
+            count: 5,
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: sourceTankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(
+          find.descendant(
+            of: find.byType(AppBar),
+            matching: find.byIcon(Icons.more_vert),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Select multiple'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Select All'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Move to Tank'));
+        await tester.pumpAndSettle();
+
+        final bedroomTankTile = tester.widget<ListTile>(
+          find
+              .ancestor(
+                of: find.text('Bedroom Tank'),
+                matching: find.byType(ListTile),
+              )
+              .last,
+        );
+        expect(bedroomTankTile.onTap, isNotNull);
+        bedroomTankTile.onTap!.call();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(
+          (await storage.getLivestockForTank(
+            sourceTankId,
+          )).map((livestock) => livestock.id),
+          [failingLivestockId],
+        );
+        expect(
+          (await storage.getLivestockForTank(
+            targetTankId,
+          )).map((livestock) => livestock.id),
+          [movedLivestockId],
+        );
+        expect(find.textContaining('Try again'), findsNothing);
+        expect(find.text('Retry'), findsNothing);
+        expect(find.text('Move to Tank'), findsNothing);
+        expect(find.textContaining('Moved 2 livestock'), findsNothing);
+        expect(
+          find.text(
+            'Bulk move didn\'t finish. 2 selected livestock may now be split '
+            'between this tank and Bedroom Tank. Refresh both tanks before '
+            'moving livestock again.',
+          ),
+          findsOneWidget,
+        );
       },
     );
   });

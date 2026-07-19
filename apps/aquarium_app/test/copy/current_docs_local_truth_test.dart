@@ -1357,20 +1357,9 @@ void main() {
       'rolls back earlier moves when a later save fails',
       'bulk move preserves initiating and rollback failures when compensation is uncertain',
       'failed bulk-move rollback reports partial-move uncertainty without unsafe retry',
-      'livestock save failed',
-      'livestock rollback failed',
       'DCL-DR-003 remains open',
     ];
 
-    _expectContainsAll(
-      'docs/agent/ACTIVE_HANDOFF.md',
-      rankedFindingTruth,
-    );
-    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
-      'is the only finding ranked',
-      'Handoff only; do not create a successor',
-      'Implement only `DCL-DR-003-F32`',
-    ]);
     _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       rankedFindingTruth,
@@ -1378,14 +1367,40 @@ void main() {
     _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       [
-        'ranked only `DCL-DR-003-F32`',
-        'were reassessed but were not ranked in this epoch',
+        'ranked only in `DR-2026-07-19-051`',
+        'remain outside',
       ],
     );
     _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
     _expectContainsAll('docs/agent/SLICE_LOG.md', [
       'Ranked only `DCL-DR-003-F32`',
+      'livestock save failed',
+      'livestock rollback failed',
       'No closure/successor',
     ]);
+  });
+
+  test('DCL-DR-003 records the fixed F32 livestock bulk-move uncertainty epoch', () {
+    const fixedFindingTruth = [
+      'DR-2026-07-19-052',
+      'DCL-DR-003-F32',
+      'danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1',
+      'LivestockBulkMoveCompensationException',
+      'rolls back earlier moves when a later save fails',
+      'bulk move preserves initiating and rollback failures when compensation is uncertain',
+      'failed bulk-move rollback reports partial-move uncertainty without unsafe retry',
+      'source and target tank and livestock authority',
+      'DCL-DR-003 remains open',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      fixedFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      fixedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
 }

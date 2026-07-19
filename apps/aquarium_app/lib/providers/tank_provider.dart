@@ -87,6 +87,49 @@ class TankCreateCompensationException implements Exception {
   }
 }
 
+class LivestockBulkMoveRollbackFailure {
+  final String livestockId;
+  final Object error;
+  final StackTrace stackTrace;
+
+  LivestockBulkMoveRollbackFailure({
+    required this.livestockId,
+    required this.error,
+    required this.stackTrace,
+  });
+}
+
+class LivestockBulkMoveCompensationException implements Exception {
+  final Object initiatingError;
+  final StackTrace initiatingStackTrace;
+  final List<LivestockBulkMoveRollbackFailure> rollbackFailures;
+  final Set<String> uncertainLivestockIds;
+  final String sourceTankId;
+  final String targetTankId;
+
+  LivestockBulkMoveCompensationException({
+    required this.initiatingError,
+    required this.initiatingStackTrace,
+    required List<LivestockBulkMoveRollbackFailure> rollbackFailures,
+    required Set<String> uncertainLivestockIds,
+    required this.sourceTankId,
+    required this.targetTankId,
+  }) : rollbackFailures = List.unmodifiable(rollbackFailures),
+       uncertainLivestockIds = Set.unmodifiable(uncertainLivestockIds);
+
+  List<Object> get rollbackErrors => [
+    for (final failure in rollbackFailures) failure.error,
+  ];
+
+  @override
+  String toString() {
+    return 'Livestock bulk move failed ($initiatingError) and rollback failed '
+        '(${rollbackErrors.join('; ')}); livestock '
+        '${uncertainLivestockIds.join(', ')} may be split between '
+        '$sourceTankId and $targetTankId.';
+  }
+}
+
 final tankDeleteFailureFeedbackProvider =
     StateProvider<TankDeleteFailureFeedback?>((ref) => null);
 
@@ -723,6 +766,7 @@ class TankActions {
   ) async {
     final storage = _storage;
     final movedOriginals = <Livestock>[];
+    String? initiatingLivestockId;
 
     try {
       final sourceTank = await storage.getTank(fromTankId);
@@ -752,18 +796,28 @@ class TankActions {
         }
 
         final moved = livestock.copyWith(tankId: toTankId);
+        initiatingLivestockId = livestock.id;
         await storage.saveLivestock(moved);
         movedOriginals.add(livestock);
+        initiatingLivestockId = null;
       }
 
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
       return movedOriginals.length;
     } catch (e, st) {
+      final rollbackFailures = <LivestockBulkMoveRollbackFailure>[];
       for (final original in movedOriginals.reversed) {
         try {
           await storage.saveLivestock(original);
         } catch (rollbackError, rollbackStack) {
+          rollbackFailures.add(
+            LivestockBulkMoveRollbackFailure(
+              livestockId: original.id,
+              error: rollbackError,
+              stackTrace: rollbackStack,
+            ),
+          );
           logError(
             'TankProvider.bulkMoveLivestock rollback failed for '
             '${original.id}: $rollbackError',
@@ -771,6 +825,32 @@ class TankActions {
             tag: 'TankProvider',
           );
         }
+      }
+      if (rollbackFailures.isNotEmpty) {
+        final uncertainLivestockIds = <String>{
+          if (initiatingLivestockId != null) initiatingLivestockId,
+          for (final failure in rollbackFailures) failure.livestockId,
+        };
+        _ref.invalidate(tanksProvider);
+        _ref.invalidate(tankProvider(fromTankId));
+        _ref.invalidate(tankProvider(toTankId));
+        _ref.invalidate(livestockProvider(fromTankId));
+        _ref.invalidate(livestockProvider(toTankId));
+        final uncertainError = LivestockBulkMoveCompensationException(
+          initiatingError: e,
+          initiatingStackTrace: st,
+          rollbackFailures: rollbackFailures,
+          uncertainLivestockIds: uncertainLivestockIds,
+          sourceTankId: fromTankId,
+          targetTankId: toTankId,
+        );
+        logError(
+          'TankProvider.bulkMoveLivestock failed with uncertain rollback: '
+          '$uncertainError',
+          stackTrace: st,
+          tag: 'TankProvider',
+        );
+        Error.throwWithStackTrace(uncertainError, st);
       }
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));

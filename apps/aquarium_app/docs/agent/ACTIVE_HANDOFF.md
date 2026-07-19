@@ -2,8 +2,8 @@
 
 Status: manual lean workflow; Phase 1 data resilience in progress
 Updated: 2026-07-19
-Product epoch: `DR-2026-07-19-051`
-Marker: `danio-dcl-dr-003-next-finding-triage-2026-07-18/6`
+Product epoch: `DR-2026-07-19-052`
+Marker: `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`
 E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current state
@@ -69,9 +69,9 @@ E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DCL-DR-003-F29` was ranked in `DR-2026-07-18-045` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/3` and is locally fixed in `DR-2026-07-18-046` under marker `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`: `TankCreateCompensationException` preserves the initiating default-task save error, failed tank-delete compensation, and possibly durable tank ID while invalidating tank/task authority. `CreateTankScreen` clears Retry feedback, warns that the tank may already exist with incomplete default tasks, and locks both visible Create buttons plus stale callbacks after uncertainty. `createTank preserves task-save and rollback failures when cleanup is uncertain`, `failed tank-create rollback reports uncertainty and blocks duplicate retry`, `stale tank-create retry cannot bypass uncertain persistence lock`, and `clean tank-create compensation retains safe Retry` prove the uncertain and definitively compensated paths.
 - `DCL-DR-003-F30` was ranked in `DR-2026-07-19-047` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/4` and is locally fixed in `DR-2026-07-19-048` under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentAddCompensationException` preserves the initiating maintenance-task synchronization error, failed equipment-delete rollback, and possibly durable equipment ID. Equipment and task authority refresh after uncertainty; the sheet clears Retry, warns that the equipment may already exist with an incomplete maintenance task, and locks visible and stale Add submissions. Definitive deletion compensation retains safe Retry. `failed maintenance-task sync rolls back new equipment`, `failed equipment-add rollback reports uncertainty and blocks duplicate retry`, `stale equipment-add retry cannot bypass uncertain persistence lock`, and `clean equipment-add compensation retains safe Retry` are GREEN. DCL-DR-003 remains open.
 - `DCL-DR-003-F31` was ranked in `DR-2026-07-19-049` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/5` and is locally fixed in `DR-2026-07-19-050` under `danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentDeleteCompensationException` preserves the initiating maintenance-task deletion error, failed equipment restoration, deleted equipment ID, and possibly orphaned maintenance-task ID. Equipment and task authority refresh after the failed settlement; the warning says the equipment is gone and its maintenance task may remain, with no removal success, Undo, or Retry. `failed equipment-delete rollback reports orphan uncertainty` and `failed maintenance-task deletion keeps equipment saved` are GREEN in the 29-test Equipment file and Focused gate. DCL-DR-003 remains open.
-- `DCL-DR-003-F32` is the only finding ranked in `DR-2026-07-19-051` at `danio-dcl-dr-003-next-finding-triage-2026-07-18/6`: `TankActions.bulkMoveLivestock` logs `livestock rollback failed` but throws only `livestock save failed` when a later target write and original-item compensation both fail.
-  Temporary RED `bulk move preserves initiating and rollback failures when compensation is uncertain` left one item in each tank and exposed only the initiating error; `rolls back earlier moves when a later save fails` proves clean compensation only.
-  `LivestockScreen` offers retry despite partial state. Planned UI RED: `failed bulk-move rollback reports partial-move uncertainty without unsafe retry`. F32 is unimplemented; DCL-DR-003 remains open.
+- `DCL-DR-003-F32` was ranked in `DR-2026-07-19-051` and is locally fixed in `DR-2026-07-19-052` under marker `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`. `LivestockBulkMoveCompensationException` preserves the initiating target-save error, every rollback failure, uncertain livestock IDs, and source/target tank context. The uncertain path invalidates source and target tank and livestock authority, exits stale selection, and warns that livestock may be split without success, Retry, or try-again feedback.
+- `bulk move preserves initiating and rollback failures when compensation is uncertain`, `failed bulk-move rollback reports partial-move uncertainty without unsafe retry`, and `rolls back earlier moves when a later save fails` are GREEN. All 58 affected provider/widget tests and analyze passed through the explicit Focused gate.
+- DCL-DR-003 remains open. Independent review found no findings; reset-assisted Full passed in 245,604 ms after documented recovery.
 
 ## Frozen autonomy
 
@@ -102,7 +102,7 @@ stopping only when needed; frozen autonomy and automatic tasks remain inactive.
 - `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
   fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
   matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F26 are settled. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, F30 is locally fixed, and F31 is locally fixed. F32 is ranked and unimplemented; no row closure is inferred.
+- `DCL-DR-003` remains `open`; F1-F26 are settled. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, F30 is locally fixed, F31 is locally fixed, and F32 is locally fixed. No row closure is inferred.
   The removal-log relationship finding is deferred to `DCL-DR-004`.
 - The locked completion program is the only ordered phase authority; the
   closure ledger owns row state/done conditions and the Finish Map owns category
@@ -145,6 +145,5 @@ when the chosen task directly requires them.
 
 ## Next manual action
 
-Handoff only; do not create a successor. Implement only `DCL-DR-003-F32` under `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`.
-Start with provider RED `bulk move preserves initiating and rollback failures when compensation is uncertain`, then widget RED `failed bulk-move rollback reports partial-move uncertainty without unsafe retry`.
-Preserve both errors and uncertain selected IDs; refresh both tanks and warn without Retry. Keep `rolls back earlier moves when a later save fails` GREEN. Exclude every other finding, missing catalog, backup relationships, and `DCL-DR-004`; no closure/successor.
+Handoff only; do not create a successor. Finish the F32 Git closeout without starting another finding.
+After a clean pushed checkpoint, a separate manual `DCL-DR-003` triage epoch may rank exactly one remaining finding from current matrix, source, and test evidence. Do not infer closure or pull in missing catalog, backup relationships, or `DCL-DR-004`.

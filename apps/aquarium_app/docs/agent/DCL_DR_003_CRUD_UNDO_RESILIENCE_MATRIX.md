@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-051`
+Current epoch: `DR-2026-07-19-052`
 
 ## Decision
 
@@ -76,20 +76,23 @@ Fresh current matrix, source, and executable-test inspection in
 `DR-2026-07-19-051` ranked only `DCL-DR-003-F32` under marker
 `danio-dcl-dr-003-next-finding-triage-2026-07-18/6`.
 `TankActions.bulkMoveLivestock` saves selected livestock into the target one at
-a time and records the originals for reverse compensation. If a later target
-save fails, each `saveLivestock(original)` rollback failure is logged but
-discarded before the initiating error is rethrown. Existing executable proof
-`rolls back earlier moves when a later save fails` is GREEN only when that
-compensation succeeds. A temporary direct RED, `bulk move preserves initiating
-and rollback failures when compensation is uncertain`, forced both failures,
-left one selected item in the target and the other in the source, and observed
-an exposed `livestock save failed` without `livestock rollback failed`.
-`LivestockScreen` therefore reports generic failure and says to try again while
-the cross-tank result is partial. The focused UI contract is `failed bulk-move
-rollback reports partial-move uncertainty without unsafe retry`. F32 remains
-unimplemented and DCL-DR-003 remains open. Task completion, equipment
-edit/service, wishlist/cost, other bulk paths, and omission-only evidence gaps
-were reassessed but were not ranked in this epoch.
+a time and records the originals for reverse compensation. `DR-2026-07-19-052`
+locally fixes F32 under marker
+`danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`.
+`LivestockBulkMoveCompensationException` preserves the initiating target-save
+error, every keyed rollback failure, uncertain selected IDs, and source/target
+tank context. The uncertain path invalidates source and target tank and
+livestock authority, clears stale selection, and warns that persistence may be
+split without success, Retry, or try-again feedback. `bulk move preserves
+initiating and rollback failures when compensation is uncertain`, `failed
+bulk-move rollback reports partial-move uncertainty without unsafe retry`, and
+`rolls back earlier moves when a later save fails` are GREEN. All 58 affected
+provider/widget tests and analyze passed through the explicit Focused gate.
+Independent read-only review found no findings; the reset-assisted Full gate
+passed in 245,604 ms after the documented failed recovery attempts.
+DCL-DR-003 remains open. Task completion, equipment edit/service,
+wishlist/cost, other bulk paths, and omission-only evidence gaps remain outside
+this epoch.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -139,7 +142,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; RED/GREEN `stale equipment service does not recreate deleted equipment` | `DCL-DR-003-F13` locally fixed: the durable equipment-ID check precedes all service writes, so a stale card cannot recreate equipment, mutate its task, add logs, or report success. Supported tank deletion atomically removes equipment/tasks, so the same preflight also rejects the settled parent-deletion state; no separate current parent-only path remains. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
 | Livestock bulk add | `failed bulk-add log save rolls back new livestock`; `bulk add rejects missing parent tanks before saving`; RED/GREEN `failed bulk-add rollback reports uncertainty and blocks duplicate retry`; RED/GREEN `stale bulk-add retry cannot bypass uncertain persistence lock` | `DCL-DR-003-F28` is locally fixed: ordinary successful rollback retains generic Retry, while failed compensation preserves both causes, clears queued/active Retry feedback, warns about uncertain persistence without Retry, locks every save entry, and leaves the possibly durable row visible after provider refresh. |
-| Livestock move | `success feedback reports selected livestock count`; RED/GREEN `bulk move reports actual count when a selected livestock id is missing`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails`; direct RED `bulk move preserves initiating and rollback failures when compensation is uncertain`; planned UI RED `failed bulk-move rollback reports partial-move uncertainty without unsafe retry` | `DCL-DR-003-F15` remains fixed for count/stale-ID behavior. `DCL-DR-003-F32` is ranked and unimplemented: failed compensation leaves a partial cross-tank move, logs `livestock rollback failed`, exposes only `livestock save failed`, and generic feedback suggests trying again without identifying uncertain selected IDs. DCL-DR-003 remains open. |
+| Livestock move | `success feedback reports selected livestock count`; RED/GREEN `bulk move reports actual count when a selected livestock id is missing`; `rejects missing source tank ids before moving livestock`; `rejects missing target tank ids before moving livestock`; `rolls back earlier moves when a later save fails`; RED/GREEN `bulk move preserves initiating and rollback failures when compensation is uncertain`; RED/GREEN `failed bulk-move rollback reports partial-move uncertainty without unsafe retry` | `DCL-DR-003-F15` remains fixed for count/stale-ID behavior. `DCL-DR-003-F32` is locally fixed in `DR-2026-07-19-052`: `LivestockBulkMoveCompensationException` preserves both causes, uncertain IDs, and source/target context; source and target tank and livestock authority refreshes, stale selection exits, and the UI warns about a possible split without success or Retry. Definitive compensation remains unchanged. DCL-DR-003 remains open. |
 | Livestock delete/expiry | `failed single removal expiry restores item with feedback`; RED/GREEN `failed bulk removal expiry restores item with feedback`; `expired livestock removal does not log after parent tank deletion`; `expired bulk removal writes timeline logs` | `DCL-DR-003-F16` locally fixed: bulk expiry deduplicates permanent-delete failure feedback, removes obsolete Undo feedback, and leaves failed items restored while successful removals settle. The removal-log relationship finding belongs to `DCL-DR-004` because its fix changes the backup validation contract. |
 
 ## Wishlist, Cost, Review, And Reward Paths
@@ -338,18 +341,21 @@ belongs to `DCL-DR-004` and is not selected here.
     and the explicit Equipment Focused gate plus analyze are GREEN. DCL-DR-003
     remains open.
 32. `DCL-DR-003-F32` - ranked only in `DR-2026-07-19-051` under marker
-    `danio-dcl-dr-003-next-finding-triage-2026-07-18/6`. When a later
-    livestock target write fails and reverse compensation of an earlier move
-    also fails, `TankActions.bulkMoveLivestock` logs `livestock rollback failed`
-    but rethrows only `livestock save failed`. The direct RED `bulk move
-    preserves initiating and rollback failures when compensation is uncertain`
-    left one selected item in each tank and failed because the exposed error
-    omitted the rollback cause. Existing `rolls back earlier moves when a later
-    save fails` remains GREEN for definitive compensation. The implementation
-    must preserve both errors and uncertain selected IDs, refresh both tank
-    authorities, and make `failed bulk-move rollback reports partial-move
-    uncertainty without unsafe retry` GREEN without changing the clean path.
-    F32 is unimplemented and DCL-DR-003 remains open.
+    `danio-dcl-dr-003-next-finding-triage-2026-07-18/6` and locally fixed in
+    `DR-2026-07-19-052` under marker
+    `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`.
+    The provider and widget REDs proved a split persisted result, discarded
+    rollback cause, and unsafe try-again feedback. The typed
+    `LivestockBulkMoveCompensationException` now preserves the initiating error,
+    every rollback failure, uncertain livestock IDs, and source/target context.
+    Source and target tank and livestock authority refreshes after uncertainty;
+    the screen exits stale selection and warns without success or Retry. `bulk
+    move preserves initiating and rollback failures when compensation is
+    uncertain`, `failed bulk-move rollback reports partial-move uncertainty
+    without unsafe retry`, and the definitive-compensation test `rolls back
+    earlier moves when a later save fails` are GREEN. The complete affected
+    58-test Focused gate and analyze passed. Independent read-only review found
+    no findings, and the reset-assisted Full gate passed. DCL-DR-003 remains open.
 33. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
