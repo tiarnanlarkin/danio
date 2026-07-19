@@ -1348,4 +1348,44 @@ void main() {
     );
     _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
+
+  test('DCL-DR-003 ranks only F32 livestock bulk-move uncertainty', () {
+    const rankedFindingTruth = [
+      'DR-2026-07-19-051',
+      'DCL-DR-003-F32',
+      'danio-dcl-dr-003-next-finding-triage-2026-07-18/6',
+      'rolls back earlier moves when a later save fails',
+      'bulk move preserves initiating and rollback failures when compensation is uncertain',
+      'failed bulk-move rollback reports partial-move uncertainty without unsafe retry',
+      'livestock save failed',
+      'livestock rollback failed',
+      'DCL-DR-003 remains open',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
+      'is the only finding ranked',
+      'Handoff only; do not create a successor',
+      'Implement only `DCL-DR-003-F32`',
+    ]);
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      [
+        'ranked only `DCL-DR-003-F32`',
+        'were reassessed but were not ranked in this epoch',
+      ],
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
+    _expectContainsAll('docs/agent/SLICE_LOG.md', [
+      'Ranked only `DCL-DR-003-F32`',
+      'No closure/successor',
+    ]);
+  });
 }
