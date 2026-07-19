@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-048`
+Current epoch: `DR-2026-07-19-049`
 
 ## Decision
 
@@ -55,9 +55,24 @@ Fresh current matrix, source, and executable-test inspection in
 failed equipment-delete rollback, and possibly durable equipment ID. The sheet
 invalidates equipment/task authority, clears Retry, warns honestly, and locks
 visible plus stale Add submissions after uncertainty; definitive deletion
-compensation retains safe Retry. DCL-DR-003 remains open because the same inventory proved additional
-independent rollback, orphan, and false-success gaps. They must be handled as
-later single data-safety slices.
+compensation retains safe Retry.
+
+Fresh current matrix, source, and executable-test inspection in
+`DR-2026-07-19-049` ranked `DCL-DR-003-F31` under marker
+`danio-dcl-dr-003-next-finding-triage-2026-07-18/5`. Equipment Remove calls
+`deleteEquipment` before `deleteTask`; if maintenance-task deletion fails and
+the compensating `saveEquipment` also fails, the second error is only logged,
+the initiating error is reduced to ordinary failure feedback, and the durable
+result is an orphan maintenance task with its equipment gone. The executable
+`failed maintenance-task deletion keeps equipment saved` test covers only
+successful compensation. The direct orphan and dual-write uncertainty outrank
+evidence-only omissions. F31 remains unimplemented under marker
+`danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1`.
+Its RED/GREEN contract is `failed equipment-delete rollback reports orphan
+uncertainty`: preserve both causes through `EquipmentDeleteCompensationException`,
+refresh equipment/task authority, and warn
+without removal success, Undo, or Retry guidance. DCL-DR-003 remains open; later
+findings must stay separate.
 
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
@@ -102,7 +117,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | --- | --- | --- |
 | Equipment create | `adding equipment shows success feedback`; `failed maintenance-task sync rolls back new equipment`; `failed equipment-add rollback reports uncertainty and blocks duplicate retry`; `stale equipment-add retry cannot bypass uncertain persistence lock`; `clean equipment-add compensation retains safe Retry`; `profile activity failure after equipment add does not report add failure`; `missing tank ids do not create orphan equipment` | `DCL-DR-003-F30` is locally fixed: `EquipmentAddCompensationException` preserves both failures and the possibly durable ID; uncertain cleanup refreshes equipment/task authority, removes Retry, warns honestly, and locks visible/stale Add paths. Definitive cleanup retains safe Retry. |
 | Equipment edit | `stale equipment edit ids are not recreated by save` | Missing-record boundary covered; ordinary successful edit/task rescheduling has no exact test. |
-| Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved` | Covered. |
+| Equipment delete | `equipment without a maintenance task removes cleanly`; `failed maintenance-task deletion keeps equipment saved`; planned RED/GREEN `failed equipment-delete rollback reports orphan uncertainty` | `DCL-DR-003-F31` ranked and unimplemented: task-delete failure followed by equipment-restore failure replaces the rollback error and leaves the maintenance task orphaned while ordinary feedback implies a settled failure. Preserve both causes through `EquipmentDeleteCompensationException`, refresh equipment/task authority, and show no success, Undo, or Retry guidance. |
 | Equipment delete undo | `undoing equipment removal restores its maintenance task`; `failed equipment delete undo keeps equipment deleted`; `undo does not restore equipment after its parent tank was deleted`; RED/GREEN `failed maintenance-task undo rolls back restored equipment`; RED/GREEN `undo after leaving screen refreshes equipment watchers` | `DCL-DR-003-F2` locally fixed: a failed maintenance-task restore removes equipment already restored by the same Undo, retains honest failure feedback, and route-independent invalidation refreshes active watchers after the Equipment route closes. |
 | Equipment service | `failed service log keeps equipment unchanged`; `failed service task log restores equipment and task`; RED/GREEN `stale equipment service does not recreate deleted equipment` | `DCL-DR-003-F13` locally fixed: the durable equipment-ID check precedes all service writes, so a stale card cannot recreate equipment, mutate its task, add logs, or report success. Supported tank deletion atomically removes equipment/tasks, so the same preflight also rejects the settled parent-deletion state; no separate current parent-only path remains. |
 | Livestock create/edit | `adding livestock shows success feedback and readable timeline log`; `failed add-log save rolls back new livestock`; `profile activity failure after livestock add does not report add failure`; `stale livestock edit ids are not recreated by save`; `missing tank ids do not create orphan livestock` | Covered. |
@@ -293,7 +308,20 @@ belongs to `DCL-DR-004` and is not selected here.
     bypass uncertain persistence lock`, and `clean equipment-add compensation
     retains safe Retry` are GREEN. DCL-DR-003 remains open. Equipment edit/service,
     task completion, and other matrix findings were not changed.
-31. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+31. `DCL-DR-003-F31` - Equipment Remove can delete equipment durably, fail to
+    delete its generated maintenance task, then also fail to restore the
+    equipment. Current source logs away the restore failure and reports only an
+    ordinary failure while leaving an orphan task. Ranked in
+    `DR-2026-07-19-049` under marker
+    `danio-dcl-dr-003-next-finding-triage-2026-07-18/5`; unimplemented under
+    `danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1`.
+    Existing `failed maintenance-task deletion keeps equipment saved` proves
+    only successful compensation. RED/GREEN `failed equipment-delete rollback
+    reports orphan uncertainty` must preserve both causes through
+    `EquipmentDeleteCompensationException`, refresh equipment/task authority,
+    and warn without success, Undo, or Retry
+    guidance. DCL-DR-003 remains open.
+32. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 

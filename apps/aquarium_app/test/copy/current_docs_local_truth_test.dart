@@ -1324,4 +1324,27 @@ void main() {
     );
     _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
+
+  test('DCL-DR-003 ranks only F31 equipment-delete rollback uncertainty', () {
+    const rankedFindingTruth = [
+      'DR-2026-07-19-049',
+      'DCL-DR-003-F31',
+      'danio-dcl-dr-003-next-finding-triage-2026-07-18/5',
+      'danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1',
+      'failed maintenance-task deletion keeps equipment saved',
+      'failed equipment-delete rollback reports orphan uncertainty',
+      'EquipmentDeleteCompensationException',
+      'DCL-DR-003 remains open',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
+  });
 }
