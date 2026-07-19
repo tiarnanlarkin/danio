@@ -52,6 +52,29 @@ class EquipmentAddCompensationException implements Exception {
   }
 }
 
+class EquipmentDeleteCompensationException implements Exception {
+  final Object initiatingError;
+  final Object rollbackError;
+  final String deletedEquipmentId;
+  final String possiblyOrphanedMaintenanceTaskId;
+
+  EquipmentDeleteCompensationException({
+    required this.initiatingError,
+    required this.rollbackError,
+    required this.deletedEquipmentId,
+    required this.possiblyOrphanedMaintenanceTaskId,
+  });
+
+  @override
+  String toString() {
+    return 'EquipmentDeleteCompensationException: maintenance task deletion '
+        'failed ($initiatingError) after equipment $deletedEquipmentId was '
+        'deleted, and equipment restoration failed ($rollbackError); '
+        'maintenance task $possiblyOrphanedMaintenanceTaskId may remain '
+        'orphaned.';
+  }
+}
+
 String _maintenanceTaskId(String equipmentId) =>
     'equip_${equipmentId}_maintenance';
 
@@ -535,6 +558,7 @@ class EquipmentScreen extends ConsumerWidget {
           }
         } catch (e, st) {
           final storage = ref.read(storageServiceProvider);
+          Object reportedError = e;
           if (equipmentDeleted) {
             try {
               await storage.saveEquipment(equipment);
@@ -544,6 +568,14 @@ class EquipmentScreen extends ConsumerWidget {
                 stackTrace: rollbackStack,
                 tag: 'EquipmentScreen',
               );
+              if (!maintenanceTaskDeleted && maintenanceTask != null) {
+                reportedError = EquipmentDeleteCompensationException(
+                  initiatingError: e,
+                  rollbackError: rollbackError,
+                  deletedEquipmentId: equipment.id,
+                  possiblyOrphanedMaintenanceTaskId: maintenanceTask.id,
+                );
+              }
             }
           }
           if (maintenanceTaskDeleted && maintenanceTask != null) {
@@ -560,15 +592,24 @@ class EquipmentScreen extends ConsumerWidget {
           ref.invalidate(equipmentProvider(tankId));
           ref.invalidate(tasksProvider(tankId));
           logError(
-            'EquipmentScreen: equipment delete failed: $e',
+            'EquipmentScreen: equipment delete failed: $reportedError',
             stackTrace: st,
             tag: 'EquipmentScreen',
           );
           if (context.mounted) {
-            DanioSnackBar.error(
-              context,
-              'Couldn\'t remove that equipment. Give it another go!',
-            );
+            if (reportedError is EquipmentDeleteCompensationException) {
+              DanioSnackBar.warning(
+                context,
+                '${equipment.name} equipment is gone, but its maintenance '
+                'task may remain. Check your equipment and tasks before '
+                'making another change.',
+              );
+            } else {
+              DanioSnackBar.error(
+                context,
+                'Couldn\'t remove that equipment. Give it another go!',
+              );
+            }
           }
         }
       },
