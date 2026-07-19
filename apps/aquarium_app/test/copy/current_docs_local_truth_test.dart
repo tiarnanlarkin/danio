@@ -1403,4 +1403,42 @@ void main() {
     );
     _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
   });
+
+  test('DCL-DR-003 ranks only F33 inventory-use compensation uncertainty', () {
+    const rankedFindingTruth = [
+      'DR-2026-07-19-053',
+      'DCL-DR-003-F33',
+      'danio-dcl-dr-003-next-finding-triage-2026-07-19/7',
+      'useItem surfaces inventory save failures before applying profile effect',
+      'failed item use shows retry feedback and keeps the item visible',
+      'useItem preserves effect and rollback failures when inventory restore is uncertain',
+      'failed consumable rollback reports lost-item uncertainty without unsafe retry',
+      'DCL-DR-003 remains open',
+    ];
+
+    _expectContainsAll(
+      'docs/agent/ACTIVE_HANDOFF.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      rankedFindingTruth,
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      [
+        'ranked only in `DR-2026-07-19-053`',
+        'Inventory consumable use',
+        'higher-risk current defect',
+        'remain outside',
+      ],
+    );
+    _expectContainsAll('docs/agent/SLICE_LOG.md', [
+      'Ranked only `DCL-DR-003-F33`',
+      'profile effect failed',
+      'inventory rollback failed',
+      'No closure/successor',
+    ]);
+  });
 }

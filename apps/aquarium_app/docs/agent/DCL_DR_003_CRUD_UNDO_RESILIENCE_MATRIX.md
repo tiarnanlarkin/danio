@@ -3,7 +3,7 @@
 Status: open
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-052`
+Current epoch: `DR-2026-07-19-053`
 
 ## Decision
 
@@ -94,6 +94,30 @@ DCL-DR-003 remains open. Task completion, equipment edit/service,
 wishlist/cost, other bulk paths, and omission-only evidence gaps remain outside
 this epoch.
 
+Fresh current matrix, source, and executable-test inspection in
+`DR-2026-07-19-053` ranked only `DCL-DR-003-F33` under marker
+`danio-dcl-dr-003-next-finding-triage-2026-07-19/7`. Inventory consumable use is
+the higher-risk current defect: `InventoryNotifier.useItem` first persists the
+removal/decrement, then applies the profile/energy effect. If that effect fails
+and restoring the inventory also fails, the rollback error is logged and
+discarded while only the effect error reaches `InventoryScreen`. A purchased
+consumable is already absent, but the UI still says to try again and a retry
+returns false.
+
+Existing `useItem surfaces inventory save failures before applying profile effect`
+and `failed item use shows retry feedback and keeps the item visible` prove only
+failure of the initial inventory write. Temporary RED
+`useItem preserves effect and rollback failures when inventory restore is uncertain`
+made the first `shop_inventory` write succeed, the Streak Freeze `user_profile`
+effect fail, and the restoring `shop_inventory` write fail. Persisted and
+provider inventory were empty, the effect was absent, retry returned false, and
+the reported exception omitted the logged rollback cause. The probe was removed.
+The deterministic UI contract is
+`failed consumable rollback reports lost-item uncertainty without unsafe retry`.
+F33 remains unimplemented and DCL-DR-003 remains open. Equipment Mark Serviced
+compensation, task/equipment follow-ups, wishlist/cost, other bulk paths, and
+omission-only evidence gaps remain outside this epoch.
+
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
 
@@ -159,7 +183,7 @@ belongs to `DCL-DR-004` and is not selected here.
 | Review answer/update | Success remains covered by scheduling/model tests and `records fallback answer and advances using returned result`; RED/GREEN `recordSessionResult keeps the answer pending when review-card save fails`; `recordSessionResult restores the card when review-stats save fails`; `recordSessionResult rejects a session card missing from saved cards`; `recordSessionResult does not resurrect an abandoned session after save`; `failed review save neither advances nor awards XP`; `failed XP save does not retry an already recorded answer` | `DCL-DR-003-F3` locally fixed: two-key save compensation preserves the initiating failure, only the still-active session advances, missing durable cards fail, review-save failure awards no XP and stays retryable, and downstream XP failure cannot retry the durable answer. |
 | Review completion/streak | `completeSession keeps active session when session count save returns false`; `completeSession preserves old streak when streak save returns false`; RED/GREEN `completeSession does not fail after durable count and streak when stats mirror rejects save`; `exit dialog abandons active session before popping` | `DCL-DR-003-F23` locally fixed: answers already persist cards/review totals and the streak key is authoritative, so completion no longer performs a redundant late mirror save that could suppress honest completion feedback after its durable commits. |
 | Gems | Grant/refund failure tests, add/spend cumulative rollback tests, `purchaseItem preserves inventory and refund failures for diagnosis`, Gem Shop refund-success/refund-failure widget proofs, and `reset surfaces failed local removals before reporting reset success` | Direct writers are covered. `DCL-DR-003-F24` locally fixed the cross-provider purchase path: simultaneous inventory-save/refund failure retains both errors and warns that the gem balance may be uncertain without immediate Retry; successful refund keeps the safe generic Retry and does not overstate uncertainty. |
-| Inventory | Migration false-save, use throw/false, purchase refund, duplicate permanent, and reset failure tests in `inventory_persistence_test.dart`; RED/GREEN `expired item cleanup failure shows feedback without changing inventory` | Refund failure is covered by F24. `DCL-DR-003-F25` is locally fixed: `InventoryScreen` awaits startup cleanup inside a self-contained handler, logs persistence failure, preserves the stored inventory, and shows retryable feedback without letting the error escape. Missing catalog-item handling remains a later evidence boundary. |
+| Inventory | Migration false-save, `useItem surfaces inventory save failures before applying profile effect`, `failed item use shows retry feedback and keeps the item visible`, purchase refund, duplicate permanent, reset failure, and RED/GREEN `expired item cleanup failure shows feedback without changing inventory` | Refund failure is covered by F24 and startup cleanup by fixed F25. `DCL-DR-003-F33` is ranked only in `DR-2026-07-19-053`: dual profile-effect/inventory-restore failure discards the rollback cause after durable consumption and leaves unsafe try-again guidance. Required RED/GREEN: `useItem preserves effect and rollback failures when inventory restore is uncertain`; `failed consumable rollback reports lost-item uncertainty without unsafe retry`. Missing catalog handling remains excluded. |
 | Achievement progress/reset | Lifecycle flush, restore cancellation, false-save retry, failed reset retention, debug two-store reset rollback tests, and RED/GREEN `failed profile write leaves first lesson reward recoverable on retry`; `failed gem cumulative write leaves first lesson reward recoverable after reload`; `failed profile compensation surfaces both achievement reward errors`; `failed gem rollback surfaces uncertainty without duplicate retry`; `settled profile reward catches progress up silently after reload` | `DCL-DR-003-F26` locally fixed for the covered cross-store unlock path: profile XP/ID and an idempotently keyed gem transaction plus cumulative receipt settle before terminal progress, so retry/reload reaches exactly one bronze `first_lesson` reward (+50 XP, +5 gems) and later checks add nothing. A settled receipt makes stale progress a non-rewarding catch-up. Failed profile or gem-state compensation exposes both causes first; a healthy reload repairs only the missing gem/cumulative side before progress or feedback and cannot duplicate XP, balance, or transaction. |
 | Normal lesson rewards | Existing success `XP awarded and lesson marked complete after completeLesson`; practice failure `practice completion does not claim XP when XP save fails`; RED/GREEN `failed normal lesson save retries without duplicate quiz gems or false progress`; `normal lesson no-op cannot claim saved progress`; `already completed normal lesson adds no duplicate rewards`; `post-commit activity failure does not claim lesson progress was unsaved`; `post-commit quiz reward failure preserves saved lesson progress` | `DCL-DR-003-F4` locally fixed: an initial profile-write failure restores the prior profile for Retry and awards no quiz gems or XP success; Retry durably completes once before one quiz reward; `completeLesson` reports newly committed and partial follow-up outcomes, so null/already-completed no-ops add nothing and post-commit activity or reward failures preserve durable progress with honest partial-completion feedback instead of Retry. |
 
@@ -356,7 +380,24 @@ belongs to `DCL-DR-004` and is not selected here.
     earlier moves when a later save fails` are GREEN. The complete affected
     58-test Focused gate and analyze passed. Independent read-only review found
     no findings, and the reset-assisted Full gate passed. DCL-DR-003 remains open.
-33. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+33. `DCL-DR-003-F33` - ranked only in `DR-2026-07-19-053` under marker
+    `danio-dcl-dr-003-next-finding-triage-2026-07-19/7`. A non-timed consumable
+    is persisted as consumed before its profile/energy effect. When the effect
+    and inventory restore both fail, current `useItem` reports only the effect
+    error although the item is durably absent; `InventoryScreen` says to try
+    again even though retry returns false. The temporary provider RED
+    `useItem preserves effect and rollback failures when inventory restore is uncertain`
+    proved the `user_profile` and `shop_inventory` dual failure, empty persisted
+    and provider inventory, absent Streak Freeze effect, and discarded rollback
+    cause. Existing `useItem surfaces inventory save failures before applying profile effect`
+    and `failed item use shows retry feedback and keeps the item visible` cover
+    only the first inventory write. Implement only
+    `failed consumable rollback reports lost-item uncertainty without unsafe retry`
+    under `danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1`;
+    preserve both causes/stacks and the item ID, refresh authority, and warn
+    without success or retry guidance. F33 is unimplemented and DCL-DR-003
+    remains open.
+34. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 
