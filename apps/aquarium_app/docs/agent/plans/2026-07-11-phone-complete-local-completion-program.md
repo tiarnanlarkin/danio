@@ -1,12 +1,16 @@
 # Danio Phone Complete-Local Completion Program
 
-> **Roadmap authority lock - E0**
+> **Superseded ordered authority - retained as E0 evidence**
 >
 > Marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 >
-> This is the current and only ordered phone completion authority. It preserves
-> seven ordered phone phases after Phase 0 and cannot be reordered or resumed by
-> frozen claim, budget, launch, closeout, or successor material. `DCL-DR-001`
+> Current authority is
+> `2026-07-19-phone-release-candidate-finalization-plan.md` under marker
+> `danio-phone-rc-authority-reset-2026-07-19/1`. Its P0/P1 release selector and
+> P2/P3 parking rule supersede this program's old open-ended routing rule. This
+> file preserves seven ordered phone phases after Phase 0 as historical evidence
+> and cannot be resumed by frozen claim, budget, launch, closeout, or successor
+> material. `DCL-DR-001`
 > is closed: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally
 > fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally
 > verified. `DCL-DR-002` is closed; `DCL-DR-002-F1` and `DCL-DR-002-F2`
@@ -20,8 +24,9 @@
 **Goal:** Finish Danio as a polished, resilient, local-first Android phone app
 while keeping tablet and external product lanes explicitly parked.
 
-**Architecture:** This program is the only authority for ordered phase sequence.
-The closure ledger owns row closure state, disposition, evidence, and exact done
+**Architecture:** This program records the earlier phase sequence but no longer
+selects work. The 2026-07-19 release-candidate plan is the only current ordered
+authority. The closure ledger owns row closure state, disposition, evidence, and exact done
 conditions; the Finish Map owns category status and quality-bar summaries; live
 Git, source, tests, and fresh commands own factual truth. The Figma phone atlas
 is optional downstream context, while current repo screenshots and assets govern
@@ -47,8 +52,9 @@ phone atlas evidence.
 - Do not create fake provider, premium, cloud, social, or release behavior.
 - Repository code, tests, ledger, and fresh gates remain authoritative when
   Figma or older docs disagree.
-- This program orders the phases. The ledger and Finish Map must not apply a
-  competing P0/P1/P2/P3 or disposition-based selector.
+- The current release-candidate plan orders work and owns the P0/P1 release
+  selector. P2/P3 work is accepted or parked unless explicitly reopened. This
+  historical program, the ledger, and Finish Map cannot compete with it.
 - Every implementation slice must advance a named `DCL-*` row or close it by
   fresh verification.
 - Data safety, accessibility, visual, and performance rows cannot close from
@@ -453,12 +459,12 @@ Every implementation slice must:
 - Keep tablet and external lanes on the parked page until the user reopens
   them.
 
-## Next Manual Epoch
+## Superseded Next Manual Epoch
 
 `DCL-DR-001` is closed after `DR-2026-07-16-006`; `DCL-DR-002` is closed after
 `DR-2026-07-16-014`. Its F1 and F2 paths are locally fixed and F3 through F8
 are locally verified. After this checkpoint is clean, pushed, and aligned,
-continue the next manual verification-first `DCL-DR-003` CRUD/undo resilience
-audit under marker
-`danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Do not select
-`DCL-DR-004` or a later phase first.
+do not resume this historical selector. Continue only from
+`2026-07-19-phone-release-candidate-finalization-plan.md`, beginning with the
+current release-authority reset and then its fixed `DCL-DR-003` compensation
+sequence. Do not invoke frozen autonomy or create a successor from this file.

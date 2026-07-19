@@ -1,9 +1,11 @@
 # Danio Finish Map
 
-Status: Active completion control layer
+Status: Active phone release-candidate control layer
 Created: 2026-06-24
 Authority lock: `danio-completion-roadmap-authority-lock-2026-07-15/1`
-Ordered authority: `plans/2026-07-11-phone-complete-local-completion-program.md`
+Current authority marker: `danio-phone-rc-authority-reset-2026-07-19/1`
+Ordered authority: `plans/2026-07-19-phone-release-candidate-finalization-plan.md`
+Superseded authority: `plans/2026-07-11-phone-complete-local-completion-program.md`
 Closure authority: `COMPLETE_LOCAL_CLOSURE_LEDGER.md`
 Historical sources: `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 and `docs/product/danio-complete-local-current-audit-2026-06-13.md`
@@ -17,8 +19,9 @@ still missing. It does not choose or reorder the next phase.
 Do not use this file as a replacement for the detailed product backlog. The
 backlog owns feature history and acceptance details. This map owns current
 category completion status, evidence expectations, and the quality bar. The
-phone completion program is the only ordered phase authority, and the closure
-ledger owns row closure state, disposition, evidence, and exact done conditions.
+phone release-candidate finalization plan is the only ordered authority, and the
+closure ledger owns row closure state, disposition, evidence, and exact done
+conditions.
 
 The `Ledger IDs` column is an exact traceability map. `none` means the category
 closed before the DCL ledger existed and has no current ledger row; it is not an
@@ -29,11 +32,13 @@ untracked implementation target.
 The user confirmed on 2026-07-11 that the active complete-local target is a
 polished, resilient, local-first Android phone app. Tablet implementation,
 tablet polish, and tablet performance are parked until the phone phase closes.
-Cloud/accounts, API-key/provider expansion, premium, store/deploy, public
-release, and iOS also remain parked.
+Cloud/accounts, new Optional-AI provider connectors, premium, store/deploy,
+public release, and iOS also remain parked. Android Keystore-backed secure-storage migration remains active under `DCL-PREF-001`.
 
-Use `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`
-for the ordered execution phases. Current repo screenshots and assets govern
+Use `docs/agent/plans/2026-07-19-phone-release-candidate-finalization-plan.md`
+for the finite P0/P1 release selector and ten planned product/test epochs. P2/P3
+work is accepted or parked unless the user explicitly reopens it. Current repo
+screenshots and assets govern
 visual defects; Figma is optional downstream context. Repository source, tests,
 ledger, and fresh gates remain authoritative.
 
@@ -90,14 +95,14 @@ animation quota.
 | Multi-tank | none | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | `DCL-P1-004` | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Audit current source labels and save handoffs once; fix only a concrete missing label/context/persistence defect, or close with no-current-gap evidence. |
 | Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | In progress | `DR-2026-07-16-001` through `DR-2026-07-16-006` close `DCL-DR-001`. `DR-2026-07-16-007` through `DR-2026-07-16-013` fix or prove retry, recovery-copy, corruption, start-fresh, and preference-migration boundaries. `DR-2026-07-16-014` proves missing, zero-byte, and whitespace-only local JSON starts healthy and empty without rewrite or artifacts, closing `DCL-DR-002`. | Keep `DCL-DR-004` ordered after the verification-first `DCL-DR-003` audit; do not select an import-mapping gap early. |
-| Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Audit the current keyless/provider/privacy preference paths once; fix a concrete honesty or persistence defect, or close with no-current-gap evidence. |
+| Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Complete the planned Android Keystore-backed `ApiKeyStore` migration and audit keyless/provider/privacy paths; close only after secure read/write/delete/migration proof. |
 | Global search | none | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | none | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
 | Tablet layout | `DCL-TAB-001` | Parked | Many surfaces have CL-P2-002 readability slices and the 96-row tablet map is locally verified. | No current action. Reopen after phone complete-local and define tablet polish/accessibility/performance from retained evidence. |
 | Visual asset quality | `DCL-VIS-001` | In progress | The March visual asset audit is historical evidence, not current defect authority. July phone screenshots and current repo assets govern. | Inspect current phone evidence; fix each concrete asset, clipping, contrast, or source/licence defect found, or close with no-current-gap evidence. There is no replacement quota. |
-| Accessibility | `DCL-A11Y-001` | In progress | Some 48dp, contrast, semantics, reduced-motion, and layout guardrails exist. | Run the ordered phone-cluster accessibility pass from the 2026-07-11 completion program with current screenshots and focused tests. |
+| Accessibility | `DCL-A11Y-001` | In progress | Some 48dp, contrast, semantics, reduced-motion, and layout guardrails exist. | Run the five-cluster phone pass from the 2026-07-19 release-candidate plan with current screenshots and focused tests. |
 | Motion and haptics | `DCL-MOTION-001` | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Audit current animated and haptic flows; fix reduced-motion failures, haptic-preference bypasses, or concrete clarity defects only. No new-animation quota applies. |
-| Performance | `DCL-PERF-001` | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Measure startup, warm resume, tab switching, tank animation, scrolling, and image loading on the owned Android phone target. Later tablet performance is tracked by `DCL-TAB-001`. |
+| Performance | `DCL-PERF-001` | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Add the profile-mode machine-readable harness and measure startup, warm resume, tab switching, tank feedback, scrolling, and local-image paint on `danio_api36`. Later tablet performance is tracked by `DCL-TAB-001`. |
 | Optional AI providers | `DCL-EXT-001` | Parked | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | No current action. Implement real non-OpenAI connectors only after explicit reopening. |
 | AI confirmation | `DCL-AI-001` | In progress | Symptom Triage, Weekly Plan, and Ask Danio persistence now requires confirmation. Fish ID and AI Compatibility still persist AI-history summaries without confirmation. | Close Fish ID and AI Compatibility as separate future single-slice epochs with cancel/no-write and confirm/write-once proof, then audit the remaining current AI writes once. |
 | Premium AI path | `DCL-PREMIUM-001` | Parked | Premium remains conceptual and must not appear as fake product behavior. | No current action. Reopen only after the local phone app is excellent and real extra capability exists. |
@@ -105,7 +110,7 @@ animation quota.
 | Whole-app phone audit | `DCL-RC-001` | Locally verified | Current phone screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`, with notes in `docs/qa/whole-app-phone-map-2026-07-04.md`; the Smart/Fish ID bottom-dock overlap and smoke tap false positive are fixed locally with tests, the phone black-box smoke rerun passed, `phone-04b-smart-root-after-dock-fix` recaptures Fish & Plant ID clearing the dock by `47px`, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have phone `Pass` accounting with 96 passes and 0 current gaps. | Recheck when app surfaces change or before release signoff. |
 | Whole-app tablet audit | `DCL-TAB-001` | Locally verified | Current tablet screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`, with notes in `docs/qa/whole-app-tablet-map-2026-07-04.md`; smoke route assertions/tap handling and lower More hub tablet swipes are hardened locally with tests, the tablet black-box smoke rerun passed, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have tablet `Pass` accounting with 96 passes and 0 current gaps. | Retain as later-phase evidence; do not recheck for the phone candidate unless tablet scope is explicitly reopened. |
 | Visual regression | `DCL-VIS-002` | In progress | Current July phone screenshots, golden tests, and the visual baseline manifest provide a bounded baseline. | Validate the manifest and add targeted proof only for changed high-risk surfaces; close when current checks pass. No new-golden quota applies. |
-| Rule tests | `DCL-RULE-001` | In progress | Rule coverage exists for current local intelligence and tool paths. | Inventory the current high-risk recommendation, compatibility, emergency, unit, and calculation families; add coverage or fixes only for a concrete gap, then close when the inventory and tests pass. |
+| Rule tests | `DCL-RULE-001` | In progress | Rule coverage exists for current local intelligence and tool paths. | Add the fixed CompatibilityService matrix, all five Tank Volume shapes, and complete Unit Converter numeric assertions; any wrong behavior becomes its own proven P1 epoch. |
 | Content validation | `DCL-CONTENT-001` | In progress | The current validator covers emergency positioning, professional escalation, prerequisite-free access, UK volume spelling, metric context, warning coverage, unsafe/product-endorsing care copy, brand certainty, graph IDs/prerequisites, sources, quizzes, section presence, rewards, and duration ranges. | Run the current validator; add a check only for a concrete uncovered risk and fix any failure. Accepted content breadth does not require expansion. |
 | Data resilience | `DCL-DR-001,DCL-DR-002,DCL-DR-003,DCL-DR-004` | In progress | `DCL-DR-001` and `DCL-DR-002` are closed by complete ordered restore, migration, and corruption-recovery matrices. Backup/data hardening has broad coverage; achievement progress has lifecycle flush/restore-cancel and false-write retry coverage, achievement resetAll rejects failed local progress removal before clearing visible progress, lesson-completion achievement checks use persisted completed-lesson and perfect-score profile state, debug achievement reset rejects failed progress removal/profile writes and restores progress on profile-write failure, DebugMenu profile-write actions reject false local `user_profile` saves before showing success, Debug species reset rejects false local unlock writes, Debug Clear All Data rejects false local preference-clear results before showing restart copy, Debug Force SR Cards Due rejects false review-card writes before showing due-now success, Settings theme/notification/ambient/haptic writes now report durable-save failures, theme selection stays retryable when local theme persistence fails, Phone Notifications avoids false disabled-success feedback when local persistence fails, ambient/haptic switches show retry feedback when local saves fail, Preferences region/tank-stage/experience/goals edits stay retryable when profile persistence fails, and Reminder Settings review/streak toggles, reminder-intensity presets, and reminder-time edits show retry feedback when profile persistence fails, review-card create/seed/delete paths rollback on failed local writes, review reset keeps visible cards/stats and restores partially removed cards/stats/streak/session JSON when reset removal fails, gem and inventory resets reject false local removal results, room-vibe applies require durable preference saves before showing success, Reduce Motion override changes stay aligned with saved preferences, guidance and seasonal prompt dismissals only report dismissal after the local flag is saved, Tank returning-user prompt dismissals check failed seen-flag writes, the stage sheet hint uses the shared preferences provider and restores visible retry state when its seen-flag save fails, the energy explainer prompt is marked seen only after dismissal, all current OpenAI request surfaces including Ask Danio typed questions use the shared disclosure gate and stop before AI requests when the local disclosure flag cannot be saved, first-run consent/under-13 actions wait for durable preference writes before advancing, user-profile saves and resets treat false preference write/remove results as failures, schema migration stamps fail loudly when the version marker cannot be saved, backup preview and SharedPreferences restore reject wrong primitive value types for exportable preference keys before import/restore, backup restore extracts only archive photo files referenced by validated backup data, ignores duplicate archive-only photo basenames that backup data does not reference, scopes photo reference handling to current `imageUrl` and `photoUrls` fields so free-text path-like strings do not block valid backup operations, and now has executable proof that restored-photo cleanup runs when tank import fails after photo extraction and remains best-effort if cleanup fails in either the import flow or screen catch, direct tank-scoped backup imports reject child rows whose tank IDs are not imported, trim-empty required tank and child IDs, missing relationship targets, malformed relationship ID types, duplicate tank and child IDs, and cross-tank relationship targets before imported tank saves or success, bulk tank delete failures restore visible tanks and surface retry feedback, onboarding completion/reset/replay wait for durable local flag writes or show retry feedback, Delete My Data rejects false preference-clear results before destructive follow-up steps, Clear All Data copy matches its narrower local tank/log/task/photo scope, Add Log edits skip duplicate reward/progress side effects, Tank Settings saved edits close without dirty-prompt loops, equipment adds roll back partial equipment saves when maintenance-task sync fails, equipment-add, livestock-add, Quick Water Test, and practice-lesson progress failures no longer undo durable saves or show generic/false save success, single and bulk livestock adds roll back partial livestock/log saves when timeline-log persistence fails, livestock removal expiry skips timeline logs when the parent tank is missing, single livestock moves reject missing target tank IDs before saving moved livestock, Wishlist purchase rejects missing local item IDs before reporting success or applying budget spend, tank, log, task, equipment, and livestock edit submissions reject missing local record IDs before saving, Add Log, Livestock, Task, Equipment, Cycling Assistant reminder, bulk Livestock, Symptom Triage journal, Species detail care-task, Tank Journal manual-entry, and Tank Detail quick-feeding child save paths reject missing parent tank IDs before saving, Equipment delete Undo rejects missing parent tanks before restoring equipment or generated maintenance tasks, root lifecycle detach flushes pending gem writes before app-kill can skip the debounce timer, DS-2026-07-05-044 verified the current durable debounced-writer inventory as gems and achievement progress with lifecycle evidence, and gem, inventory, legacy inventory migration, review-card, review-session count, review-streak, reminder, cost-tracker, maintenance-checklist, difficulty-setting, review-request tracking, and API rate-limit writes reject false local save results. | Audit `DCL-DR-003` under marker `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`; map every current CRUD/undo path before fixing at most one proven gap. Keep `DCL-DR-004` next. |
 | Weekly Plan cache clear | none | Locally verified | Weekly Plan cache clear now waits for durable local `weekly_plan_cache` removal before hiding the visible plan, and failed removals leave the plan visible with a surfaced error. | Recheck if Weekly Plan cache, restore invalidation, or optional-AI save flows change. |
@@ -113,10 +118,11 @@ animation quota.
 
 ## Historical Evidence Boundary
 
-The 2026-07-04 roadmap snapshot and the March visual asset audit are historical
-evidence, not current defect authority or executable work queues. They cannot
-rank, reopen, or create work. The locked phone program owns the seven ordered
-phases; the closure ledger owns row state and done conditions; current source,
+The 2026-07-04 roadmap snapshot, the superseded 2026-07-11 completion program,
+and the March visual asset audit are historical evidence, not current defect
+authority or executable work queues. They cannot rank, reopen, or create work.
+The 2026-07-19 release-candidate plan owns the fixed sequence and P0/P1 release
+selector; the closure ledger owns row state and done conditions; current source,
 tests, validators, July phone screenshots, repo assets, and fresh commands own
 factual truth.
 
@@ -285,13 +291,14 @@ rule applies to older accessibility, motion, content, and performance findings.
 
 ## Slice Selection Rule
 
-`DCL-DR-001` and `DCL-DR-002` are closed. `DCL-DR-002-F1` and
-`DCL-DR-002-F2` are locally fixed; `DCL-DR-002-F3`, `DCL-DR-002-F4`,
-`DCL-DR-002-F5`, `DCL-DR-002-F6`, `DCL-DR-002-F7`, and `DCL-DR-002-F8` are
-locally verified. After this checkpoint is clean, pushed, and aligned, continue
-the next manual verification-first `DCL-DR-003` audit under marker
-`danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`. Do not select
-`DCL-DR-004` or a later phone phase first.
+`DCL-DR-001` and `DCL-DR-002` are closed. `DCL-DR-003-F1` through
+`DCL-DR-003-F34` are settled evidence, but `DCL-DR-003` remains open. After the
+authority-reset checkpoint is clean, pushed, and aligned, execute the fixed
+P0/P1 release selector from
+`plans/2026-07-19-phone-release-candidate-finalization-plan.md`: Tasks
+completion compensation, Equipment Mark Serviced compensation, single
+livestock-add compensation, then the Wishlist replay probe. Reinspect the
+current matrix before closing `DCL-DR-003`; keep `DCL-DR-004` after it.
 
 This map may record a newly discovered regression or higher-risk category, but
 it cannot silently select a different product row. Frozen claim, budget,

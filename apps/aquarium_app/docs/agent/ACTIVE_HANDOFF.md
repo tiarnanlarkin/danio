@@ -1,150 +1,100 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; Phase 1 data resilience in progress
+Status: manual lean workflow; phone release-candidate authority reset
 Updated: 2026-07-19
-Product epoch: `DR-2026-07-19-056`
-Marker: `danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1`
-E0 authority marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
+Documentation epoch: `DR-2026-07-19-057`
+Marker: `danio-phone-rc-authority-reset-2026-07-19/1`
+Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
-## Current state
+## Current authority
 
-- Repository authority is local `main`; verify branch, tree, cleanliness, and `main...origin/main` live at startup.
-- E0 locks the seven ordered phone phases and finite done conditions across the completion program, ledger, Finish Map, forecast, performance, and visual baseline authorities.
-- `DCL-DR-001` is `closed`: `DCL-DR-001-F1`, `DCL-DR-001-F2`, and `DCL-DR-001-F3` are locally fixed; `DCL-DR-001-F4`, `DCL-DR-001-F5`, and `DCL-DR-001-F6` are locally verified in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
-- `DCL-DR-002` is `closed` in `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
-- `DCL-DR-002-F1` is locally fixed under marker
-  `danio-dcl-dr-002-migration-corruption-recovery-audit-2026-07-16/1`: both
-  error states expose `retryLoad`; start fresh remains corruption-only.
-- `DCL-DR-002-F2` is locally fixed under marker
-  `danio-dcl-dr-002-recovery-copy-honesty-2026-07-16/1`: failed corrupt-file
-  backup no longer exposes a nonexistent path; successful-copy behavior remains.
-- `DCL-DR-002-F3` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-corrupt-json-retry-proof-2026-07-16/1`: an unchanged real
-  malformed file remains corrupted and blocks empty-data reads after retry,
-  while a schema-v2 repair remains blocked until `retryLoad`, then loads without
-  rewriting the repair or creating another corruption copy.
-- `DCL-DR-002-F4` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-start-fresh-cancel-back-proof-2026-07-16/1`: both the
-  explicit Cancel action and system back dismiss the destructive dialog with
-  zero recovery calls, provider refreshes, state changes, or success feedback.
-- `DCL-DR-002-F5` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-start-fresh-scoped-deletion-proof-2026-07-16/1`: real-file
-  recovery deletes only the corrupt main store, preserves recovery/sibling
-  evidence, clears all five entity maps, and only then exposes healthy emptiness.
-- `DCL-DR-002-F6` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-start-fresh-failure-proof-2026-07-16/1`: recovery failure
-  retains the service error/card and retry actions, performs no provider reread,
-  shows accurate failure feedback, and cannot show start-fresh success.
-- `DCL-DR-002-F7` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1`: the v0
-  stamp adds only schema version 1 and preserves every existing preference key,
-  value, and primitive type.
-- `DCL-DR-002-F8` is locally verified with no current product gap under marker
-  `danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1`: missing,
-  zero-byte, and whitespace-only local JSON stores load healthy and empty with
-  no rewrite, corruption artifact, recovery state, or invented entity.
-- `DCL-DR-003` is mapped in `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md` and
-  remains `open` because the fresh inventory proved independent current gaps.
-- `DCL-DR-003-F1` is locally fixed under marker
-  `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`: Today Board Feed
-  rejects a missing tank before saving and cannot create an orphan/false success.
-- `DCL-DR-003-F2` fixed: `danio-dcl-dr-003-equipment-undo-rollback-proof-2026-07-16/1`;
-  task-restore rollback and post-route refresh are proven.
-- `DCL-DR-003-F3` fixed: `danio-dcl-dr-003-review-answer-persistence-proof-2026-07-16/1`;
-  failed saves stay pending and abandoned sessions cannot resurrect.
-- `DCL-DR-003-F4` fixed: `danio-dcl-dr-003-normal-lesson-gem-retry-proof-2026-07-16/1`;
-  rewards follow durable lesson progress with honest failure feedback.
-- `DCL-DR-003-F5` fixed: `danio-dcl-dr-003-home-quick-feed-parent-preflight-proof-2026-07-16/1`; Home main-Tank Feed rejects a missing parent before saving.
-- `DCL-DR-003-F6` fixed: `danio-dcl-dr-003-livestock-quick-feed-parent-preflight-proof-2026-07-16/1`; Livestock Feed rejects a missing parent before saving or rewarding.
-- `DCL-DR-003-F7` fixed: `danio-dcl-dr-003-home-quick-water-parent-preflight-proof-2026-07-16/1`; Home Quick Water Test rejects a missing parent before saving or rewarding.
-- `DCL-DR-003-F8` verified: `danio-dcl-dr-003-task-delete-failure-proof-2026-07-16/1`; failed deletion keeps the task visible with no success or Undo.
-- `DCL-DR-003-F9` fixed: `danio-dcl-dr-003-task-completion-stale-id-proof-2026-07-16/1`; stale Tasks Completion cannot recreate a task or create completion side effects.
-- `DCL-DR-003-F10` fixed: `danio-dcl-dr-003-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F11` fixed: `danio-dcl-dr-003-tank-detail-task-completion-stale-id-proof-2026-07-16/1`.
-- `DCL-DR-003-F12` fixed: `danio-dcl-dr-003-tank-detail-task-completion-parent-preflight-proof-2026-07-16/1`; `DCL-DR-003-F13` fixed: `danio-dcl-dr-003-equipment-service-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F14` fixed: `danio-dcl-dr-003-task-snooze-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F15` fixed: `danio-dcl-dr-003-livestock-bulk-move-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F16` fixed: `danio-dcl-dr-003-livestock-bulk-expiry-failure-feedback-2026-07-16/1`; `DCL-DR-003-F17` fixed: `danio-dcl-dr-003-wishlist-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F18` fixed: `danio-dcl-dr-003-wishlist-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F19` fixed: `danio-dcl-dr-003-local-shop-edit-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F20` fixed: `danio-dcl-dr-003-local-shop-remove-stale-id-proof-2026-07-16/1`; `DCL-DR-003-F21` fixed: `danio-dcl-dr-003-wishlist-purchase-compensation-failure-feedback-2026-07-16/1`; `DCL-DR-003-F22` fixed: `danio-dcl-dr-003-cost-delete-stale-index-proof-2026-07-16/1`; `DCL-DR-003-F23` fixed in `DR-2026-07-16-037`: `danio-dcl-dr-003-review-completion-redundant-save-proof-2026-07-16/1`.
-- `DCL-DR-003-F24` fixed: `danio-dcl-dr-003-gem-purchase-refund-failure-feedback-2026-07-16/1`; Gem Shop preserves inventory-save and refund failures for diagnosis, warns when the persisted gem refund is uncertain, and omits unsafe immediate Retry only for that uncertain path.
-- `DCL-DR-003-F25` fixed in `DR-2026-07-18-039` under marker `danio-dcl-dr-003-inventory-expired-cleanup-failure-feedback-2026-07-18/1`; `expired item cleanup failure shows feedback without changing inventory` proves that boundary.
-- `DCL-DR-003-F26` fixed in `DR-2026-07-18-040` under marker `danio-dcl-dr-003-achievement-unlock-reward-recovery-proof-2026-07-18/1`; failed profile writes remain retryable, ordinary gem persistence failure compensates the profile before provider-reload retry, and a durable gem-reward idempotency marker separates settled rewards from profile-only partial commits. Failed profile or gem-state compensation surfaces both causes as explicit uncertainty, leaves progress nonterminal, and a later healthy reload settles the missing side exactly once before celebration or notification.
-- `DCL-DR-003-F27` was ranked in `DR-2026-07-18-041` under marker `danio-dcl-dr-003-next-finding-triage-2026-07-18/1` and is locally fixed in `DR-2026-07-18-042` under marker `danio-dcl-dr-003-task-completion-xp-failure-honesty-proof-2026-07-18/1`: `TasksScreen` catches and logs post-commit profile/XP failure, refreshes profile and primary providers, preserves one durable task completion and completion log with XP unchanged, and warns without Retry.
-- `DCL-DR-003-F28` was ranked in `DR-2026-07-18-043` under `danio-dcl-dr-003-next-finding-triage-2026-07-18/2` and is locally fixed in `DR-2026-07-18-044` under marker `danio-dcl-dr-003-livestock-bulk-add-rollback-uncertainty-proof-2026-07-18/1`: dual log-save/rollback failure preserves both causes, clears stale Retry feedback, warns about uncertain persistence without Retry, and locks every save entry in the open sheet. `failed bulk-add rollback reports uncertainty and blocks duplicate retry` plus `stale bulk-add retry cannot bypass uncertain persistence lock` prove the boundary.
-- `DCL-DR-003-F29` was ranked in `DR-2026-07-18-045` under `danio-dcl-dr-003-next-finding-triage-2026-07-18/3` and is locally fixed in `DR-2026-07-18-046` under `danio-dcl-dr-003-tank-create-rollback-uncertainty-proof-2026-07-18/1`: `createTank preserves task-save and rollback failures when cleanup is uncertain`; `failed tank-create rollback reports uncertainty and blocks duplicate retry`; `stale tank-create retry cannot bypass uncertain persistence lock`; `clean tank-create compensation retains safe Retry`.
-- `DCL-DR-003-F30` is locally fixed in `DR-2026-07-19-048` under `danio-dcl-dr-003-equipment-add-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentAddCompensationException`; `failed maintenance-task sync rolls back new equipment`; `failed equipment-add rollback reports uncertainty and blocks duplicate retry`; `stale equipment-add retry cannot bypass uncertain persistence lock`; `clean equipment-add compensation retains safe Retry`. DCL-DR-003 remains open.
-- `DCL-DR-003-F31` is locally fixed in `DR-2026-07-19-050` under `danio-dcl-dr-003-equipment-delete-rollback-uncertainty-proof-2026-07-19/1`: `EquipmentDeleteCompensationException`; `failed maintenance-task deletion keeps equipment saved`; `failed equipment-delete rollback reports orphan uncertainty`; the equipment is gone and its maintenance task may remain. DCL-DR-003 remains open.
-- `DCL-DR-003-F32` is locally fixed in `DR-2026-07-19-052` under `danio-dcl-dr-003-livestock-bulk-move-rollback-uncertainty-proof-2026-07-19/1`: `LivestockBulkMoveCompensationException`; `rolls back earlier moves when a later save fails`; `bulk move preserves initiating and rollback failures when compensation is uncertain`; `failed bulk-move rollback reports partial-move uncertainty without unsafe retry`; source and target tank and livestock authority refreshes. DCL-DR-003 remains open.
-- `DCL-DR-003-F33` is locally fixed in `DR-2026-07-19-054` under `danio-dcl-dr-003-inventory-use-rollback-uncertainty-proof-2026-07-19/1`: `InventoryUseCompensationException`; `useItem preserves effect and rollback failures when inventory restore is uncertain`; `useItem restores inventory after profile effect failure when compensation succeeds`; `failed consumable rollback reports lost-item uncertainty without unsafe retry`; inventory and profile authority refresh; stale-callback lockout. DCL-DR-003 remains open.
-- `DCL-DR-003-F34` was ranked only in `DR-2026-07-19-055` and is locally fixed in `DR-2026-07-19-056` under `danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1`. `TankDetailTaskCompletionCompensationException` preserves both causes with task/tank context when the completion log and task rollback both fail. Exactly one durable completion remains; task, equipment, and log authority refreshes; feedback warns that completion may already have happened with no success, Retry, or `Try again`; and visible and stale completion callbacks are locked. `failed tank-detail task rollback reports uncertain completion without unsafe retry` is GREEN, while `failed completion log write rolls back task completion` keeps definitive compensation GREEN. DCL-DR-003 remains open; no second finding is ranked.
+- Ordered plan:
+  `plans/2026-07-19-phone-release-candidate-finalization-plan.md`.
+- Closure state: `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
+- Category status: `FINISH_MAP.md`.
+- Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and
+  `QUALITY_LADDER.md`.
+- The older `plans/2026-07-11-phone-complete-local-completion-program.md` is
+  superseded background and cannot select or resume work.
+- The current plan owns the P0/P1 release selector. P2/P3 work is accepted or
+  parked unless the user explicitly reopens it.
 
-## Frozen autonomy
+## Verified baseline
 
-- State file: `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`.
-- Revision: 2.
-- Mode: `stopped`.
-- Transition: `preclaim_stop`.
-- Reason: `USER_REQUESTED_WORKFLOW_SIMPLIFICATION`.
-- Cursor: `DCL-DR-001-restore-matrix-audit`.
-- Budget remains historical and uncharged: total 20, consumed 10, remaining 10.
-- Owner is null and current charge status is `none`.
-- Claim, launch, budget, closeout, and successor machinery is retained only as
-  historical evidence outside routine startup and gates.
-- Reactivation requires a new explicit request and reconciliation plan; frozen
-  material cannot select, authorize, charge, resume, or hand off a phase.
+- Startup checkpoint: local and remote `main` at `ded4771a`, tree
+  `e59ea2ca36abac3b512cd2e6b8196a6f7a369982`, clean and aligned with one
+  worktree before epoch 057.
+- Fresh post-F34 Full gate on the unchanged checkpoint passed on 2026-07-19:
+  signing-secret guard, dependency validation, custom lint, 2,263 tests,
+  analyze, and debug APK build; `GATE_TOTAL|PASS|183016|Full`.
+- `DCL-DR-001` is `closed` in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
+- `DCL-DR-002` is `closed` in
+  `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
+- `DCL-DR-003` remains `open` in
+  `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`. Findings `DCL-DR-003-F1`
+  through `DCL-DR-003-F34` are settled evidence. F34 is complete and must not
+  reopen without contradictory live evidence.
+- `DCL-DR-004` remains after DCL-DR-003 and owns the livestock-removal backup
+  tombstone relationship.
 
-Never create an automatic successor task.
+## Fixed release sequence
 
-The user authorized continued manual roadmap execution here until completion,
-stopping only when needed; frozen autonomy and automatic tasks remain inactive.
+The ten planned product/test epochs are:
 
-## Product authority
+1. Tasks completion compensation.
+2. Equipment Mark Serviced compensation.
+3. Single livestock-add compensation.
+4. Backup tombstone relationship.
+5. Fish ID activity consent.
+6. Compatibility activity consent.
+7. Secure Optional-AI key storage through `ApiKeyStore`.
+8. Compatibility and calculation rule coverage.
+9. Global haptic-preference enforcement.
+10. Profile performance harness on `danio_api36`.
 
-- `DCL-DR-001` is `closed`. `DCL-DR-001-F1` through `DCL-DR-001-F3` are
-  locally fixed and `DCL-DR-001-F4` through `DCL-DR-001-F6` are locally
-  verified. Every ordered restore-matrix path has named current evidence and
-  the required final Full gate passed.
-- `DCL-DR-002` is `closed`. `DCL-DR-002-F1` and `DCL-DR-002-F2` are locally
-  fixed, `DCL-DR-002-F3` through `DCL-DR-002-F8` are locally verified, every
-  matrix path has named executable evidence, and the required Full gate passed.
-- `DCL-DR-003` remains `open`; F1-F26 are settled. F27 is locally fixed, F28 is locally fixed, F29 is locally fixed, F30 is locally fixed, F31 is locally fixed, F32 is locally fixed, F33 is locally fixed, and F34 is locally fixed. No row closure is inferred and no second finding was ranked in `DR-2026-07-19-056`.
-  The removal-log relationship finding is deferred to `DCL-DR-004`.
-- The locked completion program is the only ordered phase authority; the
-  closure ledger owns row state/done conditions and the Finish Map owns category
-  status. Read them only for the directly relevant row.
-- The completed fresh `DCL-DR-003` matrix owns its remaining ordered findings;
-  each proven gap stays a separate data-safety slice.
-- The current 82 lessons, 75+ species, and 40+ plants are sufficient for phone
-  completion. Only audited defects or validator failures require more content.
-- Visual and motion work has no asset-replacement or new-animation quota.
-  Current screenshot, accessibility, reduced-motion, and haptic-preference
-  defects govern.
-- Fish ID and AI Compatibility each have a known unconfirmed AI-history
-  persistence gap and require separate future single-slice epochs.
+After epochs 1-3, run the bounded Wishlist replay probe. Add an epoch only if a
+focused RED proves P0/P1 duplicate or replay behavior. After epoch 8, close only
+those product/content/rule rows backed by executable evidence. After epochs
+9-10, complete the five phone-quality clusters and final device evidence.
 
-## Release and external truth
+## Severity boundary
 
+- P0: crash/ANR, corruption/data loss, serious privacy/security failure,
+  unreachable critical journey, or required-gate failure.
+- P1: uncertain durability or duplicate risk, false success, broken core
+  journey, wrong safety-critical calculation/advice, essential accessibility
+  failure, reduced-motion/haptic bypass, material clipping, or reproducible
+  performance-budget miss.
+- P2/P3: accepted limitation or post-v1 work; no release extension without
+  explicit user reopening.
+
+## Execution boundary
+
+- One repository-writing coordinator. Parallel auditors remain read-only.
+- Start every epoch from fetched, clean, aligned `main`, one worktree, and no
+  competing writer; allocate the next unused live `DR` identifier.
+- One temporary branch and one product finding per implementation epoch.
+- Product: focused RED, minimal fix, focused GREEN, settled-diff review, Full,
+  fast-forward `main`, one push, clean/aligned/worktree proof, branch cleanup.
+- Documentation: guard RED, docs edit, guard GREEN, review, Docs gate, the same
+  Git closeout.
+- Only the coordinator runs Flutter, Gradle, Git integration, or device work.
+- `phone_completion_run_state.json` remains historically `stopped` for
+  `USER_REQUESTED_WORKFLOW_SIMPLIFICATION`; frozen autonomy, claims, budgets,
+  launch, closeout, and successor machinery cannot authorize work.
+- Do not create a successor. Do not touch cloud/accounts, Play Store signing or
+  submission, iOS, tablet, public release, or unrelated branch
+  `docs/danio-live-dev-workflow-spec-20260719`.
 - Danio is not listed in the Play Console account inspected on 2026-07-15.
-- The exposed local signing key is retired and must never be used for a future
-  release. Fresh signing material requires a separately authorized release task.
-- Public Git-history exposure remains unresolved; do not rewrite history or
-  force-push without an explicit recovery plan and user authorization.
-- Public legal-page availability and other account-side release checks remain
-  external/user-gated. Do not infer readiness from local gates.
-- Tablet, keyed-AI seed, providers, premium, deploy/release, cloud/accounts,
-  signing, legal hosting, public-history recovery, and iOS remain parked.
-
-## Routine startup
-
-Read only the exact five files listed in root `AGENTS.md`. Load source, tests,
-ledger rows, device guidance, archived history, or frozen autonomy material only
-when the chosen task directly requires them.
-
-## Verification policy
-
-- Focused and Visual gates require explicit affected test paths.
-- Product-code epochs get one Full gate on their final settled tree.
-- Docs-only epochs get one Docs gate and no Full gate.
-- A row-closing data-safety epoch runs Full when its ledger done condition explicitly requires it, even when the final proof changes tests/docs only.
-- After an identical fast-forward/push, compare tree IDs and Git alignment; do not rerun an identical gate.
+  Store release remains separately blocked and outside this local candidate.
+- Never create an automatic successor task.
 
 ## Next manual action
 
-Handoff only; do not create a successor.
-`DCL-DR-003-F34` is locally fixed under `danio-dcl-dr-003-tank-detail-task-completion-rollback-uncertainty-proof-2026-07-19/1`. No next finding is selected or ranked. Any future manual session must rebuild live repository authority before choosing work.
-Keep the parallel Tasks rollback boundary, Equipment Mark Serviced, Wishlist replay, single-livestock-add, missing catalog, backup relationships, `DCL-DR-004`, hot reload, autonomy, and external scope out. DCL-DR-003 remains open; do not infer closure.
+Close `DR-2026-07-19-057` as documentation-only authority work on clean pushed
+`main`. Then allocate the next live epoch and implement only Tasks completion
+compensation test-first: prove simultaneous completion-log and task-restore
+failure, preserve both causes, refresh task/tank/log authority, block stale
+callbacks, report uncertainty honestly, and omit unsafe Retry.
+
+Stop after `DCL-RC-001` closes with the final APK/evidence packet and no P0/P1.
