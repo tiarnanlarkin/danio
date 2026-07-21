@@ -431,6 +431,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
   late TextEditingController _priceController;
   late TextEditingController _notesController;
   late int _quantity;
+  bool _isSaving = false;
 
   bool get _isEditing => widget.existingItem != null;
 
@@ -581,10 +582,11 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
               width: double.infinity,
               child: AppButton(
                 label: _isEditing ? 'Save Changes' : 'Add to Wishlist',
-                onPressed: _nameController.text.trim().isNotEmpty
+                onPressed: _nameController.text.trim().isNotEmpty && !_isSaving
                     ? _save
                     : null,
                 variant: AppButtonVariant.primary,
+                isLoading: _isSaving,
                 isFullWidth: true,
               ),
             ),
@@ -617,6 +619,9 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
   }
 
   Future<void> _save() async {
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
+
     final item = WishlistItem(
       id: widget.existingItem?.id,
       category: widget.category,
@@ -647,6 +652,8 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
         context,
         'Could not save that wishlist item. Try again in a moment.',
       );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 }

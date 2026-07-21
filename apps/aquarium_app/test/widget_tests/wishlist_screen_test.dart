@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/wishlist_screen_test.dart
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/wishlist_screen.dart';
 import 'package:danio/models/wishlist.dart';
 import 'package:danio/providers/wishlist_provider.dart';
+import 'package:danio/widgets/core/app_button.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -98,6 +100,22 @@ class _DeleteBeforeUpdateWishlistNotifier extends WishlistNotifier {
   }
 }
 
+class _ReplayProbeWishlistNotifier extends WishlistNotifier {
+  _ReplayProbeWishlistNotifier(super.ref);
+
+  final firstAddGate = Completer<void>();
+  int addAttempts = 0;
+
+  @override
+  Future<void> addItem(WishlistItem item) async {
+    addAttempts += 1;
+    if (addAttempts == 1) {
+      await firstAddGate.future;
+    }
+    await super.addItem(item);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -169,6 +187,69 @@ void main() {
       expect(savedItem['estimatedPrice'], 2.5);
       expect(savedItem['category'], 'fish');
     });
+
+    testWidgets(
+      'captured stale add callback cannot replay across failure and retry',
+      (tester) async {
+        late _ReplayProbeWishlistNotifier notifier;
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              wishlistProvider.overrideWith(
+                (ref) => notifier = _ReplayProbeWishlistNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Add Item').first);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Fish name'),
+          'Cardinal Tetra',
+        );
+        await tester.pump();
+
+        final addButton = find.widgetWithText(AppButton, 'Add to Wishlist');
+        final capturedAdd = tester.widget<AppButton>(addButton).onPressed!;
+        capturedAdd();
+        await tester.pump();
+        capturedAdd();
+        await tester.pump();
+
+        expect(notifier.addAttempts, 1);
+        expect(tester.widget<AppButton>(addButton).isLoading, isTrue);
+
+        notifier.firstAddGate.completeError(
+          StateError('wishlist persistence failed'),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(
+          find.text(
+            'Could not save that wishlist item. Try again in a moment.',
+          ),
+          findsOneWidget,
+        );
+        expect(notifier.addAttempts, 1);
+        expect(tester.widget<AppButton>(addButton).isLoading, isFalse);
+
+        await tester.tap(addButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(notifier.addAttempts, 2);
+        expect(find.text('Cardinal Tetra'), findsOneWidget);
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedItems =
+            jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+        expect(savedItems, hasLength(1));
+      },
+    );
   });
 
   group('WishlistScreen — different categories', () {

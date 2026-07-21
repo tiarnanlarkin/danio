@@ -1,9 +1,9 @@
 # DCL-DR-003 CRUD And Undo Resilience Matrix
 
-Status: open
+Status: closed - all current P0/P1 paths settled and Full passed
 Audit marker: `danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1`
 Audit base: `a47f1fc37a0a686560112af237599969d55337bd`
-Current epoch: `DR-2026-07-19-060`
+Current epoch: `DR-2026-07-21-062`
 
 ## Decision
 
@@ -193,6 +193,34 @@ reset-assisted Full with 2,276 tests/lint/analyze/APK pass; final Docs passes 24
 contract/signing checks. DCL-DR-003 remains open, with the bounded Wishlist
 replay probe next; no second finding is ranked.
 
+Implementation epoch `DR-2026-07-21-062` proves and fixes only
+`DCL-DR-003-F38` under marker
+`danio-dcl-dr-003-wishlist-replay-probe-2026-07-21/1`. RED
+`captured stale add callback cannot replay across failure and retry` observed
+two add attempts from the same captured pre-rebuild callback while the first
+Wishlist persistence write was blocked. The shared add/edit sheet now uses a
+state-scoped in-flight latch before constructing a fresh item ID, disables and
+loads the visible button during persistence, ignores the captured callback
+after rebuild, and unlocks a fresh Retry only after definitive failure. The
+named GREEN proves one attempt before failure, one safe retry, and exactly one
+durable row. All 18 Wishlist widget tests and analyze pass through Focused;
+independent settled-diff review found no findings. The first Full attempt
+exposed stale generated Android transforms and four stale current-doc
+expectations, not a product failure. After the guard corrections,
+reset-assisted Full passed dependency validation, custom lint, 2,279 tests,
+analyze, and the debug APK build at `GATE_TOTAL|PASS|187023|Full`; final Docs
+passed 25 contract/signing checks at `GATE_TOTAL|PASS|4551|Docs`.
+
+The complete current matrix was reinspected without reopening F1 through F37.
+No contradictory current P0/P1 evidence remains after F38. Exact per-entity
+tests below the shared commit path, mixed bulk timing variants, ordinary
+equipment-edit rescheduling evidence, successful purchase compensation after
+budget failure, Cost Tracker currency-failure evidence, and missing-catalog
+handling are lower-severity omission-only evidence gaps and are parked under
+the current P2/P3 selector. The livestock-removal history relationship remains
+owned by `DCL-DR-004`. The required final Full gate passed on this settled tree,
+so `DCL-DR-003` is closed.
+
 This matrix covers `DCL-DR-003` only. Direct backup-import relationship mapping
 belongs to `DCL-DR-004` and is not selected here.
 
@@ -248,7 +276,7 @@ belongs to `DCL-DR-004` and is not selected here.
 
 | Path | Named current evidence | Result |
 | --- | --- | --- |
-| Wishlist add | `addItem waits for wishlist save before exposing the item`; `adding a wishlist item saves it and confirms the add` | Durability covered; add-failure UI lacks an exact test. |
+| Wishlist add | `addItem waits for wishlist save before exposing the item`; `adding a wishlist item saves it and confirms the add`; RED/GREEN `captured stale add callback cannot replay across failure and retry` | `DCL-DR-003-F38` is locally fixed in `DR-2026-07-21-062`: a state-scoped in-flight latch blocks double-submit and captured pre-rebuild callbacks while persistence is unresolved, surfaces definitive failure, and permits one safe fresh retry with exactly one durable row. |
 | Wishlist edit/delete | RED/GREEN `editing a stale wishlist item shows error instead of false success`; RED/GREEN `deleting a stale wishlist item shows error instead of false success`; `removeItem keeps item visible until wishlist save completes`; delete/undo success and failure tests in `wishlist_screen_test.dart` | `DCL-DR-003-F17/F18` locally fixed: Edit and Remove verify the item ID is still current before persistence, so a concurrent deletion remains durable and the UI shows retry feedback instead of false saved/removed success or Undo. |
 | Wishlist purchase/budget | `markPurchased rejects missing items before reporting success`; `marking an item purchased saves it and updates budget`; `failed purchase keeps item unpurchased with error feedback`; RED/GREEN `failed purchase compensation reports persisted purchase and missing budget update`; `setMonthlyBudget waits for budget save before exposing amount` | `DCL-DR-003-F21` locally fixed: when budget persistence and purchase rollback both fail, the UI warns that the item remains durably purchased while the budget was not updated instead of claiming purchase failure. Budget failure with successful compensation remains source-covered but lacks exact evidence. |
 | Local shops | `addShop waits for local shop save before exposing shop`; RED/GREEN `editing a stale local shop shows error instead of false success`; RED/GREEN `deleting a stale local shop shows error instead of false success`; delete/undo, delete-failure, and undo-failure widget tests | `DCL-DR-003-F19/F20` locally fixed: Edit and Remove verify the shop ID is still current before persistence, so a concurrent deletion remains durable and the UI shows retry feedback instead of false saved/removed success or Undo. |
@@ -525,11 +553,21 @@ belongs to `DCL-DR-004` and is not selected here.
     callbacks. The three named uncertainty, callback, and dismissed-Retry proofs
     plus clean compensation are GREEN. DCL-DR-003 remains open; the bounded
     Wishlist replay probe is next, and no second finding is ranked.
-38. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
+38. `DCL-DR-003-F38` - the Wishlist add/edit sheet accepted a captured Save
+    callback twice while its first persistence write was unresolved, creating
+    multiple fresh-ID add attempts. RED `captured stale add callback cannot
+    replay across failure and retry` observed two attempts before the first
+    write settled. A state-scoped in-flight latch now blocks the visible button
+    and stale callback through rebuild, resets after definitive failure, and
+    permits one fresh Retry that leaves exactly one durable row. Fixed and
+    focused GREEN in `DR-2026-07-21-062` under marker
+    `danio-dcl-dr-003-wishlist-replay-probe-2026-07-21/1`.
+39. The removal-log relationship finding is deferred to `DCL-DR-004`; fixing
     it changes that row's backup relationship invariant. Missing-catalog and
     other unexplained boundaries remain later slices.
 
-`DCL-DR-003` must remain open until every open product finding is fixed or
-disproved and every unexplained evidence boundary is either covered or shown
-not to affect a current user-facing write path. Row closure still requires one
-final Full gate on its settled closing tree.
+`DCL-DR-003` is closed after F1 through F38 settled every current P0/P1 path.
+The lower-severity omission-only evidence gaps are parked under the release
+selector. The final reset-assisted Full gate passed dependency validation,
+custom lint, 2,279 tests, analyze, and the debug APK build at
+`GATE_TOTAL|PASS|187023|Full`. `DCL-DR-004` remains the next distinct row.

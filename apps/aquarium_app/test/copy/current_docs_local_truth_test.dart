@@ -303,7 +303,7 @@ void main() {
         'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
         'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
         'DCL-DR-003',
-        '`DCL-DR-003` remains `open`',
+        '`DCL-DR-003` is `closed`',
         'DCL-DR-003-F1',
         'DCL-DR-003-F2',
         'DCL-DR-003-F3',
@@ -427,7 +427,7 @@ void main() {
     _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       [
-        'Status: open',
+        'Status: closed - all current P0/P1 paths settled and Full passed',
         'danio-dcl-dr-003-crud-undo-resilience-audit-2026-07-16/1',
         'DR-2026-07-16-037',
         'DR-2026-07-18-039',
@@ -1055,8 +1055,9 @@ void main() {
         ),
         allOf(
           contains('P0/P1 release selector'),
-          contains('Tasks'),
-          contains('Wishlist replay probe'),
+          contains('DCL-DR-003-F38'),
+          contains('DCL-DR-003` is closed'),
+          contains('DCL-DR-004` is next'),
         ),
         allOf(
           isNot(contains('Task 13')),
@@ -1070,15 +1071,12 @@ void main() {
         allOf(
           contains('DCL-DR-003'),
           contains('next manual'),
-          contains('Tasks completion'),
-          contains('Equipment Mark Serviced'),
-          contains('single livestock-add'),
+          contains('F1 through F38'),
+          contains('DCL-DR-004` is the next'),
         ),
         allOf(
-          contains('Wishlist replay probe'),
+          contains('DCL-DR-004'),
           contains('2026-07-19-phone-release-candidate-finalization-plan.md'),
-          contains('P0/P1'),
-          contains('P2/P3'),
         ),
         allOf(
           isNot(contains('Task 13')),
@@ -1188,7 +1186,7 @@ void main() {
         'danio-dcl-dr-002-v0-preference-preservation-proof-2026-07-16/1',
         'danio-dcl-dr-002-local-json-first-run-proof-2026-07-16/1',
         'DCL-DR-003',
-        '`DCL-DR-003` remains `open`',
+        '`DCL-DR-003` is `closed`',
         'DCL-DR-003-F1',
         'DCL-DR-003-F2',
         'DCL-DR-003-F3',
@@ -1880,7 +1878,7 @@ void main() {
     final matrixStart = matrixSource.indexOf(matrixRecordStart);
     expect(matrixStart, greaterThanOrEqualTo(0));
     final matrixEnd = matrixSource.indexOf(
-      '\nThis matrix covers `DCL-DR-003` only.',
+      '\nImplementation epoch `DR-2026-07-21-062`',
       matrixStart,
     );
     expect(matrixEnd, greaterThan(matrixStart));
@@ -1920,10 +1918,12 @@ void main() {
     }
 
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
-      '`DR-2026-07-19-060` closes `DCL-DR-003-F37`',
+      '`DCL-DR-003-F38`',
       '`DCL-DR-003-F1`',
-      'through `DCL-DR-003-F37` are settled evidence',
-      'Wishlist replay probe next',
+      'through `DCL-DR-003-F38` are settled evidence',
+      '`GATE_TOTAL|PASS|187023|Full`',
+      '`GATE_TOTAL|PASS|4551|Docs`',
+      '`DCL-DR-003` is `closed`',
       'Never create an automatic successor task.',
     ]);
     for (final path in [
@@ -1931,9 +1931,9 @@ void main() {
       'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
     ]) {
       _expectContainsAll(path, [
-        'F1 through F37',
-        'Wishlist replay probe next',
-        'DCL-DR-003` remains open',
+        'F1 through F38',
+        'DCL-DR-003` is closed',
+        'DCL-DR-004',
       ]);
     }
 
@@ -2019,11 +2019,12 @@ void main() {
       'docs/agent/ACTIVE_HANDOFF.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
     const requiredHandoffTruth = [
-      'DR-2026-07-21-061',
-      'danio-user-directed-continuation-reconciliation-2026-07-21/1',
+      'DR-2026-07-21-062',
+      'danio-dcl-dr-003-wishlist-replay-probe-2026-07-21/1',
       '2026-07-21-user-directed-phone-rc-continuation-reconciliation.md',
-      'Wishlist replay probe next',
-      '19 verified sessions remain',
+      '`DCL-DR-003` is `closed`',
+      'danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1',
+      '18 verified sessions remaining',
     ];
     for (final value in requiredHandoffTruth) {
       expect(
@@ -2031,6 +2032,27 @@ void main() {
         contains(value),
         reason: 'ACTIVE_HANDOFF should preserve $value',
       );
+    }
+    _expectContainsAll(
+      'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
+      [
+        'Status: closed - all current P0/P1 paths settled and Full passed',
+        'DR-2026-07-21-062',
+        'DCL-DR-003-F38',
+        'captured stale add callback cannot replay across failure and retry',
+        'lower-severity omission-only evidence gaps are parked',
+        'GATE_TOTAL|PASS|187023|Full',
+      ],
+    );
+    for (final path in [
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      'docs/agent/FINISH_MAP.md',
+    ]) {
+      _expectContainsAll(path, [
+        'DCL-DR-003',
+        'F1 through F38',
+        'DCL-DR-004',
+      ]);
     }
     final normalizedSliceLog = _source(
       'docs/agent/SLICE_LOG.md',
@@ -2041,6 +2063,12 @@ void main() {
       'Wishlist replay probe',
       '19 sessions',
       'No product task completed',
+      'DR-2026-07-21-062',
+      'DCL-DR-003-F38',
+      '2,279 tests',
+      'Docs 25/signing PASS, 4,551 ms',
+      'danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1',
+      '18',
     ];
     for (final value in requiredSliceLogTruth) {
       expect(
