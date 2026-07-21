@@ -10,6 +10,7 @@ import '../services/openai_service.dart';
 import '../features/smart/smart_providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/offline_indicator.dart';
+import 'core/app_dialog.dart';
 import 'core/bubble_loader.dart';
 import '../utils/logger.dart';
 
@@ -129,24 +130,23 @@ class _CompatibilityCheckerWidgetState
       );
 
       rateLimiter.recordRequest(AIFeature.compatibilityCheck);
-      unawaited(
-        ref
-            .read(aiHistoryProvider.notifier)
-            .add(
-              type: 'compatibility_check',
-              summary: 'Checked: $species in ${tank.name}',
-            )
-            .catchError((Object e, StackTrace st) {
-              logError(
-                'CompatibilityCheckerWidget: failed to save AI history: $e',
-                stackTrace: st,
-                tag: 'CompatibilityCheckerWidget',
-              );
-            }),
-      );
-
       if (!mounted) return;
-      setState(() => _result = result.text);
+      setState(() {
+        _result = result.text;
+        _loading = false;
+      });
+
+      final confirmed = await showAppConfirmDialog(
+        context: context,
+        title: 'Save Compatibility Activity?',
+        message:
+            'Save this compatibility check in Recent AI Activity on this device?',
+        confirmLabel: 'Save Activity',
+        cancelLabel: 'Cancel',
+      );
+      if (confirmed != true || !mounted) return;
+
+      await _saveConfirmedAIHistory(species: species, tankName: tank.name);
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _result = OpenAIUserMessages.timeout);
@@ -166,6 +166,26 @@ class _CompatibilityCheckerWidgetState
       );
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _saveConfirmedAIHistory({
+    required String species,
+    required String tankName,
+  }) async {
+    try {
+      await ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'compatibility_check',
+            summary: 'Checked: $species in $tankName',
+          );
+    } catch (e, st) {
+      logError(
+        'CompatibilityCheckerWidget: failed to save confirmed AI history: $e',
+        stackTrace: st,
+        tag: 'CompatibilityCheckerWidget',
+      );
     }
   }
 

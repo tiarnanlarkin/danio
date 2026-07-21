@@ -104,7 +104,7 @@ animation quota.
 | Motion and haptics | `DCL-MOTION-001` | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Audit current animated and haptic flows; fix reduced-motion failures, haptic-preference bypasses, or concrete clarity defects only. No new-animation quota applies. |
 | Performance | `DCL-PERF-001` | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Add the profile-mode machine-readable harness and measure startup, warm resume, tab switching, tank feedback, scrolling, and local-image paint on `danio_api36`. Later tablet performance is tracked by `DCL-TAB-001`. |
 | Optional AI providers | `DCL-EXT-001` | Parked | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | No current action. Implement real non-OpenAI connectors only after explicit reopening. |
-| AI confirmation | `DCL-AI-001` | In progress | Symptom Triage, Weekly Plan, Ask Danio, and Fish ID persistence require confirmation. Fish ID focused cancel/dismiss/no-write, confirm-once, failure-visible, and injected-picker proof passes; AI Compatibility still persists its summary without confirmation. | Complete only AI Compatibility as the next separate single-slice epoch, then audit the remaining current AI writes once before closing `DCL-AI-001`. |
+| AI confirmation | `DCL-AI-001` | Done | Symptom Triage, Weekly Plan, Ask Danio, Fish ID, and AI Compatibility persistence require confirmation. Fish ID and Compatibility have focused cancel/dismiss/no-write, confirm-once, and failure-visible proof; the bounded prior-surface regressions pass, and a source audit found no sixth AI-history caller. | Recheck only if a new AI-output persistence path is added or contradictory live evidence appears. |
 | Premium AI path | `DCL-PREMIUM-001` | Parked | Premium remains conceptual and must not appear as fake product behavior. | No current action. Reopen only after the local phone app is excellent and real extra capability exists. |
 | Citations | `DCL-P1-005,DCL-P1-006,DCL-CONTENT-001` | In progress | Species/plant source trails and lesson references exist in limited form. | Run current source-density validation and audit trust-critical claims; fix only a concrete missing or misleading source trail, or close with no-current-gap evidence. |
 | Whole-app phone audit | `DCL-RC-001` | Locally verified | Current phone screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`, with notes in `docs/qa/whole-app-phone-map-2026-07-04.md`; the Smart/Fish ID bottom-dock overlap and smoke tap false positive are fixed locally with tests, the phone black-box smoke rerun passed, `phone-04b-smart-root-after-dock-fix` recaptures Fish & Plant ID clearing the dock by `47px`, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have phone `Pass` accounting with 96 passes and 0 current gaps. | Recheck when app surfaces change or before release signoff. |
@@ -263,12 +263,13 @@ rule applies to older accessibility, motion, content, and performance findings.
 
 ## Current Optional AI Note
 
-- Fish ID now displays its result before asking to save Recent AI Activity;
-  Cancel and system back write nothing, Save Activity writes once, and a failed
-  history write leaves the result visible. Automated proof uses an injected
-  picker seam and never invokes the platform picker. AI Compatibility remains
-  the separate open consent slice under `DCL-AI-001`; do not combine it with
-  another lane or treat other AI surfaces as unconfirmed without a fresh audit.
+- Fish ID and AI Compatibility now display their result before asking to save
+  Recent AI Activity; Cancel and system back write nothing, Save Activity
+  writes once, and a failed history write leaves the result visible. Fish ID
+  proof uses an injected picker seam and never invokes the platform picker.
+  The bounded existing regressions for Symptom Triage, Weekly Plan, Ask Danio,
+  and Fish ID pass, the source audit found exactly five AI-history callers, and
+  `DCL-AI-001` is closed.
 - AI-2026-07-04-012 closes the Ask Danio local-history confirmation gap: typed
   Ask Danio answers remain visible immediately, but saving the question summary
   to Recent AI Activity now requires explicit confirmation.
