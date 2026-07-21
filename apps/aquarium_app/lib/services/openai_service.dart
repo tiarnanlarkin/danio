@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import '../utils/logger.dart';
+import 'api_key_store.dart';
 import 'ai_proxy_service.dart';
 
 /// Maximum prompt length in characters (≈16k tokens).
@@ -69,6 +70,8 @@ class OpenAIUserMessages {
   static const serverError =
       'The AI service is unavailable right now. Try again in a moment.';
   static const unexpectedError = 'Something went wrong. Try again.';
+  static const keyStorageUnavailable =
+      'Optional AI key storage could not be opened. Your saved key was not removed. Try again from Preferences.';
 }
 
 /// Thin wrapper around the OpenAI HTTP API.
@@ -272,7 +275,11 @@ class OpenAIService {
   Future<String> _directApiKey() async {
     final override = _directApiKeyOverride;
     if (override != null) return override;
-    return AiProxyService.getApiKey();
+    try {
+      return await AiProxyService.getApiKey();
+    } on ApiKeyStorageException {
+      throw const OpenAIException(OpenAIUserMessages.keyStorageUnavailable);
+    }
   }
 
   Future<Map<String, String>> _headers() async {

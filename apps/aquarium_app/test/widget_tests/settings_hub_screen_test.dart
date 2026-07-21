@@ -13,8 +13,11 @@ import 'package:danio/screens/privacy_policy_screen.dart';
 import 'package:danio/screens/search_screen.dart';
 import 'package:danio/screens/settings_hub_screen.dart';
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/services/ai_proxy_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
 import 'package:danio/widgets/common/primary_action_tile.dart';
+
+import '../helpers/in_memory_api_key_store.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -87,10 +90,16 @@ Future<Set<String>> _visibleWhileScrolling(
 // ---------------------------------------------------------------------------
 
 void main() {
+  late InMemoryTestApiKeyStore keyStore;
+
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     NavigationThrottle.reset();
+    keyStore = InMemoryTestApiKeyStore();
+    AiProxyService.overrideApiKeyStoreForTesting(keyStore);
   });
+
+  tearDown(AiProxyService.resetApiKeyStoreForTesting);
 
   group('SettingsHubScreen', () {
     testWidgets('renders without throwing', (tester) async {
@@ -329,6 +338,73 @@ void main() {
       await tester.pump();
 
       expect(find.text('Enter an OpenAI API key first.'), findsOneWidget);
+    });
+
+    testWidgets('Configure AI saves and removes the key through ApiKeyStore', (
+      tester,
+    ) async {
+      final credential = String.fromCharCodes([
+        115,
+        107,
+        45,
+        116,
+        101,
+        115,
+        116,
+      ]);
+      await tester.pumpWidget(_wrapPreferences());
+      await _advance(tester);
+
+      await _scrollUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), credential);
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(keyStore.value, credential);
+      expect(
+        find.text('Key saved securely. Optional AI tools are active.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Remove key'));
+      await tester.pumpAndSettle();
+
+      expect(keyStore.value, isNull);
+      expect(find.text('API key removed.'), findsOneWidget);
+    });
+
+    testWidgets('Configure AI reports a secure write failure honestly', (
+      tester,
+    ) async {
+      keyStore.writeError = StateError('simulated secure write failure');
+      final credential = String.fromCharCodes([
+        115,
+        107,
+        45,
+        116,
+        101,
+        115,
+        116,
+      ]);
+      await tester.pumpWidget(_wrapPreferences());
+      await _advance(tester);
+
+      await _scrollUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), credential);
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(keyStore.value, isNull);
+      expect(
+        find.text(
+          'Couldn\'t save the key securely. Your existing key was not removed.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Configure AI links directly to privacy policy', (

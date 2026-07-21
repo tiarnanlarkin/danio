@@ -10,6 +10,7 @@ import '../providers/user_profile_provider.dart';
 import '../widgets/core/app_list_tile.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../services/onboarding_service.dart';
+import '../services/ai_proxy_service.dart';
 import '../providers/onboarding_provider.dart';
 import 'tab_navigator.dart';
 
@@ -820,15 +821,8 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     WidgetRef ref,
   ) async {
     try {
-      const apiKeyPrefsKey = 'user_openai_api_key';
-
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      if (prefs.containsKey(apiKeyPrefsKey)) {
-        final removed = await prefs.remove(apiKeyPrefsKey);
-        if (!removed) {
-          throw StateError('Optional AI key removal returned false.');
-        }
-      }
+      await AiProxyService.clearApiKey();
       await AiDisclosurePreferences.reset(prefs);
 
       final storage = ref.read(storageServiceProvider);
@@ -1453,6 +1447,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     if (confirmed == true) {
       try {
         final prefs = await ref.read(sharedPreferencesProvider.future);
+        await AiProxyService.clearApiKey();
         final cleared = await prefs.clear();
         if (!cleared) {
           throw StateError('SharedPreferences.clear returned false.');

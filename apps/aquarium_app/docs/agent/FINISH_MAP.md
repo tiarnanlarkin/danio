@@ -33,7 +33,7 @@ The user confirmed on 2026-07-11 that the active complete-local target is a
 polished, resilient, local-first Android phone app. Tablet implementation,
 tablet polish, and tablet performance are parked until the phone phase closes.
 Cloud/accounts, new Optional-AI provider connectors, premium, store/deploy,
-public release, and iOS also remain parked. Android Keystore-backed secure-storage migration remains active under `DCL-PREF-001`.
+public release, and iOS also remain parked. Android Keystore-backed secure-storage migration is closed under `DCL-PREF-001`.
 
 Use `docs/agent/plans/2026-07-19-phone-release-candidate-finalization-plan.md`
 for the finite P0/P1 release selector and ten planned product/test epochs. P2/P3
@@ -95,7 +95,7 @@ animation quota.
 | Multi-tank | none | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | `DCL-P1-004` | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Audit current source labels and save handoffs once; fix only a concrete missing label/context/persistence defect, or close with no-current-gap evidence. |
 | Backup and restore | `DCL-DR-001,DCL-DR-002,DCL-DR-004` | Done | `DR-2026-07-16-001` through `DR-2026-07-16-014` close restore, migration, and corruption recovery. `DR-2026-07-21-063` preserves deleted-livestock tombstones through self-generated preview/import without live-map entry or resurrection, while live and invalid relationships retain their required behavior; reset-assisted Full passed. | Recheck only if backup schema, preview/restore, relationship validation/remapping, or local storage behavior changes. |
-| Preferences | `DCL-PREF-001` | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Complete the planned Android Keystore-backed `ApiKeyStore` migration and audit keyless/provider/privacy paths; close only after secure read/write/delete/migration proof. |
+| Preferences | `DCL-PREF-001` | Done | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, and AI disclosure controls exist. `DR-2026-07-21-066` routes Optional-AI credentials through Android Keystore-backed `ApiKeyStore`, safely migrates and clears the legacy preference, attempts both locations on deletion, disables automatic deletion on secure-store errors, and preserves keyless/provider/privacy honesty. | Recheck only if preferences, credential storage, migration/deletion, backup exclusion, provider/privacy behavior, or Android secure-storage configuration changes. |
 | Global search | none | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | none | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
 | Tablet layout | `DCL-TAB-001` | Parked | Many surfaces have CL-P2-002 readability slices and the 96-row tablet map is locally verified. | No current action. Reopen after phone complete-local and define tablet polish/accessibility/performance from retained evidence. |
@@ -263,6 +263,12 @@ rule applies to older accessibility, motion, content, and performance findings.
 
 ## Current Optional AI Note
 
+- `DR-2026-07-21-066` closes `DCL-PREF-001`: Optional-AI credentials use
+  Android Keystore-backed secure storage through `ApiKeyStore`; migration
+  retains the legacy value until secure persistence succeeds, deletion attempts
+  both locations, and secure-store errors cannot silently reset the key. The
+  128-test Focused gate, independent review, no-added-plaintext audit, and
+  reset-assisted Full with 2,303 tests/analyze/APK pass.
 - Fish ID and AI Compatibility now display their result before asking to save
   Recent AI Activity; Cancel and system back write nothing, Save Activity
   writes once, and a failed history write leaves the result visible. Fish ID

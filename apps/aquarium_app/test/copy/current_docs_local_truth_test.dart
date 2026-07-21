@@ -631,7 +631,7 @@ void main() {
       expect(
         source,
         contains(
-          'Android Keystore-backed secure-storage migration remains active',
+          'Android Keystore-backed secure-storage migration is closed',
         ),
         reason: path,
       );
@@ -2077,5 +2077,34 @@ void main() {
         reason: 'SLICE_LOG should preserve $value',
       );
     }
+  });
+
+  test('secure Optional-AI key storage closure routes only rule coverage', () {
+    final handoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source(
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source(
+      'docs/agent/FINISH_MAP.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+
+    for (final source in [handoff, ledger, finishMap, sliceLog]) {
+      expect(source, contains('DR-2026-07-21-066'));
+    }
+    expect(ledger, contains('| DCL-PREF-001 |'));
+    expect(ledger, contains('| `VERIFY_LOCALLY` | closed | Preferences'));
+    expect(finishMap, contains('| Preferences | `DCL-PREF-001` | Done |'));
+    expect(handoff, contains('14 verified sessions'));
+    expect(
+      handoff,
+      contains(
+        'danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1',
+      ),
+    );
   });
 }

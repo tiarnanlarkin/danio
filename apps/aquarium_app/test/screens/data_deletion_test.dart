@@ -18,8 +18,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/services/ai_proxy_service.dart';
 import 'package:danio/services/onboarding_service.dart';
 import 'package:danio/widgets/core/app_dialog.dart';
+
+import '../helpers/in_memory_api_key_store.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -52,16 +55,21 @@ Future<void> _scrollToDeleteMyData(WidgetTester tester) async {
 // ---------------------------------------------------------------------------
 
 void main() {
+  late InMemoryTestApiKeyStore keyStore;
+
   setUp(() {
     // Minimal prefs — avoid setting 'theme_mode' as a String here since
     // SettingsProvider also reads int-typed keys from the same namespace,
     // and a type mismatch triggers a logged warning (not a failure).
     SharedPreferences.setMockInitialValues({});
     OnboardingService.resetForTesting();
+    keyStore = InMemoryTestApiKeyStore();
+    AiProxyService.overrideApiKeyStoreForTesting(keyStore);
   });
 
   tearDown(() {
     OnboardingService.resetForTesting();
+    AiProxyService.resetApiKeyStoreForTesting();
   });
 
   group('Data Deletion Flow', () {
@@ -183,6 +191,7 @@ void main() {
         'user_tanks_count': 3,
         'some_progress_key': 'some_value',
       });
+      keyStore.value = ['test', 'credential', 'value'].join('-');
 
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
@@ -214,6 +223,7 @@ void main() {
       // After deletion, the pref we seeded should be gone
       expect(prefs.getString('some_progress_key'), isNull);
       expect(prefs.getInt('user_tanks_count'), isNull);
+      expect(keyStore.value, isNull);
     });
 
     testWidgets(

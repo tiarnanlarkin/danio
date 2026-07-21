@@ -1,23 +1,20 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; AI confirmation closed, secure Optional-AI key storage next
+Status: user-directed manual phone RC chain; secure Optional-AI key storage closed, rule coverage next
 Updated: 2026-07-21
-Implementation epoch: `DR-2026-07-21-065`
-Marker: `danio-dcl-ai-001-compatibility-activity-consent-proof-2026-07-21/1`
+Implementation epoch: `DR-2026-07-21-066`
+Marker: `danio-dcl-pref-001-secure-optional-ai-key-storage-2026-07-21/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current authority
 
-- Ordered plan:
-  `plans/2026-07-19-phone-release-candidate-finalization-plan.md`.
-- User-directed continuation reconciliation:
-  `plans/2026-07-21-user-directed-phone-rc-continuation-reconciliation.md`.
+- Ordered plan: `plans/2026-07-19-phone-release-candidate-finalization-plan.md`.
+- User-directed continuation reconciliation: `plans/2026-07-21-user-directed-phone-rc-continuation-reconciliation.md`.
 - Closure state: `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Category status: `FINISH_MAP.md`.
 - Settled CRUD/undo history: `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`.
-- Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and
-  `QUALITY_LADDER.md`.
+- Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and `QUALITY_LADDER.md`.
 - The older `plans/2026-07-11-phone-complete-local-completion-program.md` is
   superseded background and cannot select or resume work.
 - The current plan owns the P0/P1 release selector. P2/P3 work is accepted or
@@ -61,6 +58,21 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   generated Android transforms; reset-assisted Full passed signing, dependency
   validation, custom lint, the full Flutter suite, analyze, and the debug APK
   build (`GATE_TOTAL|PASS|183065|Full`). `DCL-AI-001` is closed.
+- Epoch 066 began from freshly fetched, clean, aligned `main` at
+  `deb63e5a2486d840cd079e8d70364962ae4b1513`, tree
+  `03f3edcaf4c5129cc24a0ef48452bb2fb89e67d0`, with one worktree, no Git lock,
+  no active Danio gate/device command, and no competing writer. Optional-AI
+  credentials now route through `ApiKeyStore` and Android Keystore-backed
+  secure storage; successful migration removes the legacy preference only
+  after secure persistence, failed migration retains it, and deletion attempts
+  both locations. Android automatic reset-on-error is disabled so read failures
+  cannot silently delete a key. Keyless, provider, privacy, backup exclusion,
+  deletion, debug seed, and honest failure paths passed 128 selected tests plus
+  analyze (`GATE_TOTAL|PASS|22291|Focused`). The independent settled-diff
+  review found no findings. The first Full attempt found only stale generated
+  Android transforms; reset-assisted Full passed signing, dependency validation,
+  custom lint, all 2,303 tests, analyze, and the debug APK build
+  (`GATE_TOTAL|PASS|243873|Full`). `DCL-PREF-001` is closed.
 
 ## Fixed release sequence
 
@@ -72,7 +84,7 @@ The ten planned product/test epochs are:
 4. Backup tombstone relationship - complete in `DR-2026-07-21-063`.
 5. Fish ID activity consent - complete in `DR-2026-07-21-064`.
 6. Compatibility activity consent - complete in `DR-2026-07-21-065`.
-7. Secure Optional-AI key storage through `ApiKeyStore`.
+7. Secure Optional-AI key storage through `ApiKeyStore` - complete in `DR-2026-07-21-066`.
 8. Compatibility and calculation rule coverage.
 9. Global haptic-preference enforcement.
 10. Profile performance harness on `danio_api36`.
@@ -109,8 +121,9 @@ those product/content/rule rows backed by executable evidence. After epochs
   launch, closeout, and successor machinery cannot authorize work.
 - The distinct user-directed continuation plan started with 20 verified
   sessions including epoch 061. Epoch 065 started with 16 verified sessions;
-  its durable stop consumed one session. Resumed completion does not consume it
-  twice and leaves 15 verified sessions for one duplicate-checked successor.
+  its durable stop consumed one session. Epoch 066 started with 15 verified
+  sessions; its durable closeout consumes one session and leaves 14 verified
+  sessions for one duplicate-checked successor.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -122,15 +135,16 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-21-065` closes `DCL-AI-001`: Compatibility retains its visible
-result while consent is pending or history persistence fails; cancel/system
-back write nothing, and explicit confirmation writes exactly once. The valid
-RED, five-test Focused gate, nine bounded prior-surface regressions, independent
-review, and reset-assisted Full provide the settled proof. The resumed durable
-closeout leaves 15 verified sessions.
+`DR-2026-07-21-066` closes `DCL-PREF-001`: Optional-AI credentials use
+Android Keystore-backed secure storage through `ApiKeyStore`; migration and
+dual-location deletion are failure-safe, the legacy preference is removed only
+after secure persistence, plugin errors cannot auto-delete the key, and no
+plaintext credential was introduced. The valid REDs, 128-test Focused gate,
+independent review, and reset-assisted Full provide the settled proof. The
+durable closeout leaves 14 verified sessions.
 
-From clean pushed `main`, execute only secure Optional-AI key storage through
-`ApiKeyStore` under marker
-`danio-dcl-pref-001-secure-optional-ai-key-storage-2026-07-21/1`. Do not pull
-rule coverage, haptics, performance, tablet, providers, accounts, keys, or
-external work into that epoch.
+From clean pushed `main`, execute only Compatibility and calculation rule coverage under marker
+`danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`.
+Follow section 8 of the current release-candidate plan; do not expand accepted
+breadth or pull haptics, performance, phone-quality clusters, tablet, providers,
+accounts, keys, or external work into that epoch.

@@ -1456,6 +1456,7 @@ class _ConfigureAiTile extends ConsumerStatefulWidget {
 
 class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
   bool _hasUserKey = false;
+  bool _keyStorageUnavailable = false;
 
   @override
   void initState() {
@@ -1464,8 +1465,27 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
   }
 
   Future<void> _reload() async {
-    final hasKey = await AiProxyService.hasUserKey;
-    if (mounted) setState(() => _hasUserKey = hasKey);
+    try {
+      final hasKey = await AiProxyService.hasUserKey;
+      if (mounted) {
+        setState(() {
+          _hasUserKey = hasKey;
+          _keyStorageUnavailable = false;
+        });
+      }
+    } catch (_, stackTrace) {
+      logError(
+        'SettingsScreen: Optional AI key status unavailable.',
+        stackTrace: stackTrace,
+        tag: 'SettingsScreen',
+      );
+      if (mounted) {
+        setState(() {
+          _hasUserKey = false;
+          _keyStorageUnavailable = true;
+        });
+      }
+    }
   }
 
   @override
@@ -1480,7 +1500,9 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
           ? (proxyReady
                 ? 'Danio-managed AI active'
                 : 'Optional AI is not ready in this version of Danio')
-          : (_hasUserKey
+          : (_keyStorageUnavailable
+                ? 'Secure key storage needs attention - tap to retry'
+                : _hasUserKey
                 ? 'Custom API key active - tap to manage'
                 : 'Smart Hub works locally; add a key for photo ID and Ask Danio'),
       trailing: hasProxy
@@ -1553,13 +1575,30 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   }
 
   Future<void> _loadStatus() async {
-    final hasKey = await AiProxyService.hasUserKey;
-    final disclosureAccepted = AiDisclosurePreferences.isAccepted(widget.prefs);
-    if (mounted) {
-      setState(() {
-        _hasUserKey = hasKey;
-        _aiDisclosureAccepted = disclosureAccepted;
-      });
+    try {
+      final hasKey = await AiProxyService.hasUserKey;
+      final disclosureAccepted = AiDisclosurePreferences.isAccepted(
+        widget.prefs,
+      );
+      if (mounted) {
+        setState(() {
+          _hasUserKey = hasKey;
+          _aiDisclosureAccepted = disclosureAccepted;
+        });
+      }
+    } catch (_, stackTrace) {
+      logError(
+        'SettingsScreen: Optional AI key status unavailable.',
+        stackTrace: stackTrace,
+        tag: 'SettingsScreen',
+      );
+      if (mounted) {
+        setState(() {
+          _statusMessage =
+              'Couldn\'t open secure key storage. Your existing key was not removed.';
+          _statusIsError = true;
+        });
+      }
     }
   }
 
@@ -1590,21 +1629,22 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
       if (mounted) {
         setState(() {
           _hasUserKey = true;
-          _statusMessage = 'Key saved. Optional AI tools are active.';
+          _statusMessage = 'Key saved securely. Optional AI tools are active.';
           _statusIsError = false;
           _isBusy = false;
         });
         _controller.clear();
       }
-    } catch (e, st) {
+    } catch (_, stackTrace) {
       logError(
-        'SettingsScreen: API key save failed: $e',
-        stackTrace: st,
+        'SettingsScreen: secure API key save failed.',
+        stackTrace: stackTrace,
         tag: 'SettingsScreen',
       );
       if (mounted) {
         setState(() {
-          _statusMessage = 'Couldn\'t save the key. Try again.';
+          _statusMessage =
+              'Couldn\'t save the key securely. Your existing key was not removed.';
           _statusIsError = true;
           _isBusy = false;
         });
@@ -1626,15 +1666,16 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
           _isBusy = false;
         });
       }
-    } catch (e, st) {
+    } catch (_, stackTrace) {
       logError(
-        'SettingsScreen: API key clear failed: $e',
-        stackTrace: st,
+        'SettingsScreen: secure API key clear failed.',
+        stackTrace: stackTrace,
         tag: 'SettingsScreen',
       );
       if (mounted) {
         setState(() {
-          _statusMessage = 'Couldn\'t clear the key. Try again.';
+          _statusMessage =
+              'Couldn\'t clear every saved key location. Try again.';
           _statusIsError = true;
           _isBusy = false;
         });
@@ -1733,7 +1774,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Local Smart Hub checks work without AI. Your key is stored on this device and never shared with us.',
+                    'Local Smart Hub checks work without AI. Your key is kept in secure device storage and never shared with us.',
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                   const SizedBox(height: AppSpacing.md),

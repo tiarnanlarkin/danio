@@ -26,9 +26,12 @@ import 'package:danio/services/room_theme_unlock_service.dart';
 import 'package:danio/services/tank_decoration_unlock_service.dart';
 import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/services/onboarding_service.dart';
+import 'package:danio/services/ai_proxy_service.dart';
 import 'package:danio/services/notification_scheduler.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/features/smart/ai_disclosure_preferences.dart';
+
+import '../helpers/in_memory_api_key_store.dart';
 
 Widget _wrap({
   InMemoryStorageService? storage,
@@ -180,12 +183,19 @@ Future<void> _advance(WidgetTester tester) async {
 }
 
 void main() {
+  late InMemoryTestApiKeyStore keyStore;
+
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     OnboardingService.resetForTesting();
+    keyStore = InMemoryTestApiKeyStore();
+    AiProxyService.overrideApiKeyStoreForTesting(keyStore);
   });
 
-  tearDown(OnboardingService.resetForTesting);
+  tearDown(() {
+    OnboardingService.resetForTesting();
+    AiProxyService.resetApiKeyStoreForTesting();
+  });
 
   Future<void> clearStorage(InMemoryStorageService storage) async {
     final tanks = await storage.getAllTanks();
@@ -331,7 +341,7 @@ void main() {
       await _advance(tester);
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_openai_api_key', 'debug-fake-key');
+      keyStore.value = ['test', 'credential', 'value'].join('-');
       await prefs.setBool(AiDisclosurePreferences.acceptedKey, true);
 
       await tester.scrollUntilVisible(
@@ -342,6 +352,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(prefs.containsKey('user_openai_api_key'), isFalse);
+      expect(keyStore.value, isNull);
       expect(prefs.containsKey(AiDisclosurePreferences.acceptedKey), isFalse);
 
       final tank = await storage.getTank('debug-no-ai-smart-tank');

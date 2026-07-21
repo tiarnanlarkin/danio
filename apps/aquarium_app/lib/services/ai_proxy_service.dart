@@ -18,53 +18,33 @@
 // development fallback only and is ignored in release builds.
 // ---------------------------------------------------------------------------
 
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
-import 'package:encrypt/encrypt.dart' as encrypt_pkg;
-import 'package:flutter/foundation.dart'
-    show Uint8List, kReleaseMode, visibleForTesting;
+import 'package:flutter/foundation.dart' show kReleaseMode, visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/logger.dart';
-
-/// SharedPreferences key for the encrypted user API key.
-const String _kUserApiKey = 'user_openai_api_key';
-
-/// A fixed-length salt for key derivation — not a secret, just adds domain
-/// separation so the derived key is distinct from any other usage.
-const String _kSalt = 'danio_ai_proxy_v1';
+import 'api_key_store.dart';
 
 /// Proxy service for obtaining the OpenAI API key and routing AI requests.
 ///
 /// ## Request routing (priority order):
 ///   1. If `SUPABASE_AI_PROXY_URL` is set → route through the server-side proxy.
 ///      The proxy injects the real API key; the client uses the Supabase anon key.
-///   2. User-supplied key stored in SharedPreferences (AES-256 encrypted).
+///   2. User-supplied key stored through [ApiKeyStore].
 ///   3. Build-time key from `--dart-define=OPENAI_API_KEY=sk-...`.
-///
-/// The user-supplied key is encrypted at rest using AES-256-CBC with a key
-/// derived from a deterministic SHA-256 of the salt. This is a best-effort
-/// protection against casual extraction; it is NOT a substitute for a
-/// server-side proxy — always use the proxy in production.
 class AiProxyService {
   AiProxyService._();
 
-  static Future<SharedPreferences> Function() _sharedPreferencesFactory =
-      SharedPreferences.getInstance;
+  static ApiKeyStore _apiKeyStore = createDefaultApiKeyStore();
 
   @visibleForTesting
   // ignore: use_setters_to_change_properties
-  static void overrideSharedPreferencesFactoryForTesting(
-    Future<SharedPreferences> Function() factory,
-  ) {
-    _sharedPreferencesFactory = factory;
+  static void overrideApiKeyStoreForTesting(ApiKeyStore store) {
+    _apiKeyStore = store;
   }
 
   @visibleForTesting
-  static void resetSharedPreferencesFactoryForTesting() {
-    _sharedPreferencesFactory = SharedPreferences.getInstance;
+  static void resetApiKeyStoreForTesting() {
+    _apiKeyStore = createDefaultApiKeyStore();
   }
 
   // ---------------------------------------------------------------------------
@@ -106,7 +86,7 @@ class AiProxyService {
   /// IMPORTANT: Do not call this in production if [hasProxy] is true.
   /// In production, send requests to [proxyUrl] with the Supabase anon key.
   ///
-  /// Checks SharedPreferences first; falls back to the build-time define.
+  /// Checks secure user storage first; falls back to the build-time define.
   static Future<String> getApiKey() async {
     // Warn if this is called in production (proxy is configured).
     if (hasProxy) {
@@ -117,19 +97,8 @@ class AiProxyService {
       );
     }
 
-    try {
-      final prefs = await _sharedPreferencesFactory();
-      final encrypted = prefs.getString(_kUserApiKey);
-      if (encrypted != null && encrypted.isNotEmpty) {
-        final decrypted = _decrypt(encrypted);
-        if (decrypted != null && decrypted.isNotEmpty) return decrypted;
-      }
-    } catch (e) {
-      logError(
-        'AiProxyService: failed to load user key — $e',
-        tag: 'AiProxyService',
-      );
-    }
+    final userKey = await _apiKeyStore.read();
+    if (userKey != null && userKey.isNotEmpty) return userKey;
 
     return directBuildTimeApiKey;
   }
@@ -143,76 +112,24 @@ class AiProxyService {
     return key.isNotEmpty;
   }
 
-  /// Persists a user-supplied API key to SharedPreferences (encrypted).
+  /// Persists a user-supplied API key to platform secure storage.
   static Future<void> saveApiKey(String key) async {
-    final prefs = await _sharedPreferencesFactory();
     if (key.isEmpty) {
-      final removed = await prefs.remove(_kUserApiKey);
-      if (!removed) {
-        throw StateError('Could not remove Optional AI key locally.');
-      }
-    } else {
-      final saved = await prefs.setString(_kUserApiKey, _encrypt(key));
-      if (!saved) {
-        throw StateError('Could not save Optional AI key locally.');
-      }
+      await _apiKeyStore.delete();
+      return;
     }
+    await _apiKeyStore.write(key);
   }
 
-  /// Removes the user-supplied API key from SharedPreferences.
+  /// Removes the user-supplied API key from secure and legacy storage.
   static Future<void> clearApiKey() async {
-    final prefs = await _sharedPreferencesFactory();
-    final removed = await prefs.remove(_kUserApiKey);
-    if (!removed) {
-      throw StateError('Could not remove Optional AI key locally.');
-    }
+    await _apiKeyStore.delete();
   }
 
   /// Returns `true` if the user has supplied their own key.
   static Future<bool> get hasUserKey async {
-    final prefs = await _sharedPreferencesFactory();
-    final value = prefs.getString(_kUserApiKey);
+    final value = await _apiKeyStore.read();
     return value != null && value.isNotEmpty;
-  }
-
-  // ---------------------------------------------------------------------------
-  // Encryption helpers (AES-256-CBC)
-  // ---------------------------------------------------------------------------
-
-  static encrypt_pkg.Key get _key {
-    final saltBytes = utf8.encode(_kSalt);
-    final digest = sha256.convert(saltBytes);
-    return encrypt_pkg.Key(Uint8List.fromList(digest.bytes));
-  }
-
-  static String _encrypt(String plaintext) {
-    final iv = encrypt_pkg.IV.fromSecureRandom(16);
-    final encrypter = encrypt_pkg.Encrypter(
-      encrypt_pkg.AES(_key, mode: encrypt_pkg.AESMode.cbc),
-    );
-    final encrypted = encrypter.encrypt(plaintext, iv: iv);
-    // Encode as base64(iv) + ':' + base64(ciphertext) for easy splitting.
-    final ivB64 = base64.encode(iv.bytes);
-    final cipherB64 = encrypted.base64;
-    return '$ivB64:$cipherB64';
-  }
-
-  static String? _decrypt(String stored) {
-    try {
-      final parts = stored.split(':');
-      if (parts.length != 2) return null;
-      final iv = encrypt_pkg.IV(Uint8List.fromList(base64.decode(parts[0])));
-      final encrypter = encrypt_pkg.Encrypter(
-        encrypt_pkg.AES(_key, mode: encrypt_pkg.AESMode.cbc),
-      );
-      return encrypter.decrypt(
-        encrypt_pkg.Encrypted(Uint8List.fromList(base64.decode(parts[1]))),
-        iv: iv,
-      );
-    } catch (e) {
-      logError('AiProxyService: decryption failed — $e', tag: 'AiProxyService');
-      return null;
-    }
   }
 }
 

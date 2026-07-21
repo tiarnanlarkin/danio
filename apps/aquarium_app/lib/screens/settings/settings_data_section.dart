@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../services/onboarding_service.dart';
+import '../../services/ai_proxy_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_list_tile.dart';
@@ -177,6 +178,7 @@ Future<void> confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
   if (confirmed != true || !context.mounted) return;
 
   try {
+    await AiProxyService.clearApiKey();
     final prefs = await SharedPreferences.getInstance();
     final prefsCleared = await prefs.clear();
     if (!prefsCleared) {

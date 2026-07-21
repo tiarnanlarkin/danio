@@ -7,6 +7,10 @@ import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/services/openai_service.dart';
+import 'package:danio/services/api_key_store.dart';
+import 'package:danio/services/ai_proxy_service.dart';
+
+import '../helpers/in_memory_api_key_store.dart';
 
 void main() {
   group('OpenAIUserMessages', () {
@@ -40,6 +44,10 @@ void main() {
         OpenAIUserMessages.unexpectedError,
         'Something went wrong. Try again.',
       );
+      expect(
+        OpenAIUserMessages.keyStorageUnavailable,
+        'Optional AI key storage could not be opened. Your saved key was not removed. Try again from Preferences.',
+      );
 
       final messages = [
         OpenAIUserMessages.setupRequired,
@@ -49,6 +57,7 @@ void main() {
         OpenAIUserMessages.serverError,
         OpenAIUserMessages.proxyUnavailable,
         OpenAIUserMessages.unexpectedError,
+        OpenAIUserMessages.keyStorageUnavailable,
       ];
 
       for (final message in messages) {
@@ -192,6 +201,37 @@ void main() {
       expect(client.requestedHeaders?['Authorization'], 'Bearer anon-token');
       expect(client.requestedBody?['stream'], isTrue);
     });
+
+    test(
+      'reports secure key storage failure without treating it as keyless',
+      () async {
+        final keyStore = InMemoryTestApiKeyStore()
+          ..readError = const ApiKeyStorageException('read');
+        AiProxyService.overrideApiKeyStoreForTesting(keyStore);
+        final service = OpenAIService(
+          proxyUrl: '',
+          proxyAuthToken: '',
+          client: MockClient((_) async => http.Response('{}', 500)),
+        );
+
+        try {
+          await expectLater(
+            service.isConfiguredAsync(),
+            throwsA(
+              isA<OpenAIException>().having(
+                (error) => error.message,
+                'message',
+                OpenAIUserMessages.keyStorageUnavailable,
+              ),
+            ),
+          );
+        } finally {
+          AiProxyService.overrideApiKeyStoreForTesting(
+            InMemoryTestApiKeyStore(),
+          );
+        }
+      },
+    );
   });
 
   group('OpenAIService release key policy', () {

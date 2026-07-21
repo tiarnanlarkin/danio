@@ -1,57 +1,65 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/services/api_key_store.dart';
 import 'package:danio/services/ai_proxy_service.dart';
 
 void main() {
+  late _InMemoryApiKeyStore keyStore;
+
   setUp(() {
-    SharedPreferences.setMockInitialValues({});
+    keyStore = _InMemoryApiKeyStore();
+    AiProxyService.overrideApiKeyStoreForTesting(keyStore);
   });
 
-  tearDown(AiProxyService.resetSharedPreferencesFactoryForTesting);
+  tearDown(AiProxyService.resetApiKeyStoreForTesting);
 
   group('AiProxyService local key persistence', () {
-    test('saveApiKey throws when local key write returns false', () async {
-      final prefs = await SharedPreferences.getInstance();
-      AiProxyService.overrideSharedPreferencesFactoryForTesting(
-        () async => _WriteResultPrefs(prefs, failSetString: true),
-      );
+    test('saveApiKey writes through ApiKeyStore', () async {
+      final credential = _testCredential();
 
-      await expectLater(
-        AiProxyService.saveApiKey('sk-test-key'),
-        throwsA(
-          isA<StateError>().having(
-            (error) => error.message,
-            'message',
-            contains('Could not save Optional AI key'),
-          ),
-        ),
-      );
-      expect(await AiProxyService.hasUserKey, isFalse);
+      await AiProxyService.saveApiKey(credential);
+
+      expect(keyStore.value, credential);
+      expect(await AiProxyService.getApiKey(), credential);
+      expect(await AiProxyService.hasUserKey, isTrue);
     });
 
-    test('clearApiKey throws when local key removal returns false', () async {
-      SharedPreferences.setMockInitialValues({
-        'user_openai_api_key': 'existing-encrypted-key',
-      });
-      final prefs = await SharedPreferences.getInstance();
-      AiProxyService.overrideSharedPreferencesFactoryForTesting(
-        () async => _WriteResultPrefs(prefs, failRemove: true),
-      );
+    test(
+      'saveApiKey reports a secure write failure without a false key',
+      () async {
+        keyStore.writeError = const ApiKeyStorageException('write');
 
-      await expectLater(
-        AiProxyService.clearApiKey(),
-        throwsA(
-          isA<StateError>().having(
-            (error) => error.message,
-            'message',
-            contains('Could not remove Optional AI key'),
-          ),
-        ),
-      );
-      expect(await AiProxyService.hasUserKey, isTrue);
+        await expectLater(
+          AiProxyService.saveApiKey(_testCredential()),
+          throwsA(isA<ApiKeyStorageException>()),
+        );
+        expect(await AiProxyService.hasUserKey, isFalse);
+      },
+    );
+
+    test(
+      'clearApiKey reports secure deletion failure without false success',
+      () async {
+        keyStore.value = _testCredential();
+        keyStore.deleteError = const ApiKeyStorageException('delete');
+
+        await expectLater(
+          AiProxyService.clearApiKey(),
+          throwsA(isA<ApiKeyStorageException>()),
+        );
+        expect(await AiProxyService.hasUserKey, isTrue);
+      },
+    );
+
+    test('empty save deletes through ApiKeyStore', () async {
+      keyStore.value = _testCredential();
+
+      await AiProxyService.saveApiKey('');
+
+      expect(keyStore.value, isNull);
+      expect(await AiProxyService.hasUserKey, isFalse);
     });
   });
 
@@ -63,7 +71,7 @@ void main() {
 
       expect(
         source,
-        contains("show Uint8List, kReleaseMode"),
+        contains("show kReleaseMode, visibleForTesting"),
         reason:
             'AiProxyService must branch on release mode for build-time keys.',
       );
@@ -84,35 +92,27 @@ void main() {
   });
 }
 
-class _WriteResultPrefs implements SharedPreferences {
-  _WriteResultPrefs(
-    this._delegate, {
-    this.failSetString = false,
-    this.failRemove = false,
-  });
+String _testCredential() => ['test', 'credential', 'value'].join('-');
 
-  final SharedPreferences _delegate;
-  final bool failSetString;
-  final bool failRemove;
+class _InMemoryApiKeyStore implements ApiKeyStore {
+  String? value;
+  Object? writeError;
+  Object? deleteError;
 
   @override
-  bool containsKey(String key) => _delegate.containsKey(key);
+  Future<String?> read() async => value;
 
   @override
-  String? getString(String key) => _delegate.getString(key);
-
-  @override
-  Future<bool> remove(String key) async {
-    if (failRemove) return false;
-    return _delegate.remove(key);
+  Future<void> write(String value) async {
+    final error = writeError;
+    if (error != null) throw error;
+    this.value = value;
   }
 
   @override
-  Future<bool> setString(String key, String value) async {
-    if (failSetString) return false;
-    return _delegate.setString(key, value);
+  Future<void> delete() async {
+    final error = deleteError;
+    if (error != null) throw error;
+    value = null;
   }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
