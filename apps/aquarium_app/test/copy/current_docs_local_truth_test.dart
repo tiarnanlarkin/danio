@@ -2019,12 +2019,12 @@ void main() {
       'docs/agent/ACTIVE_HANDOFF.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
     const requiredHandoffTruth = [
-      'DR-2026-07-21-062',
-      'danio-dcl-dr-003-wishlist-replay-probe-2026-07-21/1',
-      '2026-07-21-user-directed-phone-rc-continuation-reconciliation.md',
-      '`DCL-DR-003` is `closed`',
+      'DR-2026-07-21-063',
       'danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1',
-      '18 verified sessions remaining',
+      '2026-07-21-user-directed-phone-rc-continuation-reconciliation.md',
+      '`DCL-DR-004` is `closed`',
+      'danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1',
+      '17 verified sessions',
     ];
     for (final value in requiredHandoffTruth) {
       expect(

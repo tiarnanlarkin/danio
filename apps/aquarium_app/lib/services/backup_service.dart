@@ -5,6 +5,7 @@ import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../utils/logger.dart';
+import 'backup_import_relationships.dart';
 import 'shared_preferences_backup.dart';
 
 /// Service for creating and restoring backups with photos bundled.
@@ -823,6 +824,13 @@ class BackupService {
 
       final targetTankId = targetTankIds[value.trim()];
       if (targetTankId == null) {
+        if (field == 'relatedLivestockId' &&
+            isBackupLivestockRemovalTombstone(
+              entry,
+              hasLiveLivestockTarget: false,
+            )) {
+          continue;
+        }
         throw Exception(
           'Invalid format: $sourceCollection $field values must reference existing backup records',
         );

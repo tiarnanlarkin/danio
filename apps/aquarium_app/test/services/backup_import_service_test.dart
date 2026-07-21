@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/services/backup_import_service.dart';
+import 'package:danio/services/backup_service.dart';
 import 'package:danio/services/storage_service.dart';
 
 class _RecordingStorageService implements StorageService {
@@ -259,6 +262,170 @@ void main() {
         expect(importedLog?.relatedEquipmentId, 'new-filter');
         expect(importedLog?.relatedLivestockId, 'new-fish');
         expect(importedLog?.relatedTaskId, 'new-task');
+      },
+    );
+
+    test(
+      'preserves a deleted livestock tombstone through self-generated preview and import',
+      () async {
+        final testRoot = await Directory.systemTemp.createTemp(
+          'danio_backup_tombstone_',
+        );
+        addTearDown(() async {
+          if (await testRoot.exists()) {
+            await testRoot.delete(recursive: true);
+          }
+        });
+
+        const tombstoneId = 'deleted-livestock-opaque-id';
+        final backupData = _backupData()
+          ..['livestock'] = <Map<String, dynamic>>[]
+          ..['equipment'] = <Map<String, dynamic>>[]
+          ..['tasks'] = <Map<String, dynamic>>[]
+          ..['logs'] = <Map<String, dynamic>>[
+            {
+              'id': 'old-removal-log',
+              'tankId': 'old-tank',
+              'type': 'livestockRemoved',
+              'timestamp': '2026-03-04T10:30:00.000',
+              'title': 'Removed livestock',
+              'relatedLivestockId': tombstoneId,
+              'createdAt': '2026-03-04T10:31:00.000',
+            },
+          ];
+        final backupService = BackupService(
+          getDocumentsDirectory: () async => testRoot,
+          getTemporaryDirectory: () async => testRoot,
+        );
+
+        final zipPath = await backupService.createBackup(backupData);
+        final previewData = await backupService.getBackupData(zipPath);
+        final previewLogs = previewData['logs'] as List;
+
+        expect(previewData['livestock'], isEmpty);
+        expect(previewLogs, hasLength(1));
+        expect(
+          (previewLogs.single as Map)['relatedLivestockId'],
+          tombstoneId,
+        );
+
+        final storage = _RecordingStorageService();
+        final importService = BackupImportService(
+          storage: storage,
+          newId: _idSequence(['new-tank', 'new-log']),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        final result = await importService.importTankScopedData(previewData);
+
+        expect(result.importedTanks, 1);
+        expect(result.livestockIdMap, isEmpty);
+        expect(storage.livestock, isEmpty);
+        expect(storage.logs['new-log']?.type, LogType.livestockRemoved);
+        expect(
+          storage.logs['new-log']?.relatedLivestockId,
+          tombstoneId,
+        );
+      },
+    );
+
+    test(
+      'remaps a preview-normalized live livestock removal relationship',
+      () async {
+        final testRoot = await Directory.systemTemp.createTemp(
+          'danio_backup_live_livestock_relationship_',
+        );
+        addTearDown(() async {
+          if (await testRoot.exists()) {
+            await testRoot.delete(recursive: true);
+          }
+        });
+
+        final backupData = _backupData();
+        final sourceLog =
+            Map<String, dynamic>.from(
+                (backupData['logs'] as List).single as Map,
+              )
+              ..['type'] = 'livestockRemoved'
+              ..['relatedLivestockId'] = ' old-fish ';
+        backupData['logs'] = [sourceLog];
+        final backupService = BackupService(
+          getDocumentsDirectory: () async => testRoot,
+          getTemporaryDirectory: () async => testRoot,
+        );
+
+        final zipPath = await backupService.createBackup(backupData);
+        final previewData = await backupService.getBackupData(zipPath);
+        final storage = _RecordingStorageService();
+        final importService = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'new-fish',
+            'new-filter',
+            'new-task',
+            'new-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        final result = await importService.importTankScopedData(previewData);
+
+        expect(result.livestockIdMap, {'old-fish': 'new-fish'});
+        expect(storage.livestock.keys, contains('new-fish'));
+        expect(storage.logs['new-log']?.type, LogType.livestockRemoved);
+        expect(storage.logs['new-log']?.relatedLivestockId, 'new-fish');
+      },
+    );
+
+    test(
+      'remaps a preview-normalized live livestock id relationship',
+      () async {
+        final testRoot = await Directory.systemTemp.createTemp(
+          'danio_backup_normalized_live_livestock_id_',
+        );
+        addTearDown(() async {
+          if (await testRoot.exists()) {
+            await testRoot.delete(recursive: true);
+          }
+        });
+
+        final backupData = _backupData();
+        final sourceLivestock = Map<String, dynamic>.from(
+          (backupData['livestock'] as List).single as Map,
+        )..['id'] = ' old-fish ';
+        final sourceLog = Map<String, dynamic>.from(
+          (backupData['logs'] as List).single as Map,
+        )..['type'] = 'livestockRemoved';
+        backupData
+          ..['livestock'] = [sourceLivestock]
+          ..['logs'] = [sourceLog];
+        final backupService = BackupService(
+          getDocumentsDirectory: () async => testRoot,
+          getTemporaryDirectory: () async => testRoot,
+        );
+
+        final zipPath = await backupService.createBackup(backupData);
+        final previewData = await backupService.getBackupData(zipPath);
+        final storage = _RecordingStorageService();
+        final importService = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'new-fish',
+            'new-filter',
+            'new-task',
+            'new-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        final result = await importService.importTankScopedData(previewData);
+
+        expect(result.livestockIdMap, {' old-fish ': 'new-fish'});
+        expect(storage.livestock.keys, contains('new-fish'));
+        expect(storage.logs['new-log']?.type, LogType.livestockRemoved);
+        expect(storage.logs['new-log']?.relatedLivestockId, 'new-fish');
       },
     );
 

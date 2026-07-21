@@ -440,7 +440,8 @@ class BackupImportService {
     for (final item in jsonItems) {
       final itemMap = _mapFrom(item, label);
       final id = _requiredString(itemMap, 'id', label);
-      if (!seenIds.add(id)) {
+      final comparisonId = label == 'livestock' ? id.trim() : id;
+      if (!seenIds.add(comparisonId)) {
         throw FormatException('Invalid backup: duplicate $label id "$id"');
       }
     }
@@ -573,8 +574,18 @@ class BackupImportService {
       }
       if (value.isEmpty) continue;
 
-      final targetTankId = targetTankIds[value];
+      final liveLivestockIdMapKey = field == 'relatedLivestockId'
+          ? backupLiveLivestockIdMapKey(value, targetTankIds.keys)
+          : null;
+      final targetTankId = targetTankIds[liveLivestockIdMapKey ?? value];
       if (targetTankId == null) {
+        if (field == 'relatedLivestockId' &&
+            isBackupLivestockRemovalTombstone(
+              sourceMap,
+              hasLiveLivestockTarget: false,
+            )) {
+          continue;
+        }
         throw FormatException(
           'Invalid backup: $sourceCollection $field values must reference imported $targetLabel records',
         );
