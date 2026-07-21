@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: manual lean workflow; Equipment service compensation implemented
-Updated: 2026-07-19
-Implementation epoch: `DR-2026-07-19-059`
-Marker: `danio-dcl-dr-003-equipment-service-rollback-uncertainty-proof-2026-07-19/1`
+Status: manual lean workflow; single livestock-add compensation implemented
+Updated: 2026-07-21
+Implementation epoch: `DR-2026-07-19-060`
+Marker: `danio-dcl-dr-003-single-livestock-add-rollback-uncertainty-proof-2026-07-19/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -28,21 +28,21 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Fresh post-F34 Full gate on the unchanged checkpoint passed on 2026-07-19:
   signing-secret guard, dependency validation, custom lint, 2,263 tests,
   analyze, and debug APK build; `GATE_TOTAL|PASS|183016|Full`.
-- Epoch 059 began from clean, aligned `main` at `68ba8518` with one worktree
+- Epoch 060 began from clean, aligned `main` at `d4320536` with one worktree
   and no competing writer.
-- Epoch 059 final verification is clean: 33 Equipment tests plus analyze passed
-  through Focused (`GATE_TOTAL|PASS|17480|Focused`); three independent read-only
-  reviews have no remaining findings; reset-assisted Full passed custom lint,
-  2,273 tests, analyze, and debug APK build
-  (`GATE_TOTAL|PASS|181202|Full`); final Docs passed 23 contract/signing checks
-  (`GATE_TOTAL|PASS|5833|Docs`).
+- Epoch 060 product verification is clean: 30 Livestock tests plus analyze passed
+  through Focused (`GATE_TOTAL|PASS|14350|Focused`); independent settled-diff
+  review has no remaining findings; reset-assisted Full passed dependency
+  validation, custom lint, 2,276 tests, analyze, and debug APK build
+  (`GATE_TOTAL|PASS|218361|Full`); final Docs passed 24 contract/signing checks
+  (`GATE_TOTAL|PASS|4610|Docs`).
 - `DCL-DR-001` is `closed` in `DCL_DR_001_RESTORE_BEHAVIOR_MATRIX.md`.
 - `DCL-DR-002` is `closed` in
   `DCL_DR_002_MIGRATION_CORRUPTION_RECOVERY_MATRIX.md`.
 - `DCL-DR-003` remains `open` in
   `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`. Findings `DCL-DR-003-F1`
-  through `DCL-DR-003-F36` are settled evidence. F34 is complete and must not
-  reopen without contradictory live evidence. F35 and F36 are also complete;
+  through `DCL-DR-003-F37` are settled evidence. F34 is complete and must not
+  reopen without contradictory live evidence. F35 through F37 are also complete;
   none may reopen without contradictory live evidence.
 - `DCL-DR-004` remains after DCL-DR-003 and owns the livestock-removal backup
   tombstone relationship.
@@ -53,7 +53,7 @@ The ten planned product/test epochs are:
 
 1. Tasks completion compensation - complete in `DR-2026-07-19-058`.
 2. Equipment Mark Serviced compensation - complete in `DR-2026-07-19-059`.
-3. Single livestock-add compensation next.
+3. Single livestock-add compensation - complete in `DR-2026-07-19-060`.
 4. Backup tombstone relationship.
 5. Fish ID activity consent.
 6. Compatibility activity consent.
@@ -101,14 +101,14 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-19-059` closes `DCL-DR-003-F36`. Focused RED/GREEN proves
-`DCL-DR-003-F36`: persisted-then-failed service history plus failed equipment
-restoration preserves every failure/stack and affected ID; attempted service
-and task log IDs are compensated; route re-entry leaves zero residual service
-history rows; tank/equipment/task/log authority reloads after route exit; and
-in-flight/visible/stale Mark Serviced callbacks lock without unsafe Retry.
-Focused, Docs, Full, and three independent reviews pass. On clean aligned main,
-allocate one new epoch for single livestock-add compensation next. Keep Wishlist
-replay separate; do not rank or implement it in epoch 059.
+`DR-2026-07-19-060` closes `DCL-DR-003-F37`. Focused RED/GREEN proves
+persisted-then-failed activity history plus failed log and livestock deletion
+preserves the initiating and rollback failures/stacks with tank, livestock, and
+activity-log IDs. Tank, livestock, recent-log, and full-log authority reloads;
+in-flight, visible, dismissed, and stale callbacks cannot duplicate the write;
+uncertain feedback has no success or unsafe Retry. Focused, Full, and independent
+review pass. On clean aligned main, run the bounded Wishlist replay probe next.
+Add an epoch only if focused RED proves P0/P1 duplicate or replay behavior; keep
+`DCL-DR-004` separate and do not infer `DCL-DR-003` closure from F37.
 
 Stop after `DCL-RC-001` closes with the final APK/evidence packet and no P0/P1.

@@ -18,6 +18,7 @@ import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/widgets/core/app_button.dart';
 import 'package:danio/widgets/core/app_card.dart';
 import 'package:danio/widgets/xp_award_animation.dart';
 
@@ -405,6 +406,128 @@ class _SaveLogFailsStorage extends _FailingLivestockDeleteStorage {
   }
 }
 
+class _CountingCleanSingleAddFailureStorage extends _SaveLogFailsStorage {
+  int saveLivestockCalls = 0;
+  int saveLogCalls = 0;
+  int deleteLivestockCalls = 0;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    saveLivestockCalls++;
+    await super.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    saveLogCalls++;
+    await super.saveLog(log);
+  }
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    deleteLivestockCalls++;
+    await super.deleteLivestock(id);
+  }
+}
+
+class _SingleAddLogAndDeleteRollbackFailStorage
+    extends _FailingLivestockDeleteStorage {
+  _SingleAddLogAndDeleteRollbackFailStorage() : super(failingLivestockId: '');
+
+  final Object logSaveError = StateError('single livestock add log failed');
+  final Object livestockDeleteError = StateError(
+    'single livestock delete rollback failed',
+  );
+  final List<String> savedLivestockIds = <String>[];
+  final List<LogEntry> attemptedLogs = <LogEntry>[];
+  final List<String> deletedLogIds = <String>[];
+  final List<String> deletedLivestockIds = <String>[];
+  int getTankCalls = 0;
+  int getLivestockForTankCalls = 0;
+  int recentLogReads = 0;
+  int fullLogReads = 0;
+  int deleteLogCalls = 0;
+  int deleteLivestockCalls = 0;
+
+  @override
+  Future<Tank?> getTank(String id) {
+    getTankCalls++;
+    return super.getTank(id);
+  }
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) {
+    getLivestockForTankCalls++;
+    return super.getLivestockForTank(tankId);
+  }
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) {
+    if (limit == null) {
+      fullLogReads++;
+    } else {
+      recentLogReads++;
+    }
+    return super.getLogsForTank(tankId, limit: limit, after: after);
+  }
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    savedLivestockIds.add(livestock.id);
+    await _delegate.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    attemptedLogs.add(log);
+    await _delegate.saveLog(log);
+    throw logSaveError;
+  }
+
+  @override
+  Future<void> deleteLog(String id) async {
+    deleteLogCalls++;
+    deletedLogIds.add(id);
+    await _delegate.deleteLog(id);
+  }
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    deleteLivestockCalls++;
+    deletedLivestockIds.add(id);
+    throw livestockDeleteError;
+  }
+}
+
+class _BlockingSingleAddLogStorage extends _FailingLivestockDeleteStorage {
+  _BlockingSingleAddLogStorage() : super(failingLivestockId: '');
+
+  final Completer<void> logSaveStarted = Completer<void>();
+  final Completer<void> releaseLogSave = Completer<void>();
+  int saveLivestockCalls = 0;
+  int saveLogCalls = 0;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    saveLivestockCalls++;
+    await _delegate.saveLivestock(livestock);
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    saveLogCalls++;
+    if (!logSaveStarted.isCompleted) {
+      logSaveStarted.complete();
+    }
+    await releaseLogSave.future;
+    await _delegate.saveLog(log);
+  }
+}
+
 class _SaveLogAndRollbackFailOnceStorage
     extends _FailingLivestockDeleteStorage {
   _SaveLogAndRollbackFailOnceStorage() : super(failingLivestockId: '');
@@ -705,6 +828,193 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('1x Otocinclus added.'), findsNothing);
+    });
+
+    testWidgets('stale single-add Retry is ignored after sheet dismissal', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-single-add-dismissed-retry-tank';
+      final storage = _CountingCleanSingleAddFailureStorage();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Dismissed Tank'));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add Livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Harlequin Rasbora',
+      );
+      final addFinder = find.widgetWithText(AppButton, 'Add').last;
+
+      await tester.tap(addFinder);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(storage.saveLivestockCalls, 1);
+      expect(storage.saveLogCalls, 1);
+      expect(storage.deleteLivestockCalls, 1);
+      expect(find.text('Retry'), findsOneWidget);
+      final staleRetry = tester.widget<SnackBarAction>(
+        find.byType(SnackBarAction),
+      );
+
+      Navigator.of(tester.element(addFinder)).pop();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.widgetWithText(AppButton, 'Add'), findsNothing);
+
+      staleRetry.onPressed();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(tester.takeException(), isNull);
+      expect(storage.saveLivestockCalls, 1);
+      expect(storage.saveLogCalls, 1);
+      expect(storage.deleteLivestockCalls, 1);
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(await storage.getLogsForTank(tankId), isEmpty);
+    });
+
+    testWidgets(
+      'failed single-add log and deletion rollback preserves uncertain id and blocks repeated submit',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'livestock-single-add-rollback-uncertain-tank';
+        final storage = _SingleAddLogAndDeleteRollbackFailStorage();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Uncertain Tank'));
+        final debugMessages = <String>[];
+        final previousDebugPrint = debugPrint;
+        debugPrint = (String? message, {int? wrapWidth}) {
+          if (message != null) debugMessages.add(message);
+        };
+        addTearDown(() => debugPrint = previousDebugPrint);
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(find.text('Add Livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Peppered Cory',
+        );
+        final addFinder = find.widgetWithText(AppButton, 'Add').last;
+        final staleAdd = tester.widget<AppButton>(addFinder).onPressed!;
+        final tankReadsBefore = storage.getTankCalls;
+        final livestockReadsBefore = storage.getLivestockForTankCalls;
+        final recentLogReadsBefore = storage.recentLogReads;
+        final fullLogReadsBefore = storage.fullLogReads;
+
+        await tester.tap(addFinder);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(storage.getTankCalls, greaterThanOrEqualTo(tankReadsBefore + 2));
+        expect(
+          storage.getLivestockForTankCalls,
+          greaterThan(livestockReadsBefore),
+        );
+        expect(storage.recentLogReads, greaterThan(recentLogReadsBefore));
+        expect(storage.fullLogReads, greaterThan(fullLogReadsBefore));
+        final livestock = await storage.getLivestockForTank(tankId);
+        expect(livestock, hasLength(1));
+        final uncertainLivestockId = livestock.single.id;
+        expect(storage.savedLivestockIds, <String>[uncertainLivestockId]);
+        expect(storage.attemptedLogs, hasLength(1));
+        final attemptedLog = storage.attemptedLogs.single;
+        expect(attemptedLog.relatedLivestockId, uncertainLivestockId);
+        expect(await storage.getLogsForTank(tankId), isEmpty);
+        expect(storage.deleteLogCalls, 1);
+        expect(storage.deleteLivestockCalls, 1);
+        expect(storage.deletedLogIds, <String>[attemptedLog.id]);
+        expect(storage.deletedLivestockIds, <String>[uncertainLivestockId]);
+        expect(tester.widget<AppButton>(addFinder).onPressed, isNull);
+        expect(
+          find.text(
+            '1x Peppered Cory may already be saved, and its activity history '
+            'may be incomplete. Close this form and check your livestock '
+            'before trying again.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Couldn\'t save that. Check your connection and try again.',
+          ),
+          findsNothing,
+        );
+        expect(find.text('1x Peppered Cory added.'), findsNothing);
+        expect(find.byType(SnackBarAction), findsNothing);
+        expect(find.text('Retry'), findsNothing);
+
+        staleAdd();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        debugPrint = previousDebugPrint;
+        expect(storage.savedLivestockIds, <String>[uncertainLivestockId]);
+        expect(storage.attemptedLogs, hasLength(1));
+        expect(storage.deleteLogCalls, 1);
+        expect(storage.deleteLivestockCalls, 1);
+        final combinedLog = debugMessages.join('\n');
+        expect(combinedLog, contains('LivestockAddCompensationException'));
+        expect(combinedLog, contains(storage.logSaveError.toString()));
+        expect(combinedLog, contains(storage.livestockDeleteError.toString()));
+        expect(combinedLog, contains(tankId));
+        expect(combinedLog, contains(uncertainLivestockId));
+        expect(combinedLog, contains(attemptedLog.id));
+      },
+    );
+
+    testWidgets('in-flight single-add ignores a repeated stale callback', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-single-add-in-flight-tank';
+      final storage = _BlockingSingleAddLogStorage();
+      await storage.saveTank(_makeTank(id: tankId, name: 'In-flight Tank'));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add Livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(find.byType(TextFormField).first, 'Kuhli Loach');
+      final addFinder = find.widgetWithText(AppButton, 'Add').last;
+      final capturedAdd = tester.widget<AppButton>(addFinder).onPressed!;
+
+      capturedAdd();
+      await storage.logSaveStarted.future;
+      capturedAdd();
+      await tester.pump();
+
+      storage.releaseLogSave.complete();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(storage.saveLivestockCalls, 1);
+      expect(storage.saveLogCalls, 1);
+      expect(await storage.getLivestockForTank(tankId), hasLength(1));
+      expect(await storage.getLogsForTank(tankId), hasLength(1));
+      expect(find.text('1x Kuhli Loach added.'), findsOneWidget);
     });
 
     testWidgets(

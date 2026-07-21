@@ -18,6 +18,47 @@ import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
+class LivestockAddRollbackFailure {
+  LivestockAddRollbackFailure({
+    required this.phase,
+    required this.error,
+    required this.stackTrace,
+  });
+
+  final String phase;
+  final Object error;
+  final StackTrace stackTrace;
+
+  @override
+  String toString() => '$phase failed ($error)';
+}
+
+class LivestockAddCompensationException implements Exception {
+  LivestockAddCompensationException({
+    required this.initiatingError,
+    required this.initiatingStackTrace,
+    required List<LivestockAddRollbackFailure> rollbackFailures,
+    required this.tankId,
+    required this.livestockId,
+    required this.logId,
+  }) : rollbackFailures = List.unmodifiable(rollbackFailures);
+
+  final Object initiatingError;
+  final StackTrace initiatingStackTrace;
+  final List<LivestockAddRollbackFailure> rollbackFailures;
+  final String tankId;
+  final String livestockId;
+  final String logId;
+
+  @override
+  String toString() {
+    return 'LivestockAddCompensationException: adding livestock $livestockId '
+        'to tank $tankId failed ($initiatingError), and compensation was '
+        'incomplete: ${rollbackFailures.join('; ')}. Livestock $livestockId '
+        'and activity log $logId may be inconsistent.';
+  }
+}
+
 /// Bottom sheet for adding a new livestock entry or editing an existing one.
 /// Pass [existing] to switch into edit mode.
 class LivestockAddDialog extends ConsumerStatefulWidget {
@@ -45,6 +86,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
   late TextEditingController _scientificController;
   late TextEditingController _countController;
   bool _isSaving = false;
+  bool _persistenceUncertain = false;
   List<SpeciesInfo> _suggestions = [];
   SpeciesInfo? _selectedSpecies;
 
@@ -253,7 +295,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
               ),
               const SizedBox(height: AppSpacing.lg),
               AppButton(
-                onPressed: _isSaving ? null : _save,
+                onPressed: _isSaving || _persistenceUncertain ? null : _save,
                 label: widget.existing != null ? 'Save' : 'Add',
                 isLoading: _isSaving,
                 isFullWidth: true,
@@ -279,6 +321,8 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
   }
 
   Future<void> _save() async {
+    if (!mounted || _isSaving || _persistenceUncertain) return;
+
     final name = _nameController.text.trim();
     final count = int.tryParse(_countController.text) ?? 0;
 
@@ -295,23 +339,21 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       return;
     }
 
+    final saveTankId = widget.tankId;
+    final container = ProviderScope.containerOf(context, listen: false);
     setState(() => _isSaving = true);
 
     try {
-      final storage = ref.read(storageServiceProvider);
+      final storage = container.read(storageServiceProvider);
       final now = DateTime.now();
 
-      final tank = await storage.getTank(widget.tankId);
+      final tank = await storage.getTank(saveTankId);
       if (tank == null) {
-        throw StateError(
-          'Cannot save livestock for missing tank ${widget.tankId}',
-        );
+        throw StateError('Cannot save livestock for missing tank $saveTankId');
       }
 
       if (widget.existing != null) {
-        final currentLivestock = await storage.getLivestockForTank(
-          widget.tankId,
-        );
+        final currentLivestock = await storage.getLivestockForTank(saveTankId);
         final stillExists = currentLivestock.any(
           (entry) => entry.id == widget.existing!.id,
         );
@@ -324,7 +366,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
 
       final livestock = Livestock(
         id: widget.existing?.id ?? _uuid.v4(),
-        tankId: widget.tankId,
+        tankId: saveTankId,
         commonName: name,
         scientificName: _scientificController.text.trim().isNotEmpty
             ? _scientificController.text.trim()
@@ -340,28 +382,74 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       var progressUpdated = true;
 
       if (widget.existing == null) {
+        final log = LogEntry(
+          id: _uuid.v4(),
+          tankId: saveTankId,
+          type: LogType.livestockAdded,
+          timestamp: now,
+          title: 'Added ${livestock.count}x ${livestock.commonName}',
+          relatedLivestockId: livestock.id,
+          createdAt: now,
+        );
         try {
-          await storage.saveLog(
-            LogEntry(
-              id: _uuid.v4(),
-              tankId: widget.tankId,
-              type: LogType.livestockAdded,
-              timestamp: now,
-              title: 'Added ${livestock.count}x ${livestock.commonName}',
-              relatedLivestockId: livestock.id,
-              createdAt: now,
-            ),
-          );
-        } catch (_) {
-          await storage.deleteLivestock(livestock.id);
-          rethrow;
+          await storage.saveLog(log);
+        } catch (error, stackTrace) {
+          final rollbackFailures = <LivestockAddRollbackFailure>[];
+          try {
+            await storage.deleteLog(log.id);
+          } catch (rollbackError, rollbackStack) {
+            rollbackFailures.add(
+              LivestockAddRollbackFailure(
+                phase: 'activity log deletion',
+                error: rollbackError,
+                stackTrace: rollbackStack,
+              ),
+            );
+            logError(
+              'LivestockAddDialog: activity log rollback failed: '
+              '$rollbackError',
+              stackTrace: rollbackStack,
+              tag: 'LivestockAddDialog',
+            );
+          }
+          try {
+            await storage.deleteLivestock(livestock.id);
+          } catch (rollbackError, rollbackStack) {
+            rollbackFailures.add(
+              LivestockAddRollbackFailure(
+                phase: 'livestock deletion',
+                error: rollbackError,
+                stackTrace: rollbackStack,
+              ),
+            );
+            logError(
+              'LivestockAddDialog: livestock rollback failed: '
+              '$rollbackError',
+              stackTrace: rollbackStack,
+              tag: 'LivestockAddDialog',
+            );
+          }
+          if (rollbackFailures.isNotEmpty) {
+            Error.throwWithStackTrace(
+              LivestockAddCompensationException(
+                initiatingError: error,
+                initiatingStackTrace: stackTrace,
+                rollbackFailures: rollbackFailures,
+                tankId: saveTankId,
+                livestockId: livestock.id,
+                logId: log.id,
+              ),
+              stackTrace,
+            );
+          }
+          Error.throwWithStackTrace(error, stackTrace);
         }
 
-        ref.invalidate(logsProvider(widget.tankId));
-        ref.invalidate(allLogsProvider(widget.tankId));
+        container.invalidate(logsProvider(saveTankId));
+        container.invalidate(allLogsProvider(saveTankId));
 
         try {
-          await ref
+          await container
               .read(userProfileProvider.notifier)
               .recordActivity(xp: XpRewards.addLivestock);
         } catch (e, st) {
@@ -371,7 +459,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
             stackTrace: st,
             tag: 'LivestockAddDialog',
           );
-          ref.invalidate(userProfileProvider);
+          container.invalidate(userProfileProvider);
         }
 
         if (progressUpdated && mounted) {
@@ -380,7 +468,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
         }
       }
 
-      ref.invalidate(livestockProvider(widget.tankId));
+      container.invalidate(livestockProvider(saveTankId));
 
       if (mounted) {
         if (widget.existing != null) {
@@ -401,20 +489,70 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
         }
       }
       if (mounted) Navigator.maybePop(context);
-    } catch (e) {
-      logError('Error saving livestock: $e', tag: 'LivestockAddDialog');
-      ref.invalidate(livestockProvider(widget.tankId));
-      ref.invalidate(logsProvider(widget.tankId));
-      ref.invalidate(allLogsProvider(widget.tankId));
+    } catch (e, st) {
+      final persistenceUncertain = e is LivestockAddCompensationException;
+      logError(
+        'LivestockAddDialog: livestock save failed: $e',
+        stackTrace: st,
+        tag: 'LivestockAddDialog',
+      );
+      if (persistenceUncertain && mounted) {
+        setState(() => _persistenceUncertain = true);
+      }
+      if (persistenceUncertain) {
+        await _reloadLivestockAddAuthority(container, saveTankId);
+      } else {
+        container.invalidate(livestockProvider(saveTankId));
+        container.invalidate(logsProvider(saveTankId));
+        container.invalidate(allLogsProvider(saveTankId));
+      }
       if (mounted) {
-        AppFeedback.showError(
-          context,
-          'Couldn\'t save that. Check your connection and try again.',
-          onRetry: _save,
-        );
+        if (persistenceUncertain) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.removeCurrentSnackBar();
+          AppFeedback.showWarning(
+            context,
+            '${count}x $name may already be saved, and its activity history '
+            'may be incomplete. Close this form and check your livestock '
+            'before trying again.',
+          );
+        } else {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t save that. Check your connection and try again.',
+            onRetry: _save,
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  Future<void> _reloadLivestockAddAuthority(
+    ProviderContainer container,
+    String tankId,
+  ) async {
+    container.invalidate(tankProvider(tankId));
+    container.invalidate(livestockProvider(tankId));
+    container.invalidate(logsProvider(tankId));
+    container.invalidate(allLogsProvider(tankId));
+
+    try {
+      await Future.wait<Object?>([
+        container.read(tankProvider(tankId).future),
+        container.read(livestockProvider(tankId).future),
+        container.read(logsProvider(tankId).future),
+        container.read(allLogsProvider(tankId).future),
+      ]);
+    } catch (e, st) {
+      logError(
+        'LivestockAddDialog: authoritative add reload failed for tank '
+        '$tankId: $e',
+        stackTrace: st,
+        tag: 'LivestockAddDialog',
+      );
     }
   }
 }
