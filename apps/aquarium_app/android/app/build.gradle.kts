@@ -88,7 +88,7 @@ flutter {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     // play:core monolith removed — using split libraries instead to avoid
     // duplicate class conflict with in_app_review (play:review:2.0.2)
     implementation("com.google.android.play:review:2.0.2")
