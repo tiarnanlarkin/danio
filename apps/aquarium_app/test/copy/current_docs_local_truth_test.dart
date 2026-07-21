@@ -1153,7 +1153,7 @@ void main() {
         'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
       ],
       [
-        'manual lean workflow',
+        'user-directed manual phone RC chain',
         'DCL-DR-001',
         'DCL-DR-001-F2',
         'DCL-DR-001-F3',
@@ -1840,7 +1840,6 @@ void main() {
         reason: '${entry.$1} must record exactly one finding',
       );
     }
-
   });
 
   test('DCL-DR-003 records only the fixed F37 single livestock-add epoch', () {
@@ -1921,7 +1920,7 @@ void main() {
     }
 
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
-      'Implementation epoch: `DR-2026-07-19-060`',
+      '`DR-2026-07-19-060` closes `DCL-DR-003-F37`',
       '`DCL-DR-003-F1`',
       'through `DCL-DR-003-F37` are settled evidence',
       'Wishlist replay probe next',
@@ -1963,5 +1962,92 @@ void main() {
       ).allMatches(overflowLog),
       hasLength(1),
     );
+  });
+
+  test('manual user-directed phone RC continuation has distinct authority', () {
+    const planPath =
+        'docs/agent/plans/'
+        '2026-07-21-user-directed-phone-rc-continuation-reconciliation.md';
+    expect(_exists(planPath), isTrue, reason: 'reconciliation plan exists');
+    final normalizedPlan = _source(planPath).replaceAll(RegExp(r'\s+'), ' ');
+    const requiredPlanTruth = [
+      'danio-user-directed-continuation-reconciliation-2026-07-21/1',
+      r'The saved Codex project is `C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project`',
+      r'The repository root and Git authority are `C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo`',
+      'Continuation mode: autonomous chain approved',
+      '20 verified sessions total, including this reconciliation session',
+      'durable stop, including a stop without product changes',
+      'safety ceiling, not a workload target',
+      'phone_completion_run_state.json',
+      'frozen historical record',
+      'schema, claims, leases, transitions, budgets',
+      'do not authorize, constrain, or account for this manual chain',
+      'Do not invoke, edit, resume, reinterpret, or delete',
+      'It does not authorize tablet, Play Store signing or submission, public release, cloud/accounts, paid services, provider keys, secrets, iOS',
+      'one repository-writing coordinator',
+      'read-only auditors',
+      'focused RED',
+      'focused GREEN',
+      'independent read-only review',
+      'fast-forward local `main` to the tested branch commit',
+      'one non-force push',
+      'Dirty or unexpected Git: preserve it, make no overlapping edit, and stop',
+      'Remote ahead or divergence: do not merge, rebase, or push; stop',
+      'Concurrent or uncertain writer ownership: remain read-only and stop',
+      'Gate failure: do not commit, merge, push, or chain',
+      'If ownership is unclear, do not start, stop, wipe, install, tap, capture, or otherwise affect a device; stop',
+      'uncovered product decision: do not infer authority; stop and ask the user',
+      'PUSH_OUTCOME_UNKNOWN',
+      'Do not retry the push in this session; stop and ask the user',
+      'Lookup the exact marker in the same saved project before creation',
+      'Create only on an unambiguous, exhaustive zero result',
+      'An ambiguous lookup creates nothing; stop and ask the user',
+      'unknown create outcome',
+      'never retry the unknown create outcome',
+      '`danio-dcl-dr-003-wishlist-replay-probe-2026-07-21/1` and the budget is 19',
+      'DCL-RC-001',
+      'no successor',
+    ];
+    for (final value in requiredPlanTruth) {
+      expect(
+        normalizedPlan,
+        contains(value),
+        reason: '$planPath should preserve $value',
+      );
+    }
+    final normalizedHandoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    const requiredHandoffTruth = [
+      'DR-2026-07-21-061',
+      'danio-user-directed-continuation-reconciliation-2026-07-21/1',
+      '2026-07-21-user-directed-phone-rc-continuation-reconciliation.md',
+      'Wishlist replay probe next',
+      '19 verified sessions remain',
+    ];
+    for (final value in requiredHandoffTruth) {
+      expect(
+        normalizedHandoff,
+        contains(value),
+        reason: 'ACTIVE_HANDOFF should preserve $value',
+      );
+    }
+    final normalizedSliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    const requiredSliceLogTruth = [
+      'DR-2026-07-21-061',
+      'danio-user-directed-continuation-reconciliation-2026-07-21/1',
+      'Wishlist replay probe',
+      '19 sessions',
+      'No product task completed',
+    ];
+    for (final value in requiredSliceLogTruth) {
+      expect(
+        normalizedSliceLog,
+        contains(value),
+        reason: 'SLICE_LOG should preserve $value',
+      );
+    }
   });
 }
