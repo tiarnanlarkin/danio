@@ -29,7 +29,13 @@ import '../../../utils/logger.dart';
 
 /// Screen for identifying fish or aquatic plants via camera/gallery.
 class FishIdScreen extends ConsumerStatefulWidget {
-  const FishIdScreen({super.key});
+  const FishIdScreen({
+    super.key,
+    @visibleForTesting this.imagePicker,
+  });
+
+  /// Internal seam that keeps widget tests away from the platform picker.
+  final Future<File?> Function(ImageSource source)? imagePicker;
 
   @override
   ConsumerState<FishIdScreen> createState() => _FishIdScreenState();
@@ -75,17 +81,14 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final picked = await _picker.pickImage(
-        source: source,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
-      );
-      if (picked == null) return;
+      final pickedFile = widget.imagePicker != null
+          ? await widget.imagePicker!(source)
+          : await _pickPlatformImage(source);
+      if (pickedFile == null) return;
 
       if (!mounted) return;
       setState(() {
-        _selectedImage = File(picked.path);
+        _selectedImage = pickedFile;
         _result = null;
         _error = null;
       });
@@ -112,6 +115,16 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       if (!mounted) return;
       setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
+  }
+
+  Future<File?> _pickPlatformImage(ImageSource source) async {
+    final picked = await _picker.pickImage(
+      source: source,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+    return picked == null ? null : File(picked.path);
   }
 
   bool _isPermissionError(PlatformException error) {
@@ -209,29 +222,26 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       }
       final identification = IdentificationResult.fromJson(decoded);
 
-      // Record rate limit & AI history.
+      // Record the successful request, then expose the result before asking
+      // whether to save a local activity summary.
       rateLimiter.recordRequest(AIFeature.fishId);
-      unawaited(
-        ref
-            .read(aiHistoryProvider.notifier)
-            .add(
-              type: 'fish_id',
-              summary: 'Identified: ${identification.commonName}',
-            )
-            .catchError((Object e, StackTrace st) {
-              logError(
-                'FishIdScreen: failed to save AI history: $e',
-                stackTrace: st,
-                tag: 'FishIdScreen',
-              );
-            }),
-      );
-
       if (!mounted) return;
       setState(() {
         _result = identification;
         _loading = false;
       });
+
+      final confirmed = await showAppConfirmDialog(
+        context: context,
+        title: 'Save Fish ID Activity?',
+        message:
+            'Save this identification in Recent AI Activity on this device?',
+        confirmLabel: 'Save Activity',
+        cancelLabel: 'Cancel',
+      );
+      if (confirmed != true || !mounted) return;
+
+      await _saveConfirmedAIHistory(identification);
     } on TimeoutException {
       if (!mounted) return;
       setState(() {
@@ -266,6 +276,25 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         _error = 'Couldn\'t identify that fish. Try a clearer photo!';
         _loading = false;
       });
+    }
+  }
+
+  Future<void> _saveConfirmedAIHistory(
+    IdentificationResult identification,
+  ) async {
+    try {
+      await ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'fish_id',
+            summary: 'Identified: ${identification.commonName}',
+          );
+    } catch (e, st) {
+      logError(
+        'FishIdScreen: failed to save confirmed AI history: $e',
+        stackTrace: st,
+        tag: 'FishIdScreen',
+      );
     }
   }
 
@@ -393,11 +422,13 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     if (_selectedImage != null) {
       return ClipRRect(
         borderRadius: AppRadius.md2Radius,
-        child: OptimizedFileImage(
-          file: _selectedImage!,
-          height: 250,
+        child: SizedBox(
           width: double.infinity,
-          fit: BoxFit.cover,
+          height: 250,
+          child: OptimizedFileImage(
+            file: _selectedImage!,
+            fit: BoxFit.cover,
+          ),
         ),
       );
     }
@@ -658,13 +689,15 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  'AI-generated identification - Results may not be 100% accurate',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: context.textSecondary,
-                    fontStyle: FontStyle.italic,
+                Expanded(
+                  child: Text(
+                    'AI-generated identification - Results may not be 100% accurate',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: context.textSecondary,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
