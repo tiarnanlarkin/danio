@@ -2108,7 +2108,7 @@ void main() {
     );
   });
 
-  test('global haptic enforcement routes only profile performance next', () {
+  test('global haptic enforcement remains recorded before performance', () {
     final handoff = _source(
       'docs/agent/ACTIVE_HANDOFF.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
@@ -2144,5 +2144,58 @@ void main() {
     for (final source in [handoff, ledger, finishMap]) {
       expect(source, contains('five phone-quality clusters'));
     }
+  });
+
+  test('profile performance records three passing and three open budgets', () {
+    final handoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source(
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source(
+      'docs/agent/FINISH_MAP.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final report = jsonDecode(
+      _source(
+        'docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json',
+      ),
+    ) as Map<String, dynamic>;
+
+    for (final value in [
+      'DR-2026-07-22-069',
+      'danio-dcl-perf-001-profile-performance-harness-2026-07-22/1',
+      'danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1',
+      '61dbb1748487b9111fa8f6e2cccc24100c71dba4',
+      'docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json',
+    ]) {
+      expect(handoff, contains(value));
+      expect(sliceLog, contains(value));
+    }
+    expect(handoff, contains('10 verified sessions'));
+    expect(handoff, contains('DCL-PERF-001 remains open'));
+    expect(ledger, contains('| DCL-PERF-001 |'));
+    expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
+    expect(finishMap, contains('| Performance | `DCL-PERF-001` | In progress |'));
+
+    expect(report['passed'], isFalse);
+    expect(report['product_commit'], '61dbb1748487b9111fa8f6e2cccc24100c71dba4');
+    expect(report['device'], 'danio_api36 (emulator-5554)');
+    final scenarios = (report['scenarios'] as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    expect({
+      for (final scenario in scenarios)
+        scenario['scenario'] as String: scenario['passed'] as bool,
+    }, {
+      'cold_start': true,
+      'warm_resume': true,
+      'tab_switching': true,
+      'tank_feedback': false,
+      'scrolling': false,
+      'local_image_first_paint': false,
+    });
   });
 }
