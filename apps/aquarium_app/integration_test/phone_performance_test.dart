@@ -286,8 +286,9 @@ Future<List<Map<String, Object?>>> _measureTankAttribution(
   IntegrationTestWidgetsFlutterBinding binding,
 ) async {
   await _selectTab(tester, 'tank');
-  final sceneFinder = find.byType(LivingRoomScene).hitTestable().first;
-  await _waitForFinder(tester, sceneFinder);
+  final sceneCandidates = find.byType(LivingRoomScene).hitTestable();
+  await _waitForFinder(tester, sceneCandidates);
+  final sceneFinder = sceneCandidates.first;
   final scene = tester.widget<LivingRoomScene>(sceneFinder);
   final container = ProviderScope.containerOf(tester.element(sceneFinder));
   final pulseNotifier = container.read(
@@ -329,8 +330,9 @@ Future<List<Map<String, Object?>>> _measureScrollingAttribution(
   IntegrationTestWidgetsFlutterBinding binding,
 ) async {
   await _selectTab(tester, 'learn');
-  final learnScroll = find.byType(CustomScrollView).hitTestable().first;
-  await _waitForFinder(tester, learnScroll);
+  final learnScrollCandidates = find.byType(CustomScrollView).hitTestable();
+  await _waitForFinder(tester, learnScrollCandidates);
+  final learnScroll = learnScrollCandidates.first;
   final rootContext = tester.element(find.byKey(_dockKey));
   final pairs = <Map<String, Object?>>[];
 

@@ -208,4 +208,42 @@ void main() {
       expect(target, contains('WidgetsBinding.instance.endOfFrame'));
     },
   );
+
+  test('attribution waits for trace surfaces before selecting first', () {
+    final target = File(
+      'integration_test/phone_performance_test.dart',
+    ).readAsStringSync();
+
+    final tankStart = target.indexOf(
+      'Future<List<Map<String, Object?>>> _measureTankAttribution(',
+    );
+    final scrollStart = target.indexOf(
+      'Future<List<Map<String, Object?>>> _measureScrollingAttribution(',
+    );
+    final tankSource = target.substring(tankStart, scrollStart);
+    final traceHelperStart = target.indexOf(
+      '_performDiagnosticFling(',
+      scrollStart,
+    );
+    final scrollSource = target.substring(scrollStart, traceHelperStart);
+
+    expect(tankSource, contains('final sceneCandidates ='));
+    expect(
+      tankSource.indexOf('await _waitForFinder(tester, sceneCandidates);'),
+      lessThan(
+        tankSource.indexOf('final sceneFinder = sceneCandidates.first;'),
+      ),
+    );
+    expect(scrollSource, contains('final learnScrollCandidates ='));
+    expect(
+      scrollSource.indexOf(
+        'await _waitForFinder(tester, learnScrollCandidates);',
+      ),
+      lessThan(
+        scrollSource.indexOf(
+          'final learnScroll = learnScrollCandidates.first;',
+        ),
+      ),
+    );
+  });
 }
