@@ -23,6 +23,7 @@ import 'package:danio/providers/room_theme_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/profile_performance_ready_marker.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -150,6 +151,13 @@ void main() {
         expect(
           toolboxNode.getSemanticsData().hasAction(SemanticsAction.tap),
           isTrue,
+        );
+        expect(
+          find.ancestor(
+            of: find.bySemanticsLabel('Tank Toolbox'),
+            matching: find.byType(ProfilePerformanceReadyMarker),
+          ),
+          findsOneWidget,
         );
       } finally {
         semantics.dispose();

@@ -32,29 +32,51 @@ void main() {
     expect(script, contains('Git status failed'));
   });
 
-  test('ADB stderr is data while the native exit code remains authoritative', () {
+  test(
+    'ADB stderr is data while the native exit code remains authoritative',
+    () {
+      final script = File(
+        'scripts/run_phone_performance_harness.ps1',
+      ).readAsStringSync();
+
+      expect(
+        script,
+        contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
+      );
+      expect(script, contains(r'$ErrorActionPreference = "Continue"'));
+      expect(script, contains(r'$global:LASTEXITCODE = $null'));
+      expect(script, contains(r'$adbExitCode = $global:LASTEXITCODE'));
+      expect(
+        script,
+        contains(r'$ErrorActionPreference = $previousErrorActionPreference'),
+      );
+      expect(script, contains(r'$null -eq $adbExitCode'));
+      expect(
+        script,
+        contains(r'Invoke-Adb -Arguments @("devices") -Global'),
+      );
+      expect(script, contains(r'& $AdbExe @adbArguments 2>&1'));
+      expect(script, isNot(contains(r'& adb ')));
+    },
+  );
+
+  test('profile timings avoid DDS and host-side hierarchy latency', () {
     final script = File(
       'scripts/run_phone_performance_harness.ps1',
     ).readAsStringSync();
 
+    expect(script, contains('--no-dds'));
+    expect(script, contains('DANIO_PROFILE_PERFORMANCE=true'));
+    expect(script, contains('DANIO_PERF_LAUNCH'));
+    expect(script, contains('DANIO_PERF_READY'));
+    expect(script, contains('/proc/uptime'));
+    expect(script, contains('Wait-TankInteractive'));
+    expect(script, contains(r'return $elapsedMilliseconds'));
+    expect(script, isNot(contains('ActivityTaskManager:I')));
     expect(
       script,
-      contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
+      isNot(contains('[System.Diagnostics.Stopwatch]::StartNew()')),
     );
-    expect(script, contains(r'$ErrorActionPreference = "Continue"'));
-    expect(script, contains(r'$global:LASTEXITCODE = $null'));
-    expect(script, contains(r'$adbExitCode = $global:LASTEXITCODE'));
-    expect(
-      script,
-      contains(r'$ErrorActionPreference = $previousErrorActionPreference'),
-    );
-    expect(script, contains(r'$null -eq $adbExitCode'));
-    expect(
-      script,
-      contains(r'Invoke-Adb -Arguments @("devices") -Global'),
-    );
-    expect(script, contains(r'& $AdbExe @adbArguments 2>&1'));
-    expect(script, isNot(contains(r'& adb ')));
   });
 
   test(

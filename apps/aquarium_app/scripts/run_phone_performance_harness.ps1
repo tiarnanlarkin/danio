@@ -88,16 +88,82 @@ function Resolve-LaunchActivity {
   return $activity.Trim()
 }
 
+function Clear-PerformanceLog {
+  Invoke-Adb @("logcat", "-c") | Out-Null
+}
+
+function Get-PerformanceLog {
+  return (Invoke-Adb @(
+    "logcat", "-d", "-v", "brief",
+    "DanioPerformance:I", "*:S"
+  )) -join "`n"
+}
+
+function Invoke-PerformanceLaunch {
+  param(
+    [Parameter(Mandatory = $true)][string]$Activity,
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("cold_start", "warm_resume")]
+    [string]$Scenario
+  )
+
+  $launchCommand = `
+    'log -p i -t DanioPerformance "DANIO_PERF_LAUNCH|{0}|$(cut -d " " -f1 /proc/uptime)"; am start -n {1}' `
+      -f $Scenario, $Activity
+  Invoke-Adb @("shell", $launchCommand) | Out-Null
+}
+
+function Wait-PerformanceSample {
+  param(
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("cold_start", "warm_resume")]
+    [string]$Scenario,
+    [int]$TimeoutSeconds = 15
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  $launchSeconds = $null
+  $readyMilliseconds = $null
+  do {
+    $log = Get-PerformanceLog
+    if ($log -match "DANIO_PERF_LAUNCH\|$Scenario\|([0-9]+(?:\.[0-9]+)?)") {
+      $launchSeconds = [double]::Parse(
+        $Matches[1],
+        [Globalization.CultureInfo]::InvariantCulture
+      )
+    }
+    if ($log -match "DANIO_PERF_READY\|$Scenario\|([0-9]+(?:\.[0-9]+)?)") {
+      $readyMilliseconds = [double]::Parse(
+        $Matches[1],
+        [Globalization.CultureInfo]::InvariantCulture
+      )
+    }
+    if (
+      $null -ne $launchSeconds -and
+      $null -ne $readyMilliseconds
+    ) {
+      $elapsedMilliseconds = $readyMilliseconds - ($launchSeconds * 1000)
+      if ($elapsedMilliseconds -le 0) {
+        throw "Device readiness clock was not after its launch marker."
+      }
+      return $elapsedMilliseconds
+    }
+    Start-Sleep -Milliseconds 100
+  } while ((Get-Date) -lt $deadline)
+
+  throw "Timed out waiting for device launch and Tank-ready markers for $Scenario."
+}
+
 function Measure-ColdStart {
   param([Parameter(Mandatory = $true)][string]$Activity)
 
   Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null
   Start-Sleep -Milliseconds 250
-  $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-  Invoke-Adb @("shell", "am", "start", "-n", $Activity) | Out-Null
+  Clear-PerformanceLog
+  Invoke-PerformanceLaunch -Activity $Activity -Scenario "cold_start"
+  $elapsedMilliseconds = Wait-PerformanceSample -Scenario "cold_start"
   Wait-TankInteractive
-  $stopwatch.Stop()
-  return $stopwatch.Elapsed.TotalMilliseconds
+  return $elapsedMilliseconds
 }
 
 function Measure-WarmResume {
@@ -105,11 +171,11 @@ function Measure-WarmResume {
 
   Invoke-Adb @("shell", "input", "keyevent", "KEYCODE_HOME") | Out-Null
   Start-Sleep -Milliseconds 300
-  $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-  Invoke-Adb @("shell", "am", "start", "-n", $Activity) | Out-Null
+  Clear-PerformanceLog
+  Invoke-PerformanceLaunch -Activity $Activity -Scenario "warm_resume"
+  $elapsedMilliseconds = Wait-PerformanceSample -Scenario "warm_resume"
   Wait-TankInteractive
-  $stopwatch.Stop()
-  return $stopwatch.Elapsed.TotalMilliseconds
+  return $elapsedMilliseconds
 }
 
 function Write-HostLatencyRun {
@@ -220,6 +286,13 @@ try {
   $restoreProductApk = Join-Path $rawRoot "product-profile.apk"
   Copy-Item -LiteralPath $profileApk -Destination $restoreProductApk
 
+  Write-Host "flutter build apk --profile (local readiness marker)"
+  & flutter build apk --profile --target lib/main.dart `
+    --dart-define=DANIO_PROFILE_PERFORMANCE=true
+  if ($LASTEXITCODE -ne 0) {
+    throw "Instrumented profile APK build failed with exit code $LASTEXITCODE."
+  }
+
   Write-Host "adb install -r $profileApk"
   Invoke-Adb @("install", "-r", $profileApk) | Out-Null
   $restoreRequired = $true
@@ -260,6 +333,7 @@ try {
       "--driver=test_driver/integration_test.dart",
       "--target=integration_test/phone_performance_test.dart",
       "--profile",
+      "--no-dds",
       "--keep-app-running",
       "-d", $DeviceId,
       "--dart-define=DANIO_PRODUCT_COMMIT=$ProductCommit",

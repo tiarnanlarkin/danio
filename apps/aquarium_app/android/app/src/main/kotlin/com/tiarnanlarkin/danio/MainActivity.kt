@@ -1,17 +1,29 @@
 package com.tiarnanlarkin.danio
 
 import android.content.Intent
+import android.os.SystemClock
 import android.provider.Settings
+import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val ACCESSIBILITY_CHANNEL = "com.tiarnanlarkin.aquarium/accessibility"
+    private val PROFILE_PERFORMANCE_CHANNEL = "danio/profile_performance"
+    private val PROFILE_PERFORMANCE_LOG_TAG = "DanioPerformance"
+
+    private var coldReadyReported = false
+    private var readyReportedForResume = false
 
     // QA fast-entry: debug-only deep link channel
     private val QA_LINKS_CHANNEL = "danio/qa_links"
     private var qaLinksChannel: MethodChannel? = null
+
+    override fun onResume() {
+        readyReportedForResume = false
+        super.onResume()
+    }
 
     private fun isDebugQaIntent(intent: Intent?): Boolean {
         if (!BuildConfig.DEBUG) return false
@@ -51,6 +63,35 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // Inert unless the local profile-only Dart marker invokes it.
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            PROFILE_PERFORMANCE_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            if (call.method != "markTankReady") {
+                result.notImplemented()
+                return@setMethodCallHandler
+            }
+            if (readyReportedForResume) {
+                result.success(null)
+                return@setMethodCallHandler
+            }
+
+            readyReportedForResume = true
+            val scenario = if (!coldReadyReported) {
+                coldReadyReported = true
+                "cold_start"
+            } else {
+                "warm_resume"
+            }
+            val readyMilliseconds = SystemClock.elapsedRealtimeNanos() / 1_000_000
+            Log.i(
+                PROFILE_PERFORMANCE_LOG_TAG,
+                "DANIO_PERF_READY|$scenario|$readyMilliseconds"
+            )
+            result.success(readyMilliseconds)
+        }
 
         // QA deep link channel — only registered in debug builds
         if (BuildConfig.DEBUG) {

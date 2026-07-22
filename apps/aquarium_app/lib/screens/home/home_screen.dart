@@ -52,6 +52,7 @@ import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
+import '../../widgets/profile_performance_ready_marker.dart';
 import '../../utils/logger.dart';
 import '../compatibility_checker_screen.dart';
 
@@ -655,24 +656,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         rootNavigator: true,
                       ),
                     ),
-                    Semantics(
-                      label: 'Tank Toolbox',
-                      button: true,
-                      excludeSemantics: true,
-                      onTap: () =>
-                          showTankToolbox(context, ref, currentTank.id),
-                      child: IconButton(
-                        constraints: const BoxConstraints(
-                          minWidth: 48,
-                          minHeight: 48,
-                        ),
-                        icon: const Icon(
-                          Icons.build_outlined,
-                          color: AppOverlays.white90,
-                        ),
-                        tooltip: 'Tank Toolbox',
-                        onPressed: () =>
+                    ProfilePerformanceReadyMarker(
+                      child: Semantics(
+                        label: 'Tank Toolbox',
+                        button: true,
+                        excludeSemantics: true,
+                        onTap: () =>
                             showTankToolbox(context, ref, currentTank.id),
+                        child: IconButton(
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
+                          icon: const Icon(
+                            Icons.build_outlined,
+                            color: AppOverlays.white90,
+                          ),
+                          tooltip: 'Tank Toolbox',
+                          onPressed: () =>
+                              showTankToolbox(context, ref, currentTank.id),
+                        ),
                       ),
                     ),
                     IconButton(
