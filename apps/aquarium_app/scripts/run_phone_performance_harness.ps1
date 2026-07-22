@@ -27,9 +27,9 @@ function Invoke-Adb {
   $adbExitCode = $null
   try {
     $ErrorActionPreference = "Continue"
-    $LASTEXITCODE = $null
+    $global:LASTEXITCODE = $null
     $output = & $AdbExe @adbArguments 2>&1
-    $adbExitCode = $LASTEXITCODE
+    $adbExitCode = $global:LASTEXITCODE
   }
   finally {
     $ErrorActionPreference = $previousErrorActionPreference

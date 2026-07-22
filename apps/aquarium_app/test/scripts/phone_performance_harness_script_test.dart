@@ -41,8 +41,8 @@ void main() {
       contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
     );
     expect(script, contains(r'$ErrorActionPreference = "Continue"'));
-    expect(script, contains(r'$LASTEXITCODE = $null'));
-    expect(script, contains(r'$adbExitCode = $LASTEXITCODE'));
+    expect(script, contains(r'$global:LASTEXITCODE = $null'));
+    expect(script, contains(r'$adbExitCode = $global:LASTEXITCODE'));
     expect(
       script,
       contains(r'$ErrorActionPreference = $previousErrorActionPreference'),
