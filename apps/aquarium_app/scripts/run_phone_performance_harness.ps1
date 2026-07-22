@@ -10,13 +10,32 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $AppRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+$AdbExe = (Get-Command adb -CommandType Application -ErrorAction Stop).Source
 
 function Invoke-Adb {
-  param([Parameter(Mandatory = $true)][string[]]$Arguments)
+  param(
+    [Parameter(Mandatory = $true)][string[]]$Arguments,
+    [switch]$Global
+  )
 
-  $output = & adb -s $DeviceId @Arguments 2>&1
-  if ($LASTEXITCODE -ne 0) {
-    throw "adb $($Arguments -join ' ') failed: $($output -join ' ')"
+  $adbArguments = @($Arguments)
+  if (-not $Global) {
+    $adbArguments = @("-s", $DeviceId) + $adbArguments
+  }
+  $previousErrorActionPreference = $ErrorActionPreference
+  $output = @()
+  $adbExitCode = $null
+  try {
+    $ErrorActionPreference = "Continue"
+    $LASTEXITCODE = $null
+    $output = & $AdbExe @adbArguments 2>&1
+    $adbExitCode = $LASTEXITCODE
+  }
+  finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+  if ($null -eq $adbExitCode -or $adbExitCode -ne 0) {
+    throw "adb $($adbArguments -join ' ') failed: $($output -join ' ')"
   }
   return @($output)
 }
@@ -167,7 +186,7 @@ try {
     throw "The profile harness requires a clean product commit."
   }
 
-  $readyDevices = (& adb devices) -join "`n"
+  $readyDevices = (Invoke-Adb -Arguments @("devices") -Global) -join "`n"
   if ($readyDevices -notmatch "(?m)^$([regex]::Escape($DeviceId))\s+device$") {
     throw "Requested device $DeviceId is not the single ready target."
   }

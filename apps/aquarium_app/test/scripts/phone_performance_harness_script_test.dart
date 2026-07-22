@@ -31,6 +31,31 @@ void main() {
     expect(script, contains('Git status failed'));
   });
 
+  test('ADB stderr is data while the native exit code remains authoritative', () {
+    final script = File(
+      'scripts/run_phone_performance_harness.ps1',
+    ).readAsStringSync();
+
+    expect(
+      script,
+      contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
+    );
+    expect(script, contains(r'$ErrorActionPreference = "Continue"'));
+    expect(script, contains(r'$LASTEXITCODE = $null'));
+    expect(script, contains(r'$adbExitCode = $LASTEXITCODE'));
+    expect(
+      script,
+      contains(r'$ErrorActionPreference = $previousErrorActionPreference'),
+    );
+    expect(script, contains(r'$null -eq $adbExitCode'));
+    expect(
+      script,
+      contains(r'Invoke-Adb -Arguments @("devices") -Global'),
+    );
+    expect(script, contains(r'& $AdbExe @adbArguments 2>&1'));
+    expect(script, isNot(contains(r'& adb ')));
+  });
+
   test(
     'integration target requires profile mode and real host lifecycle data',
     () {
