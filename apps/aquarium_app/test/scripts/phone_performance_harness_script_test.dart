@@ -68,6 +68,10 @@ void main() {
     expect(script, contains('--no-dds'));
     expect(script, contains('DANIO_PROFILE_PERFORMANCE=true'));
     expect(script, contains('DANIO_PERF_LAUNCH'));
+    expect(script, contains(r'DANIO_PERF_LAUNCH\|{0}\|'));
+    expect(script, contains(r'read danioUptime danioIdle < /proc/uptime'));
+    expect(script, contains(r'\|$danioUptime'));
+    expect(script, isNot(contains('cut -d')));
     expect(script, contains('DANIO_PERF_READY'));
     expect(script, contains('/proc/uptime'));
     expect(script, contains('Wait-TankInteractive'));

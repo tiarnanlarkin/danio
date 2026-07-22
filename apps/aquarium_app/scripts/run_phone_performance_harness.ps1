@@ -108,7 +108,7 @@ function Invoke-PerformanceLaunch {
   )
 
   $launchCommand = `
-    'log -p i -t DanioPerformance "DANIO_PERF_LAUNCH|{0}|$(cut -d " " -f1 /proc/uptime)"; am start -n {1}' `
+    'read danioUptime danioIdle < /proc/uptime; log -p i -t DanioPerformance DANIO_PERF_LAUNCH\|{0}\|$danioUptime; am start -n {1}' `
       -f $Scenario, $Activity
   Invoke-Adb @("shell", $launchCommand) | Out-Null
 }
