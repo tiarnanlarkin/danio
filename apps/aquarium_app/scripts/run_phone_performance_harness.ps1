@@ -3,7 +3,9 @@ param(
   [string]$DeviceId,
   [string]$ProductCommit = "",
   [string]$AppId = "com.tiarnanlarkin.danio",
-  [string]$OutputPath = "docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json"
+  [string]$OutputPath = "docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json",
+  [switch]$AttributionOnly,
+  [string]$AttributionOutputPath = "docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json"
 )
 
 $ErrorActionPreference = "Stop"
@@ -275,8 +277,14 @@ try {
     throw "Generated run directory already exists: $rawRoot"
   }
   New-Item -ItemType Directory -Path $rawRoot | Out-Null
-  if (Test-Path -LiteralPath $OutputPath) {
-    throw "Refusing to overwrite existing report: $OutputPath"
+  $selectedOutputPath = if ($AttributionOnly) {
+    $AttributionOutputPath
+  }
+  else {
+    $OutputPath
+  }
+  if (Test-Path -LiteralPath $selectedOutputPath) {
+    throw "Refusing to overwrite existing report: $selectedOutputPath"
   }
 
   Write-Host "flutter build apk --profile"
@@ -302,24 +310,6 @@ try {
   Invoke-Adb @("install", "-r", $profileApk) | Out-Null
   $restoreRequired = $true
   $activity = Resolve-LaunchActivity
-
-  $coldStartSamples = @()
-  foreach ($iterationIndex in 0..5) {
-    $coldStartSamples += Measure-ColdStart -Activity $activity
-  }
-
-  $warmResumeSamples = @()
-  foreach ($iterationIndex in 0..5) {
-    $warmResumeSamples += Measure-WarmResume -Activity $activity
-  }
-
-  $hostPath = Join-Path $rawRoot "host-latency.json"
-  Write-HostLatencyRun `
-    -Path $hostPath `
-    -ColdStartSamples $coldStartSamples `
-    -WarmResumeSamples $warmResumeSamples `
-    -Commit $ProductCommit `
-    -Device $deviceIdentity
 
   $responsePath = Join-Path $AppRoot "build\integration_response_data.json"
   if (Test-Path -LiteralPath $responsePath) {
@@ -359,29 +349,73 @@ try {
     Move-Item -LiteralPath $responsePath -Destination $Destination
   }
 
-  $rawFiles = @($hostPath)
-  foreach ($imageIteration in 0..5) {
-    $destination = Join-Path $rawRoot "image-$imageIteration.json"
+  if ($AttributionOnly) {
+    $rawFiles = @()
+    foreach ($imageIteration in 0..5) {
+      $destination = Join-Path $rawRoot "attribution-image-$imageIteration.json"
+      Invoke-PerformanceRun `
+        -PhaseDefine "--dart-define=DANIO_PERF_PHASE=attribution_image" `
+        -IterationDefine "--dart-define=DANIO_PERF_ITERATION=$imageIteration" `
+        -Destination $destination
+      $rawFiles += $destination
+    }
+
+    $interactionsPath = Join-Path $rawRoot "attribution-interactions.json"
     Invoke-PerformanceRun `
-      -PhaseDefine "--dart-define=DANIO_PERF_PHASE=image" `
-      -IterationDefine "--dart-define=DANIO_PERF_ITERATION=$imageIteration" `
-      -Destination $destination
-    $rawFiles += $destination
+      -PhaseDefine "--dart-define=DANIO_PERF_PHASE=attribution_interactions" `
+      -Destination $interactionsPath
+    $rawFiles += $interactionsPath
+
+    & dart run tool/summarize_phone_performance_attribution.dart `
+      --output $AttributionOutputPath `
+      @rawFiles
+    if ($LASTEXITCODE -ne 0) {
+      throw "Phone performance attribution summary failed. Report: $AttributionOutputPath"
+    }
   }
+  else {
+    $coldStartSamples = @()
+    foreach ($iterationIndex in 0..5) {
+      $coldStartSamples += Measure-ColdStart -Activity $activity
+    }
 
-  $interactionsPath = Join-Path $rawRoot "interactions.json"
-  Invoke-PerformanceRun `
-    -PhaseDefine "--dart-define=DANIO_PERF_PHASE=interactions" `
-    -Destination $interactionsPath
-  $rawFiles += $interactionsPath
+    $warmResumeSamples = @()
+    foreach ($iterationIndex in 0..5) {
+      $warmResumeSamples += Measure-WarmResume -Activity $activity
+    }
 
-  & dart run tool/summarize_phone_performance.dart `
-    --output $OutputPath `
-    @rawFiles
-  $summaryExit = $LASTEXITCODE
+    $hostPath = Join-Path $rawRoot "host-latency.json"
+    Write-HostLatencyRun `
+      -Path $hostPath `
+      -ColdStartSamples $coldStartSamples `
+      -WarmResumeSamples $warmResumeSamples `
+      -Commit $ProductCommit `
+      -Device $deviceIdentity
 
-  if ($summaryExit -ne 0) {
-    throw "Phone performance budgets failed with exit code $summaryExit. Report: $OutputPath"
+    $rawFiles = @($hostPath)
+    foreach ($imageIteration in 0..5) {
+      $destination = Join-Path $rawRoot "image-$imageIteration.json"
+      Invoke-PerformanceRun `
+        -PhaseDefine "--dart-define=DANIO_PERF_PHASE=image" `
+        -IterationDefine "--dart-define=DANIO_PERF_ITERATION=$imageIteration" `
+        -Destination $destination
+      $rawFiles += $destination
+    }
+
+    $interactionsPath = Join-Path $rawRoot "interactions.json"
+    Invoke-PerformanceRun `
+      -PhaseDefine "--dart-define=DANIO_PERF_PHASE=interactions" `
+      -Destination $interactionsPath
+    $rawFiles += $interactionsPath
+
+    & dart run tool/summarize_phone_performance.dart `
+      --output $OutputPath `
+      @rawFiles
+    $summaryExit = $LASTEXITCODE
+
+    if ($summaryExit -ne 0) {
+      throw "Phone performance budgets failed with exit code $summaryExit. Report: $OutputPath"
+    }
   }
 }
 catch {

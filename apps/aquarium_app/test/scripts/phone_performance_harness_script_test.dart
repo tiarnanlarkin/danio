@@ -32,6 +32,24 @@ void main() {
     expect(script, contains('Git status failed'));
   });
 
+  test('profile runner owns a separate attribution-only evidence path', () {
+    final script = File(
+      'scripts/run_phone_performance_harness.ps1',
+    ).readAsStringSync();
+
+    expect(script, contains(r'[switch]$AttributionOnly'));
+    expect(script, contains(r'$AttributionOutputPath'));
+    expect(script, contains('DANIO_PERF_PHASE=attribution_image'));
+    expect(script, contains('DANIO_PERF_PHASE=attribution_interactions'));
+    expect(
+      script,
+      contains('tool/summarize_phone_performance_attribution.dart'),
+    );
+    expect(script, contains(r'attribution-image-$imageIteration.json'));
+    expect(script, contains('attribution-interactions.json'));
+    expect(script, contains('0..5'));
+  });
+
   test(
     'ADB stderr is data while the native exit code remains authoritative',
     () {
@@ -166,6 +184,28 @@ void main() {
       expect(imageFinderSource, isNot(contains('.hitTestable()')));
       expect(imageFinderSource, contains('isLearnHeaderAssetImage'));
       expect(imageFinderSource, isNot(contains('widget.image is AssetImage')));
+    },
+  );
+
+  test(
+    'attribution target pairs equal work and isolates test-only scrolling',
+    () {
+      final target = File(
+        'integration_test/phone_performance_test.dart',
+      ).readAsStringSync();
+
+      expect(target, contains("'attribution_image'"));
+      expect(target, contains("'attribution_interactions'"));
+      expect(target, contains('paired_profile_attribution_image'));
+      expect(target, contains('paired_profile_attribution_interactions'));
+      expect(target, contains('durationPumps: 60'));
+      expect(target, contains('durationPumps: 45'));
+      expect(target, contains('const Offset(0, -700)'));
+      expect(target, contains('const _MinimalPerformanceScrollSurface'));
+      expect(target, contains('mount_ready_ms'));
+      expect(target, contains('decode_ready_ms'));
+      expect(target, contains('paint_ready_ms'));
+      expect(target, contains('WidgetsBinding.instance.endOfFrame'));
     },
   );
 }
