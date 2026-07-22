@@ -83,6 +83,37 @@ void main() {
     );
   });
 
+  test('integration traces use live benchmark scheduling before tests', () {
+    final target = File(
+      'integration_test/phone_performance_test.dart',
+    ).readAsStringSync();
+
+    final bindingInitialization = target.indexOf(
+      'IntegrationTestWidgetsFlutterBinding.ensureInitialized()',
+    );
+    final expectedFramePolicyAssignment = RegExp(
+      r'binding\.framePolicy\s*=\s*'
+      r'LiveTestWidgetsFlutterBindingFramePolicy\.benchmarkLive\s*;',
+    );
+    final framePolicyAssignment = expectedFramePolicyAssignment
+        .firstMatch(target)
+        ?.start;
+    final testRegistration = target.indexOf("testWidgets('records");
+
+    expect(bindingInitialization, greaterThanOrEqualTo(0));
+    expect(framePolicyAssignment, isNotNull);
+    expect(framePolicyAssignment!, greaterThan(bindingInitialization));
+    expect(testRegistration, greaterThan(framePolicyAssignment));
+    expect(
+      RegExp(r'binding\.framePolicy\s*=').allMatches(target),
+      hasLength(1),
+    );
+    expect(
+      target,
+      isNot(contains('LiveTestWidgetsFlutterBindingFramePolicy.fadePointers')),
+    );
+  });
+
   test(
     'integration target requires profile mode and real host lifecycle data',
     () {

@@ -29,6 +29,7 @@ const _performanceLearnKey = ValueKey('phone-performance-learn-screen');
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.benchmarkLive;
 
   testWidgets('records the profile-mode phone performance contract', (
     tester,
