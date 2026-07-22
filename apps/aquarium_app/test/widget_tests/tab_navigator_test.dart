@@ -260,6 +260,22 @@ void main() {
       expect(globalPadding, findsNothing);
     });
 
+    testWidgets('bottom dock avoids live blur over moving content', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(initialTab: 0));
+      await _advance(tester);
+
+      final rail = find.byKey(
+        const ValueKey('danio-bottom-dock-floating-rail'),
+      );
+      expect(rail, findsOneWidget);
+      expect(
+        find.descendant(of: rail, matching: find.byType(BackdropFilter)),
+        findsNothing,
+      );
+    });
+
     testWidgets('bottom dock shields the gesture area from scrolled content', (
       tester,
     ) async {

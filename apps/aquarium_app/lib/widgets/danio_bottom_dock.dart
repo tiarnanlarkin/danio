@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,35 +153,30 @@ class DanioBottomDock extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(38),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: palette.railGradient,
-                                ),
-                                borderRadius: BorderRadius.circular(38),
-                                border: Border.all(color: palette.railBorder),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: palette.railGradient,
                               ),
-                              child: Row(
-                                children: [
-                                  for (var i = 0; i < _destinations.length; i++)
-                                    Expanded(
-                                      child: _DockItem(
-                                        destination: _destinations[i],
-                                        index: i,
-                                        isSelected: selectedIndex == i,
-                                        dueCardsCount: i == 1
-                                            ? dueCardsCount
-                                            : 0,
-                                        palette: palette,
-                                        onTap: () => onDestinationSelected(i),
-                                      ),
+                              borderRadius: BorderRadius.circular(38),
+                              border: Border.all(color: palette.railBorder),
+                            ),
+                            child: Row(
+                              children: [
+                                for (var i = 0; i < _destinations.length; i++)
+                                  Expanded(
+                                    child: _DockItem(
+                                      destination: _destinations[i],
+                                      index: i,
+                                      isSelected: selectedIndex == i,
+                                      dueCardsCount: i == 1 ? dueCardsCount : 0,
+                                      palette: palette,
+                                      onTap: () => onDestinationSelected(i),
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
                           ),
                         ),
