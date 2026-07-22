@@ -13,7 +13,6 @@ import '../../services/stocking_calculator.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
-import '../../utils/haptic_feedback.dart';
 import '../../utils/logger.dart';
 import '../../navigation/app_routes.dart';
 import '../../utils/navigation_throttle.dart';
@@ -428,7 +427,6 @@ class _TankDetailScreenState extends ConsumerState<TankDetailScreen> {
 
     // Show success feedback
     if (context.mounted) {
-      AppHaptics.success();
       AppFeedback.showSuccess(context, '${task.title} completed!');
     }
   }
@@ -1346,7 +1344,6 @@ class _TankDetailScreenState extends ConsumerState<TankDetailScreen> {
     ref.read(tankFeedingPulseProvider(tankId).notifier).state += 1;
 
     if (context.mounted) {
-      AppHaptics.success();
       AppFeedback.showSuccess(context, 'Feeding logged.');
     }
   }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/logger.dart';
 import 'user_profile_provider.dart';
 
+const hapticFeedbackPreferenceKey = 'haptic_feedback_enabled';
+
 /// Theme mode preference
 enum AppThemeMode { system, light, dark }
 
@@ -64,7 +66,6 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   static const _useMetricKey = 'use_metric';
   static const _notificationsKey = 'notifications_enabled';
   static const _ambientLightingKey = 'ambient_lighting_enabled';
-  static const _hapticFeedbackKey = 'haptic_feedback_enabled';
 
   Future<void> _loadSettings() async {
     try {
@@ -74,7 +75,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       final useMetric = prefs.getBool(_useMetricKey) ?? true;
       final notificationsEnabled = prefs.getBool(_notificationsKey) ?? false;
       final ambientLightingEnabled = prefs.getBool(_ambientLightingKey) ?? true;
-      final hapticFeedbackEnabled = prefs.getBool(_hapticFeedbackKey) ?? true;
+      final hapticFeedbackEnabled =
+          prefs.getBool(hapticFeedbackPreferenceKey) ?? true;
 
       state = AppSettings(
         themeMode: AppThemeMode
@@ -145,7 +147,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   }
 
   Future<bool> setHapticFeedbackEnabled(bool enabled) async {
-    if (await _persist(_hapticFeedbackKey, enabled)) {
+    if (await _persist(hapticFeedbackPreferenceKey, enabled)) {
       state = state.copyWith(hapticFeedbackEnabled: enabled);
       return true;
     }

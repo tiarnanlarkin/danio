@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -138,7 +138,7 @@ class _TankStatusScreenState extends State<TankStatusScreen>
   }
 
   void _selectCard(String value) {
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
     setState(() => _selected = value);
 
     final reduceMotion = MediaQuery.of(context).disableAnimations;
@@ -226,10 +226,11 @@ class _TankStatusScreenState extends State<TankStatusScreen>
                 label: 'Continue',
                 onPressed: _selected != null
                     ? () {
-                        HapticFeedback.mediumImpact();
+                        AppHaptics.medium(context);
                         widget.onSelected(_selected!);
                       }
                     : null,
+                enableHaptics: false,
                 variant: AppButtonVariant.primary,
                 isFullWidth: true,
                 size: AppButtonSize.large,

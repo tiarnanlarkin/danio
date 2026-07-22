@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
@@ -199,7 +199,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   void _onCtaTap() {
     if (_ctaTapped) return;
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     setState(() => _ctaTapped = true);
 
     // 2-second silent beat, then complete
@@ -443,6 +443,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                       AppButton(
                         label: _ctaTapped ? '...' : 'Start your journey →',
                         onPressed: _ctaTapped ? null : _onCtaTap,
+                        enableHaptics: false,
                         variant: AppButtonVariant.primary,
                         isFullWidth: true,
                         size: AppButtonSize.large,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import 'water_ripple.dart';
 
 /// A container that handles tap detection and spawns water ripple effects
@@ -27,7 +27,7 @@ class _RippleContainerState extends State<RippleContainer> {
   void _addRipple(Offset position) {
     // Haptic feedback for water touch feel
     if (widget.enableHaptics) {
-      HapticFeedback.lightImpact();
+      AppHaptics.light(context);
     }
 
     final id = _rippleIdCounter++;

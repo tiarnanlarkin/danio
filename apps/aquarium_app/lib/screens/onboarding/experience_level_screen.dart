@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -142,7 +142,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
   }
 
   void _selectCard(ExperienceLevel level) {
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
     setState(() => _selected = level);
 
     final reduceMotion = MediaQuery.of(context).disableAnimations;
@@ -231,10 +231,11 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                 label: 'Continue',
                 onPressed: _selected != null
                     ? () {
-                        HapticFeedback.mediumImpact();
+                        AppHaptics.medium(context);
                         widget.onSelected(_selected!);
                       }
                     : null,
+                enableHaptics: false,
                 variant: AppButtonVariant.primary,
                 isFullWidth: true,
                 size: AppButtonSize.large,

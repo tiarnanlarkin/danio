@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// Glass card variant styles
@@ -120,14 +120,14 @@ class _GlassCardState extends State<GlassCard>
 
   void _handleTap() {
     if (widget.onTap != null) {
-      if (widget.enableHaptics) HapticFeedback.lightImpact();
+      if (widget.enableHaptics) AppHaptics.light(context);
       widget.onTap!();
     }
   }
 
   void _handleLongPress() {
     if (widget.onLongPress != null) {
-      if (widget.enableHaptics) HapticFeedback.mediumImpact();
+      if (widget.enableHaptics) AppHaptics.medium(context);
       widget.onLongPress!();
     }
   }
@@ -418,7 +418,7 @@ class SoftCard extends StatelessWidget {
         button: true,
         child: GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
+            AppHaptics.light(context);
             onTap!();
           },
           child: card,

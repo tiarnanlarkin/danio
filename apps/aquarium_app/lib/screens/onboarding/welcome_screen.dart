@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 import 'onboarding_layout.dart';
@@ -228,9 +228,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       child: AppButton(
                         label: "Let's get started →",
                         onPressed: () {
-                          HapticFeedback.lightImpact();
+                          AppHaptics.light(context);
                           widget.onNext();
                         },
+                        enableHaptics: false,
                         variant: AppButtonVariant.primary,
                         isFullWidth: true,
                         size: AppButtonSize.large,
@@ -247,9 +248,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     child: AppButton(
                       label: 'Skip setup, I\'ll explore first',
                       onPressed: () {
-                        HapticFeedback.selectionClick();
+                        AppHaptics.selection(context);
                         widget.onLogin?.call();
                       },
+                      enableHaptics: false,
                       variant: AppButtonVariant.text,
                       isFullWidth: true,
                       semanticsLabel: 'Skip setup, explore first',

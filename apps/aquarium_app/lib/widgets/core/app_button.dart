@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// Button variants for different use cases
@@ -149,7 +149,7 @@ class _AppButtonState extends State<AppButton>
   void _handleTap() {
     if (_isEnabled) {
       if (widget.enableHaptics) {
-        HapticFeedback.lightImpact();
+        AppHaptics.light(context);
       }
       widget.onPressed!();
     }
@@ -448,7 +448,7 @@ class AppIconButton extends StatelessWidget {
         child: InkWell(
           onTap: isEnabled
               ? () {
-                  if (enableHaptics) HapticFeedback.lightImpact();
+                  if (enableHaptics) AppHaptics.light(context);
                   onPressed!();
                 }
               : null,

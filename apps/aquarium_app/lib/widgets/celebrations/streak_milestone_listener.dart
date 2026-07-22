@@ -3,8 +3,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 
@@ -56,7 +56,7 @@ class _StreakMilestoneListenerState
   Future<void> _showCelebration(int streakDays) async {
     if (!mounted) return;
     _isShowing = true;
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavy(context);
 
     final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;

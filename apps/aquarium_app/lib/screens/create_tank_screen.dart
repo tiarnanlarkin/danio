@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
-import '../providers/settings_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../providers/inventory_provider.dart';
@@ -203,6 +202,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                   AppButton(
                     label: 'Back',
                     onPressed: _previousPage,
+                    enableHaptics: false,
                     variant: AppButtonVariant.secondary,
                     semanticsLabel: A11yLabels.button(
                       'Go back to previous step',
@@ -213,6 +213,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                   AppButton(
                     label: 'Next',
                     onPressed: _canProceed() ? _nextPage : null,
+                    enableHaptics: false,
                     variant: AppButtonVariant.primary,
                     trailingIcon: Icons.arrow_forward,
                     semanticsLabel: A11yLabels.button('Continue to next step'),
@@ -224,6 +225,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                         _canProceed() && !_isCreating && !_persistenceUncertain
                         ? _createTank
                         : null,
+                    enableHaptics: false,
                     variant: AppButtonVariant.primary,
                     isLoading: _isCreating,
                     leadingIcon: Icons.add,
@@ -403,6 +405,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                   _canCreateExpert() && !_isCreating && !_persistenceUncertain
                   ? _createTank
                   : null,
+              enableHaptics: false,
               variant: AppButtonVariant.primary,
               isFullWidth: true,
               size: AppButtonSize.large,
@@ -442,9 +445,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       } catch (e) {
         appLog('CreateTankScreen: unfocus failed: $e', tag: 'CreateTankScreen');
       }
-      AppHaptics.light(
-        enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-      );
+      AppHaptics.light(context);
       _pageController.nextPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -455,9 +456,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   void _previousPage() {
     if (_currentPage > 0) {
       FocusManager.instance.primaryFocus?.unfocus();
-      AppHaptics.light(
-        enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-      );
+      AppHaptics.light(context);
       _pageController.previousPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -470,9 +469,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (!_canProceed()) return;
     if (!_formKey.currentState!.validate()) return;
 
-    AppHaptics.medium(
-      enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-    );
+    AppHaptics.medium(context);
     setState(() => _isCreating = true);
 
     try {
@@ -535,9 +532,6 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       }
 
       if (mounted) {
-        AppHaptics.success(
-          enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-        );
         final tankName = _name.trim();
         if (progressUpdated) {
           AppFeedback.showSuccess(
@@ -612,9 +606,6 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             'your tanks and tasks before trying again.',
           );
         } else {
-          AppHaptics.error(
-            enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
-          );
           AppFeedback.showError(
             context,
             'Couldn\'t create your tank right now. Give it another go!',

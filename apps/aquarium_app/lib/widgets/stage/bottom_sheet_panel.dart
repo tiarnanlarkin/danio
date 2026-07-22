@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/navigation_throttle.dart';
@@ -129,7 +129,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
       duration: AppDurations.medium4,
       curve: Curves.easeOutCubic,
     );
-    if (haptic) HapticFeedback.selectionClick();
+    if (haptic) AppHaptics.selection(context);
   }
 
   void _handleSheetRequest(StageSheetRequest request) {

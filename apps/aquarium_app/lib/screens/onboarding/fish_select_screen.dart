@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
@@ -108,7 +108,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
   }
 
   void _selectFish(SpeciesInfo fish) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
     setState(() => _selectedFish = fish);
 
     final reduceMotion = MediaQuery.of(context).disableAnimations;
@@ -121,7 +121,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
 
   void _confirmSelection() {
     if (_selectedFish == null) return;
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     widget.onFishSelected(_selectedFish!);
   }
 
@@ -681,6 +681,7 @@ class _PulsingButtonState extends State<_PulsingButton>
       child: AppButton(
         label: 'This is my fish →',
         onPressed: widget.onTap,
+        enableHaptics: false,
         variant: AppButtonVariant.primary,
       ),
     );

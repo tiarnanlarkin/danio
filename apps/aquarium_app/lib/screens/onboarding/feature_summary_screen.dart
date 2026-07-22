@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
@@ -73,7 +73,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
   void _onCtaTapped() {
     if (_ctaTapped) return;
     _ctaTapped = true;
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     widget.onComplete();
   }
 
@@ -246,6 +246,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
             child: AppButton(
               label: "Let's go! →",
               onPressed: _onCtaTapped,
+              enableHaptics: false,
               variant: AppButtonVariant.primary,
               isFullWidth: true,
               size: AppButtonSize.large,

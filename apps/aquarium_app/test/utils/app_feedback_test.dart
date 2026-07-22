@@ -52,13 +52,59 @@ void main() {
     AppFeedback.showSuccess(context, 'Saved');
     await tester.pump(const Duration(milliseconds: 150));
 
-    expect(
-      hapticCalls.map((call) => call.arguments),
-      containsAll([
-        'HapticFeedbackType.mediumImpact',
-        'HapticFeedbackType.lightImpact',
-      ]),
+    expect(hapticCalls.map((call) => call.arguments), [
+      'HapticFeedbackType.mediumImpact',
+      'HapticFeedbackType.lightImpact',
+    ]);
+  });
+
+  testWidgets('messenger success feedback respects disabled haptics', (
+    tester,
+  ) async {
+    final hapticCalls = <MethodCall>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+          if (call.method == 'HapticFeedback.vibrate') {
+            hapticCalls.add(call);
+          }
+          return null;
+        });
+
+    final context = await _pumpHarness(tester, hapticsEnabled: false);
+
+    AppFeedback.showSuccessViaMessenger(
+      ScaffoldMessenger.of(context),
+      'Saved',
     );
+    await tester.pump(const Duration(milliseconds: 150));
+
+    expect(hapticCalls, isEmpty);
+  });
+
+  testWidgets('messenger success feedback emits one intended sequence', (
+    tester,
+  ) async {
+    final hapticCalls = <MethodCall>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+          if (call.method == 'HapticFeedback.vibrate') {
+            hapticCalls.add(call);
+          }
+          return null;
+        });
+
+    final context = await _pumpHarness(tester, hapticsEnabled: true);
+
+    AppFeedback.showSuccessViaMessenger(
+      ScaffoldMessenger.of(context),
+      'Saved',
+    );
+    await tester.pump(const Duration(milliseconds: 150));
+
+    expect(hapticCalls.map((call) => call.arguments), [
+      'HapticFeedbackType.mediumImpact',
+      'HapticFeedbackType.lightImpact',
+    ]);
   });
 }
 

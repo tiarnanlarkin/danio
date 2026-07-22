@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 // dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import 'dart:math' as math;
 import '../../theme/app_theme.dart';
@@ -167,7 +167,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
 
   void _handleTapUp(TapUpDetails details) {
     _pressController.reverse();
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
     widget.onTap?.call();
   }
 
@@ -176,7 +176,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
   }
 
   void _handleLongPress() {
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     setState(() => _showTooltip = true);
 
     // Hide tooltip after a delay

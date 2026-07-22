@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
@@ -216,7 +216,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          HapticFeedback.lightImpact();
+          AppHaptics.light(context);
           _callReady();
         },
         child: SafeArea(
@@ -441,7 +441,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       button: true,
       child: GestureDetector(
         onTap: () {
-          HapticFeedback.selectionClick();
+          AppHaptics.selection(context);
           _callReady();
         },
         child: Container(

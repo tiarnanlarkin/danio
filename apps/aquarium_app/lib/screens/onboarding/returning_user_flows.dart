@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -135,9 +135,10 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             AppButton(
               label: 'Continue learning →',
               onPressed: () {
-                HapticFeedback.mediumImpact();
+                AppHaptics.medium(context);
                 widget.onContinue();
               },
+              enableHaptics: false,
               variant: AppButtonVariant.primary,
               isFullWidth: true,
               size: AppButtonSize.large,
@@ -148,9 +149,10 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             AppButton(
               label: 'Later',
               onPressed: () {
-                HapticFeedback.lightImpact();
+                AppHaptics.light(context);
                 widget.onDismiss();
               },
+              enableHaptics: false,
               variant: AppButtonVariant.text,
               isFullWidth: true,
               semanticsLabel: 'Later, dismiss streak prompt',
@@ -291,7 +293,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 button: true,
                 child: GestureDetector(
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    AppHaptics.light(context);
                     widget.onFeatureTap?.call();
                   },
                   child: Container(
@@ -388,9 +390,10 @@ class Day30CommittedCard extends StatelessWidget {
               AppButton(
                 label: "See what's waiting for you →",
                 onPressed: () {
-                  HapticFeedback.mediumImpact();
+                  AppHaptics.medium(context);
                   onExplore!();
                 },
+                enableHaptics: false,
                 variant: AppButtonVariant.secondary,
                 isFullWidth: true,
                 semanticsLabel: "See what's waiting for you",

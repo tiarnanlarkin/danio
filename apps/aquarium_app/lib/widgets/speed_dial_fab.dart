@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
 
@@ -45,7 +45,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   }
 
   void _toggle() {
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     setState(() {
       _isOpen = !_isOpen;
       if (_isOpen) {
@@ -242,7 +242,7 @@ class _PillButton extends StatelessWidget {
       label: action.label,
       child: GestureDetector(
         onTap: () {
-          HapticFeedback.lightImpact();
+          AppHaptics.light(context);
           onPressed();
         },
         child: Container(

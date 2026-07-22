@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// Visual variants for chips
@@ -113,7 +113,7 @@ class AppChip extends StatelessWidget {
       child: GestureDetector(
         onTap: isInteractive
             ? () {
-                HapticFeedback.selectionClick();
+                AppHaptics.selection(context);
                 onTap!();
               }
             : null,
@@ -156,7 +156,7 @@ class AppChip extends StatelessWidget {
                     button: true,
                     child: GestureDetector(
                       onTap: () {
-                        HapticFeedback.lightImpact();
+                        AppHaptics.light(context);
                         onDeleted!();
                       },
                       child: Icon(

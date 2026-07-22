@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../../theme/app_theme.dart';
 import '../../create_tank_screen/setup_mode.dart';
@@ -20,7 +20,7 @@ class SetupPathSelector extends StatelessWidget {
   /// Whether tapping a card should play a light haptic.
   ///
   /// Defaults to true — matches [AppButton] which fires
-  /// [HapticFeedback.lightImpact] unconditionally.
+  /// [AppHaptics.light] when feedback is enabled.
   final bool enableHaptics;
 
   const SetupPathSelector({
@@ -29,9 +29,9 @@ class SetupPathSelector extends StatelessWidget {
     this.enableHaptics = true,
   });
 
-  void _handleTap(SetupMode mode) {
+  void _handleTap(BuildContext context, SetupMode mode) {
     if (enableHaptics) {
-      HapticFeedback.lightImpact();
+      AppHaptics.light(context);
     }
     onPathSelected(mode);
   }
@@ -44,7 +44,7 @@ class SetupPathSelector extends StatelessWidget {
       title: 'Guide me',
       subtitle: '3 quick steps with tips along the way',
       semanticsHint: 'Start a guided 3-step tank setup',
-      onTap: () => _handleTap(SetupMode.guided),
+      onTap: () => _handleTap(context, SetupMode.guided),
     );
 
     final expert = _PathCard(
@@ -53,7 +53,7 @@ class SetupPathSelector extends StatelessWidget {
       title: 'I know the ropes',
       subtitle: 'Skip the wizard — just the essentials',
       semanticsHint: 'Start an expert single-form tank setup',
-      onTap: () => _handleTap(SetupMode.expert),
+      onTap: () => _handleTap(context, SetupMode.expert),
     );
 
     // Use MediaQuery instead of LayoutBuilder: LayoutBuilder inside a

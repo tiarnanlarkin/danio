@@ -17,7 +17,6 @@ import '../../providers/inventory_provider.dart';
 import '../../providers/achievement_provider.dart';
 import '../../services/achievement_service.dart';
 import '../../services/xp_animation_service.dart';
-import '../../utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/celebrations/water_change_celebration.dart';
 import '../../utils/app_feedback.dart';
@@ -1141,7 +1140,6 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
         // Show XP animation if XP was awarded
         if (progressUpdated && effectiveXp > 0 && mounted) {
-          AppHaptics.success();
           ref.showXpAnimation(effectiveXp);
         }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 import 'app_button.dart';
 
@@ -192,14 +192,14 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   void _handleTap() {
     if (widget.onTap != null) {
-      HapticFeedback.lightImpact();
+      AppHaptics.light(context);
       widget.onTap!();
     }
   }
 
   void _handleLongPress() {
     if (widget.onLongPress != null) {
-      HapticFeedback.mediumImpact();
+      AppHaptics.medium(context);
       widget.onLongPress!();
     }
   }

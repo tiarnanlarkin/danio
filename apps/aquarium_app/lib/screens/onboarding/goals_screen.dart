@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
@@ -70,7 +70,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
   ];
 
   void _toggleGoal(UserGoal goal) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
     setState(() {
       if (_selectedGoals.contains(goal)) {
         _selectedGoals.remove(goal);
@@ -81,12 +81,12 @@ class _GoalsScreenState extends State<GoalsScreen> {
   }
 
   void _continue() {
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     widget.onContinue(List.unmodifiable(_selectedGoals));
   }
 
   void _useRecommendation() {
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
     widget.onContinue([widget.recommendedGoal]);
   }
 
@@ -141,6 +141,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
               AppButton(
                 label: 'Continue',
                 onPressed: _selectedGoals.isEmpty ? null : _continue,
+                enableHaptics: false,
                 variant: AppButtonVariant.primary,
                 isFullWidth: true,
                 size: AppButtonSize.large,
@@ -149,6 +150,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
               AppButton(
                 label: 'Use recommendation',
                 onPressed: _useRecommendation,
+                enableHaptics: false,
                 variant: AppButtonVariant.text,
                 isFullWidth: true,
                 semanticsLabel: 'Use recommendation',

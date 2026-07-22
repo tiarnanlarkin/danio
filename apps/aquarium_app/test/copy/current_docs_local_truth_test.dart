@@ -2107,4 +2107,42 @@ void main() {
       ),
     );
   });
+
+  test('global haptic enforcement routes only profile performance next', () {
+    final handoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source(
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source(
+      'docs/agent/FINISH_MAP.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+
+    for (final value in [
+      'DR-2026-07-22-068',
+      'danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1',
+      'GATE_TOTAL|PASS|202146|Full',
+    ]) {
+      expect(handoff, contains(value));
+      expect(sliceLog, contains(value));
+    }
+    expect(handoff, contains('11 verified sessions'));
+    expect(
+      handoff,
+      contains(
+        'danio-dcl-perf-001-profile-performance-harness-2026-07-22/1',
+      ),
+    );
+    expect(ledger, contains('| DCL-MOTION-001 |'));
+    expect(ledger, contains('| `VERIFY_LOCALLY` | open |'));
+    expect(ledger, contains('source guard permits platform haptics only'));
+    expect(finishMap, contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'));
+    for (final source in [handoff, ledger, finishMap]) {
+      expect(source, contains('five phone-quality clusters'));
+    }
+  });
 }

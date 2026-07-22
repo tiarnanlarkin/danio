@@ -3,6 +3,8 @@
 // Run: flutter test test/widget_tests/welcome_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,10 +15,12 @@ import 'package:danio/screens/onboarding/welcome_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap({VoidCallback? onNext, VoidCallback? onLogin}) {
-  return MaterialApp(
-    home: WelcomeScreen(
-      onNext: onNext ?? () {},
-      onLogin: onLogin,
+  return ProviderScope(
+    child: MaterialApp(
+      home: WelcomeScreen(
+        onNext: onNext ?? () {},
+        onLogin: onLogin,
+      ),
     ),
   );
 }
@@ -34,6 +38,11 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+  });
+
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, null);
   });
 
   group('WelcomeScreen', () {
@@ -64,6 +73,31 @@ void main() {
         // Button might be wrapped in a custom widget; just verify screen exists
         expect(find.byType(WelcomeScreen), findsOneWidget);
       }
+    });
+
+    testWidgets('Get Started emits exactly one intended haptic', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'haptic_feedback_enabled': true,
+      });
+      final hapticCalls = <MethodCall>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+            if (call.method == 'HapticFeedback.vibrate') {
+              hapticCalls.add(call);
+            }
+            return null;
+          });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      await tester.tap(find.text("Let's get started →"));
+      await tester.pump();
+
+      expect(hapticCalls.map((call) => call.arguments), [
+        'HapticFeedbackType.lightImpact',
+      ]);
     });
 
     testWidgets('has Scaffold as root widget', (tester) async {

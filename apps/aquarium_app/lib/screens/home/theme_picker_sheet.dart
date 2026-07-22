@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/reduced_motion_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/room_theme_unlock_provider.dart';
-import '../../providers/settings_provider.dart';
 import '../../services/room_theme_unlock_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
@@ -74,14 +73,12 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
 
   bool get _reduceMotion => ref.read(reducedMotionProvider).isEnabled;
 
-  bool get _hapticEnabled => ref.read(settingsProvider).hapticFeedbackEnabled;
-
   void _advanceCard(int direction) {
     setState(() {
       _currentIndex = (_currentIndex + direction) % _themes.length;
       if (_currentIndex < 0) _currentIndex += _themes.length;
     });
-    AppHaptics.selection(enabled: _hapticEnabled);
+    AppHaptics.selection(context);
   }
 
   void _onPanStart(DragStartDetails _) {
@@ -197,7 +194,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     final unlockState = ref.read(roomThemeUnlockStatesProvider)[type];
     if (unlockState != null && !unlockState.isUnlocked) {
       DanioSnackBar.info(context, unlockState.requirementLabel);
-      AppHaptics.selection(enabled: _hapticEnabled);
+      AppHaptics.selection(context);
       return;
     }
     final saved = await ref.read(roomThemeProvider.notifier).setTheme(type);
@@ -209,7 +206,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
       );
       return;
     }
-    AppHaptics.success(enabled: _hapticEnabled);
+    AppHaptics.success(context);
     Navigator.maybePop(context);
   }
 

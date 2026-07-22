@@ -4,7 +4,7 @@ library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import 'package:confetti/confetti.dart';
 import '../../theme/app_theme.dart';
 import '../core/app_button.dart';
@@ -105,7 +105,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     _startAnimationSequence();
 
     // Haptic feedback
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavy(context);
   }
 
   void _initializeAnimations() {

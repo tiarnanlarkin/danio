@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import 'stage_provider.dart';
@@ -98,10 +98,10 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
     // Drive animation + haptics only on state change
     if (isOpen && !_wasOpen) {
       _anim.forward();
-      HapticFeedback.lightImpact();
+      AppHaptics.light(context);
     } else if (!isOpen && _wasOpen) {
       _anim.reverse();
-      HapticFeedback.selectionClick();
+      AppHaptics.selection(context);
     }
     _wasOpen = isOpen;
 

@@ -14,7 +14,6 @@ import '../../services/xp_animation_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
-import '../../utils/haptic_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../utils/skeleton_placeholders.dart';
 import '../../widgets/core/app_button.dart';
@@ -643,7 +642,6 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           ? XpRewards.journalEntry * 2
           : XpRewards.journalEntry;
       if (context.mounted) {
-        AppHaptics.success();
         ref.showXpAnimation(effectiveXp);
         AppFeedback.showSuccess(context, 'Feeding logged.');
       }

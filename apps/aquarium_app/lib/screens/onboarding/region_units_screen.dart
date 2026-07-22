@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -73,7 +73,7 @@ class _RegionUnitsScreenState extends State<RegionUnitsScreen> {
   ];
 
   void _selectRegion(_RegionOption option) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
     setState(() {
       _selectedRegionCode = option.code;
       if (!_manualUnitChoice) {
@@ -83,7 +83,7 @@ class _RegionUnitsScreenState extends State<RegionUnitsScreen> {
   }
 
   void _setUnitPreference(bool useMetric) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
     setState(() {
       _useMetric = useMetric;
       _manualUnitChoice = true;
@@ -93,7 +93,7 @@ class _RegionUnitsScreenState extends State<RegionUnitsScreen> {
   void _continue() {
     final regionCode = _selectedRegionCode;
     if (regionCode == null) return;
-    HapticFeedback.mediumImpact();
+    AppHaptics.medium(context);
     widget.onContinue(
       RegionUnitsChoice(regionCode: regionCode, useMetric: _useMetric),
     );
@@ -172,6 +172,7 @@ class _RegionUnitsScreenState extends State<RegionUnitsScreen> {
               AppButton(
                 label: 'Continue',
                 onPressed: _selectedRegionCode == null ? null : _continue,
+                enableHaptics: false,
                 variant: AppButtonVariant.primary,
                 isFullWidth: true,
                 size: AppButtonSize.large,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// Standard app bar with consistent styling
@@ -291,7 +291,7 @@ class AppBottomNavBar extends StatelessWidget {
                 isSelected: isSelected,
                 showLabel: showLabels,
                 onTap: () {
-                  HapticFeedback.selectionClick();
+                  AppHaptics.selection(context);
                   onTap(index);
                 },
               );

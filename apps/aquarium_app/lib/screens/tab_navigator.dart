@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../providers/reduced_motion_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
@@ -101,7 +102,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     }
 
     ref.read(currentTabProvider.notifier).state = index;
-    HapticFeedback.selectionClick();
+    AppHaptics.selection(context);
   }
 
   @override

@@ -6,7 +6,7 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import 'package:danio/models/resolved_question.dart';
 import 'package:danio/theme/app_theme.dart';
@@ -64,7 +64,7 @@ class _McCardWidgetState extends State<McCardWidget> {
 
   void _handleOptionTap(int index) {
     if (hasAnswered) return;
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
     setState(() => selectedIndex = index);
     widget.onAnswered(index == widget.question.correctIndex);
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -142,9 +142,10 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       AppButton(
                         label: 'Continue',
                         onPressed: () {
-                          HapticFeedback.mediumImpact();
+                          AppHaptics.medium(context);
                           widget.onAllow();
                         },
+                        enableHaptics: false,
                         variant: AppButtonVariant.primary,
                         isFullWidth: true,
                         size: AppButtonSize.large,
@@ -155,9 +156,10 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       AppButton(
                         label: 'Set up later',
                         onPressed: () {
-                          HapticFeedback.lightImpact();
+                          AppHaptics.light(context);
                           widget.onSkip();
                         },
+                        enableHaptics: false,
                         variant: AppButtonVariant.text,
                         isFullWidth: true,
                         semanticsLabel: 'Set up reminders later',

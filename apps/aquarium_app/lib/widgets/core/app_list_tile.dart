@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// A unified list tile component for all list contexts.
@@ -121,14 +121,14 @@ class _AppListTileState extends State<AppListTile> {
 
   void _handleTap() {
     if (_isInteractive && widget.onTap != null) {
-      if (widget.enableHaptics) HapticFeedback.selectionClick();
+      if (widget.enableHaptics) AppHaptics.selection(context);
       widget.onTap!();
     }
   }
 
   void _handleLongPress() {
     if (_isInteractive && widget.onLongPress != null) {
-      if (widget.enableHaptics) HapticFeedback.mediumImpact();
+      if (widget.enableHaptics) AppHaptics.medium(context);
       widget.onLongPress!();
     }
   }

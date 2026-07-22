@@ -11,7 +11,6 @@ import '../../providers/user_profile_provider.dart';
 import '../../services/xp_animation_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
-import '../../utils/haptic_feedback.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_text_field.dart';
 import 'package:danio/utils/logger.dart';
@@ -463,7 +462,6 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
         }
 
         if (progressUpdated && mounted) {
-          AppHaptics.success();
           ref.showXpAnimation(XpRewards.addLivestock);
         }
       }

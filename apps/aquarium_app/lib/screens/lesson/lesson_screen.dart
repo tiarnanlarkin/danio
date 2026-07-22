@@ -621,7 +621,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             'Lesson saved, but some rewards or activity updates could not be completed.',
           );
         }
-        AppHaptics.success();
+        AppHaptics.success(context);
         _showXpAnimation(
           totalXp,
           unlockedAchievementCount: unlockedAchievementCount,
@@ -640,7 +640,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             ScaffoldMessenger.of(context),
             'Lesson saved, but some rewards or activity updates could not be completed.',
           );
-          AppHaptics.success();
+          AppHaptics.success(context);
           _showXpAnimation(committedXp);
         } else {
           AppFeedback.showError(

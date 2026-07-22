@@ -3,7 +3,7 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 import '../../theme/app_theme.dart';
 
 /// Displays a celebration overlay for streak milestones (3, 7, 14, 30 days).
@@ -22,7 +22,7 @@ class StreakMilestoneCelebration extends StatefulWidget {
     // Only celebrate milestones
     if (![3, 7, 14, 30, 60, 100].contains(streakDays)) return;
 
-    HapticFeedback.heavyImpact();
+    AppHaptics.heavy(context);
 
     final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;

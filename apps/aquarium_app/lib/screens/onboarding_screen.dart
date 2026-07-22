@@ -311,7 +311,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   /// without going through the personalisation flow.
   Future<void> _quickStart() async {
     try {
-      HapticFeedback.mediumImpact();
       await ref
           .read(userProfileProvider.notifier)
           .createProfile(

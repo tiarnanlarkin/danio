@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:danio/utils/haptic_feedback.dart';
 
 import '../../data/fish_facts.dart';
 import '../../providers/species_unlock_provider.dart';
@@ -96,7 +96,7 @@ class _TankTapInteractionLayerState
     fishWiggleBus.trigger();
 
     // Haptic
-    HapticFeedback.lightImpact();
+    AppHaptics.light(context);
 
     setState(() {
       _effect = _TapEffect(
