@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; profile baseline recorded, attribution triage next
+Status: user-directed manual phone RC chain; attribution complete, cold-boot authoritative rerun next
 Updated: 2026-07-22
-Implementation epoch: `DR-2026-07-22-069`
-Marker: `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`
+Implementation epoch: `DR-2026-07-22-070`
+Marker: `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -15,49 +15,33 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Category status: `FINISH_MAP.md`.
 - Settled CRUD/undo history: `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`.
 - Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and `QUALITY_LADDER.md`.
-- The older `plans/2026-07-11-phone-complete-local-completion-program.md` is
-  superseded background and cannot select or resume work.
-- The current plan owns the P0/P1 release selector. P2/P3 work is accepted or
-  parked unless the user explicitly reopens it.
+- The older `plans/2026-07-11-phone-complete-local-completion-program.md` is superseded background and cannot select or resume work.
+- The current plan owns the P0/P1 release selector; P2/P3 is accepted or parked unless explicitly reopened.
 
 ## Verified baseline
 
 - `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`.
-  Findings `DCL-DR-003-F1`
-  through `DCL-DR-003-F38` are settled evidence. F34 is complete; do not
+  `DCL-DR-003-F1` through `DCL-DR-003-F38` are settled evidence; F34 is complete; do not
   reopen without contradictory live evidence. Closure passed
-  `GATE_TOTAL|PASS|187023|Full` and
-  `GATE_TOTAL|PASS|4551|Docs`.
+  `GATE_TOTAL|PASS|187023|Full` and `GATE_TOTAL|PASS|4551|Docs`.
 - `DCL-DR-004` is `closed` in `DR-2026-07-21-063` under marker
   `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`; its
   reset-assisted Full passed (`GATE_TOTAL|PASS|213027|Full`).
-- Epoch 064 started with 17 verified sessions under marker
-  `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`. Epochs
-  064-066 closed Fish ID consent, Compatibility consent, and secure Optional-AI
-  key storage; their reset-assisted Full gates passed at
+- Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066
+  closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at
   `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
   `GATE_TOTAL|PASS|243873|Full`. Detailed evidence remains in the ledger/log.
 - Epoch 067 closed the Compatibility, calculation, content, and source rows
   under `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`
   after direct executable coverage and reset-assisted Full
   (`GATE_TOTAL|PASS|233189|Full`). Detailed evidence remains in the ledger/log.
-- Epoch 068 under `danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1` began from freshly fetched, clean, aligned `main` at
-  `3a577ab7d24d2b1c41d4a8a8358063d6e8294240`, tree
-  `087c29c235d8bfa6e95ddf1e817a0dc7ed8cd1b9`, with one worktree, no Git lock,
-  no active Danio command, and no competing writer. Inventory found every
-  product haptic entry point and preference/helper path. All product haptics now
-  route through one persisted preference-aware adapter; a source guard forbids
-  direct platform calls elsewhere. Tests prove disabled means zero calls,
-  enabled actions emit only intended sequences, and known component/callback
-  duplicates are suppressed while reduced-motion checks remain GREEN. Focused
-  plus analyze passed (`GATE_TOTAL|PASS|17006|Focused`); independent review had
-  no findings after its guard-hardening note was resolved. The first Full found
-  only stale generated Android transforms; the documented reset-assisted rerun
-  passed signing, dependencies, custom lint, all tests, analyze, and APK
-  (`GATE_TOTAL|PASS|202146|Full`). `DCL-MOTION-001` remains open only for the
-  five phone-quality clusters.
-- Epoch 069 added the profile-only phone harness and machine-readable
-  summarizer, then measured exact product commit
+- Epoch 068 under `danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1`
+  routed every product haptic through the persisted preference adapter. Focused
+  passed (`GATE_TOTAL|PASS|17006|Focused`) and reset-assisted Full passed
+  (`GATE_TOTAL|PASS|202146|Full`). Its closeout left 11 verified sessions;
+  `DCL-MOTION-001` remains open only for the five phone-quality clusters.
+- Epoch 069 under `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`
+  added the profile-only harness and measured exact product commit
   `61dbb1748487b9111fa8f6e2cccc24100c71dba4` on
   `danio_api36 (emulator-5554)`. Cold start `2476 ms`, warm resume `313 ms`,
   and tab switching `241.501 ms` pass. Tank feedback (`26.249 ms`, `91.24%`
@@ -66,6 +50,20 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   materially shift the raster-bound traces, so no second product cause is
   proven. Report: `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json`;
   `DCL-PERF-001 remains open`.
+- Epoch 070 under `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1`
+  added only paired profile diagnostics at exact commit
+  `05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e`. On cold-booted
+  `danio_api36 (emulator-5554)`, the identical product APK SHA-256
+  `6634D710F7B276C9DCF391D02B45271B67D3097CE5306B9BC68B021BD35A6FE5`
+  produced Tank idle/feed averages `15.998/16.007 ms` (`+0.009 ms`) and
+  Learn/minimal averages `15.924/15.958 ms` (`-0.034 ms`), with mixed-sign
+  pairs: no incremental product P1. Five measured image medians were mount
+  `156.223 ms`, decode `184.683 ms`, and paint `263.372 ms`, without one
+  isolated product phase. Report:
+  `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json`
+  (SHA-256 `EBB973D99A87EB9CBBE5634F4541C21703C174DC273BEA62E5AAF0C5A3E7C4FB`).
+  Focused passed at 11,976 ms and reset-assisted Full passed at 219,420 ms.
+  No product code changed; `DCL-PERF-001 remains open`.
 
 ## Fixed release sequence
 
@@ -122,7 +120,9 @@ those product/content/rule rows backed by executable evidence. After epochs
   continuation consumed one at clean closeout and left 12 verified sessions.
   Epoch 068 consumes one at clean closeout and leaves 11 verified sessions for
   one duplicate-checked successor. Epoch 069 consumes one at durable closeout
-  and leaves 10 verified sessions.
+  and leaves 10 verified sessions. Epoch 070's first durable environment stop
+  left 9; its user-directed repaired continuation consumes the next session at
+  clean closeout and leaves 8 verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -134,17 +134,16 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-22-069` records the profile harness and the six phone budgets under
-marker `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`. The
-harness, one permitted product P1 attempt, focused reviews, and reset-assisted
-Full gates are complete; the clean product profile APK was restored and
-SHA-256 matched. This durable open closeout leaves 10 verified sessions.
+`DR-2026-07-22-070` records valid paired profile evidence with no incremental
+product P1. Flutter startup required normal SDK/user-state write access, and a
+dirty incompatible Quick Boot snapshot hung the emulator; cold boot restored
+valid local measurement without changing the product APK.
 
-From clean pushed `main`, execute only harness-only paired attribution under
-marker `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1`: compare
-idle versus feeding Tank traces, Learn versus minimal test-only scrolling, and
-image navigation/mount versus decode-ready versus paint-ready timestamps. Do
-not change product behavior unless those diagnostics isolate one reproducible
-incremental P1 cause. Keep all three failing rows and `DCL-PERF-001` open; do
-not pull phone-quality clusters, tablet, Play Store, providers, accounts,
-secrets, or external work forward.
+From clean pushed `main`, execute only the unchanged authoritative six-scenario
+harness on cold-booted `danio_api36` with snapshot load/save disabled under
+marker `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1`. Write a
+new report; do not overwrite, relax, relabel, or substitute the epoch-069
+baseline. Close `DCL-PERF-001` and update Finish Map only if all six original
+budgets pass valid profile evidence; otherwise keep all unproven rows open and
+make no product change. Do not pull phone-quality clusters, tablet, Play Store,
+providers, accounts, secrets, or external work forward.

@@ -2198,4 +2198,89 @@ void main() {
       'local_image_first_paint': false,
     });
   });
+
+  test('paired profile attribution records no incremental product P1', () {
+    final handoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source(
+      'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source(
+      'docs/agent/FINISH_MAP.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final attribution = jsonDecode(
+      _source(
+        'docs/qa/performance/2026-07-22/'
+        'dcl-perf-001-phone-profile-attribution.json',
+      ),
+    ) as Map<String, dynamic>;
+
+    for (final value in [
+      'DR-2026-07-22-070',
+      'danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1',
+      '05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e',
+      'docs/qa/performance/2026-07-22/'
+          'dcl-perf-001-phone-profile-attribution.json',
+      'no incremental product P1',
+    ]) {
+      expect(handoff, contains(value));
+      expect(sliceLog, contains(value));
+    }
+    expect(handoff, contains('leaves 8 verified sessions'));
+    expect(handoff, contains('DCL-PERF-001 remains open'));
+    expect(
+      handoff,
+      contains(
+        'danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1',
+      ),
+    );
+    expect(ledger, contains('| DCL-PERF-001 |'));
+    expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
+    expect(finishMap, contains('| Performance | `DCL-PERF-001` | In progress |'));
+
+    expect(attribution['schema_version'], 1);
+    expect(attribution['diagnostic'], 'paired_profile_attribution');
+    expect(
+      attribution['product_commit'],
+      '05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e',
+    );
+    expect(attribution['device'], 'danio_api36 (emulator-5554)');
+    expect(attribution['profile_mode'], isTrue);
+
+    final tank = attribution['tank_feedback_comparison']
+        as Map<String, dynamic>;
+    expect(tank['pair_count'], 3);
+    expect((tank['pairs'] as List<dynamic>), hasLength(3));
+    expect(
+      (tank['incremental_average_frame_time_ms'] as num).abs(),
+      lessThan(0.1),
+    );
+
+    final scrolling = attribution['scrolling_comparison']
+        as Map<String, dynamic>;
+    expect(scrolling['pair_count'], 3);
+    expect((scrolling['pairs'] as List<dynamic>), hasLength(3));
+    expect(
+      (scrolling['incremental_average_frame_time_ms'] as num).abs(),
+      lessThan(0.1),
+    );
+
+    final image = attribution['image_phase_timestamps']
+        as Map<String, dynamic>;
+    expect(image['sample_count'], 6);
+    expect(image['measured_sample_count'], 5);
+    expect((image['samples'] as List<dynamic>), hasLength(6));
+    expect(
+      image['mount_ready_median_ms'] as num,
+      lessThan(image['decode_ready_median_ms'] as num),
+    );
+    expect(
+      image['decode_ready_median_ms'] as num,
+      lessThan(image['paint_ready_median_ms'] as num),
+    );
+  });
 }
