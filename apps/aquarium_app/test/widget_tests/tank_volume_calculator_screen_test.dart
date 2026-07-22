@@ -141,7 +141,7 @@ void main() {
   });
 
   group('TankVolumeCalculatorScreen - validation and calculation', () {
-    testWidgets('valid rectangular dimensions show calculated volume', (
+    testWidgets('rectangular dimensions produce 54.0 litres', (
       tester,
     ) async {
       await tester.pumpWidget(_wrap());
@@ -155,6 +155,64 @@ void main() {
 
       expect(find.text('Estimated Volume'), findsOneWidget);
       expect(find.text('54.0 L'), findsOneWidget);
+    });
+
+    testWidgets('cylindrical dimensions produce 62.8 litres', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Cylindrical'));
+      await tester.pump();
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '40');
+      await tester.enterText(fields.at(1), '50');
+      await tester.pump();
+
+      expect(find.text('62.8 L'), findsOneWidget);
+    });
+
+    testWidgets('bow-front dimensions produce 108.6 litres', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Bow Front'));
+      await tester.pump();
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '80');
+      await tester.enterText(fields.at(1), '30');
+      await tester.enterText(fields.at(2), '40');
+      await tester.enterText(fields.at(3), '10');
+      await tester.pump();
+
+      expect(find.text('108.6 L'), findsOneWidget);
+    });
+
+    testWidgets('hexagonal dimensions produce 65.0 litres', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Hexagonal'));
+      await tester.pump();
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '25');
+      await tester.enterText(fields.at(1), '40');
+      await tester.pump();
+
+      expect(find.text('65.0 L'), findsOneWidget);
+    });
+
+    testWidgets('corner dimensions produce 78.5 litres', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Corner (90 deg)'));
+      await tester.pump();
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '50');
+      await tester.enterText(fields.at(1), '40');
+      await tester.pump();
+
+      expect(find.text('78.5 L'), findsOneWidget);
     });
 
     testWidgets('guided action applies calculated volume to tank profile', (

@@ -11,6 +11,19 @@ Widget _wrap() {
   return const MaterialApp(home: UnitConverterScreen());
 }
 
+void _expectConversionResult({required String value, required String unit}) {
+  final card = find.ancestor(
+    of: find.text(unit),
+    matching: find.byType(Card),
+  );
+  expect(card, findsOneWidget, reason: 'Missing conversion card for $unit');
+  expect(
+    find.descendant(of: card, matching: find.text(value)),
+    findsOneWidget,
+    reason: 'Expected $value in the $unit conversion card',
+  );
+}
+
 void main() {
   group('UnitConverterScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
@@ -115,7 +128,9 @@ void main() {
   });
 
   group('UnitConverterScreen - validation and calculation', () {
-    testWidgets('valid volume input shows conversions', (tester) async {
+    testWidgets('volume conversion asserts every numeric result', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
@@ -123,7 +138,11 @@ void main() {
       await tester.pump();
 
       expect(find.text('Conversions'), findsOneWidget);
-      expect(find.text('US gal'), findsOneWidget);
+      _expectConversionResult(value: '2.64', unit: 'US gal');
+      _expectConversionResult(value: '2.20', unit: 'UK gal');
+      _expectConversionResult(value: '10000.0', unit: 'mL');
+      _expectConversionResult(value: '338.1', unit: 'fl oz (US)');
+      _expectConversionResult(value: '42.27', unit: 'cups');
     });
 
     testWidgets('empty volume input hides conversions', (tester) async {
@@ -140,19 +159,56 @@ void main() {
       expect(find.text('Conversions'), findsNothing);
     });
 
-    testWidgets('temperature conversion from C to F is readable', (
+    testWidgets(
+      'temperature conversion asserts Fahrenheit and Kelvin results',
+      (
+        tester,
+      ) async {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+
+        await tester.tap(find.text('Temp'));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), '0');
+        await tester.pump();
+
+        _expectConversionResult(value: '32.00', unit: 'F');
+        _expectConversionResult(value: '273.1', unit: 'K');
+      },
+    );
+
+    testWidgets('length conversion asserts every numeric result', (
       tester,
     ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
-      await tester.tap(find.text('Temp'));
+      await tester.tap(find.text('Length'));
       await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), '0');
+      await tester.enterText(find.byType(TextField), '100');
       await tester.pump();
 
-      expect(find.text('32.00'), findsOneWidget);
-      expect(find.text('F'), findsOneWidget);
+      _expectConversionResult(value: '1000.0', unit: 'mm');
+      _expectConversionResult(value: '39.37', unit: 'in');
+      _expectConversionResult(value: '3.28', unit: 'ft');
+      _expectConversionResult(value: '1.00', unit: 'm');
+    });
+
+    testWidgets('hardness conversion asserts every numeric result', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Hardness'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), '10');
+      await tester.pump();
+
+      _expectConversionResult(value: '178.5', unit: 'ppm CaCO3');
+      _expectConversionResult(value: '178.5', unit: 'mg/L CaCO3');
+      _expectConversionResult(value: '1.78', unit: 'mmol/L');
+      _expectConversionResult(value: '10.43', unit: 'gpg');
     });
 
     testWidgets('hardness conversion uses plain CaCO3 labels', (tester) async {

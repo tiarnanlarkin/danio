@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; secure Optional-AI key storage closed, rule coverage next
-Updated: 2026-07-21
-Implementation epoch: `DR-2026-07-21-066`
-Marker: `danio-dcl-pref-001-secure-optional-ai-key-storage-2026-07-21/1`
+Status: user-directed manual phone RC chain; rule coverage closed, global haptic enforcement next
+Updated: 2026-07-22
+Implementation epoch: `DR-2026-07-22-067`
+Marker: `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -22,57 +22,41 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Verified baseline
 
-- Epoch `DR-2026-07-21-063` began from clean aligned `main` at `ee298466`, tree
-  `22b0cc8b`; self-generated tombstone round-trip and normalization proof passed
-  Focused (`GATE_TOTAL|PASS|9698|Focused`), review, and reset-assisted Full
-  (`GATE_TOTAL|PASS|213027|Full`).
-- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; and
-  `DCL-DR-003` is `closed`. Findings `DCL-DR-003-F1`
-  through `DCL-DR-003-F38` are settled evidence. F34 is complete and must not reopen without contradictory live evidence.
-  Complete matrix reinspection found no other current P0/P1; closure passed
-  `GATE_TOTAL|PASS|187023|Full` and `GATE_TOTAL|PASS|4551|Docs`.
-- `DCL-DR-004` is `closed` under marker
-  `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`:
-  deleted-livestock tombstones survive backup without live-map entry or
-  resurrection, while live normalization and invalid relationships stay safe.
-- Epoch 064 started with 17 verified sessions from clean aligned `main` at
-  `38b54ab`, tree `bb529aa9`, under marker
-  `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`. Fish ID keeps
-  its result visible through consent/history failure; cancel/back writes
-  nothing and confirmation writes once. Picker and rendering proof passed
-  Focused (`GATE_TOTAL|PASS|16550|Focused`), review, reset-assisted Full with
-  2,286 tests/lint/analyze/APK (`GATE_TOTAL|PASS|177895|Full`), and final Docs
-  (`GATE_TOTAL|PASS|5603|Docs`).
-- Epoch 065 began from freshly fetched, clean, aligned `main` at
-  `f800b7033e30a4253b62d52742418e26ffb76f53`, tree
-  `0531f909e2c073fd8f590a4e3044dadf17e3898a`, with one worktree, no Git lock,
-  no active Danio gate/device command, and no competing writer. Compatibility
-  now exposes its result before activity-save consent; cancel and system back
-  write nothing, confirmation writes exactly once, and failed history
-  persistence leaves the result visible. The valid RED observed one history
-  write before consent; all five widget tests plus analyze passed
-  (`GATE_TOTAL|PASS|10554|Focused`). Nine existing consent/history regressions
-  reverified Symptom Triage, Weekly Plan, Ask Danio, and Fish ID. A source audit
-  found exactly those four callers plus Compatibility, and independent
-  settled-diff review found no findings. The first Full attempt found only stale
-  generated Android transforms; reset-assisted Full passed signing, dependency
-  validation, custom lint, the full Flutter suite, analyze, and the debug APK
-  build (`GATE_TOTAL|PASS|183065|Full`). `DCL-AI-001` is closed.
-- Epoch 066 began from freshly fetched, clean, aligned `main` at
-  `deb63e5a2486d840cd079e8d70364962ae4b1513`, tree
-  `03f3edcaf4c5129cc24a0ef48452bb2fb89e67d0`, with one worktree, no Git lock,
-  no active Danio gate/device command, and no competing writer. Optional-AI
-  credentials now route through `ApiKeyStore` and Android Keystore-backed
-  secure storage; successful migration removes the legacy preference only
-  after secure persistence, failed migration retains it, and deletion attempts
-  both locations. Android automatic reset-on-error is disabled so read failures
-  cannot silently delete a key. Keyless, provider, privacy, backup exclusion,
-  deletion, debug seed, and honest failure paths passed 128 selected tests plus
-  analyze (`GATE_TOTAL|PASS|22291|Focused`). The independent settled-diff
-  review found no findings. The first Full attempt found only stale generated
-  Android transforms; reset-assisted Full passed signing, dependency validation,
-  custom lint, all 2,303 tests, analyze, and the debug APK build
-  (`GATE_TOTAL|PASS|243873|Full`). `DCL-PREF-001` is closed.
+- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`.
+  Findings `DCL-DR-003-F1`
+  through `DCL-DR-003-F38` are settled evidence. F34 is complete; do not
+  reopen without contradictory live evidence. Closure passed
+  `GATE_TOTAL|PASS|187023|Full` and
+  `GATE_TOTAL|PASS|4551|Docs`.
+- `DCL-DR-004` is `closed` in `DR-2026-07-21-063` under marker
+  `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`; its
+  reset-assisted Full passed (`GATE_TOTAL|PASS|213027|Full`).
+- Epoch 064 started with 17 verified sessions under marker
+  `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`. Epochs
+  064-066 closed Fish ID consent, Compatibility consent, and secure Optional-AI
+  key storage; their reset-assisted Full gates passed at
+  `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
+  `GATE_TOTAL|PASS|243873|Full`. Detailed evidence remains in the ledger/log.
+- Epoch 067 began from freshly fetched, clean, aligned `main` at
+  `88f73a228bca675409ad99c086329ae2fbb986cf`, tree
+  `6c7cabe386e292131ca90fb581735e4b9e86be9a`, with one worktree, no Git lock,
+  no active Danio command, and no competing writer. An inventory-guard RED
+  proved the missing direct rule suites while the accepted Workshop, Journal,
+  Learning, species, plant, content, and source evidence paths remained
+  present. Direct tests now cover the full CompatibilityService matrix, all
+  five Tank Volume shapes, and every displayed Unit Converter numeric family.
+  The 152-test Focused bundle plus analyze passed
+  (`GATE_TOTAL|PASS|20704|Focused`) without exposing a product defect. Review
+  found three test-proof gaps; value/unit card binding, predation severity, and
+  registered-test inventory matching were corrected, and re-review found no
+  remaining findings. After two failed Full attempts, a structured diagnostic
+  identified the sole suite failure: `lean_workflow_contract_test.dart` found
+  the handoff at 175 lines versus its 150-line limit. Historical evidence was
+  compacted below the limit while retaining guarded authority; both docs guards
+  passed and final review found no findings. Reset-assisted Full passed signing,
+  dependencies, custom lint, all tests, analyze, and APK
+  (`GATE_TOTAL|PASS|233189|Full`). `DCL-P1-003` through `DCL-P1-006`,
+  `DCL-CONTENT-001`, and `DCL-RULE-001` are closed without a product fix.
 
 ## Fixed release sequence
 
@@ -85,7 +69,7 @@ The ten planned product/test epochs are:
 5. Fish ID activity consent - complete in `DR-2026-07-21-064`.
 6. Compatibility activity consent - complete in `DR-2026-07-21-065`.
 7. Secure Optional-AI key storage through `ApiKeyStore` - complete in `DR-2026-07-21-066`.
-8. Compatibility and calculation rule coverage.
+8. Compatibility and calculation rule coverage - complete in `DR-2026-07-22-067`.
 9. Global haptic-preference enforcement.
 10. Profile performance harness on `danio_api36`.
 
@@ -123,7 +107,10 @@ those product/content/rule rows backed by executable evidence. After epochs
   sessions including epoch 061. Epoch 065 started with 16 verified sessions;
   its durable stop consumed one session. Epoch 066 started with 15 verified
   sessions; its durable closeout consumes one session and leaves 14 verified
-  sessions for one duplicate-checked successor.
+  sessions for one duplicate-checked successor. Epoch 067 started with 14
+  verified sessions; its durable stop left 13. The fresh-direction diagnostic
+  continuation consumes one at clean closeout and leaves 12 verified sessions
+  for one duplicate-checked successor.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -135,16 +122,13 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-21-066` closes `DCL-PREF-001`: Optional-AI credentials use
-Android Keystore-backed secure storage through `ApiKeyStore`; migration and
-dual-location deletion are failure-safe, the legacy preference is removed only
-after secure persistence, plugin errors cannot auto-delete the key, and no
-plaintext credential was introduced. The valid REDs, 128-test Focused gate,
-independent review, and reset-assisted Full provide the settled proof. The
-durable closeout leaves 14 verified sessions.
+`DR-2026-07-22-067` closes the six requested rule/content rows with the complete
+Compatibility matrix, all five Tank Volume shapes, all displayed Unit Converter
+families, accepted-path proof, independent review, and reset-assisted Full. The
+diagnostic continuation consumes one session and leaves 12.
 
-From clean pushed `main`, execute only Compatibility and calculation rule coverage under marker
-`danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`.
-Follow section 8 of the current release-candidate plan; do not expand accepted
-breadth or pull haptics, performance, phone-quality clusters, tablet, providers,
-accounts, keys, or external work into that epoch.
+From clean pushed `main`, execute only global haptic-preference enforcement under
+marker `danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1`.
+Follow section 9 of the current release-candidate plan; do not pull performance,
+phone-quality clusters, tablet, Play Store, providers, accounts, secrets, or
+external work forward.
