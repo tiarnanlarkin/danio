@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; attribution complete, cold-boot authoritative rerun next
-Updated: 2026-07-22
-Implementation epoch: `DR-2026-07-22-070`
-Marker: `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1`
+Status: user-directed manual phone RC chain; cold-boot rerun complete, first phone-quality cluster next
+Updated: 2026-07-23
+Implementation epoch: `DR-2026-07-23-071`
+Marker: `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -40,7 +40,7 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   passed (`GATE_TOTAL|PASS|17006|Focused`) and reset-assisted Full passed
   (`GATE_TOTAL|PASS|202146|Full`). Its closeout left 11 verified sessions;
   `DCL-MOTION-001` remains open only for the five phone-quality clusters.
-- Epoch 069 under `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`
+- Epoch 069 (`DR-2026-07-22-069`) under `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`
   added the profile-only harness and measured exact product commit
   `61dbb1748487b9111fa8f6e2cccc24100c71dba4` on
   `danio_api36 (emulator-5554)`. Cold start `2476 ms`, warm resume `313 ms`,
@@ -50,19 +50,18 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   materially shift the raster-bound traces, so no second product cause is
   proven. Report: `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json`;
   `DCL-PERF-001 remains open`.
-- Epoch 070 under `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1`
-  added only paired profile diagnostics at exact commit
-  `05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e`. On cold-booted
-  `danio_api36 (emulator-5554)`, the identical product APK SHA-256
-  `6634D710F7B276C9DCF391D02B45271B67D3097CE5306B9BC68B021BD35A6FE5`
-  produced Tank idle/feed averages `15.998/16.007 ms` (`+0.009 ms`) and
-  Learn/minimal averages `15.924/15.958 ms` (`-0.034 ms`), with mixed-sign
-  pairs: no incremental product P1. Five measured image medians were mount
-  `156.223 ms`, decode `184.683 ms`, and paint `263.372 ms`, without one
-  isolated product phase. Report:
-  `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json`
-  (SHA-256 `EBB973D99A87EB9CBBE5634F4541C21703C174DC273BEA62E5AAF0C5A3E7C4FB`).
-  Focused passed at 11,976 ms and reset-assisted Full passed at 219,420 ms.
+- Epoch 070 (`DR-2026-07-22-070`) under
+  `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1` added paired
+  diagnostics at `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json` and exact commit
+  `05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e` isolated no incremental product
+  P1. Epoch 071 reran the unchanged authoritative harness at exact commit
+  `cc7f533be583c5c6eaab3507d2ad308bb61b3365` on snapshot-disabled cold-booted
+  `danio_api36 (emulator-5554)`. Cold `1583 ms`, warm `111 ms`, tabs
+  `228.595 ms`, and image `216.87 ms` pass. Tank `15.935 ms`/`22.0%` dropped
+  and scrolling `15.951 ms`/`26.616%` dropped fail only their original dropped-
+  frame budgets. Report:
+  `docs/qa/performance/2026-07-23/dcl-perf-001-phone-profile-cold-boot-rerun.json`
+  (SHA-256 `ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9`).
   No product code changed; `DCL-PERF-001 remains open`.
 
 ## Fixed release sequence
@@ -78,8 +77,8 @@ The ten planned product/test epochs are:
 7. Secure Optional-AI key storage through `ApiKeyStore` - complete in `DR-2026-07-21-066`.
 8. Compatibility and calculation rule coverage - complete in `DR-2026-07-22-067`.
 9. Global haptic-preference enforcement - complete in `DR-2026-07-22-068`.
-10. Profile performance harness on `danio_api36` - baseline recorded in
-    `DR-2026-07-22-069`; three budgets remain open.
+10. Profile performance harness on `danio_api36` - baseline and cold-boot
+    authoritative rerun recorded; Tank and scrolling dropped-frame budgets remain open.
 
 After epochs 1-3, run the bounded Wishlist replay probe. Add an epoch only if a
 focused RED proves P0/P1 duplicate or replay behavior. After epoch 8, close only
@@ -122,7 +121,8 @@ those product/content/rule rows backed by executable evidence. After epochs
   one duplicate-checked successor. Epoch 069 consumes one at durable closeout
   and leaves 10 verified sessions. Epoch 070's first durable environment stop
   left 9; its user-directed repaired continuation consumes the next session at
-  clean closeout and leaves 8 verified sessions.
+  clean closeout and leaves 8 verified sessions. Epoch 071 consumes one at
+  clean closeout and leaves 7 verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -134,16 +134,17 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-22-070` records valid paired profile evidence with no incremental
-product P1. Flutter startup required normal SDK/user-state write access, and a
-dirty incompatible Quick Boot snapshot hung the emulator; cold boot restored
-valid local measurement without changing the product APK.
+`DR-2026-07-23-071` records valid cold-boot profile evidence without changing
+product code. Four budgets pass; Tank and scrolling remain open only because
+their dropped-frame percentages miss the original budgets. Do not relax or
+replace the epoch-069 baseline or either current report, and do not infer a
+product fix without new isolated evidence.
 
-From clean pushed `main`, execute only the unchanged authoritative six-scenario
-harness on cold-booted `danio_api36` with snapshot load/save disabled under
-marker `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1`. Write a
-new report; do not overwrite, relax, relabel, or substitute the epoch-069
-baseline. Close `DCL-PERF-001` and update Finish Map only if all six original
-budgets pass valid profile evidence; otherwise keep all unproven rows open and
-make no product change. Do not pull phone-quality clusters, tablet, Play Store,
-providers, accounts, secrets, or external work forward.
+From clean pushed `main`, execute only the first ordered phone-quality cluster,
+Tank and daily care, under marker
+`danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`. Audit current
+48dp targets, semantics, contrast, non-colour state, 2.0x text reflow, reduced
+motion, disabled haptics, affected visuals, and asset provenance. Change product
+code only if focused RED proves one P0/P1. Keep the other four clusters,
+performance follow-up, tablet, Play Store, providers, accounts, secrets, and
+external work out of that epoch.

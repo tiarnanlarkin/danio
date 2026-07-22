@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 String _source(String path) => File(path).readAsStringSync();
@@ -2283,4 +2284,173 @@ void main() {
       lessThan(image['paint_ready_median_ms'] as num),
     );
   });
+
+  test(
+    'cold-boot authoritative rerun records current phone performance truth',
+    () {
+      const reportPath =
+          'docs/qa/performance/2026-07-23/'
+          'dcl-perf-001-phone-profile-cold-boot-rerun.json';
+      const reportSha256 =
+          'ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9';
+      const nextMarker =
+          'danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1';
+      final handoff = _source(
+        'docs/agent/ACTIVE_HANDOFF.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final sliceLog = _source(
+        'docs/agent/SLICE_LOG.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final ledger = _source(
+        'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final finishMap = _source(
+        'docs/agent/FINISH_MAP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final reportBytes = File(reportPath).readAsBytesSync();
+      final report = jsonDecode(utf8.decode(reportBytes)) as Map<String, dynamic>;
+
+      for (final value in [
+        'DR-2026-07-23-071',
+        'danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1',
+        'cc7f533be583c5c6eaab3507d2ad308bb61b3365',
+        reportPath,
+        reportSha256,
+      ]) {
+        expect(handoff, contains(value));
+        expect(sliceLog, contains(value));
+      }
+      expect(handoff, contains('7 verified sessions'));
+      expect(handoff, contains(nextMarker));
+      expect(sliceLog, contains(nextMarker));
+      expect(sha256.convert(reportBytes).toString().toUpperCase(), reportSha256);
+
+      expect(report['schema_version'], 1);
+      expect(
+        report['product_commit'],
+        'cc7f533be583c5c6eaab3507d2ad308bb61b3365',
+      );
+      expect(report['device'], 'danio_api36 (emulator-5554)');
+      final scenarios = (report['scenarios'] as List<dynamic>)
+          .cast<Map<String, dynamic>>();
+      expect(scenarios, hasLength(6));
+      final byName = {
+        for (final scenario in scenarios)
+          scenario['scenario'] as String: scenario,
+      };
+      expect(byName.keys, {
+        'cold_start',
+        'warm_resume',
+        'tab_switching',
+        'tank_feedback',
+        'scrolling',
+        'local_image_first_paint',
+      });
+      expect({
+        for (final entry in byName.entries)
+          entry.key: entry.value['passed'] as bool,
+      }, {
+        'cold_start': true,
+        'warm_resume': true,
+        'tab_switching': true,
+        'tank_feedback': false,
+        'scrolling': false,
+        'local_image_first_paint': true,
+      });
+      for (final name in [
+        'cold_start',
+        'warm_resume',
+        'tab_switching',
+        'local_image_first_paint',
+      ]) {
+        expect(byName[name]!['sample_count'], 5);
+      }
+      for (final name in ['tank_feedback', 'scrolling']) {
+        expect(byName[name]!['trace_count'], 3);
+      }
+      expect(
+        (byName['cold_start']!['budget']
+            as Map<String, dynamic>)['max_latency_ms'],
+        2500.0,
+      );
+      expect(
+        (byName['warm_resume']!['budget']
+            as Map<String, dynamic>)['max_latency_ms'],
+        1200.0,
+      );
+      expect(
+        (byName['tab_switching']!['budget']
+            as Map<String, dynamic>)['max_latency_ms'],
+        300.0,
+      );
+      expect(
+        (byName['tank_feedback']!['budget']
+            as Map<String, dynamic>)['max_average_frame_time_ms'],
+        16.667,
+      );
+      expect(
+        (byName['tank_feedback']!['budget']
+            as Map<String, dynamic>)['max_dropped_frame_percentage'],
+        5.0,
+      );
+      expect(
+        (byName['scrolling']!['budget']
+            as Map<String, dynamic>)['max_average_frame_time_ms'],
+        20.0,
+      );
+      expect(
+        (byName['scrolling']!['budget']
+            as Map<String, dynamic>)['max_dropped_frame_percentage'],
+        8.0,
+      );
+      expect(
+        (byName['local_image_first_paint']!['budget']
+            as Map<String, dynamic>)['max_blank_image_time_ms'],
+        500.0,
+      );
+      expect(byName['cold_start']!['median_ms'], 1583.0);
+      expect(byName['warm_resume']!['median_ms'], 111.0);
+      expect(byName['tab_switching']!['median_ms'], 228.595);
+      expect(byName['local_image_first_paint']!['median_ms'], 216.87);
+      expect(
+        byName['tank_feedback']!['average_frame_time_ms'] as num,
+        closeTo(15.935369999999992, 0.000000001),
+      );
+      expect(byName['tank_feedback']!['dropped_frame_percentage'], 22.0);
+      expect(
+        byName['scrolling']!['average_frame_time_ms'] as num,
+        closeTo(15.951045627376436, 0.000000001),
+      );
+      expect(
+        byName['scrolling']!['dropped_frame_percentage'] as num,
+        closeTo(26.61596958174905, 0.000000001),
+      );
+      for (final source in [handoff, sliceLog]) {
+        for (final value in [
+          '1583 ms',
+          '111 ms',
+          '228.595 ms',
+          '216.87 ms',
+          '15.935 ms',
+          '22.0%',
+          '15.951 ms',
+          '26.616%',
+        ]) {
+          expect(source, contains(value));
+        }
+      }
+
+      expect(report['passed'], isFalse);
+      expect(handoff, contains('DCL-PERF-001 remains open'));
+      expect(handoff, isNot(contains('DCL-PERF-001 is closed')));
+      expect(
+        ledger,
+        contains('| `VERIFY_LOCALLY` | open | Phone performance |'),
+      );
+      expect(
+        finishMap,
+        contains('| Performance | `DCL-PERF-001` | In progress |'),
+      );
+    },
+  );
 }

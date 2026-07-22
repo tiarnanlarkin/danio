@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "product_commit": "cc7f533be583c5c6eaab3507d2ad308bb61b3365",
+  "device": "danio_api36 (emulator-5554)",
+  "generated_at_utc": "2026-07-22T23:32:58.204117Z",
+  "passed": false,
+  "scenarios": [
+    {
+      "scenario": "cold_start",
+      "label": "Cold start to visible Tank",
+      "sample_count": 5,
+      "samples_ms": [
+        1579.0,
+        1668.0,
+        1580.0,
+        1831.0,
+        1583.0
+      ],
+      "median_ms": 1583.0,
+      "budget": {
+        "max_latency_ms": 2500.0
+      },
+      "passed": true
+    },
+    {
+      "scenario": "warm_resume",
+      "label": "Warm resume to interactive",
+      "sample_count": 5,
+      "samples_ms": [
+        111.0,
+        122.0,
+        110.0,
+        110.0,
+        124.0
+      ],
+      "median_ms": 111.0,
+      "budget": {
+        "max_latency_ms": 1200.0
+      },
+      "passed": true
+    },
+    {
+      "scenario": "tab_switching",
+      "label": "Bottom-tab switch to settled content",
+      "sample_count": 5,
+      "samples_ms": [
+        234.067,
+        227.652,
+        224.905,
+        229.574,
+        228.595
+      ],
+      "median_ms": 228.595,
+      "budget": {
+        "max_latency_ms": 300.0,
+        "max_average_frame_time_ms": 16.667,
+        "max_dropped_frame_percentage": 5.0
+      },
+      "passed": true
+    },
+    {
+      "scenario": "tank_feedback",
+      "label": "Tank animation and care feedback",
+      "sample_count": 0,
+      "trace_count": 3,
+      "trace_average_frame_times_ms": [
+        15.945796874999997,
+        16.010625,
+        15.840281250000002
+      ],
+      "total_frames": 200,
+      "average_frame_time_ms": 15.935369999999992,
+      "median_frame_time_ms": 15.9835,
+      "dropped_frames": 44,
+      "dropped_frame_percentage": 22.0,
+      "budget": {
+        "max_average_frame_time_ms": 16.667,
+        "max_dropped_frame_percentage": 5.0
+      },
+      "passed": false
+    },
+    {
+      "scenario": "scrolling",
+      "label": "Main content scrolling",
+      "sample_count": 0,
+      "trace_count": 3,
+      "trace_average_frame_times_ms": [
+        15.896420454545456,
+        15.986770114942528,
+        15.97035227272727
+      ],
+      "total_frames": 263,
+      "average_frame_time_ms": 15.951045627376436,
+      "median_frame_time_ms": 15.972,
+      "dropped_frames": 70,
+      "dropped_frame_percentage": 26.61596958174905,
+      "budget": {
+        "max_average_frame_time_ms": 20.0,
+        "max_dropped_frame_percentage": 8.0
+      },
+      "passed": false
+    },
+    {
+      "scenario": "local_image_first_paint",
+      "label": "Local image first paint",
+      "sample_count": 5,
+      "samples_ms": [
+        259.724,
+        179.235,
+        222.544,
+        216.87,
+        197.099
+      ],
+      "median_ms": 216.87,
+      "budget": {
+        "max_blank_image_time_ms": 500.0
+      },
+      "passed": true
+    }
+  ]
+}
