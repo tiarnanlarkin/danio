@@ -91,6 +91,8 @@ void main() {
         rawImageFinderStart,
       );
       expect(imageFinderSource, isNot(contains('.hitTestable()')));
+      expect(imageFinderSource, contains('isLearnHeaderAssetImage'));
+      expect(imageFinderSource, isNot(contains('widget.image is AssetImage')));
     },
   );
 }

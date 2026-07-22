@@ -14,6 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'phone_performance_harness.dart';
+
 const _productCommit = String.fromEnvironment('DANIO_PRODUCT_COMMIT');
 const _device = String.fromEnvironment('DANIO_PERF_DEVICE');
 const _phase = String.fromEnvironment('DANIO_PERF_PHASE');
@@ -116,10 +118,7 @@ Future<PhonePerformanceRecord> _measureLocalImageFirstFrame(
   final imageFinder = find.descendant(
     of: find.byKey(_performanceLearnKey),
     matching: find.byWidgetPredicate(
-      (widget) =>
-          widget is Image &&
-          widget.image is AssetImage &&
-          (widget.image as AssetImage).assetName.contains('learn-header-'),
+      isLearnHeaderAssetImage,
       description: 'the visible local Learn header asset',
     ),
   );
