@@ -256,10 +256,15 @@ try {
   if ($readyDevices -notmatch "(?m)^$([regex]::Escape($DeviceId))\s+device$") {
     throw "Requested device $DeviceId is not the single ready target."
   }
-  $avdName = (Invoke-Adb @("emu", "avd", "name") | Where-Object {
+  $avdName = Invoke-Adb @("shell", "getprop", "ro.boot.qemu.avd_name") |
+    Where-Object {
     $_ -and $_.Trim() -ne "OK"
-  } | Select-Object -First 1).Trim()
-  if ($avdName -ne "danio_api36") {
+  } | Select-Object -First 1
+  if (-not $avdName) {
+    throw "Requested device $DeviceId returned no AVD identity."
+  }
+  $avdName = $avdName.Trim()
+  if ($avdName -cne "danio_api36") {
     throw "Requested device $DeviceId is AVD '$avdName', not danio_api36."
   }
 

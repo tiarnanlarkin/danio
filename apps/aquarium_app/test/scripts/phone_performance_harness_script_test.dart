@@ -60,6 +60,22 @@ void main() {
     },
   );
 
+  test('profile harness reads AVD identity from the boot property', () {
+    final script = File(
+      'scripts/run_phone_performance_harness.ps1',
+    ).readAsStringSync();
+
+    expect(
+      script,
+      contains(r'@("shell", "getprop", "ro.boot.qemu.avd_name")'),
+    );
+    expect(script, contains(r'if (-not $avdName)'));
+    expect(script, contains('returned no AVD identity'));
+    expect(script, contains(r'$avdName = $avdName.Trim()'));
+    expect(script, contains(r'if ($avdName -cne "danio_api36")'));
+    expect(script, isNot(contains(r'@("emu", "avd", "name")')));
+  });
+
   test('profile timings avoid DDS and host-side hierarchy latency', () {
     final script = File(
       'scripts/run_phone_performance_harness.ps1',
