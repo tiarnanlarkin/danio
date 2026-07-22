@@ -10,6 +10,7 @@ void main() {
 
     expect(script, contains('integration_test/phone_performance_test.dart'));
     expect(script, contains('--profile'));
+    expect(script, contains('--keep-app-running'));
     expect(script, contains('flutter build apk --profile'));
     expect(script, contains('adb install -r'));
     expect(script, contains('"am", "force-stop"'));
@@ -67,10 +68,12 @@ void main() {
       expect(target, contains("'image'"));
       expect(target, contains("'interactions'"));
       expect(target, contains('watchPerformance'));
-      expect(target, contains('const LearnScreen()'));
+      expect(target, contains('const LearnScreen(key: _performanceLearnKey)'));
       expect(target, contains('rootNavigator: true'));
+      expect(target, contains('phone-performance-learn-screen'));
       expect(target, contains('RenderImage'));
       expect(target, contains('renderImage.image != null'));
+      expect(target, contains('!renderImage.paintBounds.isEmpty'));
       expect(target, contains('tankFeedingPulseProvider'));
       expect(target, contains('LivingRoomScene'));
       expect(target, isNot(contains('_waitForImageFrame')));
@@ -78,6 +81,16 @@ void main() {
       expect(target, isNot(contains('Feeding logged')));
       expect(target, isNot(contains('TankTapInteractionLayer')));
       expect(target, isNot(contains('handleAppLifecycleStateChanged')));
+
+      final imageFinderStart = target.indexOf('final imageFinder =');
+      final rawImageFinderStart = target.indexOf('final rawImageFinder =');
+      expect(imageFinderStart, greaterThanOrEqualTo(0));
+      expect(rawImageFinderStart, greaterThan(imageFinderStart));
+      final imageFinderSource = target.substring(
+        imageFinderStart,
+        rawImageFinderStart,
+      );
+      expect(imageFinderSource, isNot(contains('.hitTestable()')));
     },
   );
 }

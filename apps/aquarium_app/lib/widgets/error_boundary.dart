@@ -241,15 +241,17 @@ class GlobalErrorHandler {
     void Function(Object error, StackTrace stack)? onError,
   }) {
     // Catch Flutter framework errors
+    final previousFlutterErrorHandler = FlutterError.onError;
     FlutterError.onError = (details) {
       onError?.call(details.exception, details.stack ?? StackTrace.current);
 
       // Log to console in debug mode
-      if (kDebugMode) {
+      if (kDebugMode && previousFlutterErrorHandler == null) {
         FlutterError.presentError(details);
       }
 
       // In production, you would send to crash reporting service
+      previousFlutterErrorHandler?.call(details);
     };
 
     // Catch errors outside of Flutter framework

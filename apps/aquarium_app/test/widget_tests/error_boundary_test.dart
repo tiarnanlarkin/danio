@@ -7,6 +7,8 @@
 // the static/structural guarantees instead, and rely on the R-091 guard for
 // the overflow-bypass invariant (debug-mode only).
 
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +30,28 @@ Future<void> _advance(WidgetTester tester) async {
 
 void main() {
   group('ErrorBoundary', () {
+    test('global handler preserves the installed Flutter error reporter', () {
+      final originalHandler = FlutterError.onError;
+      final originalPlatformHandler = PlatformDispatcher.instance.onError;
+      var forwardedErrors = 0;
+      var observedErrors = 0;
+      FlutterError.onError = (_) => forwardedErrors++;
+      addTearDown(() {
+        FlutterError.onError = originalHandler;
+        PlatformDispatcher.instance.onError = originalPlatformHandler;
+      });
+
+      GlobalErrorHandler.initialize(
+        onError: (_, __) => observedErrors++,
+      );
+      FlutterError.onError!(
+        FlutterErrorDetails(exception: StateError('forward me')),
+      );
+
+      expect(observedErrors, 1);
+      expect(forwardedErrors, 1);
+    });
+
     testWidgets('renders its child when no error occurs', (tester) async {
       await tester.pumpWidget(
         MaterialApp(

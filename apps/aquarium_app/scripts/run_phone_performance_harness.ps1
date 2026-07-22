@@ -260,6 +260,7 @@ try {
       "--driver=test_driver/integration_test.dart",
       "--target=integration_test/phone_performance_test.dart",
       "--profile",
+      "--keep-app-running",
       "-d", $DeviceId,
       "--dart-define=DANIO_PRODUCT_COMMIT=$ProductCommit",
       "--dart-define=DANIO_PERF_DEVICE=$deviceIdentity",

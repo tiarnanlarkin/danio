@@ -23,6 +23,7 @@ const _iteration = int.fromEnvironment(
 );
 
 const _dockKey = ValueKey('danio-bottom-dock');
+const _performanceLearnKey = ValueKey('phone-performance-learn-screen');
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -112,15 +113,16 @@ Future<PhonePerformanceRecord> _measureLocalImageFirstFrame(
   PaintingBinding.instance.imageCache
     ..clear()
     ..clearLiveImages();
-  final imageFinder = find
-      .byWidgetPredicate(
-        (widget) =>
-            widget is Image &&
-            widget.image is AssetImage &&
-            (widget.image as AssetImage).assetName.contains('learn-header-'),
-        description: 'the visible local Learn header asset',
-      )
-      .hitTestable();
+  final imageFinder = find.descendant(
+    of: find.byKey(_performanceLearnKey),
+    matching: find.byWidgetPredicate(
+      (widget) =>
+          widget is Image &&
+          widget.image is AssetImage &&
+          (widget.image as AssetImage).assetName.contains('learn-header-'),
+      description: 'the visible local Learn header asset',
+    ),
+  );
   final rawImageFinder = find.descendant(
     of: imageFinder,
     matching: find.byType(RawImage),
@@ -129,7 +131,9 @@ Future<PhonePerformanceRecord> _measureLocalImageFirstFrame(
   final stopwatch = Stopwatch()..start();
   unawaited(
     Navigator.of(rootContext, rootNavigator: true).push<void>(
-      MaterialPageRoute<void>(builder: (_) => const LearnScreen()),
+      MaterialPageRoute<void>(
+        builder: (_) => const LearnScreen(key: _performanceLearnKey),
+      ),
     ),
   );
   await tester.pump();
@@ -140,12 +144,16 @@ Future<PhonePerformanceRecord> _measureLocalImageFirstFrame(
       final renderImage = tester.renderObject<RenderImage>(
         rawImageFinder.first,
       );
-      if (renderImage.image != null) break;
+      if (renderImage.image != null && !renderImage.paintBounds.isEmpty) {
+        break;
+      }
     }
   }
   stopwatch.stop();
   expect(rawImageFinder, findsOneWidget);
   final renderImage = tester.renderObject<RenderImage>(rawImageFinder.first);
+  expect(renderImage.attached, isTrue);
+  expect(renderImage.paintBounds.isEmpty, isFalse);
   expect(
     renderImage.image != null,
     isTrue,
