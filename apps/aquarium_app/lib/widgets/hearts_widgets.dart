@@ -18,8 +18,13 @@ import 'dart:async';
 /// Energy indicator widget for app bar (shows current/max energy)
 class HeartIndicator extends ConsumerWidget {
   final bool compact;
+  final bool enforceMinimumTapTarget;
 
-  const HeartIndicator({super.key, this.compact = false});
+  const HeartIndicator({
+    super.key,
+    this.compact = false,
+    this.enforceMinimumTapTarget = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,6 +56,9 @@ class HeartIndicator extends ConsumerWidget {
       child: GestureDetector(
         onTap: () => _showEnergyInfo(context, energy, maxEnergy),
         child: Container(
+          constraints: enforceMinimumTapTarget
+              ? const BoxConstraints(minWidth: 48, minHeight: 48)
+              : null,
           padding: EdgeInsets.symmetric(
             horizontal: compact ? 8 : 12,
             vertical: compact ? 4 : 6,

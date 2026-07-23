@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; cold-boot rerun complete, first phone-quality cluster next
+Status: user-directed manual phone RC chain; Tank/daily-care cluster stopped on 2.0x and asset-rights P1s
 Updated: 2026-07-23
-Implementation epoch: `DR-2026-07-23-071`
-Marker: `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1`
+Implementation epoch: `DR-2026-07-23-072`
+Marker: `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -54,7 +54,7 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1` added paired
   diagnostics at `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json` and exact commit
   `05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e` isolated no incremental product
-  P1. Epoch 071 reran the unchanged authoritative harness at exact commit
+  P1. Epoch 071 (`DR-2026-07-23-071`) under `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1` reran the unchanged harness at exact commit
   `cc7f533be583c5c6eaab3507d2ad308bb61b3365` on snapshot-disabled cold-booted
   `danio_api36 (emulator-5554)`. Cold `1583 ms`, warm `111 ms`, tabs
   `228.595 ms`, and image `216.87 ms` pass. Tank `15.935 ms`/`22.0%` dropped
@@ -63,6 +63,13 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `docs/qa/performance/2026-07-23/dcl-perf-001-phone-profile-cold-boot-rerun.json`
   (SHA-256 `ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9`).
   No product code changed; `DCL-PERF-001 remains open`.
+- Epoch 072 fixed only the Tank-root energy target. A focused
+  RED proved the compact energy action was 26 dp high; the smallest fix makes
+  its existing semantic action at least 48 x 48 dp. Final scoped Focused passed
+  (`GATE_TOTAL|PASS|13620|Focused`), the Tank-root layout passes at 2.0x, and fresh 140 x 126 px evidence is in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
+  Visual passed (`GATE_TOTAL|PASS|18059|Visual`); reset-assisted Full passed (`GATE_TOTAL|PASS|200329|Full`); Docs passed (`GATE_TOTAL|PASS|4921|Docs`).
+  The cluster remains open: Tank detail/Add Log have focused 2.0x overflow REDs,
+  and active ocean/Neon Tetra asset usage rights are not explicit in the repo.
 
 ## Fixed release sequence
 
@@ -122,29 +129,22 @@ those product/content/rule rows backed by executable evidence. After epochs
   and leaves 10 verified sessions. Epoch 070's first durable environment stop
   left 9; its user-directed repaired continuation consumes the next session at
   clean closeout and leaves 8 verified sessions. Epoch 071 consumes one at
-  clean closeout and leaves 7 verified sessions.
+  clean closeout and leaves 7 verified sessions. Epoch 072 consumes one at
+  clean closeout and leaves 6 verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
-- Do not touch cloud/accounts, Play Store signing or
-  submission, iOS, tablet, public release, or unrelated branch
-  `docs/danio-live-dev-workflow-spec-20260719`.
+- Do not touch cloud/accounts, Play Store signing or submission, iOS, tablet,
+  public release, or unrelated branch `docs/danio-live-dev-workflow-spec-20260719`.
 - Danio is not listed in the Play Console account inspected on 2026-07-15.
   Store release remains separately blocked and outside this local candidate.
 
 ## Next manual action
 
-`DR-2026-07-23-071` records valid cold-boot profile evidence without changing
-product code. Four budgets pass; Tank and scrolling remain open only because
-their dropped-frame percentages miss the original budgets. Do not relax or
-replace the epoch-069 baseline or either current report, and do not infer a
-product fix without new isolated evidence.
-
-From clean pushed `main`, execute only the first ordered phone-quality cluster,
-Tank and daily care, under marker
-`danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`. Audit current
-48dp targets, semantics, contrast, non-colour state, 2.0x text reflow, reduced
-motion, disabled haptics, affected visuals, and asset provenance. Change product
-code only if focused RED proves one P0/P1. Keep the other four clusters,
-performance follow-up, tablet, Play Store, providers, accounts, secrets, and
-external work out of that epoch.
+`DR-2026-07-23-072` fixes only the Tank-root 48 dp action; cluster 1 is open.
+Do not advance to cluster 2 or create a successor. The user must provide an
+explicit creator/source and licence or usage basis for the active ocean room
+background and Neon Tetra art, or authorize a different rights-safe product
+direction. Tank detail and Add Log also have focused 2.0x P1 overflow REDs;
+they remain unimplemented under the one-finding epoch rule. Keep performance,
+tablet, Play Store, providers, accounts, secrets, and external work excluded.

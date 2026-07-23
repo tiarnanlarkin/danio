@@ -26,7 +26,11 @@ UserProfile _fakeProfile({int hearts = 5}) => UserProfile(
       updatedAt: DateTime(2024),
     );
 
-Widget _wrap({bool compact = false, int hearts = 5}) {
+Widget _wrap({
+  bool compact = false,
+  bool enforceMinimumTapTarget = false,
+  int hearts = 5,
+}) {
   SharedPreferences.setMockInitialValues({
     'user_profile': jsonEncode(_fakeProfile(hearts: hearts).toJson()),
   });
@@ -39,7 +43,12 @@ Widget _wrap({bool compact = false, int hearts = 5}) {
     child: MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          actions: [HeartIndicator(compact: compact)],
+          actions: [
+            HeartIndicator(
+              compact: compact,
+              enforceMinimumTapTarget: enforceMinimumTapTarget,
+            ),
+          ],
         ),
         body: const SizedBox.shrink(),
       ),
@@ -135,6 +144,41 @@ void main() {
       await tester.pumpWidget(_wrap(compact: true));
       await _advance(tester);
       expect(find.byType(HeartIndicator), findsOneWidget);
+    });
+
+    testWidgets('opted-in compact energy control keeps a 48dp touch target',
+        (tester) async {
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(compact: true, enforceMinimumTapTarget: true),
+      );
+      await _advance(tester);
+
+      final control = find.bySemanticsLabel(RegExp('energy remaining'));
+      expect(control, findsOneWidget);
+      final size = tester.getSize(control);
+      expect(size.width, greaterThanOrEqualTo(48));
+      expect(size.height, greaterThanOrEqualTo(48));
+      semantics.dispose();
+    });
+
+    test('minimum target opt-in stays scoped to the Tank root', () {
+      final homeSource = File(
+        'lib/screens/home/home_screen.dart',
+      ).readAsStringSync();
+      expect(homeSource, contains('enforceMinimumTapTarget: true'));
+
+      for (final path in [
+        'lib/screens/practice_hub_screen.dart',
+        'lib/screens/lesson/lesson_screen.dart',
+        'lib/screens/spaced_repetition_practice/review_session_screen.dart',
+      ]) {
+        expect(
+          File(path).readAsStringSync(),
+          isNot(contains('enforceMinimumTapTarget')),
+          reason: path,
+        );
+      }
     });
 
     testWidgets('shows energy count for a profile with full hearts (5/5)',

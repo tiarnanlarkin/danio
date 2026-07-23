@@ -2224,8 +2224,7 @@ void main() {
       'DR-2026-07-22-070',
       'danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1',
       '05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e',
-      'docs/qa/performance/2026-07-22/'
-          'dcl-perf-001-phone-profile-attribution.json',
+      'docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json',
       'no incremental product P1',
     ]) {
       expect(handoff, contains(value));
@@ -2453,4 +2452,98 @@ void main() {
       );
     },
   );
+
+  test('Tank and daily-care evidence is durable, bounded, and remains open', () {
+    const epoch = 'DR-2026-07-23-072';
+    const marker = 'danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1';
+    const forbiddenNextMarker =
+        'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-23/1';
+    const evidencePath =
+        'docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md';
+    const screenshotPath =
+        'docs/qa/screenshots/2026-07-23/dcl-a11y-001-tank-daily-care/phone-tank-energy-48dp.png';
+    const hierarchyPath =
+        'docs/qa/screenshots/2026-07-23/dcl-a11y-001-tank-daily-care/phone-tank-energy-48dp.xml';
+    const screenshotSha256 =
+        '72CC11FBEEA2AF411139F8439FCB2A3241AB7FCD0A39A09467FECB4B40503C44';
+    const hierarchySha256 =
+        'BBE03B7C74ECF90CF6955B775395589619E4F8DF07C36FEFB4735DA0A35A79F2';
+
+    final handoff = _source(
+      'docs/agent/ACTIVE_HANDOFF.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source(
+      'docs/agent/SLICE_LOG.md',
+    ).replaceAll(RegExp(r'\s+'), ' ');
+    final evidence = _source(evidencePath).replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md');
+    final finishMap = _source('docs/agent/FINISH_MAP.md');
+
+    for (final value in [epoch, marker, evidencePath]) {
+      expect(handoff, contains(value));
+      expect(sliceLog, contains(value));
+    }
+    expect(handoff, contains('leaves 6 verified sessions'));
+    expect(handoff, contains('Do not advance to cluster 2'));
+    expect(sliceLog, contains('Do not create a successor'));
+    expect(handoff, isNot(contains(forbiddenNextMarker)));
+    expect(sliceLog, isNot(contains(forbiddenNextMarker)));
+    for (final value in [
+      '48 dp and semantics',
+      '2.0x text reflow',
+      'Contrast and non-colour state',
+      'Reduced motion',
+      'Disabled haptics',
+      'Affected visuals',
+      'Asset provenance',
+      'Tank detail failed with four overflows',
+      'Add Log failed with a 57 px right overflow',
+      'Review status is therefore `HOLD`',
+      screenshotSha256,
+      hierarchySha256,
+    ]) {
+      expect(evidence, contains(value));
+    }
+    expect(
+      sha256
+          .convert(File(screenshotPath).readAsBytesSync())
+          .toString()
+          .toUpperCase(),
+      screenshotSha256,
+    );
+    expect(
+      sha256
+          .convert(File(hierarchyPath).readAsBytesSync())
+          .toString()
+          .toUpperCase(),
+      hierarchySha256,
+    );
+    for (final row in [
+      'DCL-A11Y-001',
+      'DCL-VIS-001',
+      'DCL-VIS-002',
+      'DCL-MOTION-001',
+    ]) {
+      final ledgerRow = ledger.split('\n').singleWhere(
+            (line) => line.startsWith('| $row |'),
+          );
+      expect(ledgerRow, contains('| open |'));
+    }
+    expect(
+      finishMap,
+      contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
+    );
+    expect(
+      finishMap,
+      contains('| Visual asset quality | `DCL-VIS-001` | In progress |'),
+    );
+    expect(
+      finishMap,
+      contains('| Visual regression | `DCL-VIS-002` | In progress |'),
+    );
+    expect(
+      finishMap,
+      contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
+    );
+  });
 }

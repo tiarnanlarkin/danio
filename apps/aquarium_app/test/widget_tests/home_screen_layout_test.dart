@@ -157,13 +157,13 @@ void main() {
       );
     }
 
-    testWidgets('keeps primary controls stable with larger text', (
+    testWidgets('keeps primary controls stable at 2.0x text scale', (
       tester,
     ) async {
       final errors = await _pumpCapturingFlutterErrors(
         tester,
         viewport: _phone,
-        textScaler: const TextScaler.linear(1.3),
+        textScaler: const TextScaler.linear(2),
       );
 
       _expectNoLayoutOverflow(errors);

@@ -96,6 +96,7 @@ Add a row when a committed slice uses Android evidence:
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-008` | CheckOnly, debug APK install, Danio-only app-data reset, first-run/onboarding walkthrough, age-blocked branch capture, Debug QA Seeds capture, XML hierarchy/logcat/error-boundary scans | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
 | 2026-07-05 | Coordinator current Codex session | `emulator-5556` | `danio_api36` | `DS-2026-07-05-023` | CheckOnly, LaunchEmulator with extended wait, debug APK install/launch through live-preview helper, foreground and pid checks | `docs/agent/ACTIVE_HANDOFF.md` | Yes; app left visible |
 | 2026-07-11 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-11-001` | Dedicated phone capture, Danio-only app-data reset, onboarding/state walkthrough, 98 numbered screenshots plus 2 live variants, contact-sheet review, Figma atlas upload | Figma file `JnSwJlWnisxF6xtiwK6nFc`; temporary local capture manifest outside Git | Yes; emulator left running |
+| 2026-07-23 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-23-072` | Ownership/process preflight before every command, CheckOnly, debug APK build/install/launch, focus check, screenshot and UI-hierarchy capture | `docs/qa/screenshots/2026-07-23/dcl-a11y-001-tank-daily-care/` | Yes; emulator left running |
 
 ## Release Rule
 

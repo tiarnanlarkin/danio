@@ -626,7 +626,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Spacer(),
                     const Padding(
                       padding: EdgeInsets.only(right: AppSpacing.sm),
-                      child: HeartIndicator(compact: true),
+                      child: HeartIndicator(
+                        compact: true,
+                        enforceMinimumTapTarget: true,
+                      ),
                     ),
                     IconButton(
                       constraints: const BoxConstraints(
