@@ -47,27 +47,32 @@ class TankHealthCard extends StatelessWidget {
                     color: scoreColor,
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    'Tank Health Score',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Text(
+                      'Tank Health Score',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: scoreColor.withAlpha(25),
-                      borderRadius: AppRadius.smallRadius,
-                    ),
-                    child: Text(
-                      health.label,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: scoreColor,
-                        fontWeight: FontWeight.w600,
+                  const SizedBox(width: AppSpacing.sm),
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: scoreColor.withAlpha(25),
+                        borderRadius: AppRadius.smallRadius,
+                      ),
+                      child: Text(
+                        health.label,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scoreColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -81,32 +86,34 @@ class TankHealthCard extends StatelessWidget {
                   // Circular gauge
                   SizedBox(
                     width: 100,
-                    height: 100,
-                    child: CustomPaint(
-                      painter: _HealthGaugePainter(
-                        score: health.score,
-                        color: scoreColor,
-                        backgroundColor:
-                            theme.colorScheme.surfaceContainerHighest,
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '${health.score}',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: scoreColor,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 100),
+                      child: CustomPaint(
+                        painter: _HealthGaugePainter(
+                          score: health.score,
+                          color: scoreColor,
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHighest,
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${health.score}',
+                                style: theme.textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: scoreColor,
+                                ),
                               ),
-                            ),
-                            Text(
-                              '/100',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: context.textSecondary,
+                              Text(
+                                '/100',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: context.textSecondary,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

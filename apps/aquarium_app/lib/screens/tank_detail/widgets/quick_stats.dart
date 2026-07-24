@@ -32,41 +32,46 @@ class QuickStats extends StatelessWidget {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  StatItem(
-                    label: 'Volume',
-                    value: '${tank.volumeLitres.toStringAsFixed(0)}L',
-                    icon: Icons.straighten,
-                  ),
-                  StatItem(
-                    label: 'Established',
-                    value: _formatAgeLong(tank.startDate),
-                    icon: Icons.calendar_today,
-                  ),
-                  logsAsync.when(
-                    loading: () => const StatItem(
-                      label: 'Last Test',
-                      value: '...',
-                      icon: Icons.science,
+                  Expanded(
+                    child: StatItem(
+                      label: 'Volume',
+                      value: '${tank.volumeLitres.toStringAsFixed(0)}L',
+                      icon: Icons.straighten,
                     ),
-                    error: (_, __) => const StatItem(
-                      label: 'Last Test',
-                      value: '-',
-                      icon: Icons.science,
+                  ),
+                  Expanded(
+                    child: StatItem(
+                      label: 'Established',
+                      value: _formatAgeLong(tank.startDate),
+                      icon: Icons.calendar_today,
                     ),
-                    data: (logs) {
-                      final lastTest = logs
-                          .where((l) => l.type == LogType.waterTest)
-                          .firstOrNull;
-                      return StatItem(
+                  ),
+                  Expanded(
+                    child: logsAsync.when(
+                      loading: () => const StatItem(
                         label: 'Last Test',
-                        value: lastTest != null
-                            ? _formatRelative(lastTest.timestamp)
-                            : 'Never',
+                        value: '...',
                         icon: Icons.science,
-                      );
-                    },
+                      ),
+                      error: (_, __) => const StatItem(
+                        label: 'Last Test',
+                        value: '-',
+                        icon: Icons.science,
+                      ),
+                      data: (logs) {
+                        final lastTest = logs
+                            .where((l) => l.type == LogType.waterTest)
+                            .firstOrNull;
+                        return StatItem(
+                          label: 'Last Test',
+                          value: lastTest != null
+                              ? _formatRelative(lastTest.timestamp)
+                              : 'Never',
+                          icon: Icons.science,
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -199,11 +204,14 @@ class _WaterChangeIndicator extends StatelessWidget {
             color: isOverdue ? AppColors.warning : AppColors.success,
           ),
           const SizedBox(width: AppSpacing.sm),
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: isOverdue ? AppColors.warning : AppColors.success,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTypography.bodySmall.copyWith(
+                color: isOverdue ? AppColors.warning : AppColors.success,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -250,8 +258,16 @@ class StatItem extends StatelessWidget {
       children: [
         Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
         const SizedBox(height: AppSpacing.sm),
-        Text(value, style: AppTypography.headlineSmall),
-        Text(label, style: AppTypography.bodySmall),
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          style: AppTypography.headlineSmall,
+        ),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySmall,
+        ),
       ],
     );
   }

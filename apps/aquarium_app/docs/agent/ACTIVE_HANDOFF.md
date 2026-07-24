@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: active asset provenance recorded; phone-quality cluster 1 remains open
+Status: phone-quality cluster 1 is complete; four phone-quality clusters remain
 Updated: 2026-07-24
-Implementation epoch: `DR-2026-07-24-074`
-Marker: `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
+Implementation epoch: `DR-2026-07-24-075`
+Marker: `danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -67,11 +67,12 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   fixed only the Tank-root energy target at 48 x 48 dp. Focused, Visual, reset-
   assisted Full, and Docs passed; evidence is in
   `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
-- `DR-2026-07-24-074` under
-  `danio-active-asset-local-comfyui-provenance-2026-07-24/1` records the user's
-  confirmed local ComfyUI generation and permitted model/checkpoint/input basis
-  for the exact active ocean-room and Neon Tetra bytes. Their rights HOLD is
-  resolved in substance; Tank detail/Add Log 2.0x overflows keep cluster 1 open.
+- `DR-2026-07-24-074` under `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
+  records the user's confirmed local ComfyUI basis for the exact active
+  ocean-room and Neon Tetra bytes, resolving their rights HOLD in substance.
+  `DR-2026-07-24-075` fixes only the proved Tank Detail/Add Log 2.0x overflows;
+  Focused/Visual and reset-assisted Full (`GATE_TOTAL|PASS|378547|Full`) pass; bound device proof completes cluster 1. Evidence:
+  `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
 
 ## Fixed release sequence
 
@@ -132,7 +133,8 @@ those product/content/rule rows backed by executable evidence. After epochs
   left 9; its user-directed repaired continuation consumes the next session at
   clean closeout and leaves 8 verified sessions. Epoch 071 consumes one at
   clean closeout and leaves 7 verified sessions. Epoch 072 consumes one at
-  clean closeout and leaves 6 verified sessions.
+  clean closeout and leaves 6 verified sessions. Epoch 075 consumes one clean
+  closeout session and leaves 5 verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -143,7 +145,6 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Next only run `DR-2026-07-24-075` under
-`danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`:
-preserve the Tank detail/Add Log 2.0x REDs, make the smallest fixes, and collect
-affected Visual proof. Do not advance to cluster 2 or include excluded work.
+Phone-quality cluster 1 is complete; four phone-quality clusters remain. No successor was created because authority names Learn/Practice/stories next but
+provides no exact marker for duplicate-safe routing. Do not advance to cluster 2
+from this epoch; await fresh coordinator direction from clean pushed `main`.

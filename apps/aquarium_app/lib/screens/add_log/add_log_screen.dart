@@ -346,11 +346,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                                 color: context.textSecondary,
                               ),
                               const SizedBox(width: AppSpacing.sm2),
-                              Text(
-                                '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
-                                style: AppTypography.bodyLarge,
+                              Expanded(
+                                child: Text(
+                                  '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
+                                  style: AppTypography.bodyLarge,
+                                ),
                               ),
-                              const Spacer(),
+                              const SizedBox(width: AppSpacing.sm),
                               AppButton(
                                 label: 'Now',
                                 onPressed: () =>

@@ -133,7 +133,20 @@ new provenance review.
   that inconsistency is corrected in this closeout.
 - 2.0x named test: `keeps primary controls stable at 2.0x text scale` passed.
 
-This first cluster and the other four phone-quality clusters are not claimed.
-`DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, and `DCL-MOTION-001` remain open.
-The independent performance rows and dropped-frame evidence were not
-interpreted, rerun, or changed in this cluster.
+At the `DR-2026-07-23-072` closeout, this first cluster and the other four
+phone-quality clusters were not claimed. The independent performance rows and
+dropped-frame evidence were not interpreted, rerun, or changed in that epoch.
+
+## Cluster 1 large-text closure
+
+Date: 2026-07-24
+Epoch: `DR-2026-07-24-075`
+Marker: `danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`
+
+The permanent Tank Detail and Add Log 2.0x REDs, minimal reflow fixes, focused
+GREEN, affected Visual gate, and bound device evidence are recorded in
+`docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
+Together with the Tank-root 48 dp fix and the attributable asset-provenance
+resolution above, that evidence completes phone-quality cluster 1. The four
+remaining ordered phone-quality clusters keep `DCL-A11Y-001`, `DCL-VIS-001`,
+`DCL-VIS-002`, and `DCL-MOTION-001` open.

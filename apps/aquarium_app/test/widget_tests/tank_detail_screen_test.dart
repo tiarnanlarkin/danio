@@ -34,11 +34,21 @@ Tank _makeTank({String id = 'tank-1', String name = 'My Test Tank'}) => Tank(
   updatedAt: _now,
 );
 
-Widget _wrap(String tankId, {InMemoryStorageService? storage}) {
+Widget _wrap(
+  String tankId, {
+  InMemoryStorageService? storage,
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(svc)],
-    child: MaterialApp(home: TankDetailScreen(tankId: tankId)),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+        child: child ?? const SizedBox.shrink(),
+      ),
+      home: TankDetailScreen(tankId: tankId),
+    ),
   );
 }
 
@@ -326,6 +336,61 @@ void main() {
       await _advance(tester);
       expect(find.textContaining('Crystal Palace'), findsWidgets);
     });
+
+    testWidgets(
+      'keeps populated tank detail free of overflow at 2.0x text scale',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 844));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        final svc = InMemoryStorageService();
+        await svc.saveTank(_makeTank(name: 'Crystal Palace'));
+        await svc.saveLog(
+          LogEntry(
+            id: 'tank-detail-large-text-water-test',
+            tankId: 'tank-1',
+            type: LogType.waterTest,
+            timestamp: _now,
+            createdAt: _now,
+            waterTest: WaterTestResults(
+              temperature: 25.5,
+              ph: 7,
+              ammonia: 0,
+              nitrite: 0,
+              nitrate: 10,
+            ),
+          ),
+        );
+        final capturedErrors = <FlutterErrorDetails>[];
+        final originalOnError = FlutterError.onError;
+        FlutterError.onError = capturedErrors.add;
+        try {
+          await tester.pumpWidget(
+            _wrap(
+              'tank-1',
+              storage: svc,
+              textScaler: const TextScaler.linear(2),
+            ),
+          );
+          await _advance(tester);
+          expect(find.text('Tank Health Score'), findsOneWidget);
+          await tester.dragUntilVisible(
+            find.text('Latest Water Snapshot'),
+            find.byType(CustomScrollView),
+            const Offset(0, -500),
+          );
+          await tester.pump(const Duration(milliseconds: 100));
+          expect(find.text('Latest Water Snapshot'), findsOneWidget);
+        } finally {
+          FlutterError.onError = originalOnError;
+        }
+
+        expect(
+          capturedErrors.map((details) => details.toString()),
+          isEmpty,
+        );
+      },
+    );
   });
 
   group('TankDetailScreen - task completion', () {

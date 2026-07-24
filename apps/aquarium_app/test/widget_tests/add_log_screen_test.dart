@@ -73,11 +73,16 @@ Widget _wrap({
   String tankId = 'tank-1',
   int? suggestedWaterChangePercent,
   String? initialNotes,
+  TextScaler textScaler = TextScaler.noScaling,
 }) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(svc)],
     child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+        child: child ?? const SizedBox.shrink(),
+      ),
       home: AddLogScreen(
         tankId: tankId,
         initialType: type,
@@ -273,6 +278,47 @@ void main() {
                   w.data == 'Submit'),
         ),
         findsWidgets,
+      );
+    });
+
+    testWidgets('keeps Add Log free of overflow at 2.0x text scale', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      final capturedErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = capturedErrors.add;
+      try {
+        await tester.pumpWidget(
+          _wrap(
+            storage: svc,
+            textScaler: const TextScaler.linear(2),
+          ),
+        );
+        await _advance(tester);
+        expect(find.text('Now'), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Text &&
+                widget.data != null &&
+                RegExp(
+                  r'^\d{1,2}/\d{1,2}/\d{4} at \d{1,2}:\d{2}$',
+                ).hasMatch(widget.data!),
+          ),
+          findsOneWidget,
+        );
+      } finally {
+        FlutterError.onError = originalOnError;
+      }
+
+      expect(
+        capturedErrors.map((details) => details.toString()),
+        isEmpty,
       );
     });
 

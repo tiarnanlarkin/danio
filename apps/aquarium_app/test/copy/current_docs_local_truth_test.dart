@@ -1467,7 +1467,16 @@ void main() {
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       fixedFindingTruth,
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
+    final sliceHistory = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n');
+    for (final value in fixedFindingTruth) {
+      expect(sliceHistory, contains(value));
+    }
   });
 
   test('DCL-DR-003 ranks only F32 livestock bulk-move uncertainty', () {
@@ -2143,7 +2152,7 @@ void main() {
     expect(ledger, contains('source guard permits platform haptics only'));
     expect(finishMap, contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'));
     for (final source in [handoff, ledger, finishMap]) {
-      expect(source, contains('five phone-quality clusters'));
+      expect(source, contains('four phone-quality clusters remain'));
     }
   });
 
@@ -2613,6 +2622,134 @@ void main() {
             .toString()
             .toUpperCase(),
         neonTetraSha256,
+      );
+    },
+  );
+
+  test(
+    'Tank large-text visual bundle closes cluster 1 without routing cluster 2',
+    () {
+      const epoch = 'DR-2026-07-24-075';
+      const marker =
+          'danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1';
+      const evidencePath =
+          'docs/qa/phone-quality/2026-07-24/'
+          'dcl-a11y-001-tank-large-text-visual-bundle.md';
+      const screenshotRoot =
+          'docs/qa/screenshots/2026-07-24/'
+          'dcl-a11y-001-tank-large-text/';
+      const forbiddenNextMarker =
+          'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1';
+      const screenshotHashes = <String, String>{
+        '${screenshotRoot}phone-add-log-2x-date-green.png':
+            '45F2077E1454008320CBEF7F8135CDBA888248443ECC0F9A0C42551CC529B397',
+        '${screenshotRoot}phone-add-log-2x-top-green.png':
+            'F30572D76D91F2770DDEEC401E9EC809A94EF67CBE7AB50AC8EE800BF0370A6F',
+        '${screenshotRoot}phone-tank-detail-2x-health-green.png':
+            'CF72B402DDFE7A36906C828DB2DDDEE991576503344616A76999C0DABB59281C',
+        '${screenshotRoot}phone-tank-detail-2x-snapshot-green.png':
+            'FA013E71A15B2423C55E89AECFEE6CBB7B97B3C58CA73CE5E4EE90BE534AFEA5',
+        '${screenshotRoot}phone-tank-detail-2x-snapshot-red.png':
+            'F25FB6BE4C581809047C50B8D3ABCFDCC189218544E0676B0406D492FAB2CB9E',
+        '${screenshotRoot}phone-tank-detail-2x-top-green.png':
+            '57D1409AF4221C79E2B4FA139BC3B541C8000A6F717C648F3AE4BF3ECE795A27',
+      };
+
+      final handoff = _source(
+        'docs/agent/ACTIVE_HANDOFF.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final sliceLog = _source(
+        'docs/agent/SLICE_LOG.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final deviceOwnership = _source(
+        'docs/agent/DEVICE_OWNERSHIP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final evidence = _source(evidencePath).replaceAll(RegExp(r'\s+'), ' ');
+      final priorEvidence = _source(
+        'docs/qa/phone-quality/2026-07-23/'
+        'dcl-a11y-001-tank-daily-care.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md');
+      final finishMap = _source('docs/agent/FINISH_MAP.md');
+
+      for (final source in [handoff, sliceLog, evidence]) {
+        expect(source, contains(epoch));
+        expect(source, contains(marker));
+      }
+      expect(handoff, contains('phone-quality cluster 1 is complete'));
+      expect(handoff, contains('four phone-quality clusters remain'));
+      expect(handoff, contains('No successor was created'));
+      expect(handoff, isNot(contains(forbiddenNextMarker)));
+      expect(sliceLog, isNot(contains(forbiddenNextMarker)));
+      expect(priorEvidence, contains(evidencePath));
+      expect(deviceOwnership, contains(epoch));
+      expect(deviceOwnership, contains(screenshotRoot));
+      expect(
+        deviceOwnership,
+        contains('Yes; font scale restored to 1.0; emulator left running'),
+      );
+
+      for (final value in [
+        'Tank Detail and Add Log 2.0x large-text visual bundle',
+        '390 x 844',
+        'TextScaler.linear(2)',
+        '422 px right',
+        '76 px bottom',
+        '10 px right',
+        '44 px right',
+        '77 px right',
+        '161 px right',
+        'GATE_TOTAL|PASS|22419|Focused',
+        'GATE_TOTAL|PASS|28820|Visual',
+        'GATE_TOTAL|PASS|378547|Full',
+        'font_scale` from `2.0` to `1.0',
+        'no RenderFlex, FlutterError, fatal, or unhandled-exception matches',
+      ]) {
+        expect(evidence, contains(value));
+      }
+
+      for (final entry in screenshotHashes.entries) {
+        expect(evidence, contains(entry.key));
+        expect(evidence, contains(entry.value));
+        expect(
+          sha256
+              .convert(File(entry.key).readAsBytesSync())
+              .toString()
+              .toUpperCase(),
+          entry.value,
+        );
+      }
+
+      for (final id in [
+        'DCL-A11Y-001',
+        'DCL-VIS-001',
+        'DCL-VIS-002',
+        'DCL-MOTION-001',
+      ]) {
+        final ledgerRow = ledger
+            .split('\n')
+            .singleWhere(
+              (line) => line.startsWith('| $id |'),
+            );
+        expect(ledgerRow, contains('| open |'));
+      }
+      expect(ledger, contains('four phone-quality clusters remain'));
+      expect(finishMap, contains('four phone-quality clusters remain'));
+      expect(
+        finishMap,
+        contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
+      );
+      expect(
+        finishMap,
+        contains('| Visual asset quality | `DCL-VIS-001` | In progress |'),
+      );
+      expect(
+        finishMap,
+        contains('| Visual regression | `DCL-VIS-002` | In progress |'),
+      );
+      expect(
+        finishMap,
+        contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
       );
     },
   );

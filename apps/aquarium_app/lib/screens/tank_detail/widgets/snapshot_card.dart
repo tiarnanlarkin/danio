@@ -52,11 +52,13 @@ class LatestSnapshotCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  'Latest Water Snapshot',
-                  style: AppTypography.headlineSmall,
+                Expanded(
+                  child: Text(
+                    'Latest Water Snapshot',
+                    style: AppTypography.headlineSmall,
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   DateFormat('d MMM').format(latest.timestamp),
                   style: AppTypography.bodySmall,
