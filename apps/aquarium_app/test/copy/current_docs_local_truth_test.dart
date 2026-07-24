@@ -1501,13 +1501,24 @@ void main() {
         'remain outside',
       ],
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
-    _expectContainsAll('docs/agent/SLICE_LOG.md', [
+    final sliceHistory = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n');
+    for (final value in rankedFindingTruth) {
+      expect(sliceHistory, contains(value));
+    }
+    for (final value in [
       'Ranked only `DCL-DR-003-F32`',
       'livestock save failed',
       'livestock rollback failed',
       'No closure/successor',
-    ]);
+    ]) {
+      expect(sliceHistory, contains(value));
+    }
   });
 
   test('DCL-DR-003 records the fixed F32 livestock bulk-move uncertainty epoch', () {
@@ -1527,7 +1538,16 @@ void main() {
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       fixedFindingTruth,
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
+    final sliceHistory = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n');
+    for (final value in fixedFindingTruth) {
+      expect(sliceHistory, contains(value));
+    }
   });
 
   test('DCL-DR-003 ranks only F33 inventory-use compensation uncertainty', () {
@@ -2638,7 +2658,7 @@ void main() {
       const screenshotRoot =
           'docs/qa/screenshots/2026-07-24/'
           'dcl-a11y-001-tank-large-text/';
-      const forbiddenNextMarker =
+      const subsequentMarker =
           'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1';
       const screenshotHashes = <String, String>{
         '${screenshotRoot}phone-add-log-2x-date-green.png':
@@ -2678,9 +2698,8 @@ void main() {
       }
       expect(handoff, contains('phone-quality cluster 1 is complete'));
       expect(handoff, contains('four phone-quality clusters remain'));
-      expect(handoff, contains('No successor was created'));
-      expect(handoff, isNot(contains(forbiddenNextMarker)));
-      expect(sliceLog, isNot(contains(forbiddenNextMarker)));
+      expect(evidence, contains('No successor was created'));
+      expect(evidence, isNot(contains(subsequentMarker)));
       expect(priorEvidence, contains(evidencePath));
       expect(deviceOwnership, contains(epoch));
       expect(deviceOwnership, contains(screenshotRoot));
@@ -2751,6 +2770,105 @@ void main() {
         finishMap,
         contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
       );
+    },
+  );
+
+  test(
+    'emulator freeze diagnosis attributes the debug ANR without a product change',
+    () {
+      const epoch = 'DR-2026-07-24-076';
+      const marker =
+          'danio-emulator-app-freeze-diagnosis-2026-07-24/1';
+      const nextMarker =
+          'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1';
+      const evidencePath =
+          'docs/qa/phone-quality/2026-07-24/'
+          'danio-emulator-app-freeze-diagnosis.md';
+      const screenshotRoot =
+          'docs/qa/screenshots/live-preview/'
+          '2026-07-24-danio-freeze-diagnosis/2026-07-24/';
+      const screenshotHashes = <String, String>{
+        '${screenshotRoot}screen-emulator-5554-191931675.png':
+            'C7875D50341B48B38AFE6512352F92D206F8D42490B8D946A41A9C5E3D4079E6',
+        '${screenshotRoot}screen-emulator-5554-193255556.png':
+            '99898C599AC1A816CAE125D4DDABF7C564AEDD4ADE68523A3E4062B9B1B2CD29',
+      };
+
+      final handoff = _source(
+        'docs/agent/ACTIVE_HANDOFF.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final sliceLog = _source(
+        'docs/agent/SLICE_LOG.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final deviceOwnership = _source(
+        'docs/agent/DEVICE_OWNERSHIP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final evidenceFile = File(evidencePath);
+      expect(
+        evidenceFile.existsSync(),
+        isTrue,
+        reason: 'Freeze diagnosis evidence is missing.',
+      );
+      final evidence = evidenceFile.existsSync()
+          ? evidenceFile.readAsStringSync().replaceAll(RegExp(r'\s+'), ' ')
+          : '';
+
+      for (final source in [
+        handoff,
+        sliceLog,
+        evidence,
+      ]) {
+        expect(source, contains(epoch));
+        expect(source, contains(marker));
+      }
+      expect(deviceOwnership, contains(epoch));
+      expect(handoff, contains('freeze diagnosis is complete'));
+      expect(handoff, contains('product code is unchanged'));
+      expect(handoff, contains('four phone-quality clusters remain'));
+      expect(handoff, contains(nextMarker));
+      expect(handoff, contains('four verified sessions'));
+      expect(deviceOwnership, contains(evidencePath));
+      expect(
+        deviceOwnership,
+        contains(
+          'Yes; debug APK restored; font scale 1.0; app stopped; launcher foreground',
+        ),
+      );
+
+      for (final value in [
+        'USER REQUESTED',
+        'REMOVE TASK',
+        'WaitTime: 14602 ms',
+        'FocusEvent(hasFocus=true)',
+        '96% total guest CPU',
+        '84% kernel',
+        'memory pressure avg10=32.47',
+        'Android Settings',
+        '4884 ms',
+        '02A214529E094DC4138AA49F2EE98E9ECA84D88DC3133210C125B750E7D0D5F0',
+        '28F7A6C15CE918FAFB0E11A26A305AC1961082EF2EB890CC8E13AA136AE2742A',
+        '12,200 ms',
+        'no profile ANR',
+        '64a9e83b7b74990cf5518eb0cef028d0b3cc1641',
+        'No product change',
+        'font scale `1.0`',
+        'Nexus launcher',
+        'CheckOnly passed',
+      ]) {
+        expect(evidence, contains(value));
+      }
+
+      for (final entry in screenshotHashes.entries) {
+        expect(evidence, contains(entry.key));
+        expect(evidence, contains(entry.value));
+        expect(
+          sha256
+              .convert(File(entry.key).readAsBytesSync())
+              .toString()
+              .toUpperCase(),
+          entry.value,
+        );
+      }
     },
   );
 }

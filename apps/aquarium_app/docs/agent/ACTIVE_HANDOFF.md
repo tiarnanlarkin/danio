@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: phone-quality cluster 1 is complete; four phone-quality clusters remain
+Status: freeze diagnosis is complete; four phone-quality clusters remain
 Updated: 2026-07-24
-Implementation epoch: `DR-2026-07-24-075`
-Marker: `danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`
+Implementation epoch: `DR-2026-07-24-076`
+Marker: `danio-emulator-app-freeze-diagnosis-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -30,7 +30,7 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066
   closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at
   `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
-  `GATE_TOTAL|PASS|243873|Full`. Detailed evidence remains in the ledger/log.
+  `GATE_TOTAL|PASS|243873|Full`; the secure-key closeout carried 14 verified sessions. Detailed evidence remains in the ledger/log.
 - Epoch 067 closed the Compatibility, calculation, content, and source rows
   under `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`
   after direct executable coverage and reset-assisted Full
@@ -49,12 +49,13 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   (`540.258 ms`) fail. The single permitted bottom-dock blur fix did not
   materially shift the raster-bound traces, so no second product cause is
   proven. Report: `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json`;
-  `DCL-PERF-001 remains open`.
+  `DCL-PERF-001 remains open`; its closeout carried 10 verified sessions.
 - Epoch 070 (`DR-2026-07-22-070`) under
   `danio-dcl-perf-001-profile-attribution-triage-2026-07-22/1` added paired
   diagnostics at `docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile-attribution.json` and exact commit
   `05c4d430f80b42e0d0e8a3ecae2930d80fe6e29e` isolated no incremental product
-  P1. Epoch 071 (`DR-2026-07-23-071`) under `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1` reran the unchanged harness at exact commit
+  P1 and its repaired closeout leaves 8 verified sessions. Epoch 071
+  (`DR-2026-07-23-071`) under `danio-dcl-perf-001-cold-boot-authoritative-rerun-2026-07-22/1` reran the unchanged harness at exact commit
   `cc7f533be583c5c6eaab3507d2ad308bb61b3365` on snapshot-disabled cold-booted
   `danio_api36 (emulator-5554)`. Cold `1583 ms`, warm `111 ms`, tabs
   `228.595 ms`, and image `216.87 ms` pass. Tank `15.935 ms`/`22.0%` dropped
@@ -65,14 +66,21 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   No product code changed; `DCL-PERF-001 remains open`.
 - `DR-2026-07-23-072` under `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`
   fixed only the Tank-root energy target at 48 x 48 dp. Focused, Visual, reset-
-  assisted Full, and Docs passed; evidence is in
-  `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
+  assisted Full, and Docs passed; its durable stop leaves 6 verified sessions
+  and says Do not advance to cluster 2. Evidence is in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
 - `DR-2026-07-24-074` under `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
   records the user's confirmed local ComfyUI basis for the exact active
   ocean-room and Neon Tetra bytes, resolving their rights HOLD in substance.
-  `DR-2026-07-24-075` fixes only the proved Tank Detail/Add Log 2.0x overflows;
-  Focused/Visual and reset-assisted Full (`GATE_TOTAL|PASS|378547|Full`) pass; bound device proof completes cluster 1. Evidence:
-  `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
+  `DR-2026-07-24-075` under `danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`
+  fixes only the proved Tank Detail/Add Log 2.0x overflows; Focused/Visual and
+  reset-assisted Full (`GATE_TOTAL|PASS|378547|Full`) pass; bound device proof
+  establishes that phone-quality cluster 1 is complete. Evidence: `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
+- `DR-2026-07-24-076` under `danio-emulator-app-freeze-diagnosis-2026-07-24/1`
+  reproduced one pressured debug ANR; current-source profile runs recovered,
+  exposed semantics, accepted navigation, and produced no profile ANR. Android
+  Settings was also slow; the product code is unchanged. Release restored the
+  exact debug APK, font 1.0, stopped app, launcher, and passing CheckOnly:
+  `docs/qa/phone-quality/2026-07-24/danio-emulator-app-freeze-diagnosis.md`.
 
 ## Fixed release sequence
 
@@ -112,29 +120,18 @@ those product/content/rule rows backed by executable evidence. After epochs
 - Start every epoch from fetched, clean, aligned `main`, one worktree, and no
   competing writer; allocate the next unused live `DR` identifier.
 - One temporary branch and one product finding per implementation epoch.
-- Product: focused RED, minimal fix, focused GREEN, settled-diff review, Full,
-  fast-forward `main`, one push, clean/aligned/worktree proof, branch cleanup.
-- Documentation: guard RED, docs edit, guard GREEN, review, Docs gate, the same
-  Git closeout.
+- Product: focused RED, minimal fix, focused GREEN, review, Full, fast-forward
+  `main`, push, clean/aligned/worktree proof, branch cleanup.
+- Documentation: guard RED, docs edit, guard GREEN, review, Docs, Git closeout.
 - Only the coordinator runs Flutter, Gradle, Git integration, or device work.
 - `phone_completion_run_state.json` remains historically `stopped` for
-  `USER_REQUESTED_WORKFLOW_SIMPLIFICATION`; frozen autonomy, claims, budgets,
-  launch, closeout, and successor machinery cannot authorize work.
-- The distinct user-directed continuation plan started with 20 verified
-  sessions including epoch 061. Epoch 065 started with 16 verified sessions;
-  its durable stop consumed one session. Epoch 066 started with 15 verified
-  sessions; its durable closeout consumes one session and leaves 14 verified
-  sessions for one duplicate-checked successor. Epoch 067 started with 14
-  verified sessions; its durable stop left 13. The fresh-direction diagnostic
-  continuation consumed one at clean closeout and left 12 verified sessions.
-  Epoch 068 consumes one at clean closeout and leaves 11 verified sessions for
-  one duplicate-checked successor. Epoch 069 consumes one at durable closeout
-  and leaves 10 verified sessions. Epoch 070's first durable environment stop
-  left 9; its user-directed repaired continuation consumes the next session at
-  clean closeout and leaves 8 verified sessions. Epoch 071 consumes one at
-  clean closeout and leaves 7 verified sessions. Epoch 072 consumes one at
-  clean closeout and leaves 6 verified sessions. Epoch 075 consumes one clean
-  closeout session and leaves 5 verified sessions.
+  `USER_REQUESTED_WORKFLOW_SIMPLIFICATION`; frozen machinery cannot authorize work.
+- The user-directed plan started with 20 verified sessions at epoch 061.
+  Epochs 065 and 066 left 16 then 14; epoch 067's stop left 13; the
+  fresh-direction diagnostic left 12; epochs 068 and 069 left 11 then 10.
+  Epoch 070's environment stop left 9 and repaired closeout left 8. Epochs 071,
+  072, and 075 left 7, 6, and 5. Epoch 076 consumes one clean diagnostic
+  closeout and leaves four verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -145,6 +142,9 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Phone-quality cluster 1 is complete; four phone-quality clusters remain. No successor was created because authority names Learn/Practice/stories next but
-provides no exact marker for duplicate-safe routing. Do not advance to cluster 2
-from this epoch; await fresh coordinator direction from clean pushed `main`.
+Cluster 1 and the freeze diagnosis are complete; four clusters remain. From
+clean pushed `main`, duplicate-check and run only
+`danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1`. Audit
+current Learn, Practice, and stories baselines first; implement only a P0/P1
+proved by RED. Exclude later clusters, performance decisions, tablet, iOS,
+store, cloud, account, provider, and secret lanes.
