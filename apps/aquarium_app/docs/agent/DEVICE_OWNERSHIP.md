@@ -31,13 +31,16 @@ Before any install, tap, screenshot, Patrol run, logcat capture, screenrecord,
 Firebase Test Lab upload, or live-preview control:
 
 ```powershell
-.\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10
-.\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10
+.\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 30
+.\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 30
 ```
 
 The first command starts or confirms ADB through a bounded client, selects the
 named AVD, and reports its serial and foreground package. Pin the reported
 serial with `-DeviceId` for the second check and every later device command.
+Run either command through a caller timeout longer than the 30-second internal
+preflight deadline. `PREFLIGHT_PHASE|<phase>` identifies the active bounded
+step; an externally cancelled call is not ownership proof.
 If Quick Boot has failed, first prove no emulator process or other session owns
 the stopped AVD, then use `-LaunchEmulator -ColdBoot -CheckOnly`; this starts
 without loading or saving snapshots and does not restart or wipe a running AVD.

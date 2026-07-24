@@ -1566,7 +1566,11 @@ void main() {
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       rankedFindingTruth,
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', rankedFindingTruth);
+    _expectContainsAll(
+      'docs/archive/agent-workflow-2026-07-16/'
+      'SLICE_LOG-rolling-overflow.md',
+      rankedFindingTruth,
+    );
     _expectContainsAll(
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       [
@@ -1575,12 +1579,16 @@ void main() {
         'remain outside',
       ],
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', [
-      'Ranked only `DCL-DR-003-F33`',
-      'profile effect failed',
-      'inventory rollback failed',
-      'No closure/successor',
-    ]);
+    _expectContainsAll(
+      'docs/archive/agent-workflow-2026-07-16/'
+      'SLICE_LOG-rolling-overflow.md',
+      [
+        'Ranked only `DCL-DR-003-F33`',
+        'profile effect failed',
+        'inventory rollback failed',
+        'No closure/successor',
+      ],
+    );
   });
 
   test('DCL-DR-003 records the fixed F33 inventory-use uncertainty epoch', () {
@@ -2974,7 +2982,11 @@ void main() {
         ),
       );
       expect(handoff, contains('three verified sessions'));
-      expect(handoff, contains('No exact cluster-3 marker is authorized'));
+      expect(handoff, contains('cluster 3 paused'));
+      expect(
+        handoff,
+        contains('Do not resume from this workflow commit alone'),
+      );
       expect(sliceLog, contains('No successor was created'));
 
       for (final id in [

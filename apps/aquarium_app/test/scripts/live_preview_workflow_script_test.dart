@@ -63,12 +63,16 @@ void main() {
     final source = _source(livePreviewScript);
 
     expect(source, contains(r'[int]$AdbCommandTimeoutSeconds'));
+    expect(source, contains(r'[int]$PreflightTimeoutSeconds'));
     expect(source, contains('ProcessStartInfo'));
     expect(source, contains('RedirectStandardError'));
     expect(source, contains('RedirectStandardOutput'));
     expect(source, contains(r'$process.WaitForExit($timeoutMilliseconds)'));
     expect(source, contains(r'$process.Kill()'));
     expect(source, contains('timed out after'));
+    expect(source, contains('PREFLIGHT_PHASE|'));
+    expect(source, contains('PREFLIGHT_TIMEOUT|phase='));
+    expect(source, contains('PREFLIGHT_CLEANUP_TIMEOUT|phase='));
     expect(source, contains(r'@("start-server")'));
     expect(source, contains(r'[switch]$ColdBoot'));
     expect(source, contains(r'@("-list-avds")'));
@@ -143,10 +147,14 @@ void main() {
     expect(workflow, contains('danio_api36'));
     expect(workflow, contains('danio_tablet_api36'));
     expect(workflow, contains('-AdbCommandTimeoutSeconds'));
+    expect(workflow, contains('-PreflightTimeoutSeconds 30'));
+    expect(workflow, contains('PREFLIGHT_PHASE|'));
+    expect(workflow, contains('longer than the internal preflight deadline'));
     expect(workflow, contains('-ColdBoot'));
     expect(workflow, contains('-DeviceId'));
     expect(workflow, contains('does not restart'));
     expect(deviceOwnership, contains('-AdbCommandTimeoutSeconds'));
+    expect(deviceOwnership, contains('-PreflightTimeoutSeconds 30'));
     expect(deviceOwnership, contains('-ColdBoot'));
     expect(deviceOwnership, contains('-DeviceId'));
     expect(

@@ -9,7 +9,8 @@ param(
   [switch]$ColdBoot,
   [switch]$CheckOnly,
   [int]$WaitSeconds = 90,
-  [int]$AdbCommandTimeoutSeconds = 10
+  [int]$AdbCommandTimeoutSeconds = 10,
+  [int]$PreflightTimeoutSeconds = 30
 )
 
 $ErrorActionPreference = "Stop"
@@ -108,13 +109,16 @@ $script:Adb = Resolve-Tool -Name "adb" -FallbackPaths @(
   (Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe")
 )
 $script:Emulator = Resolve-EmulatorTool
-Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -ColdBoot, -UseLocalEnv, -EnvFile, -WaitSeconds, -AdbCommandTimeoutSeconds."
+Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -ColdBoot, -UseLocalEnv, -EnvFile, -WaitSeconds, -AdbCommandTimeoutSeconds, -PreflightTimeoutSeconds."
 
 if ($WaitSeconds -le 0) {
   throw "WaitSeconds must be greater than zero."
 }
 if ($AdbCommandTimeoutSeconds -le 0) {
   throw "AdbCommandTimeoutSeconds must be greater than zero."
+}
+if ($PreflightTimeoutSeconds -le 0) {
+  throw "PreflightTimeoutSeconds must be greater than zero."
 }
 if ($ColdBoot -and -not $LaunchEmulator) {
   throw "ColdBoot requires -LaunchEmulator."
@@ -143,14 +147,85 @@ function Split-NativeOutput {
   )
 }
 
+function Start-PreflightDeadline {
+  $script:PreflightDeadline = (Get-Date).AddSeconds($PreflightTimeoutSeconds)
+  $script:PreflightPhase = "startup"
+}
+
+function Write-PreflightPhase {
+  param([Parameter(Mandatory = $true)][string]$Phase)
+
+  $script:PreflightPhase = $Phase
+  Write-Host "PREFLIGHT_PHASE|$Phase"
+}
+
+function Get-NativeTimeoutBudget {
+  param([Parameter(Mandatory = $true)][int]$RequestedSeconds)
+
+  $remainingMilliseconds = [int][Math]::Floor(
+    ($script:PreflightDeadline - (Get-Date)).TotalMilliseconds
+  )
+  if ($remainingMilliseconds -le 0) {
+    throw "PREFLIGHT_TIMEOUT|phase=$($script:PreflightPhase)|limit=$($PreflightTimeoutSeconds)s"
+  }
+
+  $requestedMilliseconds = $RequestedSeconds * 1000
+  return [pscustomobject]@{
+    Milliseconds = [Math]::Min($requestedMilliseconds, $remainingMilliseconds)
+    UsesOverallDeadline = $remainingMilliseconds -le $requestedMilliseconds
+  }
+}
+
+function Stop-OwnedNativeProcessTree {
+  param(
+    [Parameter(Mandatory = $true)][System.Diagnostics.Process]$Process,
+    [Parameter(Mandatory = $true)][string]$Phase
+  )
+
+  if ($Process.HasExited) {
+    return
+  }
+
+  $cleanupStartInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $cleanupStartInfo.FileName = (Join-Path $env:SystemRoot "System32\taskkill.exe")
+  $cleanupStartInfo.Arguments = "/PID $($Process.Id) /T /F"
+  $cleanupStartInfo.RedirectStandardError = $true
+  $cleanupStartInfo.RedirectStandardOutput = $true
+  $cleanupStartInfo.UseShellExecute = $false
+  $cleanupStartInfo.CreateNoWindow = $true
+
+  $cleanup = New-Object System.Diagnostics.Process
+  $cleanup.StartInfo = $cleanupStartInfo
+  try {
+    [void]$cleanup.Start()
+    if (-not $cleanup.WaitForExit(2000)) {
+      $cleanup.Kill()
+      [void]$cleanup.WaitForExit(500)
+      throw "PREFLIGHT_CLEANUP_TIMEOUT|phase=$Phase|limit=2s"
+    }
+    if (-not $Process.WaitForExit(2000)) {
+      $process.Kill()
+      if (-not $Process.WaitForExit(500)) {
+        throw "PREFLIGHT_CLEANUP_TIMEOUT|phase=$Phase|limit=2s"
+      }
+    }
+  }
+  finally {
+    $cleanup.Dispose()
+  }
+}
+
 function Invoke-NativeCommand {
   param(
     [Parameter(Mandatory = $true)][string]$FileName,
     [Parameter(Mandatory = $true)][string[]]$Arguments,
     [Parameter(Mandatory = $true)][string]$CommandName,
+    [Parameter(Mandatory = $true)][string]$Phase,
     [Parameter(Mandatory = $true)][int]$TimeoutSeconds
   )
 
+  Write-PreflightPhase -Phase $Phase
+  $timeoutBudget = Get-NativeTimeoutBudget -RequestedSeconds $TimeoutSeconds
   $startInfo = New-Object System.Diagnostics.ProcessStartInfo
   $startInfo.FileName = $FileName
   $startInfo.Arguments = ($Arguments | ForEach-Object {
@@ -166,10 +241,12 @@ function Invoke-NativeCommand {
   [void]$process.Start()
   $stdoutTask = $process.StandardOutput.ReadToEndAsync()
   $stderrTask = $process.StandardError.ReadToEndAsync()
-  $timeoutMilliseconds = $TimeoutSeconds * 1000
+  $timeoutMilliseconds = $timeoutBudget.Milliseconds
   if (-not $process.WaitForExit($timeoutMilliseconds)) {
-    $process.Kill()
-    $process.WaitForExit()
+    Stop-OwnedNativeProcessTree -Process $process -Phase $Phase
+    if ($timeoutBudget.UsesOverallDeadline) {
+      throw "PREFLIGHT_TIMEOUT|phase=$Phase|limit=$($PreflightTimeoutSeconds)s"
+    }
     throw "$CommandName timed out after $TimeoutSeconds seconds."
   }
 
@@ -186,6 +263,8 @@ function Invoke-Adb {
   param(
     [string]$Serial = "",
     [Parameter(Mandatory = $true)]
+    [string]$Phase,
+    [Parameter(Mandatory = $true)]
     [string[]]$Arguments
   )
 
@@ -199,6 +278,7 @@ function Invoke-Adb {
     -FileName $script:Adb `
     -Arguments $adbArguments `
     -CommandName "adb $($adbArguments -join ' ')" `
+    -Phase $Phase `
     -TimeoutSeconds $AdbCommandTimeoutSeconds
   if ($result.ExitCode -ne 0) {
     throw "adb $($Arguments -join ' ') failed for '$Serial': $($result.Output -join ' ')"
@@ -208,7 +288,7 @@ function Invoke-Adb {
 
 function Initialize-Adb {
   Write-Host "Starting or confirming the adb server..."
-  Invoke-Adb -Arguments @("start-server") | Out-Null
+  Invoke-Adb -Phase "adb_start_server" -Arguments @("start-server") | Out-Null
 }
 
 function Get-AvailableAvds {
@@ -216,6 +296,7 @@ function Get-AvailableAvds {
     -FileName $script:Emulator `
     -Arguments @("-list-avds") `
     -CommandName "emulator -list-avds" `
+    -Phase "emulator_list_avds" `
     -TimeoutSeconds $AdbCommandTimeoutSeconds
   if ($result.ExitCode -ne 0) {
     throw "emulator -list-avds failed: $($result.Output -join ' ')"
@@ -232,7 +313,7 @@ function Assert-AvdAvailable {
 
 function Get-ReadyDevices {
   Write-Host "Checking adb devices..."
-  $output = Invoke-Adb -Arguments @("devices")
+  $output = Invoke-Adb -Phase "adb_devices" -Arguments @("devices")
   return @(
     $output |
       Select-Object -Skip 1 |
@@ -248,6 +329,7 @@ function Get-DeviceAvdName {
   try {
     $propertyOutput = Invoke-Adb `
       -Serial $Serial `
+      -Phase "adb_avd_identity_getprop" `
       -Arguments @("shell", "getprop", "ro.boot.qemu.avd_name")
     $propertyAvd = $propertyOutput |
       Where-Object { $_ -and $_.Trim() } |
@@ -257,11 +339,17 @@ function Get-DeviceAvdName {
     }
   }
   catch {
+    if ($_.Exception.Message -match "^PREFLIGHT_(TIMEOUT|CLEANUP_TIMEOUT)\|") {
+      throw
+    }
     # Fall through to the emulator console identity check.
   }
 
   try {
-    $output = Invoke-Adb -Serial $Serial -Arguments @("emu", "avd", "name")
+    $output = Invoke-Adb `
+      -Serial $Serial `
+      -Phase "adb_avd_identity_console" `
+      -Arguments @("emu", "avd", "name")
     return (
       $output |
         Where-Object { $_ -and $_.Trim() -and $_.Trim() -ne "OK" } |
@@ -269,6 +357,9 @@ function Get-DeviceAvdName {
     ).Trim()
   }
   catch {
+    if ($_.Exception.Message -match "^PREFLIGHT_(TIMEOUT|CLEANUP_TIMEOUT)\|") {
+      throw
+    }
     return ""
   }
 }
@@ -276,7 +367,12 @@ function Get-DeviceAvdName {
 function Get-ForegroundPackage {
   param([Parameter(Mandatory = $true)][string]$Serial)
 
-  $window = (Invoke-Adb -Serial $Serial -Arguments @("shell", "dumpsys", "window")) -join "`n"
+  $window = (
+    Invoke-Adb `
+      -Serial $Serial `
+      -Phase "adb_foreground_window" `
+      -Arguments @("shell", "dumpsys", "window")
+  ) -join "`n"
   if ($window -match "mCurrentFocus=Window\{[^ ]+ [^ ]+ ([^/ ]+)/") {
     return $Matches[1]
   }
@@ -404,6 +500,7 @@ function Resolve-DanioDevice {
 
 Push-Location -LiteralPath $AppRoot
 try {
+  Start-PreflightDeadline
   Initialize-Adb
   $localEnvFile = ""
   if ($UseLocalEnv) {

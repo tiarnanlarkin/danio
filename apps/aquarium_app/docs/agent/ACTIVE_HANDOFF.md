@@ -1,6 +1,6 @@
 # Danio Active Handoff
 
-Status: phone-quality cluster 2 is complete; three phone-quality clusters remain
+Status: preflight prerequisite complete; cluster 3 paused; three phone-quality clusters remain
 Updated: 2026-07-24
 Implementation epoch: `DR-2026-07-24-077`
 Marker: `danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1`
@@ -20,16 +20,12 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Verified baseline
 
-- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`.
-  `DCL-DR-003-F1` through `DCL-DR-003-F38` are settled evidence; F34 is complete; do not
-  reopen without contradictory live evidence. Closure passed
+- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`. `DCL-DR-003-F1` through `DCL-DR-003-F38` are settled evidence; F34 is complete; do not reopen without contradictory live evidence. Closure passed
   `GATE_TOTAL|PASS|187023|Full` and `GATE_TOTAL|PASS|4551|Docs`.
 - `DCL-DR-004` is `closed` in `DR-2026-07-21-063` under marker
   `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`; its
   reset-assisted Full passed (`GATE_TOTAL|PASS|213027|Full`).
-- Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066
-  closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at
-  `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
+- Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066 closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
   `GATE_TOTAL|PASS|243873|Full`; the secure-key closeout carried 14 verified sessions. Detailed evidence remains in the ledger/log.
 - Epoch 067 closed the Compatibility, calculation, content, and source rows
   under `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`
@@ -83,6 +79,11 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   and Practice reduced-motion fixes; stories need no product change. Focused
   and Visual plus reset-assisted Full (`GATE_TOTAL|PASS|297670|Full`) pass. The bounded device attempt produced no contradictory product
   evidence and released font 1.0, stopped app, launcher, and passing CheckOnly.
+- `WF-2026-07-24-020` under
+  `danio-live-preview-preflight-deadline-2026-07-24/1` adds one shared
+  preflight deadline, phase-tagged output, and bounded owned-child cleanup.
+  Fake-tool RED/GREEN, Focused `GATE_TOTAL|PASS|13065|Focused`, and Docs
+  `GATE_TOTAL|PASS|4778|Docs` pass. No real device command ran; the preserved ten-path cluster-3 diff remains paused.
 
 ## Fixed release sequence
 
@@ -144,7 +145,6 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Cluster 2 is complete; three phone-quality clusters remain. No exact cluster-3
-marker is authorized by current repository authority. Stop at clean pushed
-`main` and request exact-marker direction rather than inferring it. Preserve
-the later-cluster, performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusions.
+Cluster 3 remains paused after the preflight prerequisite. Do not resume from this workflow commit alone; require coordinator direction, re-prove Git/writer coordination, then run unpinned and serial-pinned CheckOnly with the new deadline contract.
+Preserve the existing ten-path cluster diff and every later-cluster,
+performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusion.

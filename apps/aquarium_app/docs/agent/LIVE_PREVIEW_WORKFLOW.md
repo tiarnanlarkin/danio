@@ -40,26 +40,32 @@ Run commands from `apps/aquarium_app`.
 2. Check whether the dedicated Danio device is safe:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10
+   .\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 30
    ```
 
    After the script reports the selected serial, pin later checks to it:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10
+   .\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 30
    ```
+
+   The shared preflight deadline covers sequential ADB and emulator discovery,
+   while `-AdbCommandTimeoutSeconds` still bounds each native command. Each
+   command prints `PREFLIGHT_PHASE|<phase>` before it starts. Run the calling
+   terminal with a timeout longer than the internal preflight deadline; an
+   externally cancelled call is not a pass and requires a fresh process check.
 
 3. If `danio_api36` is not running and no other session owns it, launch it:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10
+   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 150
    ```
 
    If a prior Quick Boot attempt failed and process checks prove the AVD is no
    longer running or owned, use the snapshot-disabled fallback:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -ColdBoot -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10
+   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -ColdBoot -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 150
    ```
 
    `-ColdBoot` only starts a stopped AVD; it does not restart, kill, or wipe a
@@ -121,6 +127,8 @@ Good feedback from the user includes:
 `run_danio_live_preview.ps1` must stop instead of taking over a device when:
 
 - Multiple devices are connected and no selected Danio AVD match is found.
+- Sequential discovery exceeds the shared `-PreflightTimeoutSeconds` deadline;
+  the error names the last `PREFLIGHT_PHASE|` and cleans up its owned child tree.
 - ADB or AVD discovery exceeds `-AdbCommandTimeoutSeconds`.
 - The requested `-DeviceId` does not report the requested AVD identity.
 - The requested AVD is absent from `emulator -list-avds`.
