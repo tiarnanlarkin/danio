@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: freeze diagnosis is complete; four phone-quality clusters remain
+Status: phone-quality cluster 2 is complete; three phone-quality clusters remain
 Updated: 2026-07-24
-Implementation epoch: `DR-2026-07-24-076`
-Marker: `danio-emulator-app-freeze-diagnosis-2026-07-24/1`
+Implementation epoch: `DR-2026-07-24-077`
+Marker: `danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -64,23 +64,25 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `docs/qa/performance/2026-07-23/dcl-perf-001-phone-profile-cold-boot-rerun.json`
   (SHA-256 `ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9`).
   No product code changed; `DCL-PERF-001 remains open`.
-- `DR-2026-07-23-072` under `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`
-  fixed only the Tank-root energy target at 48 x 48 dp. Focused, Visual, reset-
-  assisted Full, and Docs passed; its durable stop leaves 6 verified sessions
-  and says Do not advance to cluster 2. Evidence is in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
+- `DR-2026-07-23-072` under `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1` fixed only the Tank-root energy target at 48 x 48 dp;
+  its Focused, Visual, reset-assisted Full, Docs, and durable-stop evidence remains in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
 - `DR-2026-07-24-074` under `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
-  records the user's confirmed local ComfyUI basis for the exact active
-  ocean-room and Neon Tetra bytes, resolving their rights HOLD in substance.
+  records the user's confirmed local ComfyUI basis for the exact active ocean-room and Neon Tetra bytes, resolving their rights HOLD in substance.
   `DR-2026-07-24-075` under `danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`
-  fixes only the proved Tank Detail/Add Log 2.0x overflows; Focused/Visual and
-  reset-assisted Full (`GATE_TOTAL|PASS|378547|Full`) pass; bound device proof
-  establishes that phone-quality cluster 1 is complete. Evidence: `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
+  fixes only the proved Tank Detail/Add Log 2.0x overflows; Focused/Visual,
+  reset-assisted Full, and bound device proof establish that phone-quality cluster 1 is complete. Evidence: `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-tank-large-text-visual-bundle.md`.
 - `DR-2026-07-24-076` under `danio-emulator-app-freeze-diagnosis-2026-07-24/1`
   reproduced one pressured debug ANR; current-source profile runs recovered,
   exposed semantics, accepted navigation, and produced no profile ANR. Android
   Settings was also slow; the product code is unchanged. Release restored the
   exact debug APK, font 1.0, stopped app, launcher, and passing CheckOnly:
   `docs/qa/phone-quality/2026-07-24/danio-emulator-app-freeze-diagnosis.md`.
+- `DR-2026-07-24-077` under
+  `danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1` closes
+  phone-quality cluster 2. Focused RED/GREEN proves Learn/Practice 2.0x reflow
+  and Practice reduced-motion fixes; stories need no product change. Focused
+  and Visual plus reset-assisted Full (`GATE_TOTAL|PASS|297670|Full`) pass. The bounded device attempt produced no contradictory product
+  evidence and released font 1.0, stopped app, launcher, and passing CheckOnly.
 
 ## Fixed release sequence
 
@@ -131,7 +133,7 @@ those product/content/rule rows backed by executable evidence. After epochs
   fresh-direction diagnostic left 12; epochs 068 and 069 left 11 then 10.
   Epoch 070's environment stop left 9 and repaired closeout left 8. Epochs 071,
   072, and 075 left 7, 6, and 5. Epoch 076 consumes one clean diagnostic
-  closeout and leaves four verified sessions.
+  closeout and leaves four verified sessions; epoch 077 leaves three verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -142,9 +144,7 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Cluster 1 and the freeze diagnosis are complete; four clusters remain. From
-clean pushed `main`, duplicate-check and run only
-`danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1`. Audit
-current Learn, Practice, and stories baselines first; implement only a P0/P1
-proved by RED. Exclude later clusters, performance decisions, tablet, iOS,
-store, cloud, account, provider, and secret lanes.
+Cluster 2 is complete; three phone-quality clusters remain. No exact cluster-3
+marker is authorized by current repository authority. Stop at clean pushed
+`main` and request exact-marker direction rather than inferring it. Preserve
+the later-cluster, performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusions.

@@ -74,11 +74,13 @@ class LearnPracticeCard extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            'Practice Mode',
-                            style: AppTypography.headlineSmall.copyWith(
-                              color: AppColors.onPrimary,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Text(
+                              'Practice Mode',
+                              style: AppTypography.headlineSmall.copyWith(
+                                color: AppColors.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),

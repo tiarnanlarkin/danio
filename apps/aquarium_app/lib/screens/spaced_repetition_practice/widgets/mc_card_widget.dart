@@ -181,7 +181,9 @@ class _OptionTile extends StatelessWidget {
           onTap: state == _OptionState.neutral ? onTap : null,
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: MediaQuery.of(context).disableAnimations
+                ? Duration.zero
+                : const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm2,
@@ -215,9 +217,7 @@ class _OptionTile extends StatelessWidget {
                   child: Text(
                     text,
                     style: AppTypography.bodyMedium.copyWith(
-                      color: disabled
-                          ? context.textHint
-                          : context.textPrimary,
+                      color: disabled ? context.textHint : context.textPrimary,
                     ),
                   ),
                 ),

@@ -112,8 +112,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
                     children: [
                       Text(
                         'Card ${_currentCardIndex + 1} of ${_session.cards.length}',

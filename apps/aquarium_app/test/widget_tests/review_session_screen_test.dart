@@ -419,7 +419,7 @@ void main() {
     });
 
     testWidgets(
-      'resolved multiple-choice question has horizontal padding at text scale 1.3',
+      'resolved multiple-choice question reflows at text scale 2.0',
       (tester) async {
         await tester.binding.setSurfaceSize(const Size(390, 560));
         addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -433,7 +433,7 @@ void main() {
         final question = _makeMultipleChoiceQuestion(card);
 
         await tester.pumpWidget(
-          _wrap(session, resolvedQuestions: [question], textScale: 1.3),
+          _wrap(session, resolvedQuestions: [question], textScale: 2.0),
         );
         await tester.pump(const Duration(seconds: 1));
 

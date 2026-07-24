@@ -65,6 +65,7 @@ Widget _wrap({
   String? errorMessage,
   AsyncValue<UserProfile?>? profileState,
   List<Override> overrides = const [],
+  double textScaleFactor = 1.0,
 }) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
@@ -85,7 +86,15 @@ Widget _wrap({
         ),
       ...overrides,
     ],
-    child: const MaterialApp(home: PracticeHubScreen()),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+        ),
+        child: child!,
+      ),
+      home: const PracticeHubScreen(),
+    ),
   );
 }
 
@@ -204,6 +213,27 @@ void main() {
       expect(find.text('Build your review deck'), findsOneWidget);
       expect(
         find.text('Finish one Learn lesson to create Practice cards.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('reflows the empty Practice hub at 2.0x on a phone', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrap(stats: _stats(totalCards: 0), textScaleFactor: 2.0),
+      );
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Build your review deck'), findsOneWidget);
+      expect(
+        find.text(
+          'Quick, Standard, Weak Spots, and Mixed sessions unlock once your review deck has cards.',
+        ),
         findsOneWidget,
       );
     });

@@ -62,7 +62,10 @@ UserProfile _profile() {
   );
 }
 
-Widget _wrap({AsyncValue<UserProfile?>? profileState}) {
+Widget _wrap({
+  AsyncValue<UserProfile?>? profileState,
+  double textScaleFactor = 1.0,
+}) {
   SharedPreferences.setMockInitialValues({
     'user_profile': jsonEncode(_profile().toJson()),
     'guidance_seen_learnFirstVisit': true,
@@ -79,7 +82,15 @@ Widget _wrap({AsyncValue<UserProfile?>? profileState}) {
           (ref) => _FakeUserProfileNotifier(profileState),
         ),
     ],
-    child: const MaterialApp(home: LearnScreen()),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+        ),
+        child: child!,
+      ),
+      home: const LearnScreen(),
+    ),
   );
 }
 
@@ -142,6 +153,39 @@ void main() {
 
       expect(find.text('Take the test'), findsNothing);
       expect(find.text('Skip for now'), findsNothing);
+    });
+
+    testWidgets('reflows the current Learn root at 2.0x on a phone', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(textScaleFactor: 2.0));
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Today\'s lesson'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('Interactive Stories'),
+        240,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Interactive Stories'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('Learning Paths'),
+        240,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Learning Paths'), findsOneWidget);
     });
 
     testWidgets('stuck profile loading shows retry guidance', (tester) async {

@@ -29,10 +29,19 @@ UserProfile _profileWithWeakLesson() {
   );
 }
 
-Widget _wrap(ProviderContainer container) {
+Widget _wrap(
+  ProviderContainer container, {
+  double textScaleFactor = 1.0,
+}) {
   return UncontrolledProviderScope(
     container: container,
     child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+        ),
+        child: child!,
+      ),
       home: Scaffold(
         body: Consumer(
           builder: (context, ref, _) {
@@ -82,5 +91,29 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(container.read(currentTabProvider), 1);
+  });
+
+  testWidgets('reflows the weak-lesson card at 2.0x on a phone', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final container = ProviderContainer(
+      overrides: [
+        sharedPreferencesProvider.overrideWith((ref) async {
+          return SharedPreferences.getInstance();
+        }),
+        currentTabProvider.overrideWith((ref) => 0),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(_wrap(container, textScaleFactor: 2.0));
+    await _advance(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Practice Mode'), findsOneWidget);
+    expect(find.text('Open Practice hub for weak-spot drills'), findsOneWidget);
   });
 }

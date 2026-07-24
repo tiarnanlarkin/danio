@@ -21,6 +21,7 @@ import 'package:danio/widgets/core/app_button.dart';
 Widget _wrapBrowser({
   AsyncValue<UserProfile?>? profileState,
   List<Story>? stories,
+  double textScaleFactor = 1.0,
 }) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
@@ -33,11 +34,19 @@ Widget _wrapBrowser({
           (ref) => _FakeUserProfileNotifier(profileState),
         ),
     ],
-    child: MaterialApp(home: StoryBrowserScreen(stories: stories)),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+        ),
+        child: child!,
+      ),
+      home: StoryBrowserScreen(stories: stories),
+    ),
   );
 }
 
-Widget _wrapPlayScreen(Story story) {
+Widget _wrapPlayScreen(Story story, {double textScaleFactor = 1.0}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -45,7 +54,15 @@ Widget _wrapPlayScreen(Story story) {
         return SharedPreferences.getInstance();
       }),
     ],
-    child: MaterialApp(home: StoryPlayScreen(story: story)),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+        ),
+        child: child!,
+      ),
+      home: StoryPlayScreen(story: story),
+    ),
   );
 }
 
@@ -256,6 +273,20 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('reflows the story browser at 2.0x on a phone', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrapBrowser(textScaleFactor: 2.0));
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Choose your adventure'), findsOneWidget);
+      expect(find.text('New Tank Setup'), findsOneWidget);
+    });
   });
 
   group('StoryPlayScreen', () {
@@ -271,6 +302,26 @@ void main() {
     testWidgets('renders choice buttons', (tester) async {
       await tester.pumpWidget(_wrapPlayScreen(_testStory));
       await _advance(tester);
+      expect(find.text('Choice A'), findsOneWidget);
+      expect(find.text('Choice B'), findsOneWidget);
+    });
+
+    testWidgets('reflows story play choices at 2.0x on a phone', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(360, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrapPlayScreen(_testStory, textScaleFactor: 2.0),
+      );
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(
+        find.textContaining('Welcome to the test story'),
+        findsOneWidget,
+      );
       expect(find.text('Choice A'), findsOneWidget);
       expect(find.text('Choice B'), findsOneWidget);
     });

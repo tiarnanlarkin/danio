@@ -2170,9 +2170,12 @@ void main() {
     expect(ledger, contains('| DCL-MOTION-001 |'));
     expect(ledger, contains('| `VERIFY_LOCALLY` | open |'));
     expect(ledger, contains('source guard permits platform haptics only'));
-    expect(finishMap, contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'));
+    expect(
+      finishMap,
+      contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
+    );
     for (final source in [handoff, ledger, finishMap]) {
-      expect(source, contains('four phone-quality clusters remain'));
+      expect(source, contains('three phone-quality clusters remain'));
     }
   });
 
@@ -2189,11 +2192,13 @@ void main() {
     final sliceLog = _source(
       'docs/agent/SLICE_LOG.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
-    final report = jsonDecode(
-      _source(
-        'docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json',
-      ),
-    ) as Map<String, dynamic>;
+    final report =
+        jsonDecode(
+              _source(
+                'docs/qa/performance/2026-07-22/dcl-perf-001-phone-profile.json',
+              ),
+            )
+            as Map<String, dynamic>;
 
     for (final value in [
       'DR-2026-07-22-069',
@@ -2209,24 +2214,33 @@ void main() {
     expect(handoff, contains('DCL-PERF-001 remains open'));
     expect(ledger, contains('| DCL-PERF-001 |'));
     expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
-    expect(finishMap, contains('| Performance | `DCL-PERF-001` | In progress |'));
+    expect(
+      finishMap,
+      contains('| Performance | `DCL-PERF-001` | In progress |'),
+    );
 
     expect(report['passed'], isFalse);
-    expect(report['product_commit'], '61dbb1748487b9111fa8f6e2cccc24100c71dba4');
+    expect(
+      report['product_commit'],
+      '61dbb1748487b9111fa8f6e2cccc24100c71dba4',
+    );
     expect(report['device'], 'danio_api36 (emulator-5554)');
     final scenarios = (report['scenarios'] as List<dynamic>)
         .cast<Map<String, dynamic>>();
-    expect({
-      for (final scenario in scenarios)
-        scenario['scenario'] as String: scenario['passed'] as bool,
-    }, {
-      'cold_start': true,
-      'warm_resume': true,
-      'tab_switching': true,
-      'tank_feedback': false,
-      'scrolling': false,
-      'local_image_first_paint': false,
-    });
+    expect(
+      {
+        for (final scenario in scenarios)
+          scenario['scenario'] as String: scenario['passed'] as bool,
+      },
+      {
+        'cold_start': true,
+        'warm_resume': true,
+        'tab_switching': true,
+        'tank_feedback': false,
+        'scrolling': false,
+        'local_image_first_paint': false,
+      },
+    );
   });
 
   test('paired profile attribution records no incremental product P1', () {
@@ -2242,12 +2256,14 @@ void main() {
     final finishMap = _source(
       'docs/agent/FINISH_MAP.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
-    final attribution = jsonDecode(
-      _source(
-        'docs/qa/performance/2026-07-22/'
-        'dcl-perf-001-phone-profile-attribution.json',
-      ),
-    ) as Map<String, dynamic>;
+    final attribution =
+        jsonDecode(
+              _source(
+                'docs/qa/performance/2026-07-22/'
+                'dcl-perf-001-phone-profile-attribution.json',
+              ),
+            )
+            as Map<String, dynamic>;
 
     for (final value in [
       'DR-2026-07-22-070',
@@ -2269,7 +2285,10 @@ void main() {
     );
     expect(ledger, contains('| DCL-PERF-001 |'));
     expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
-    expect(finishMap, contains('| Performance | `DCL-PERF-001` | In progress |'));
+    expect(
+      finishMap,
+      contains('| Performance | `DCL-PERF-001` | In progress |'),
+    );
 
     expect(attribution['schema_version'], 1);
     expect(attribution['diagnostic'], 'paired_profile_attribution');
@@ -2280,8 +2299,8 @@ void main() {
     expect(attribution['device'], 'danio_api36 (emulator-5554)');
     expect(attribution['profile_mode'], isTrue);
 
-    final tank = attribution['tank_feedback_comparison']
-        as Map<String, dynamic>;
+    final tank =
+        attribution['tank_feedback_comparison'] as Map<String, dynamic>;
     expect(tank['pair_count'], 3);
     expect((tank['pairs'] as List<dynamic>), hasLength(3));
     expect(
@@ -2289,8 +2308,8 @@ void main() {
       lessThan(0.1),
     );
 
-    final scrolling = attribution['scrolling_comparison']
-        as Map<String, dynamic>;
+    final scrolling =
+        attribution['scrolling_comparison'] as Map<String, dynamic>;
     expect(scrolling['pair_count'], 3);
     expect((scrolling['pairs'] as List<dynamic>), hasLength(3));
     expect(
@@ -2298,8 +2317,7 @@ void main() {
       lessThan(0.1),
     );
 
-    final image = attribution['image_phase_timestamps']
-        as Map<String, dynamic>;
+    final image = attribution['image_phase_timestamps'] as Map<String, dynamic>;
     expect(image['sample_count'], 6);
     expect(image['measured_sample_count'], 5);
     expect((image['samples'] as List<dynamic>), hasLength(6));
@@ -2336,7 +2354,8 @@ void main() {
         'docs/agent/FINISH_MAP.md',
       ).replaceAll(RegExp(r'\s+'), ' ');
       final reportBytes = File(reportPath).readAsBytesSync();
-      final report = jsonDecode(utf8.decode(reportBytes)) as Map<String, dynamic>;
+      final report =
+          jsonDecode(utf8.decode(reportBytes)) as Map<String, dynamic>;
 
       for (final value in [
         'DR-2026-07-23-071',
@@ -2348,10 +2367,12 @@ void main() {
         expect(handoff, contains(value));
         expect(sliceLog, contains(value));
       }
-      expect(handoff, contains('7 verified sessions'));
-      expect(handoff, contains(nextMarker));
+      expect(sliceLog, contains('7 sessions remain'));
       expect(sliceLog, contains(nextMarker));
-      expect(sha256.convert(reportBytes).toString().toUpperCase(), reportSha256);
+      expect(
+        sha256.convert(reportBytes).toString().toUpperCase(),
+        reportSha256,
+      );
 
       expect(report['schema_version'], 1);
       expect(
@@ -2374,17 +2395,20 @@ void main() {
         'scrolling',
         'local_image_first_paint',
       });
-      expect({
-        for (final entry in byName.entries)
-          entry.key: entry.value['passed'] as bool,
-      }, {
-        'cold_start': true,
-        'warm_resume': true,
-        'tab_switching': true,
-        'tank_feedback': false,
-        'scrolling': false,
-        'local_image_first_paint': true,
-      });
+      expect(
+        {
+          for (final entry in byName.entries)
+            entry.key: entry.value['passed'] as bool,
+        },
+        {
+          'cold_start': true,
+          'warm_resume': true,
+          'tab_switching': true,
+          'tank_feedback': false,
+          'scrolling': false,
+          'local_image_first_paint': true,
+        },
+      );
       for (final name in [
         'cold_start',
         'warm_resume',
@@ -2512,8 +2536,8 @@ void main() {
       expect(handoff, contains(value));
       expect(sliceLog, contains(value));
     }
-    expect(handoff, contains('leaves 6 verified sessions'));
-    expect(handoff, contains('Do not advance to cluster 2'));
+    expect(sliceLog, contains('leaves 6 sessions'));
+    expect(sliceLog, contains('advance to cluster 2'));
     expect(sliceLog, contains('Do not create a successor'));
     expect(handoff, isNot(contains(forbiddenNextMarker)));
     expect(sliceLog, isNot(contains(forbiddenNextMarker)));
@@ -2552,7 +2576,9 @@ void main() {
       'DCL-VIS-002',
       'DCL-MOTION-001',
     ]) {
-      final ledgerRow = ledger.split('\n').singleWhere(
+      final ledgerRow = ledger
+          .split('\n')
+          .singleWhere(
             (line) => line.startsWith('| $row |'),
           );
       expect(ledgerRow, contains('| open |'));
@@ -2697,7 +2723,10 @@ void main() {
         expect(source, contains(marker));
       }
       expect(handoff, contains('phone-quality cluster 1 is complete'));
-      expect(handoff, contains('four phone-quality clusters remain'));
+      expect(
+        sliceLog.toLowerCase(),
+        contains('four phone-quality clusters remain'),
+      );
       expect(evidence, contains('No successor was created'));
       expect(evidence, isNot(contains(subsequentMarker)));
       expect(priorEvidence, contains(evidencePath));
@@ -2752,8 +2781,8 @@ void main() {
             );
         expect(ledgerRow, contains('| open |'));
       }
-      expect(ledger, contains('four phone-quality clusters remain'));
-      expect(finishMap, contains('four phone-quality clusters remain'));
+      expect(ledger, contains('three phone-quality clusters remain'));
+      expect(finishMap, contains('three phone-quality clusters remain'));
       expect(
         finishMap,
         contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
@@ -2777,8 +2806,7 @@ void main() {
     'emulator freeze diagnosis attributes the debug ANR without a product change',
     () {
       const epoch = 'DR-2026-07-24-076';
-      const marker =
-          'danio-emulator-app-freeze-diagnosis-2026-07-24/1';
+      const marker = 'danio-emulator-app-freeze-diagnosis-2026-07-24/1';
       const nextMarker =
           'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1';
       const evidencePath =
@@ -2822,11 +2850,13 @@ void main() {
         expect(source, contains(marker));
       }
       expect(deviceOwnership, contains(epoch));
-      expect(handoff, contains('freeze diagnosis is complete'));
-      expect(handoff, contains('product code is unchanged'));
-      expect(handoff, contains('four phone-quality clusters remain'));
-      expect(handoff, contains(nextMarker));
-      expect(handoff, contains('four verified sessions'));
+      expect(evidence, contains('No product change was made'));
+      expect(
+        sliceLog.toLowerCase(),
+        contains('four phone-quality clusters remain'),
+      );
+      expect(sliceLog, contains(nextMarker));
+      expect(sliceLog, contains('Four sessions remain'));
       expect(deviceOwnership, contains(evidencePath));
       expect(
         deviceOwnership,
@@ -2868,6 +2898,96 @@ void main() {
               .toUpperCase(),
           entry.value,
         );
+      }
+    },
+  );
+
+  test(
+    'Learn Practice and stories close phone-quality cluster 2',
+    () {
+      const epoch = 'DR-2026-07-24-077';
+      const marker =
+          'danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1';
+      const evidencePath =
+          'docs/qa/phone-quality/2026-07-24/'
+          'dcl-a11y-001-learn-practice-stories.md';
+
+      final handoff = _source(
+        'docs/agent/ACTIVE_HANDOFF.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final sliceLog = _source(
+        'docs/agent/SLICE_LOG.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final deviceOwnership = _source(
+        'docs/agent/DEVICE_OWNERSHIP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final ledger = _source(
+        'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final finishMap = _source(
+        'docs/agent/FINISH_MAP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final evidenceFile = File(evidencePath);
+      expect(
+        evidenceFile.existsSync(),
+        isTrue,
+        reason: 'Cluster-2 evidence is missing.',
+      );
+      final evidence = evidenceFile.existsSync()
+          ? evidenceFile.readAsStringSync().replaceAll(RegExp(r'\s+'), ' ')
+          : '';
+
+      for (final source in [handoff, sliceLog, evidence]) {
+        expect(source, contains(epoch));
+        expect(source, contains(marker));
+      }
+      for (final source in [handoff, sliceLog, ledger, finishMap, evidence]) {
+        expect(
+          source.toLowerCase(),
+          contains('three phone-quality clusters remain'),
+        );
+      }
+
+      for (final value in [
+        '91 pixels on the right',
+        '15 pixels on the right',
+        'Duration.zero',
+        'GATE_TOTAL|PASS|19197|Focused',
+        'GATE_TOTAL|PASS|17301|Visual',
+        'GATE_TOTAL|PASS|297670|Full',
+        '2.0x',
+        '48 dp',
+        'disabled haptics',
+        'No asset bytes changed',
+        'DCL-PERF-001 remains open',
+        'no contradictory product evidence',
+      ]) {
+        expect(evidence, contains(value));
+      }
+
+      expect(deviceOwnership, contains(epoch));
+      expect(deviceOwnership, contains(evidencePath));
+      expect(
+        deviceOwnership,
+        contains(
+          'Yes; font scale 1.0; app stopped; launcher foreground; emulator left running',
+        ),
+      );
+      expect(handoff, contains('three verified sessions'));
+      expect(handoff, contains('No exact cluster-3 marker is authorized'));
+      expect(sliceLog, contains('No successor was created'));
+
+      for (final id in [
+        'DCL-A11Y-001',
+        'DCL-VIS-001',
+        'DCL-VIS-002',
+        'DCL-MOTION-001',
+      ]) {
+        final ledgerRow = _source(
+          'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+        ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
+        expect(ledgerRow, contains('| open |'));
+        expect(ledgerRow, contains('three phone-quality clusters remain'));
       }
     },
   );
