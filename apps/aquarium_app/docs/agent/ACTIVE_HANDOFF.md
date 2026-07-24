@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: preflight prerequisite complete; cluster 3 paused; three phone-quality clusters remain
+Status: emulator workflow verified; cluster 3 paused; three phone-quality clusters remain
 Updated: 2026-07-24
-Implementation epoch: `DR-2026-07-24-077`
-Marker: `danio-phone-quality-cluster-2-learn-practice-stories-2026-07-24/1`
+Latest product/workflow epochs: `DR-2026-07-24-077` / `WF-2026-07-24-021`
+Marker: `danio-local-android-emulator-workflow-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -79,11 +79,12 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   and Practice reduced-motion fixes; stories need no product change. Focused
   and Visual plus reset-assisted Full (`GATE_TOTAL|PASS|297670|Full`) pass. The bounded device attempt produced no contradictory product
   evidence and released font 1.0, stopped app, launcher, and passing CheckOnly.
-- `WF-2026-07-24-020` under
-  `danio-live-preview-preflight-deadline-2026-07-24/1` adds one shared
-  preflight deadline, phase-tagged output, and bounded owned-child cleanup.
-  Fake-tool RED/GREEN, Focused `GATE_TOTAL|PASS|13065|Focused`, and Docs
-  `GATE_TOTAL|PASS|4778|Docs` pass. No real device command ran; the preserved ten-path cluster-3 diff remains paused.
+- `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup.
+  `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1`
+  verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK.
+  Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on
+  `emulator-5554`. The checkout-relative Flutter wrapper and durable device
+  contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
 
 ## Fixed release sequence
 
@@ -145,6 +146,5 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Cluster 3 remains paused after the preflight prerequisite. Do not resume from this workflow commit alone; require coordinator direction, re-prove Git/writer coordination, then run unpinned and serial-pinned CheckOnly with the new deadline contract.
-Preserve the existing ten-path cluster diff and every later-cluster,
-performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusion.
+Do not resume from this workflow commit alone. After user confirmation, resume only the preserved Cluster 3 Smart/no-key/Optional-AI UI work; do not resume it automatically. Re-prove Git/writer coordination and run serial-pinned CheckOnly before interaction.
+Preserve the existing ten-path cluster diff and every later-cluster, performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusion.

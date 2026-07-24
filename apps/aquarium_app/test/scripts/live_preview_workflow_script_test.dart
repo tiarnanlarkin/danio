@@ -15,18 +15,30 @@ void _expectAscii(String path) {
 
 void main() {
   const livePreviewScript = 'scripts/run_danio_live_preview.ps1';
+  const flutterWrapperScript = 'scripts/flutterw.ps1';
   const screenshotScript = 'scripts/capture_danio_screen.ps1';
   const workflowDoc = 'docs/agent/LIVE_PREVIEW_WORKFLOW.md';
 
   test('live preview scripts and workflow docs exist and stay ascii-only', () {
     for (final path in [
       livePreviewScript,
+      flutterWrapperScript,
       screenshotScript,
       workflowDoc,
     ]) {
       expect(File(path).existsSync(), isTrue, reason: path);
       _expectAscii(path);
     }
+  });
+
+  test('Flutter wrapper resolves the current checkout and installed SDK', () {
+    final source = _source(flutterWrapperScript);
+
+    expect(source, contains(r'$PSScriptRoot'));
+    expect(source, contains(r'Get-Command flutter'));
+    expect(source, contains(r'development\flutter\bin\flutter.bat'));
+    expect(source, isNot(contains(r'C:\Users\larki\Documents')));
+    expect(source, isNot(contains(r'C:\Users\larki\flutter')));
   });
 
   test('live preview script targets the dedicated Danio emulator safely', () {
@@ -146,6 +158,13 @@ void main() {
     expect(workflow, contains('Full gate'));
     expect(workflow, contains('danio_api36'));
     expect(workflow, contains('danio_tablet_api36'));
+    expect(workflow, contains('Android 16 / API 36'));
+    expect(workflow, contains('Pixel-class phone'));
+    expect(workflow, contains('Quick Boot'));
+    expect(workflow, contains('app-only'));
+    expect(workflow, contains('API 24'));
+    expect(workflow, contains('compatibility sweep'));
+    expect(workflow, contains('not a day-to-day second emulator'));
     expect(workflow, contains('-AdbCommandTimeoutSeconds'));
     expect(workflow, contains('-PreflightTimeoutSeconds 30'));
     expect(workflow, contains('PREFLIGHT_PHASE|'));
@@ -157,6 +176,8 @@ void main() {
     expect(deviceOwnership, contains('-PreflightTimeoutSeconds 30'));
     expect(deviceOwnership, contains('-ColdBoot'));
     expect(deviceOwnership, contains('-DeviceId'));
+    expect(deviceOwnership, contains('app-only'));
+    expect(deviceOwnership, contains('Do not wipe the AVD'));
     expect(
       workflow,
       contains('Only the coordinator or danio_android_qa_owner'),

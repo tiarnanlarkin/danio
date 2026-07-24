@@ -1,12 +1,24 @@
 param(
   [Parameter(ValueFromRemainingArguments = $true)]
-  [string[]]$FlutterArgs
+  [string[]]$FlutterArgs = @()
 )
 
 $ErrorActionPreference = 'Stop'
-$repo = 'C:\Users\larki\Documents\Danio Aquarium App Project\repo\apps\aquarium_app'
-$flutter = 'C:\Users\larki\flutter\bin\flutter.bat'
-$androidDir = Join-Path $repo 'android'
+Set-StrictMode -Version Latest
+
+$AppRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$flutterCommand = Get-Command flutter -ErrorAction SilentlyContinue
+if ($flutterCommand) {
+  $flutter = $flutterCommand.Source
+}
+else {
+  $flutter = Join-Path $env:USERPROFILE 'development\flutter\bin\flutter.bat'
+}
+if (-not (Test-Path -LiteralPath $flutter -PathType Leaf)) {
+  throw "Flutter was not found on PATH or at '$flutter'."
+}
+
+$androidDir = Join-Path $AppRoot 'android'
 $gradle = Join-Path $androidDir 'gradlew.bat'
 
 if (
@@ -15,11 +27,23 @@ if (
   $FlutterArgs[1] -eq 'appbundle'
 ) {
   Write-Host 'Using direct Gradle bundleRelease (known-good path for Danio on Windows)...'
-  Set-Location $androidDir
-  & $gradle 'bundleRelease'
-  exit $LASTEXITCODE
+  Push-Location -LiteralPath $androidDir
+  try {
+    & $gradle 'bundleRelease'
+    $exitCode = $LASTEXITCODE
+  }
+  finally {
+    Pop-Location
+  }
+  exit $exitCode
 }
 
-Set-Location $repo
-& $flutter @FlutterArgs
-exit $LASTEXITCODE
+Push-Location -LiteralPath $AppRoot
+try {
+  & $flutter @FlutterArgs
+  $exitCode = $LASTEXITCODE
+}
+finally {
+  Pop-Location
+}
+exit $exitCode

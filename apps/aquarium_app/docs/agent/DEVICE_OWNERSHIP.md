@@ -20,6 +20,13 @@ Other agents must stop at compile, test, analyze, or `AndroidPrep` checks.
 | `danio_tablet_api36` | Tablet layout QA and screenshots | Unclaimed after `QA-2026-07-04-002` | Last verified as `emulator-5556`; use explicit device serial after checking `adb devices`. |
 | Physical phone `RFCY8022D5R` | Do not use unless user authorizes and ADB is authorized | Unclaimed | Observed as `unauthorized` on 2026-07-04; not used. |
 
+`danio_api36` is the normal persistent Pixel-class Android 16 / API 36
+preview. Use Quick Boot day to day. For a clean journey, use an app-only reset
+or reinstall of `com.tiarnanlarkin.danio` after ownership and serial pinning.
+Do not wipe the AVD. Use snapshot-disabled cold boot only to recover a failed
+Quick Boot. The one later API 24 compatibility sweep is separately authorized
+and is not a day-to-day second emulator.
+
 This file is a durable coordination record, not a real-time lock. At the start
 of each Android slice, the active session must announce ownership in the thread
 and record durable evidence here only when the device interaction becomes part
@@ -110,6 +117,7 @@ Add a row when a committed slice uses Android evidence:
 | 2026-07-24 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-24-075` | Ownership/process preflight, serial-pinned CheckOnly, debug APK install, seeded Tank Detail/Add Log deep links, temporary 2.0x font scale, screenshots and logcat error-boundary scan, exact 1.0 restore and launcher CheckOnly | `docs/qa/screenshots/2026-07-24/dcl-a11y-001-tank-large-text/` | Yes; font scale restored to 1.0; emulator left running |
 | 2026-07-24 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-24-076` | Bounded and serial-pinned preflight, debug ANR/exit/pressure diagnosis, Android Settings control, current-source profile paired launches, Back interaction, screenshots, exact debug restore | `docs/qa/phone-quality/2026-07-24/danio-emulator-app-freeze-diagnosis.md` | Yes; debug APK restored; font scale 1.0; app stopped; launcher foreground |
 | 2026-07-24 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-24-077` | Bounded and serial-pinned preflights, current debug APK install, temporary 2.0x font, one bounded Learn launch/retry under known whole-emulator pressure; no retained screenshot or performance claim | `docs/qa/phone-quality/2026-07-24/dcl-a11y-001-learn-practice-stories.md` | Yes; font scale 1.0; app stopped; launcher foreground; emulator left running |
+| 2026-07-24 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `WF-2026-07-24-021` | Installed-config inventory; normal Quick Boot failure diagnosis; exact owned process-pair stop; snapshot-disabled recovery; unpinned and serial-pinned CheckOnly; API/display/host-GPU verification; no app install, reset, tap, or capture | `docs/agent/LIVE_PREVIEW_WORKFLOW.md` | Yes; launcher foreground; emulator left running |
 
 ## Release Rule
 

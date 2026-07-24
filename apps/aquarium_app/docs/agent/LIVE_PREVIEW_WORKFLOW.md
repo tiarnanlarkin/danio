@@ -27,6 +27,42 @@ Only the coordinator or danio_android_qa_owner may control the live preview
 device. Read-only auditors and implementation workers must not run emulator,
 ADB, Patrol, Maestro, screenshot, or live-preview commands.
 
+## Device Contract
+
+- Primary phone: keep `danio_api36` as the one day-to-day Pixel-class phone on
+  Android 16 / API 36. Its normal persistent preview path uses Quick Boot and
+  preserves emulator and app state between sessions.
+- Clean journeys: reset or reinstall Danio only after the slice explicitly
+  requires a clean app state and device ownership is established. Keep the AVD,
+  Android settings, and other emulator data intact. Do not use Device Manager
+  `Wipe Data`.
+- Recovery: use a one-time snapshot-disabled cold boot only after a normal
+  Quick Boot fails and the exact stopped AVD is proven unowned. Do not make
+  cold boot the everyday launch mode.
+- Compatibility: after the phone-quality work is settled, run one separately
+  authorized compatibility sweep at API 24, the current Flutter-managed
+  `minSdk`. It is not a day-to-day second emulator. If no suitable device
+  already exists, propose its exact configuration and obtain approval before
+  installing a system image or creating an AVD.
+
+For a clean journey on an already owned and serial-pinned device, prefer an
+app-only reset while retaining the installed APK:
+
+```powershell
+adb -s <serial> shell pm clear com.tiarnanlarkin.danio
+```
+
+Use an app-only uninstall followed by installation of the already verified APK
+only when the journey specifically needs fresh-install behavior:
+
+```powershell
+adb -s <serial> uninstall com.tiarnanlarkin.danio
+adb -s <serial> install .\build\app\outputs\flutter-apk\app-debug.apk
+```
+
+Both commands destroy Danio app data and require an explicit clean-journey
+scope. They are intentionally absent from `run_danio_live_preview.ps1`.
+
 ## Standard Flow
 
 Run commands from `apps/aquarium_app`.
@@ -55,21 +91,22 @@ Run commands from `apps/aquarium_app`.
    terminal with a timeout longer than the internal preflight deadline; an
    externally cancelled call is not a pass and requires a fresh process check.
 
-3. If `danio_api36` is not running and no other session owns it, launch it:
+3. If `danio_api36` is not running and no other session owns it, launch its
+   normal persistent Quick Boot:
 
    ```powershell
    .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 150
    ```
 
-   If a prior Quick Boot attempt failed and process checks prove the AVD is no
-   longer running or owned, use the snapshot-disabled fallback:
+   If this Quick Boot fails and process checks prove the AVD is no longer
+   running or owned, use the snapshot-disabled recovery fallback:
 
    ```powershell
    .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -ColdBoot -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10 -PreflightTimeoutSeconds 150
    ```
 
    `-ColdBoot` only starts a stopped AVD; it does not restart, kill, or wipe a
-   running emulator. For tablet checks, use
+   running emulator, and it is not the normal preview path. For tablet checks, use
    `-AvdName danio_tablet_api36` only inside an authorized tablet slice.
 
 4. Keep the emulator window visible for user testing.
