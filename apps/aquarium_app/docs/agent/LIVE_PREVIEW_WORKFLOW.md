@@ -40,20 +40,31 @@ Run commands from `apps/aquarium_app`.
 2. Check whether the dedicated Danio device is safe:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -CheckOnly
+   .\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10
+   ```
+
+   After the script reports the selected serial, pin later checks to it:
+
+   ```powershell
+   .\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10
    ```
 
 3. If `danio_api36` is not running and no other session owns it, launch it:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator
+   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10
    ```
 
-   For tablet checks, use the dedicated tablet AVD:
+   If a prior Quick Boot attempt failed and process checks prove the AVD is no
+   longer running or owned, use the snapshot-disabled fallback:
 
    ```powershell
-   .\scripts\run_danio_live_preview.ps1 -AvdName danio_tablet_api36 -LaunchEmulator
+   .\scripts\run_danio_live_preview.ps1 -LaunchEmulator -ColdBoot -CheckOnly -WaitSeconds 120 -AdbCommandTimeoutSeconds 10
    ```
+
+   `-ColdBoot` only starts a stopped AVD; it does not restart, kill, or wipe a
+   running emulator. For tablet checks, use
+   `-AvdName danio_tablet_api36` only inside an authorized tablet slice.
 
 4. Keep the emulator window visible for user testing.
 
@@ -110,8 +121,12 @@ Good feedback from the user includes:
 `run_danio_live_preview.ps1` must stop instead of taking over a device when:
 
 - Multiple devices are connected and no selected Danio AVD match is found.
+- ADB or AVD discovery exceeds `-AdbCommandTimeoutSeconds`.
+- The requested `-DeviceId` does not report the requested AVD identity.
+- The requested AVD is absent from `emulator -list-avds`.
 - The selected device is focused on another non-Danio app package.
 - The selected Danio AVD is not running and `-LaunchEmulator` was not supplied.
+- `-ColdBoot` is supplied without `-LaunchEmulator`.
 - Flutter, ADB, or the Android emulator binary cannot be resolved.
 - `flutter run` exits with a non-zero code.
 

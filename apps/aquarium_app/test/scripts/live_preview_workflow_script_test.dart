@@ -36,7 +36,7 @@ void main() {
     expect(source, contains('com.tiarnanlarkin.danio'));
     expect(source, contains('flutter run'));
     expect(source, contains('adb devices'));
-    expect(source, contains('emu avd name'));
+    expect(source, contains(r'@("emu", "avd", "name")'));
     expect(source, contains('-CheckOnly'));
     expect(source, contains('-LaunchEmulator'));
     expect(source, contains('-WaitSeconds'));
@@ -57,6 +57,39 @@ void main() {
     ]) {
       expect(source, isNot(contains(forbidden)), reason: forbidden);
     }
+  });
+
+  test('live preview preflight bounds ADB and owns explicit cold boot', () {
+    final source = _source(livePreviewScript);
+
+    expect(source, contains(r'[int]$AdbCommandTimeoutSeconds'));
+    expect(source, contains('ProcessStartInfo'));
+    expect(source, contains('RedirectStandardError'));
+    expect(source, contains('RedirectStandardOutput'));
+    expect(source, contains(r'$process.WaitForExit($timeoutMilliseconds)'));
+    expect(source, contains(r'$process.Kill()'));
+    expect(source, contains('timed out after'));
+    expect(source, contains(r'@("start-server")'));
+    expect(source, contains(r'[switch]$ColdBoot'));
+    expect(source, contains(r'@("-list-avds")'));
+    expect(
+      source,
+      contains(r'@("shell", "getprop", "ro.boot.qemu.avd_name")'),
+    );
+    expect(source, contains('not present in emulator -list-avds'));
+    expect(
+      source,
+      contains(r'$deviceAvd = Get-DeviceAvdName -Serial $DeviceId'),
+    );
+    expect(source, contains(r'if ($deviceAvd -cne $AvdName)'));
+    expect(source, contains("Requested device '\$DeviceId' is AVD"));
+    expect(source, contains('ColdBoot requires -LaunchEmulator'));
+    expect(source, contains('"-no-snapshot-load"'));
+    expect(source, contains('"-no-snapshot-save"'));
+    expect(
+      source,
+      contains('ColdBoot only applies when this script starts the AVD'),
+    );
   });
 
   test('local screenshot script captures evidence from the owned app only', () {
@@ -91,6 +124,7 @@ void main() {
     final codexSetup = _source('docs/agent/CODEX_SETUP.md');
     final checklist = _source('docs/agent/TESTING_CHECKLIST.md');
     final multiAgent = _source('docs/agent/MULTI_AGENT_WORKFLOW.md');
+    final deviceOwnership = _source('docs/agent/DEVICE_OWNERSHIP.md');
     final rootAgents = _source('../../AGENTS.md');
 
     for (final source in [
@@ -108,6 +142,13 @@ void main() {
     expect(workflow, contains('Full gate'));
     expect(workflow, contains('danio_api36'));
     expect(workflow, contains('danio_tablet_api36'));
+    expect(workflow, contains('-AdbCommandTimeoutSeconds'));
+    expect(workflow, contains('-ColdBoot'));
+    expect(workflow, contains('-DeviceId'));
+    expect(workflow, contains('does not restart'));
+    expect(deviceOwnership, contains('-AdbCommandTimeoutSeconds'));
+    expect(deviceOwnership, contains('-ColdBoot'));
+    expect(deviceOwnership, contains('-DeviceId'));
     expect(
       workflow,
       contains('Only the coordinator or danio_android_qa_owner'),

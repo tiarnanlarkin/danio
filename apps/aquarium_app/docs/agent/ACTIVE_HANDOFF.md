@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: user-directed manual phone RC chain; Tank/daily-care cluster stopped on 2.0x and asset-rights P1s
-Updated: 2026-07-23
-Implementation epoch: `DR-2026-07-23-072`
-Marker: `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`
+Status: local Android test path stable; phone-quality cluster 1 remains open
+Updated: 2026-07-24
+Implementation epoch: `DR-2026-07-24-073`
+Marker: `danio-android-emulator-preflight-stabilization-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -63,7 +63,8 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `docs/qa/performance/2026-07-23/dcl-perf-001-phone-profile-cold-boot-rerun.json`
   (SHA-256 `ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9`).
   No product code changed; `DCL-PERF-001 remains open`.
-- Epoch 072 fixed only the Tank-root energy target. A focused
+- `DR-2026-07-23-072` under
+  `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1` fixed only the Tank-root energy target. A focused
   RED proved the compact energy action was 26 dp high; the smallest fix makes
   its existing semantic action at least 48 x 48 dp. Final scoped Focused passed
   (`GATE_TOTAL|PASS|13620|Focused`), the Tank-root layout passes at 2.0x, and fresh 140 x 126 px evidence is in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
@@ -141,10 +142,9 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-23-072` fixes only the Tank-root 48 dp action; cluster 1 is open.
-Do not advance to cluster 2 or create a successor. The user must provide an
-explicit creator/source and licence or usage basis for the active ocean room
-background and Neon Tetra art, or authorize a different rights-safe product
-direction. Tank detail and Add Log also have focused 2.0x P1 overflow REDs;
-they remain unimplemented under the one-finding epoch rule. Keep performance,
-tablet, Play Store, providers, accounts, secrets, and external work excluded.
+`DR-2026-07-24-073` bounds ADB/AVD discovery, validates explicit serial identity,
+and verifies snapshot-disabled cold start of `danio_api36 (emulator-5554)`.
+Next only record the user's confirmed local ComfyUI provenance and permitted
+model/checkpoint basis for the active ocean room and Neon Tetra assets. Do not
+advance to cluster 2 or start the two 2.0x overflow fixes in that evidence-only epoch.
+Keep performance, tablet, store, provider, account, secret, and external work excluded.

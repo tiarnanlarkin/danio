@@ -6,8 +6,10 @@ param(
   [switch]$UseLocalEnv,
   [string]$EnvFile = "",
   [switch]$LaunchEmulator,
+  [switch]$ColdBoot,
   [switch]$CheckOnly,
-  [int]$WaitSeconds = 90
+  [int]$WaitSeconds = 90,
+  [int]$AdbCommandTimeoutSeconds = 10
 )
 
 $ErrorActionPreference = "Stop"
@@ -106,7 +108,79 @@ $script:Adb = Resolve-Tool -Name "adb" -FallbackPaths @(
   (Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe")
 )
 $script:Emulator = Resolve-EmulatorTool
-Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -UseLocalEnv, -EnvFile, -WaitSeconds."
+Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -ColdBoot, -UseLocalEnv, -EnvFile, -WaitSeconds, -AdbCommandTimeoutSeconds."
+
+if ($WaitSeconds -le 0) {
+  throw "WaitSeconds must be greater than zero."
+}
+if ($AdbCommandTimeoutSeconds -le 0) {
+  throw "AdbCommandTimeoutSeconds must be greater than zero."
+}
+if ($ColdBoot -and -not $LaunchEmulator) {
+  throw "ColdBoot requires -LaunchEmulator."
+}
+
+function ConvertTo-NativeArgument {
+  param([Parameter(Mandatory = $true)][string]$Argument)
+
+  if ($Argument -notmatch '[\s"]') {
+    return $Argument
+  }
+
+  return '"' + ($Argument -replace '"', '\"') + '"'
+}
+
+function Split-NativeOutput {
+  param([string]$Text)
+
+  if (-not $Text) {
+    return @()
+  }
+
+  return @(
+    $Text -split "`r?`n" |
+      Where-Object { $_ -ne "" }
+  )
+}
+
+function Invoke-NativeCommand {
+  param(
+    [Parameter(Mandatory = $true)][string]$FileName,
+    [Parameter(Mandatory = $true)][string[]]$Arguments,
+    [Parameter(Mandatory = $true)][string]$CommandName,
+    [Parameter(Mandatory = $true)][int]$TimeoutSeconds
+  )
+
+  $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $startInfo.FileName = $FileName
+  $startInfo.Arguments = ($Arguments | ForEach-Object {
+      ConvertTo-NativeArgument -Argument $_
+    }) -join " "
+  $startInfo.RedirectStandardError = $true
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $startInfo
+  [void]$process.Start()
+  $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+  $stderrTask = $process.StandardError.ReadToEndAsync()
+  $timeoutMilliseconds = $TimeoutSeconds * 1000
+  if (-not $process.WaitForExit($timeoutMilliseconds)) {
+    $process.Kill()
+    $process.WaitForExit()
+    throw "$CommandName timed out after $TimeoutSeconds seconds."
+  }
+
+  $output = @()
+  $output += Split-NativeOutput -Text $stdoutTask.Result
+  $output += Split-NativeOutput -Text $stderrTask.Result
+  return [pscustomobject]@{
+    ExitCode = $process.ExitCode
+    Output = $output
+  }
+}
 
 function Invoke-Adb {
   param(
@@ -120,11 +194,40 @@ function Invoke-Adb {
     $base += @("-s", $Serial)
   }
 
-  $output = & $script:Adb @base @Arguments 2>&1
-  if ($LASTEXITCODE -ne 0) {
-    throw "adb $($Arguments -join ' ') failed for '$Serial': $($output -join ' ')"
+  $adbArguments = @($base + $Arguments)
+  $result = Invoke-NativeCommand `
+    -FileName $script:Adb `
+    -Arguments $adbArguments `
+    -CommandName "adb $($adbArguments -join ' ')" `
+    -TimeoutSeconds $AdbCommandTimeoutSeconds
+  if ($result.ExitCode -ne 0) {
+    throw "adb $($Arguments -join ' ') failed for '$Serial': $($result.Output -join ' ')"
   }
-  return $output
+  return @($result.Output)
+}
+
+function Initialize-Adb {
+  Write-Host "Starting or confirming the adb server..."
+  Invoke-Adb -Arguments @("start-server") | Out-Null
+}
+
+function Get-AvailableAvds {
+  $result = Invoke-NativeCommand `
+    -FileName $script:Emulator `
+    -Arguments @("-list-avds") `
+    -CommandName "emulator -list-avds" `
+    -TimeoutSeconds $AdbCommandTimeoutSeconds
+  if ($result.ExitCode -ne 0) {
+    throw "emulator -list-avds failed: $($result.Output -join ' ')"
+  }
+  return @($result.Output | Where-Object { $_ -and $_.Trim() })
+}
+
+function Assert-AvdAvailable {
+  $availableAvds = Get-AvailableAvds
+  if ($availableAvds -cnotcontains $AvdName) {
+    throw "AVD '$AvdName' is not present in emulator -list-avds."
+  }
 }
 
 function Get-ReadyDevices {
@@ -141,7 +244,22 @@ function Get-ReadyDevices {
 function Get-DeviceAvdName {
   param([Parameter(Mandatory = $true)][string]$Serial)
 
-  Write-Host "Checking emu avd name for $Serial..."
+  Write-Host "Checking AVD identity for $Serial..."
+  try {
+    $propertyOutput = Invoke-Adb `
+      -Serial $Serial `
+      -Arguments @("shell", "getprop", "ro.boot.qemu.avd_name")
+    $propertyAvd = $propertyOutput |
+      Where-Object { $_ -and $_.Trim() } |
+      Select-Object -First 1
+    if ($propertyAvd) {
+      return $propertyAvd.Trim()
+    }
+  }
+  catch {
+    # Fall through to the emulator console identity check.
+  }
+
   try {
     $output = Invoke-Adb -Serial $Serial -Arguments @("emu", "avd", "name")
     return (
@@ -200,8 +318,13 @@ function Assert-ForegroundSafe {
 }
 
 function Start-DanioEmulator {
+  Assert-AvdAvailable
+  $emulatorArguments = @("-avd", $AvdName)
+  if ($ColdBoot) {
+    $emulatorArguments += @("-no-snapshot-load", "-no-snapshot-save")
+  }
   Write-Host "Starting Android emulator AVD '$AvdName' for visible Danio preview..."
-  Start-Process -FilePath $script:Emulator -ArgumentList @("-avd", $AvdName)
+  Start-Process -FilePath $script:Emulator -ArgumentList $emulatorArguments
 }
 
 function Resolve-DanioDevice {
@@ -210,10 +333,14 @@ function Resolve-DanioDevice {
     if ($devices -notcontains $DeviceId) {
       throw "Requested device '$DeviceId' is not listed as ready by adb devices."
     }
+    $deviceAvd = Get-DeviceAvdName -Serial $DeviceId
+    if ($deviceAvd -cne $AvdName) {
+      throw "Requested device '$DeviceId' is AVD '$deviceAvd', not '$AvdName'."
+    }
     $foreground = Assert-ForegroundSafe -Serial $DeviceId
     return [pscustomobject]@{
       Serial = $DeviceId
-      Avd = Get-DeviceAvdName -Serial $DeviceId
+      Avd = $deviceAvd
       Foreground = $foreground
     }
   }
@@ -234,6 +361,9 @@ function Resolve-DanioDevice {
     }
 
     if ($matches.Count -eq 1) {
+      if ($ColdBoot) {
+        Write-Host "ColdBoot only applies when this script starts the AVD; the running device will not be restarted."
+      }
       try {
         $foreground = Assert-ForegroundSafe -Serial $matches[0].Serial
       }
@@ -274,6 +404,7 @@ function Resolve-DanioDevice {
 
 Push-Location -LiteralPath $AppRoot
 try {
+  Initialize-Adb
   $localEnvFile = ""
   if ($UseLocalEnv) {
     $localEnvFile = Assert-LocalEnvFileSafe -Path (Resolve-LocalEnvFile)

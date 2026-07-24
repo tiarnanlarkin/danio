@@ -31,10 +31,16 @@ Before any install, tap, screenshot, Patrol run, logcat capture, screenrecord,
 Firebase Test Lab upload, or live-preview control:
 
 ```powershell
-adb devices
-.\scripts\run_danio_live_preview.ps1 -CheckOnly
-adb shell dumpsys window | Select-String -Pattern 'mCurrentFocus|mFocusedApp'
+.\scripts\run_danio_live_preview.ps1 -CheckOnly -AdbCommandTimeoutSeconds 10
+.\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -AdbCommandTimeoutSeconds 10
 ```
+
+The first command starts or confirms ADB through a bounded client, selects the
+named AVD, and reports its serial and foreground package. Pin the reported
+serial with `-DeviceId` for the second check and every later device command.
+If Quick Boot has failed, first prove no emulator process or other session owns
+the stopped AVD, then use `-LaunchEmulator -ColdBoot -CheckOnly`; this starts
+without loading or saving snapshots and does not restart or wipe a running AVD.
 
 The owner must know:
 
@@ -97,6 +103,7 @@ Add a row when a committed slice uses Android evidence:
 | 2026-07-05 | Coordinator current Codex session | `emulator-5556` | `danio_api36` | `DS-2026-07-05-023` | CheckOnly, LaunchEmulator with extended wait, debug APK install/launch through live-preview helper, foreground and pid checks | `docs/agent/ACTIVE_HANDOFF.md` | Yes; app left visible |
 | 2026-07-11 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-11-001` | Dedicated phone capture, Danio-only app-data reset, onboarding/state walkthrough, 98 numbered screenshots plus 2 live variants, contact-sheet review, Figma atlas upload | Figma file `JnSwJlWnisxF6xtiwK6nFc`; temporary local capture manifest outside Git | Yes; emulator left running |
 | 2026-07-23 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-23-072` | Ownership/process preflight before every command, CheckOnly, debug APK build/install/launch, focus check, screenshot and UI-hierarchy capture | `docs/qa/screenshots/2026-07-23/dcl-a11y-001-tank-daily-care/` | Yes; emulator left running |
+| 2026-07-24 | Coordinator current Codex session | `emulator-5554` | `danio_api36` | `DR-2026-07-24-073` | Bounded ADB/process preflight, snapshot-disabled cold start, serial-pinned AVD and foreground verification; no install, launch, tap, wipe, or capture | `docs/agent/LIVE_PREVIEW_WORKFLOW.md` | Yes; emulator left running |
 
 ## Release Rule
 
