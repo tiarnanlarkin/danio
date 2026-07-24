@@ -2498,7 +2498,6 @@ void main() {
       'Asset provenance',
       'Tank detail failed with four overflows',
       'Add Log failed with a 57 px right overflow',
-      'Review status is therefore `HOLD`',
       screenshotSha256,
       hierarchySha256,
     ]) {
@@ -2546,4 +2545,75 @@ void main() {
       contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
     );
   });
+
+  test(
+    'active ocean room and Neon Tetra provenance is attributable and bounded',
+    () {
+      const epoch = 'DR-2026-07-24-074';
+      const marker = 'danio-active-asset-local-comfyui-provenance-2026-07-24/1';
+      const evidencePath =
+          'docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md';
+      const oceanPath = 'assets/backgrounds/room-bg-ocean.webp';
+      const neonTetraPath = 'assets/images/fish/neon_tetra.webp';
+      const oceanSha256 =
+          '9EB413514D278EF6291BA8D59D955A50BF4CBFB879F8073BD93DA1B328CF2E5D';
+      const neonTetraSha256 =
+          'EC8425F198A8E9CD9368161A4D43CBC06ABF4CD83E65669B98692D8F934725AA';
+
+      final handoff = _source('docs/agent/ACTIVE_HANDOFF.md').replaceAll(
+        RegExp(r'\s+'),
+        ' ',
+      );
+      final sliceLog = _source('docs/agent/SLICE_LOG.md').replaceAll(
+        RegExp(r'\s+'),
+        ' ',
+      );
+      final evidence = _source(evidencePath).replaceAll(RegExp(r'\s+'), ' ');
+
+      for (final source in [handoff, sliceLog, evidence]) {
+        for (final value in [epoch, marker]) {
+          expect(source, contains(value));
+        }
+      }
+      for (final value in [
+        'User-confirmed local ComfyUI provenance',
+        'No third-party source images were used',
+        'permitted for the intended Danio use',
+        'not a generic legal guarantee',
+        oceanPath,
+        neonTetraPath,
+        oceanSha256,
+        neonTetraSha256,
+      ]) {
+        expect(evidence, contains(value));
+      }
+      expect(
+        evidence,
+        contains('provenance resolves the asset-rights HOLD in substance'),
+      );
+      expect(evidence, contains('2.0x layout findings remain unresolved'));
+      expect(
+        evidence,
+        isNot(
+          contains(
+            'repository does not establish the explicit usage-rights basis',
+          ),
+        ),
+      );
+      expect(
+        sha256
+            .convert(File(oceanPath).readAsBytesSync())
+            .toString()
+            .toUpperCase(),
+        oceanSha256,
+      );
+      expect(
+        sha256
+            .convert(File(neonTetraPath).readAsBytesSync())
+            .toString()
+            .toUpperCase(),
+        neonTetraSha256,
+      );
+    },
+  );
 }

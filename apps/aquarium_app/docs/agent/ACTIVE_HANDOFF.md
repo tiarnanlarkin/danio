@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: local Android test path stable; phone-quality cluster 1 remains open
+Status: active asset provenance recorded; phone-quality cluster 1 remains open
 Updated: 2026-07-24
-Implementation epoch: `DR-2026-07-24-073`
-Marker: `danio-android-emulator-preflight-stabilization-2026-07-24/1`
+Implementation epoch: `DR-2026-07-24-074`
+Marker: `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -63,14 +63,15 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   `docs/qa/performance/2026-07-23/dcl-perf-001-phone-profile-cold-boot-rerun.json`
   (SHA-256 `ADC3D9C16AB26CE43EA5FD7667AAB73DBA404A6E42F5C7A0F28C4CDBC5EEB6E9`).
   No product code changed; `DCL-PERF-001 remains open`.
-- `DR-2026-07-23-072` under
-  `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1` fixed only the Tank-root energy target. A focused
-  RED proved the compact energy action was 26 dp high; the smallest fix makes
-  its existing semantic action at least 48 x 48 dp. Final scoped Focused passed
-  (`GATE_TOTAL|PASS|13620|Focused`), the Tank-root layout passes at 2.0x, and fresh 140 x 126 px evidence is in `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
-  Visual passed (`GATE_TOTAL|PASS|18059|Visual`); reset-assisted Full passed (`GATE_TOTAL|PASS|200329|Full`); Docs passed (`GATE_TOTAL|PASS|4921|Docs`).
-  The cluster remains open: Tank detail/Add Log have focused 2.0x overflow REDs,
-  and active ocean/Neon Tetra asset usage rights are not explicit in the repo.
+- `DR-2026-07-23-072` under `danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1`
+  fixed only the Tank-root energy target at 48 x 48 dp. Focused, Visual, reset-
+  assisted Full, and Docs passed; evidence is in
+  `docs/qa/phone-quality/2026-07-23/dcl-a11y-001-tank-daily-care.md`.
+- `DR-2026-07-24-074` under
+  `danio-active-asset-local-comfyui-provenance-2026-07-24/1` records the user's
+  confirmed local ComfyUI generation and permitted model/checkpoint/input basis
+  for the exact active ocean-room and Neon Tetra bytes. Their rights HOLD is
+  resolved in substance; Tank detail/Add Log 2.0x overflows keep cluster 1 open.
 
 ## Fixed release sequence
 
@@ -142,9 +143,7 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-`DR-2026-07-24-073` bounds ADB/AVD discovery, validates explicit serial identity,
-and verifies snapshot-disabled cold start of `danio_api36 (emulator-5554)`.
-Next only record the user's confirmed local ComfyUI provenance and permitted
-model/checkpoint basis for the active ocean room and Neon Tetra assets. Do not
-advance to cluster 2 or start the two 2.0x overflow fixes in that evidence-only epoch.
-Keep performance, tablet, store, provider, account, secret, and external work excluded.
+Next only run `DR-2026-07-24-075` under
+`danio-phone-quality-cluster-1-tank-large-text-visual-bundle-2026-07-24/1`:
+preserve the Tank detail/Add Log 2.0x REDs, make the smallest fixes, and collect
+affected Visual proof. Do not advance to cluster 2 or include excluded work.

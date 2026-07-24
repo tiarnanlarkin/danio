@@ -20,9 +20,11 @@ control at 140 x 126 px (53.3 x 48.0 dp).
 
 The cluster is **not complete**. A bounded 2.0x probe proved additional Tank-
 detail and Add Log layout failures after this epoch's one permitted product
-finding, and the repository does not establish the explicit usage-rights basis
-for two active visual assets. Those are durable stop conditions, not inferred
-passes or additional fixes in this epoch.
+finding. At this epoch's closeout, the repository also lacked the explicit
+usage-rights basis for two active visual assets; the `DR-2026-07-24-074`
+addendum below resolves that asset evidence for the exact recorded bytes. The
+two layout failures remain durable stop conditions, not inferred passes or
+additional fixes in this epoch.
 
 ## Evidence by release criterion
 
@@ -66,19 +68,39 @@ passes or additional fixes in this epoch.
   `enforceMinimumTapTarget` opt-in is used only by the Tank root; Practice Hub,
   Lesson, and Review Session retain their prior compact layout and are not
   claimed or visually changed by this epoch.
-- **Asset provenance and rights HOLD:** this epoch adds or changes no visual
-  asset. No file
-  beneath `assets/` has changed since current visual baseline commit
-  `6fa6ae2f`. Commit `6f282e18`, authored by Tiarnan Larkin, records the active
-  ocean room background as Gemini-generated (SHA-256
-  `9EB413514D278EF6291BA8D59D955A50BF4CBFB879F8073BD93DA1B328CF2E5D`),
-  but the repo has no explicit licence/usage-basis record. The active Neon
-  Tetra WebP was regenerated in Tiarnan Larkin's commit `f9142713` from a PNG
-  first integrated by Tiarnan Larkin in commit `081a9e8e` (SHA-256
-  `EC8425F198A8E9CD9368161A4D43CBC06ABF4CD83E65669B98692D8F934725AA`).
-  Neither commit records the original creator/generator or licence/usage basis.
-  Review status is therefore `HOLD`: ownership cannot be inferred from Git
-  authorship, and the RC asset-rights criterion remains unresolved.
+- **Asset provenance:** user-confirmed provenance is recorded below. This epoch
+  adds or changes no visual asset. No file beneath `assets/` has changed since
+  current visual baseline commit `6fa6ae2f`.
+
+## Asset provenance resolution
+
+Date: 2026-07-24
+Epoch: `DR-2026-07-24-074`
+Marker: `danio-active-asset-local-comfyui-provenance-2026-07-24/1`
+
+### User-confirmed local ComfyUI provenance
+
+The user confirmed to the Danio coordinator that both of these exact active
+assets were generated locally with ComfyUI:
+
+- `assets/backgrounds/room-bg-ocean.webp` - SHA-256
+  `9EB413514D278EF6291BA8D59D955A50BF4CBFB879F8073BD93DA1B328CF2E5D`.
+- `assets/images/fish/neon_tetra.webp` - SHA-256
+  `EC8425F198A8E9CD9368161A4D43CBC06ABF4CD83E65669B98692D8F934725AA`.
+
+No third-party source images were used. The user confirmed that the
+model/checkpoint/input basis was permitted for the intended Danio use. This is
+an attributable record of the user's confirmation for the exact bytes above;
+it is not an independently reproduced generation record, and generated origin
+is not a generic legal guarantee. The confirmation supersedes the earlier
+repository description of the ocean asset as Gemini-generated; Git authorship
+alone is not being used as rights evidence.
+
+This provenance resolves the asset-rights HOLD in substance for these exact
+asset bytes. It does not close the Tank/daily-care cluster or the wider
+accessibility and visual rows: the Tank detail and Add Log 2.0x layout findings
+remain unresolved. Any replacement or byte change to either asset requires a
+new provenance review.
 
 ## Captured output and verification
 
