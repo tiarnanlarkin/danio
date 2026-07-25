@@ -26,14 +26,24 @@ import 'package:danio/widgets/core/app_card.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({StorageService? storage}) {
+Widget _wrap({
+  StorageService? storage,
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(
         storage ?? InMemoryStorageService(),
       ),
     ],
-    child: const MaterialApp(home: BackupRestoreScreen()),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: const BackupRestoreScreen(),
+        ),
+      ),
+    ),
   );
 }
 
@@ -1032,6 +1042,34 @@ void main() {
   });
 
   group('BackupRestoreScreen - local storage recovery', () {
+    testWidgets('start-fresh dialog fits a 390x844 phone at 2.0x text', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final storage = _RecoverableStorageService();
+
+      await tester.pumpWidget(
+        _wrap(
+          storage: storage,
+          textScaler: const TextScaler.linear(2),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.ensureVisible(find.text('Start Fresh On This Device'));
+      await tester.pump();
+      await tester.tap(find.text('Start Fresh On This Device'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Start Fresh').hitTestable(), findsOneWidget);
+      expect(find.text('Cancel').hitTestable(), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(find.text('Start Fresh'), findsNothing);
+    });
+
     testWidgets(
       'I/O load error offers real retry without destructive start fresh',
       (tester) async {

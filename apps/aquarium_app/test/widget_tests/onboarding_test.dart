@@ -67,10 +67,18 @@ class _FailingSetBoolPrefs implements SharedPreferences {
 Widget _wrap({
   required VoidCallback onConsentGiven,
   SharedPreferences? prefs,
+  TextScaler textScaler = TextScaler.noScaling,
 }) {
   return ProviderScope(
     overrides: [_prefsOverride(prefs)],
-    child: MaterialApp(home: ConsentScreen(onConsentGiven: onConsentGiven)),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: ConsentScreen(onConsentGiven: onConsentGiven),
+        ),
+      ),
+    ),
   );
 }
 
@@ -110,6 +118,39 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('Crash reports'), findsOneWidget);
+    });
+
+    testWidgets('fits a 390x844 phone at 2.0x text', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      var responseCount = 0;
+
+      await tester.pumpWidget(
+        _wrap(
+          onConsentGiven: () => responseCount++,
+          textScaler: const TextScaler.linear(2),
+        ),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      for (final checkbox in find.byType(Checkbox).evaluate()) {
+        final checkboxFinder = find.byWidget(checkbox.widget);
+        await tester.ensureVisible(checkboxFinder);
+        await tester.tap(checkboxFinder);
+        await tester.pump();
+      }
+      final share = find.text('Share Crash Reports');
+      final decline = find.text('No Thanks');
+      await tester.ensureVisible(share);
+      await tester.pump();
+      expect(share.hitTestable(), findsOneWidget);
+      await tester.ensureVisible(decline);
+      await tester.pump();
+      expect(decline.hitTestable(), findsOneWidget);
+      await tester.tap(decline);
+      await tester.pumpAndSettle();
+      expect(responseCount, 1);
     });
   });
 

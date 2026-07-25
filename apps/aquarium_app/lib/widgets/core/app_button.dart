@@ -159,6 +159,7 @@ class _AppButtonState extends State<AppButton>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.6;
 
     return Semantics(
       button: true,
@@ -175,8 +176,9 @@ class _AppButtonState extends State<AppButton>
             scale: _scaleAnimation,
             child: AnimatedContainer(
               duration: AppDurations.short,
-              height: _getHeight(),
+              height: usesLargeText ? null : _getHeight(),
               constraints: BoxConstraints(
+                minHeight: _getHeight(),
                 minWidth: widget.isFullWidth ? double.infinity : _getMinWidth(),
               ),
               padding: _getPadding(),
@@ -213,7 +215,13 @@ class _AppButtonState extends State<AppButton>
                     const SizedBox(width: AppSpacing.sm),
                   ],
                   if (_shouldConstrainLabel)
-                    Flexible(child: _buildLabel(isDark, constrain: true))
+                    Flexible(
+                      child: _buildLabel(
+                        isDark,
+                        constrain: true,
+                        allowWrap: usesLargeText,
+                      ),
+                    )
                   else
                     _buildLabel(isDark),
                   if (widget.trailingIcon != null && !widget.isLoading) ...[
@@ -241,12 +249,16 @@ class _AppButtonState extends State<AppButton>
         widget.isLoading;
   }
 
-  Widget _buildLabel(bool isDark, {bool constrain = false}) {
+  Widget _buildLabel(
+    bool isDark, {
+    bool constrain = false,
+    bool allowWrap = false,
+  }) {
     return Text(
       widget.label,
       style: _getTextStyle(isDark),
-      maxLines: constrain ? 1 : null,
-      overflow: constrain ? TextOverflow.ellipsis : null,
+      maxLines: constrain ? (allowWrap ? 2 : 1) : null,
+      overflow: constrain && !allowWrap ? TextOverflow.ellipsis : null,
       textAlign: TextAlign.center,
     );
   }

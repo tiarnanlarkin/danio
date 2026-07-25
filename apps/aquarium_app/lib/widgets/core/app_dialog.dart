@@ -76,13 +76,15 @@ class AppDialog extends StatelessWidget {
               ],
               if (child != null) ...[
                 Flexible(
-                  child: DefaultTextStyle(
-                    style: AppTypography.body.copyWith(
-                      color: isDark
-                          ? AppColors.textSecondaryDark
-                          : AppColors.textSecondary,
+                  child: SingleChildScrollView(
+                    child: DefaultTextStyle(
+                      style: AppTypography.body.copyWith(
+                        color: isDark
+                            ? AppColors.textSecondaryDark
+                            : AppColors.textSecondary,
+                      ),
+                      child: child!,
                     ),
-                    child: child!,
                   ),
                 ),
               ],

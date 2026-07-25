@@ -144,137 +144,155 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: _maxContentWidth),
-              child: Column(
-                children: [
-                  const Spacer(),
-                  Semantics(
-                    label: 'Privacy icon',
-                    child: Icon(
-                      Icons.privacy_tip_outlined,
-                      size: 64,
-                      color: AppColors.primary,
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      'Your Privacy Matters',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'Crash reports help us fix bugs and keep Danio stable. '
-                    'They do not include your tank records, photos, or learning '
-                    'progress. You can change your mind anytime in Settings.',
-                    style: theme.textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _ConsentCheckboxRow(
-                    semanticsLabel: 'Age confirmation checkbox',
-                    checked: _ageConfirmed,
-                    onTap: _toggleAgeConfirmed,
-                    checkbox: Checkbox(
-                      value: _ageConfirmed,
-                      onChanged: (value) =>
-                          setState(() => _ageConfirmed = value ?? false),
-                      activeColor: AppColors.primary,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      'I confirm I am 13 years of age or older',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.xs,
-                        ),
-                        minimumSize: const Size(48, 48),
-                        tapTargetSize: MaterialTapTargetSize.padded,
-                      ),
-                      onPressed: _blockUnder13,
-                      child: Text(
-                        "I'm under 13",
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.textHint,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  _ConsentCheckboxRow(
-                    semanticsLabel:
-                        'Terms of Service and Privacy Policy acceptance checkbox',
-                    checked: _tosAccepted,
-                    onTap: _toggleTosAccepted,
-                    checkbox: Checkbox(
-                      value: _tosAccepted,
-                      onChanged: (value) =>
-                          setState(() => _tosAccepted = value ?? false),
-                      activeColor: AppColors.primary,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        style: theme.textTheme.bodyMedium,
+                    child: IntrinsicHeight(
+                      child: Column(
                         children: [
-                          const TextSpan(
-                            text: 'I have read and agree to the ',
-                          ),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                          const Spacer(),
+                          Semantics(
+                            label: 'Privacy icon',
+                            child: Icon(
+                              Icons.privacy_tip_outlined,
+                              size: 64,
                               color: AppColors.primary,
-                              decoration: TextDecoration.underline,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => _launchUrl(
-                                'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
-                              ),
                           ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.primary,
-                              decoration: TextDecoration.underline,
+                          const SizedBox(height: AppSpacing.lg),
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              'Your Privacy Matters',
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => _launchUrl(
-                                'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
-                              ),
                           ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            'Crash reports help us fix bugs and keep Danio stable. '
+                            'They do not include your tank records, photos, or learning '
+                            'progress. You can change your mind anytime in Settings.',
+                            style: theme.textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          _ConsentCheckboxRow(
+                            semanticsLabel: 'Age confirmation checkbox',
+                            checked: _ageConfirmed,
+                            onTap: _toggleAgeConfirmed,
+                            checkbox: Checkbox(
+                              value: _ageConfirmed,
+                              onChanged: (value) => setState(
+                                () => _ageConfirmed = value ?? false,
+                              ),
+                              activeColor: AppColors.primary,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              'I confirm I am 13 years of age or older',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.xs,
+                                ),
+                                minimumSize: const Size(48, 48),
+                                tapTargetSize: MaterialTapTargetSize.padded,
+                              ),
+                              onPressed: _blockUnder13,
+                              child: Text(
+                                "I'm under 13",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: AppColors.textHint,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          _ConsentCheckboxRow(
+                            semanticsLabel:
+                                'Terms of Service and Privacy Policy acceptance checkbox',
+                            checked: _tosAccepted,
+                            onTap: _toggleTosAccepted,
+                            checkbox: Checkbox(
+                              value: _tosAccepted,
+                              onChanged: (value) =>
+                                  setState(() => _tosAccepted = value ?? false),
+                              activeColor: AppColors.primary,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: RichText(
+                              text: TextSpan(
+                                style: theme.textTheme.bodyMedium,
+                                children: [
+                                  const TextSpan(
+                                    text: 'I have read and agree to the ',
+                                  ),
+                                  TextSpan(
+                                    text: 'Terms of Service',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: AppColors.primary,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchUrl(
+                                        'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
+                                      ),
+                                  ),
+                                  const TextSpan(text: ' and '),
+                                  TextSpan(
+                                    text: 'Privacy Policy',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: AppColors.primary,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchUrl(
+                                        'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
+                                      ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const Spacer(flex: 2),
+                          AppButton(
+                            label: 'Share Crash Reports',
+                            onPressed: _canProceed
+                                ? () => _respond(true)
+                                : null,
+                            variant: AppButtonVariant.primary,
+                            isFullWidth: true,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          AppButton(
+                            label: 'No Thanks',
+                            onPressed: _canProceed
+                                ? () => _respond(false)
+                                : null,
+                            variant: AppButtonVariant.secondary,
+                            isFullWidth: true,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
                         ],
                       ),
                     ),
                   ),
-                  const Spacer(flex: 2),
-                  AppButton(
-                    label: 'Share Crash Reports',
-                    onPressed: _canProceed ? () => _respond(true) : null,
-                    variant: AppButtonVariant.primary,
-                    isFullWidth: true,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  AppButton(
-                    label: 'No Thanks',
-                    onPressed: _canProceed ? () => _respond(false) : null,
-                    variant: AppButtonVariant.secondary,
-                    isFullWidth: true,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
+                ),
               ),
             ),
           ),

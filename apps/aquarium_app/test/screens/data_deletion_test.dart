@@ -28,8 +28,20 @@ import '../helpers/in_memory_api_key_store.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap(Widget child) {
-  return ProviderScope(child: MaterialApp(home: child));
+Widget _wrap(
+  Widget child, {
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
+  return ProviderScope(
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: child,
+        ),
+      ),
+    ),
+  );
 }
 
 class _FalseClearSharedPreferencesStore extends InMemorySharedPreferencesStore {
@@ -144,6 +156,31 @@ void main() {
         expect(find.text('Cancel'), findsOneWidget);
       },
     );
+
+    testWidgets('confirmation dialog fits a 390x844 phone at 2.0x text', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrap(
+          const SettingsScreen(),
+          textScaler: const TextScaler.linear(2),
+        ),
+      );
+      await tester.pump();
+      await _scrollToDeleteMyData(tester);
+      await tester.tap(find.text('Delete My Data'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Delete Everything').hitTestable(), findsOneWidget);
+      expect(find.text('Cancel').hitTestable(), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AppDialog), findsNothing);
+    });
 
     testWidgets('tapping Cancel dismisses dialog without deleting', (
       tester,

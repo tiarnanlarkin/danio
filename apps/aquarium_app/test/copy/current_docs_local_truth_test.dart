@@ -1967,7 +1967,13 @@ void main() {
     );
     expect(matrixEnd, greaterThan(matrixStart));
     final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
-    final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+    final sliceLogRecord = (
+      _source('docs/agent/SLICE_LOG.md') +
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      )
+    )
         .split('\n')
         .singleWhere((line) => line.startsWith('| DR-2026-07-19-060 |'));
 
@@ -2029,7 +2035,7 @@ void main() {
       RegExp(
         r'^\| DR-2026-07-19-060 \|',
         multiLine: true,
-      ).allMatches(currentLog),
+      ).allMatches('$currentLog\n$overflowLog'),
       hasLength(1),
     );
     expect(
@@ -2222,15 +2228,13 @@ void main() {
       ),
     );
     expect(ledger, contains('| DCL-MOTION-001 |'));
-    expect(ledger, contains('| `VERIFY_LOCALLY` | open |'));
+    expect(ledger, contains('| DCL-MOTION-001 |'));
+    expect(ledger, contains('| `VERIFY_LOCALLY` | closed | Phone motion'));
     expect(ledger, contains('source guard permits platform haptics only'));
     expect(
       finishMap,
-      contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
+      contains('| Motion and haptics | `DCL-MOTION-001` | Done |'),
     );
-    for (final source in [handoff, ledger, finishMap]) {
-      expect(source, contains('two phone-quality clusters remain'));
-    }
   });
 
   test('profile performance records three passing and three open budgets', () {
@@ -2635,23 +2639,23 @@ void main() {
           .singleWhere(
             (line) => line.startsWith('| $row |'),
           );
-      expect(ledgerRow, contains('| open |'));
+      expect(ledgerRow, contains('| closed |'));
     }
     expect(
       finishMap,
-      contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
+      contains('| Accessibility | `DCL-A11Y-001` | Done |'),
     );
     expect(
       finishMap,
-      contains('| Visual asset quality | `DCL-VIS-001` | In progress |'),
+      contains('| Visual asset quality | `DCL-VIS-001` | Done |'),
     );
     expect(
       finishMap,
-      contains('| Visual regression | `DCL-VIS-002` | In progress |'),
+      contains('| Visual regression | `DCL-VIS-002` | Done |'),
     );
     expect(
       finishMap,
-      contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
+      contains('| Motion and haptics | `DCL-MOTION-001` | Done |'),
     );
   });
 
@@ -2833,25 +2837,23 @@ void main() {
             .singleWhere(
               (line) => line.startsWith('| $id |'),
             );
-        expect(ledgerRow, contains('| open |'));
+        expect(ledgerRow, contains('| closed |'));
       }
-      expect(ledger, contains('two phone-quality clusters remain'));
-      expect(finishMap, contains('two phone-quality clusters remain'));
       expect(
         finishMap,
-        contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
+        contains('| Accessibility | `DCL-A11Y-001` | Done |'),
       );
       expect(
         finishMap,
-        contains('| Visual asset quality | `DCL-VIS-001` | In progress |'),
+        contains('| Visual asset quality | `DCL-VIS-001` | Done |'),
       );
       expect(
         finishMap,
-        contains('| Visual regression | `DCL-VIS-002` | In progress |'),
+        contains('| Visual regression | `DCL-VIS-002` | Done |'),
       );
       expect(
         finishMap,
-        contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
+        contains('| Motion and haptics | `DCL-MOTION-001` | Done |'),
       );
     },
   );
@@ -2975,12 +2977,6 @@ void main() {
       final deviceOwnership = _source(
         'docs/agent/DEVICE_OWNERSHIP.md',
       ).replaceAll(RegExp(r'\s+'), ' ');
-      final ledger = _source(
-        'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
-      ).replaceAll(RegExp(r'\s+'), ' ');
-      final finishMap = _source(
-        'docs/agent/FINISH_MAP.md',
-      ).replaceAll(RegExp(r'\s+'), ' ');
       final evidenceFile = File(evidencePath);
       expect(
         evidenceFile.existsSync(),
@@ -2999,12 +2995,6 @@ void main() {
         expect(
           source.toLowerCase(),
           contains('three phone-quality clusters remain'),
-        );
-      }
-      for (final source in [handoff, ledger, finishMap]) {
-        expect(
-          source.toLowerCase(),
-          contains('two phone-quality clusters remain'),
         );
       }
 
@@ -3050,8 +3040,7 @@ void main() {
         final ledgerRow = _source(
           'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
-        expect(ledgerRow, contains('| open |'));
-        expect(ledgerRow, contains('one phone-quality cluster remains'));
+        expect(ledgerRow, contains('| closed |'));
       }
     },
   );
@@ -3078,12 +3067,6 @@ void main() {
       final deviceOwnership = _source(
         'docs/agent/DEVICE_OWNERSHIP.md',
       ).replaceAll(RegExp(r'\s+'), ' ');
-      final ledger = _source(
-        'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
-      ).replaceAll(RegExp(r'\s+'), ' ');
-      final finishMap = _source(
-        'docs/agent/FINISH_MAP.md',
-      ).replaceAll(RegExp(r'\s+'), ' ');
       final plan = _source(planPath).replaceAll(RegExp(r'\s+'), ' ');
       final evidenceFile = File(evidencePath);
       expect(
@@ -3099,7 +3082,7 @@ void main() {
         expect(source, contains(epoch));
         expect(source, contains(marker));
       }
-      for (final source in [handoff, sliceLog, ledger, finishMap, evidence]) {
+      for (final source in [handoff, sliceLog, evidence]) {
         expect(
           source.toLowerCase(),
           contains('two phone-quality clusters remain'),
@@ -3170,9 +3153,83 @@ void main() {
         final ledgerRow = _source(
           'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
-        expect(ledgerRow, contains('| open |'));
-        expect(ledgerRow, contains('one phone-quality cluster remains'));
+        expect(ledgerRow, contains('| closed |'));
       }
     },
   );
+
+  test('first run and destructive recovery close phone-quality cluster 5', () {
+    const epoch = 'DR-2026-07-25-080';
+    const marker =
+        'danio-phone-quality-cluster-5-first-run-destructive-recovery-dialogs-2026-07-25/1';
+    const evidencePath =
+        'docs/qa/phone-quality/2026-07-25/'
+        'dcl-a11y-001-first-run-destructive-recovery-dialogs.md';
+    const planPath =
+        'docs/agent/plans/'
+        '2026-07-25-phone-quality-cluster-5-first-run-destructive-recovery-dialogs.md';
+
+    final sources = [
+      _source('docs/agent/ACTIVE_HANDOFF.md'),
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(planPath),
+      _source(evidencePath),
+    ].map((source) => source.replaceAll(RegExp(r'\s+'), ' ')).toList();
+    for (final source in sources) {
+      expect(source, contains(epoch));
+      expect(source, contains(marker));
+    }
+
+    final evidence = sources.last;
+    for (final value in [
+      'GATE_TOTAL|PASS|20167|Focused',
+      'GATE_TOTAL|PASS|17579|Visual',
+      '390x844',
+      '2.0x',
+      '48 dp',
+      'disabled-haptics',
+      'No asset bytes changed',
+      'DCL-PERF-001 remains open',
+    ]) {
+      expect(evidence, contains(value));
+    }
+
+    const evidenceHashes = {
+      'docs/qa/screenshots/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs/consent-2x.png':
+          'C1EF1CBEDFDE680C9151D0AEDF3FE438F35C7760B2FAFC3349CA510D321A1CA8',
+      'docs/qa/screenshots/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs/consent-2x.xml':
+          '79E8DA19FF6C7E4B6E77AC508E1BF423605C3520F0F747923BF57E04F621CBB2',
+      'docs/qa/screenshots/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs/consent-bottom-2x.png':
+          '9CC37C8D4044AA78C06E1E9F067EA2FFD653E31F8F2206FE8F236D1D1DE99AD6',
+      'docs/qa/screenshots/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs/delete-my-data-dialog-2x.png':
+          'E3548369953B90C4D219694302CA6822205C20D01DA5A68449C03BEAF1F8C1D6',
+      'docs/qa/screenshots/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs/delete-my-data-dialog-2x.xml':
+          '11B2A5EF4534BB3BF1BA54F7339C08326EE3C91211BE79DF7A75EA023F852F18',
+    };
+    for (final entry in evidenceHashes.entries) {
+      final artifact = File(entry.key);
+      expect(artifact.existsSync(), isTrue);
+      expect(evidence, contains(entry.key));
+      expect(evidence, contains(entry.value));
+      expect(
+        sha256.convert(artifact.readAsBytesSync()).toString().toUpperCase(),
+        entry.value,
+      );
+    }
+
+    final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md');
+    for (final id in [
+      'DCL-A11Y-001',
+      'DCL-VIS-001',
+      'DCL-VIS-002',
+      'DCL-MOTION-001',
+    ]) {
+      final row = ledger
+          .split('\n')
+          .singleWhere((line) => line.startsWith('| $id |'));
+      expect(row, contains('| closed |'));
+    }
+    expect(_source('docs/agent/DEVICE_OWNERSHIP.md'), contains(epoch));
+    expect(_source(planPath), contains('Status: complete'));
+  });
 }

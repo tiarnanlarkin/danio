@@ -346,12 +346,14 @@ class _SectionHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm2),
-          Text(
-            title.toUpperCase(),
-            style: AppTypography.labelLarge.copyWith(
-              color: color ?? (context.textSecondary),
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              title.toUpperCase(),
+              style: AppTypography.labelLarge.copyWith(
+                color: color ?? (context.textSecondary),
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

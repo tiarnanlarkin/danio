@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: phone-quality clusters 1-4 complete; Cluster 5 is the next authorized product slice
+Status: all five phone-quality clusters complete; performance disposition is next
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-25-079` / `WF-2026-07-25-026`
-Marker: `danio-phone-quality-cluster-4-more-tools-species-rewards-preferences-2026-07-25/1`
+Latest product/workflow epochs: `DR-2026-07-25-080` / `WF-2026-07-25-026`
+Marker: `danio-phone-quality-cluster-5-first-run-destructive-recovery-dialogs-2026-07-25/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -80,6 +80,7 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   makes live preview opt-in and adds a verified 60-second bounded viewer trial.
 - `WF-2026-07-25-026` synchronized the existing Figma Professional phone-audit control surface at file `JnSwJlWnisxF6xtiwK6nFc` to clean pushed repository truth at `0396c014`. The text-only sync records clusters 1-3 as closed, identifies clusters 4-5, `DCL-PERF-001`, and `DCL-RC-001` in the authorized remaining order, keeps external/tablet work parked, and states that Figma is an informational non-blocking mirror rather than a repository gate. A post-write screenshot verified the existing page renders without the displaced completion card or stale blocker summaries. No product, device, emulator, account, asset, paid feature, or repository gate changed.
 - `DR-2026-07-25-079` closes phone-quality Cluster 4. Workshop, Achievements, and Gem Shop reflow at 2.0x; More, species/plants, Inventory, and Preferences have permanent 2.0x coverage. Focused, Visual, reset-assisted AndroidPrep and Full (`GATE_TOTAL|PASS|206858|Full`), independent review, and serial-pinned device evidence pass. Final Full remains required at `DCL-RC-001`. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-more-tools-species-rewards-preferences.md`.
+- `DR-2026-07-25-080` closes Cluster 5 and the ordered phone accessibility/visual/motion program. Consent and destructive/data-recovery confirmations reflow at 2.0x with permanent action-reachability tests. Focused, Visual, AndroidPrep, independent review, and reset-assisted Full pass; evidence is `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs.md`. `DCL-PERF-001 remains open`; final Full remains required at `DCL-RC-001`.
 
 ## Fixed release sequence
 
@@ -144,4 +145,4 @@ Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/pru
 
 ## Next manual action
 
-Rebuild live Git, remote, repository, and coordination authority, then begin only the authorized phone-quality Cluster 5 scope: first run plus destructive/data-recovery dialogs. Keep clusters 1-4 closed; performance disposition and `DCL-RC-001` remain later in the approved order.
+After this epoch is clean and pushed, rebuild live Git, remote, repository, and coordination authority, then reconcile only the authorized `DCL-PERF-001` Tank and scrolling dropped-frame-budget failures. Keep all five clusters closed; `DCL-RC-001` remains last.
