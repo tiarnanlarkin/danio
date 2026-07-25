@@ -133,21 +133,28 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ExcludeSemantics(
-                          child: Text(
-                            '$unlockedCount / $totalAchievements',
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: ExcludeSemantics(
+                            child: Text(
+                              '$unlockedCount / $totalAchievements',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                        ExcludeSemantics(
-                          child: Text(
-                            '${(completionPercent * 100).toStringAsFixed(1)}%',
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
+                        Expanded(
+                          child: ExcludeSemantics(
+                            child: Text(
+                              '${(completionPercent * 100).toStringAsFixed(1)}%',
+                              textAlign: TextAlign.end,
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                            ),
                           ),
                         ),
                       ],
@@ -304,6 +311,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
     List<Achievement> achievements,
     Map<String, AchievementProgress> progressMap,
   ) {
+    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.6;
+
     // Separate recently unlocked (last 3, sorted by date)
     final unlocked = <MapEntry<Achievement, AchievementProgress>>[];
     final inProgress = <Achievement>[];
@@ -357,7 +366,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           ),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 120,
+              height: usesLargeText ? 168 : 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -372,7 +381,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     label:
                         '${achievement.name}, ${achievement.description}, Unlocked',
                     child: Container(
-                      width: 160,
+                      width: usesLargeText ? 208 : 160,
                       margin: EdgeInsets.only(
                         right: index < recentlyUnlocked.length - 1
                             ? AppSpacing.sm2
@@ -470,8 +479,9 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               ),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: gridColumnCount,
+                  crossAxisCount: usesLargeText ? 1 : gridColumnCount,
                   childAspectRatio: 0.85,
+                  mainAxisExtent: usesLargeText ? 320 : null,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),

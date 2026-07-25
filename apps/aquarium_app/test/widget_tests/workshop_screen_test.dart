@@ -425,7 +425,7 @@ void main() {
       expect((waterChangeRect.top - co2Rect.top).abs(), lessThanOrEqualTo(2));
     });
 
-    testWidgets('tool cards fit large text on a phone-sized screen', (
+    testWidgets('tool cards fit 2.0x text on a phone-sized screen', (
       tester,
     ) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
@@ -436,7 +436,7 @@ void main() {
       FlutterError.onError = flutterErrors.add;
 
       await tester.pumpWidget(
-        _wrap(textScaler: const TextScaler.linear(1.3)),
+        _wrap(textScaler: const TextScaler.linear(2)),
       );
       await _advance(tester);
 

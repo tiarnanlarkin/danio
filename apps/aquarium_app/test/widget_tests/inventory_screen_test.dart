@@ -80,6 +80,7 @@ Widget _wrap({
   RoomThemeType initialRoomTheme = RoomThemeType.golden,
   Map<RoomThemeType, RoomThemeUnlockState>? roomVibeStates,
   Map<TankDecorationType, TankDecorationUnlockState>? decorationStates,
+  TextScaler textScaler = TextScaler.noScaling,
 }) {
   return ProviderScope(
     overrides: [
@@ -95,7 +96,14 @@ Widget _wrap({
           (ref) => decorationStates,
         ),
     ],
-    child: const MaterialApp(home: InventoryScreen()),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: const InventoryScreen(),
+        ),
+      ),
+    ),
   );
 }
 
@@ -158,6 +166,88 @@ void main() {
   });
 
   group('InventoryScreen - rendering', () {
+    testWidgets('empty rewards inventory fits a phone at 2.0x text', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(2)),
+      );
+      await _advance(tester);
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
+    testWidgets('owned consumable card fits a phone at 2.0x text', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final item = ShopCatalog.getById('xp_boost_1h')!;
+      final owned = InventoryItem(
+        itemId: item.id,
+        quantity: 1,
+        purchasedAt: DateTime(2026, 7, 25),
+      );
+      SharedPreferences.setMockInitialValues({
+        'shop_inventory': jsonEncode([owned.toJson()]),
+      });
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(2)),
+      );
+      await _advance(tester);
+      FlutterError.onError = originalOnError;
+
+      expect(find.text(item.name), findsOneWidget);
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
+    testWidgets('permanent rewards fit a phone at 2.0x text', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(2)),
+      );
+      await _advance(tester);
+      await tester.tap(find.text('Permanent'));
+      await tester.pumpAndSettle();
+      expect(find.text('Room vibes'), findsOneWidget);
+      await tester.drag(find.byType(ListView).first, const Offset(0, -700));
+      await tester.pump();
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

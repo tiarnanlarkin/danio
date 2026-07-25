@@ -19,10 +19,20 @@ import 'package:danio/screens/gem_shop_screen.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({List<Override> overrides = const []}) {
+Widget _wrap({
+  List<Override> overrides = const [],
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
   return ProviderScope(
     overrides: overrides,
-    child: const MaterialApp(home: GemShopScreen()),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: const GemShopScreen(),
+        ),
+      ),
+    ),
   );
 }
 
@@ -110,6 +120,30 @@ void main() {
   });
 
   group('GemShopScreen — rendering', () {
+    testWidgets('shop cards fit a phone at 2.0x text', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(2)),
+      );
+      await _advance(tester);
+      expect(tester.widget<TabBar>(find.byType(TabBar)).isScrollable, isTrue);
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -500));
+      await tester.pump();
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

@@ -435,9 +435,11 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 sliver: SliverLayoutBuilder(
                   builder: (context, constraints) {
-                    final columns = _workshopGridColumns(
-                      constraints.crossAxisExtent,
-                    );
+                    final usesLargeText =
+                        MediaQuery.textScalerOf(context).scale(1) >= 1.6;
+                    final columns = usesLargeText
+                        ? 1
+                        : _workshopGridColumns(constraints.crossAxisExtent);
 
                     return SliverGrid(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -452,6 +454,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Water Change',
                           subtitle: 'Calculate changes',
                           color: DanioColors.tealWater,
+                          compact: usesLargeText,
                           onTap: _openWaterChangeCalculator,
                         ),
                         _ToolCard(
@@ -459,6 +462,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Stocking',
                           subtitle: 'Fish capacity',
                           color: DanioColors.wishlistAmber,
+                          compact: usesLargeText,
                           onTap: _openStockingCalculator,
                         ),
                         _ToolCard(
@@ -466,6 +470,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'CO2 Calculator',
                           subtitle: 'From pH & KH',
                           color: DanioColors.tealWater,
+                          compact: usesLargeText,
                           onTap: _openCo2Calculator,
                         ),
                         _ToolCard(
@@ -473,6 +478,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Dosing',
                           subtitle: 'Fertilizer calculator',
                           color: AppColors.success,
+                          compact: usesLargeText,
                           onTap: _openDosingCalculator,
                         ),
                         _ToolCard(
@@ -480,6 +486,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Unit Converter',
                           subtitle: 'Convert units',
                           color: DanioColors.workshopAccentSteel,
+                          compact: usesLargeText,
                           onTap: () => NavigationThrottle.push(
                             context,
                             const UnitConverterScreen(),
@@ -491,6 +498,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Tank Volume',
                           subtitle: 'Calculate capacity',
                           color: DanioColors.tealWater,
+                          compact: usesLargeText,
                           onTap: _openTankVolumeCalculator,
                         ),
                         _ToolCard(
@@ -498,6 +506,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Lighting',
                           subtitle: 'Schedule lights',
                           color: DanioColors.wishlistAmber,
+                          compact: usesLargeText,
                           onTap: _openLightingSchedule,
                         ),
 
@@ -506,6 +515,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           title: 'Compatibility',
                           subtitle: 'Check fish matches',
                           color: DanioColors.wishlistAmber,
+                          compact: usesLargeText,
                           onTap: _openCompatibilityChecker,
                         ),
 
@@ -518,6 +528,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                           color: hasTank
                               ? DanioColors.tealWater
                               : DanioColors.workshopAccentSteel,
+                          compact: usesLargeText,
                           onTap: hasTank ? _openCyclingAssistant : _openTankTab,
                           locked: !hasTank,
                         ),
@@ -536,8 +547,8 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                   AppSpacing.sm2,
                 ),
                 sliver: SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 104,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 104),
                     child: _ToolCard(
                       icon: Icons.attach_money,
                       title: 'Cost Tracker',

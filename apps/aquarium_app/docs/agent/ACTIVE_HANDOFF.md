@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: non-blocking Figma audit sync verified; cluster 3 complete and remains closed; cluster 4 is the next authorized product slice
+Status: phone-quality clusters 1-4 complete; Cluster 5 is the next authorized product slice
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-25-026`
-Marker: `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1`
+Latest product/workflow epochs: `DR-2026-07-25-079` / `WF-2026-07-25-026`
+Marker: `danio-phone-quality-cluster-4-more-tools-species-rewards-preferences-2026-07-25/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -71,11 +71,15 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DR-2026-07-24-078` under `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1` closes phone-quality cluster 3. Smart/keyless cards and the Weekly Plan disclaimer reflow at 2.0x; Smart, Fish ID, Symptom Triage, Weekly Plan, and the shared bubble loader honor reduced motion.
   Focused `GATE_TOTAL|PASS|105677|Focused`, Visual `GATE_TOTAL|PASS|14653|Visual`, and reset-assisted Full `GATE_TOTAL|PASS|253493|Full` pass.
   Bound device evidence confirms honest local no-key and locked Optional-AI states, then restores font 1.0, stops Danio, returns the launcher, and passes serial-pinned CheckOnly. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai.md`.
-  The durable closeout truth is that two phone-quality clusters remain. Its exact historical stop was `No later cluster is selected`; the current user authorization now selects Cluster 4 without reopening that closure.
+  At that checkpoint, `cluster 3 complete` and `two phone-quality clusters
+  remain` were the durable closeout truth. Its exact historical stop was `No later cluster is selected`;
+  the later user-authorized Cluster 4 closeout below supersedes routing without
+  reopening Cluster 3.
 - `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup. `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1` verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK. Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on `emulator-5554`. The checkout-relative Flutter wrapper and durable device contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
 - `WF-2026-07-25-024` defines three compact Android journeys. `WF-2026-07-25-025`
   makes live preview opt-in and adds a verified 60-second bounded viewer trial.
 - `WF-2026-07-25-026` synchronized the existing Figma Professional phone-audit control surface at file `JnSwJlWnisxF6xtiwK6nFc` to clean pushed repository truth at `0396c014`. The text-only sync records clusters 1-3 as closed, identifies clusters 4-5, `DCL-PERF-001`, and `DCL-RC-001` in the authorized remaining order, keeps external/tablet work parked, and states that Figma is an informational non-blocking mirror rather than a repository gate. A post-write screenshot verified the existing page renders without the displaced completion card or stale blocker summaries. No product, device, emulator, account, asset, paid feature, or repository gate changed.
+- `DR-2026-07-25-079` closes phone-quality Cluster 4. Workshop, Achievements, and Gem Shop reflow at 2.0x; More, species/plants, Inventory, and Preferences have permanent 2.0x coverage. Focused, Visual, reset-assisted AndroidPrep and Full (`GATE_TOTAL|PASS|206858|Full`), independent review, and serial-pinned device evidence pass. Final Full remains required at `DCL-RC-001`. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-more-tools-species-rewards-preferences.md`.
 
 ## Fixed release sequence
 
@@ -115,19 +119,17 @@ those product/content/rule rows backed by executable evidence. After epochs
 - Start every epoch from fetched, clean, aligned `main`, one worktree, and no
   competing writer; allocate the next unused live `DR` identifier.
 - One temporary branch and one product finding per implementation epoch.
-- Product: focused RED, minimal fix, focused GREEN, review, Full, fast-forward
-  `main`, push, clean/aligned/worktree proof, branch cleanup.
+- Product: focused RED/GREEN, settled-diff review, narrow affected gates, one
+  serial-pinned visual/device pass per phone-quality cluster, and the
+  controlling-contract Full gate. Also reserve a final Full for `DCL-RC-001`.
 - Documentation: guard RED, docs edit, guard GREEN, review, Docs, Git closeout.
 - Only the coordinator runs Flutter, Gradle, Git integration, or device work.
 - `phone_completion_run_state.json` remains historically `stopped` for
   `USER_REQUESTED_WORKFLOW_SIMPLIFICATION`; frozen machinery cannot authorize work.
-- The user-directed plan started with 20 verified sessions at epoch 061.
-  Epochs 065 and 066 left 16 then 14; epoch 067's stop left 13; the
-  fresh-direction diagnostic left 12; epochs 068 and 069 left 11 then 10.
-  Epoch 070's environment stop left 9 and repaired closeout left 8. Epochs 071,
-  072, and 075 left 7, 6, and 5. Epoch 076 consumes one clean diagnostic
-  closeout and leaves four verified sessions; epoch 077 leaves three verified
-  sessions; epoch 078 leaves two verified sessions.
+- The user-directed plan started with 20 verified sessions at epoch 061;
+  epoch 078 historically left two verified sessions. The current explicit
+  continuous-completion authorization supersedes it only for Cluster 4,
+  Cluster 5, performance disposition, and `DCL-RC-001`.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -142,4 +144,4 @@ Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/pru
 
 ## Next manual action
 
-Cluster 3 is complete and the Figma audit mirror is synchronized. Rebuild live Git, remote, repository, and coordination authority, then begin only the user-authorized phone-quality Cluster 4 scope: More/tools/species/rewards/preferences. Do not reopen clusters 1-3 or expand to Cluster 5, performance, release signoff, tablet, account/provider, premium, store/deploy, or iOS work inside that slice.
+Rebuild live Git, remote, repository, and coordination authority, then begin only the authorized phone-quality Cluster 5 scope: first run plus destructive/data-recovery dialogs. Keep clusters 1-4 closed; performance disposition and `DCL-RC-001` remain later in the approved order.

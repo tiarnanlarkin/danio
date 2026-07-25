@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/achievements_screen_test.dart
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,8 +18,23 @@ import 'package:danio/widgets/achievement_card.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
-  return const ProviderScope(child: MaterialApp(home: AchievementsScreen()));
+Widget _wrap({
+  TextScaler textScaler = TextScaler.noScaling,
+  bool disableAnimations = false,
+}) {
+  return ProviderScope(
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: textScaler,
+            disableAnimations: disableAnimations,
+          ),
+          child: const AchievementsScreen(),
+        ),
+      ),
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -31,6 +47,53 @@ void main() {
   });
 
   group('AchievementsScreen - basic rendering', () {
+    testWidgets('trophy cards fit a phone at 2.0x text', (tester) async {
+      final unlocked = AchievementProgress(
+        achievementId: 'first_lesson',
+        currentCount: 1,
+        unlockedAt: DateTime(2026, 7, 25),
+        isUnlocked: true,
+      );
+      const inProgress = AchievementProgress(
+        achievementId: 'lessons_10',
+        currentCount: 3,
+      );
+      SharedPreferences.setMockInitialValues({
+        'achievement_progress': jsonEncode({
+          unlocked.achievementId: unlocked.toJson(),
+          inProgress.achievementId: inProgress.toJson(),
+        }),
+      });
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(
+          textScaler: const TextScaler.linear(2),
+          disableAnimations: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      final verticalScroll = find.byWidgetPredicate(
+        (widget) =>
+            widget is Scrollable && widget.axisDirection == AxisDirection.down,
+      );
+      await tester.drag(verticalScroll.first, const Offset(0, -700));
+      await tester.pump();
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();

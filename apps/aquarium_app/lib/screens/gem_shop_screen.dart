@@ -110,6 +110,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           ],
           bottom: TabBar(
             controller: _tabController,
+            isScrollable: MediaQuery.textScalerOf(context).scale(1) >= 1.6,
             indicatorColor: DanioColors.gemPrimary,
             labelColor: DanioColors.gemPrimary,
             unselectedLabelColor: AppColors.textSecondaryDark,
@@ -357,6 +358,7 @@ class _ShopItemGrid extends ConsumerWidget {
           constraints.maxWidth,
         );
         final contentWidth = constraints.maxWidth - (horizontalInset * 2);
+        final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.6;
 
         return GridView.builder(
           padding: EdgeInsets.symmetric(
@@ -364,8 +366,11 @@ class _ShopItemGrid extends ConsumerWidget {
             vertical: AppSpacing.md,
           ),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _gemShopGridColumnCount(contentWidth),
+            crossAxisCount: usesLargeText
+                ? 1
+                : _gemShopGridColumnCount(contentWidth),
             childAspectRatio: 0.75,
+            mainAxisExtent: usesLargeText ? 300 : null,
             crossAxisSpacing: _gemShopGridSpacing,
             mainAxisSpacing: _gemShopGridSpacing,
           ),

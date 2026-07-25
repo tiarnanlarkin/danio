@@ -1887,7 +1887,9 @@ void main() {
     );
     expect(matrixEnd, greaterThan(matrixStart));
     final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
-    final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+    final sliceLogRecord =
+        '${_source('docs/agent/SLICE_LOG.md')}\n'
+            '${_source('docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md')}'
         .split('\n')
         .singleWhere((line) => line.startsWith('| DR-2026-07-19-059 |'));
 
@@ -3049,7 +3051,7 @@ void main() {
           'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
         expect(ledgerRow, contains('| open |'));
-        expect(ledgerRow, contains('two phone-quality clusters remain'));
+        expect(ledgerRow, contains('one phone-quality cluster remains'));
       }
     },
   );
@@ -3169,7 +3171,7 @@ void main() {
           'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
         expect(ledgerRow, contains('| open |'));
-        expect(ledgerRow, contains('two phone-quality clusters remain'));
+        expect(ledgerRow, contains('one phone-quality cluster remains'));
       }
     },
   );

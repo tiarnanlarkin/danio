@@ -223,6 +223,7 @@ Widget _wrap(
   Widget child, {
   SharedPreferences? prefs,
   List<Override> overrides = const [],
+  TextScaler textScaler = TextScaler.noScaling,
 }) {
   return ProviderScope(
     overrides: [
@@ -230,7 +231,14 @@ Widget _wrap(
         sharedPreferencesProvider.overrideWith((ref) async => prefs),
       ...overrides,
     ],
-    child: MaterialApp(home: child),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: child,
+        ),
+      ),
+    ),
   );
 }
 
@@ -300,6 +308,33 @@ void main() {
   tearDown(OnboardingService.resetForTesting);
 
   group('SettingsScreen — smoke', () {
+    testWidgets('preferences list fits a phone at 2.0x text', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(
+          const SettingsScreen(),
+          textScaler: const TextScaler.linear(2),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -1400));
+      await tester.pump();
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();

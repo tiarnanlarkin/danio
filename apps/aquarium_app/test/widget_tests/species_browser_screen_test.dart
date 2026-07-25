@@ -21,8 +21,17 @@ import 'package:danio/widgets/core/app_card.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
-  return const ProviderScope(child: MaterialApp(home: SpeciesBrowserScreen()));
+Widget _wrap({TextScaler textScaler = TextScaler.noScaling}) {
+  return ProviderScope(
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: const SpeciesBrowserScreen(),
+        ),
+      ),
+    ),
+  );
 }
 
 Tank _speciesTestTank() {
@@ -75,6 +84,29 @@ void main() {
   });
 
   group('SpeciesBrowserScreen — rendering', () {
+    testWidgets('list fits a phone at 2.0x text', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(2)),
+      );
+      await _advance(tester);
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -500));
+      await tester.pump();
+      FlutterError.onError = originalOnError;
+
+      expect(
+        flutterErrors.where(
+          (details) => details.exceptionAsString().contains('overflowed'),
+        ),
+        isEmpty,
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

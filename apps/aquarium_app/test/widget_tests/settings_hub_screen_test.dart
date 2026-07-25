@@ -114,7 +114,7 @@ void main() {
       expect(find.text('More'), findsOneWidget);
     });
 
-    testWidgets('profile card fits phone width with larger text', (
+    testWidgets('profile card fits phone width at 2.0x text', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(360, 800);
@@ -124,7 +124,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrapWithTextScale(1.3));
+      await tester.pumpWidget(_wrapWithTextScale(2));
       await _advance(tester);
 
       expect(tester.takeException(), isNull);
