@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: opt-in bounded live-preview trial verified; cluster 3 complete and remains closed; two phone-quality clusters remain
+Status: non-blocking Figma audit sync verified; cluster 3 complete and remains closed; cluster 4 is the next authorized product slice
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-25-025`
+Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-25-026`
 Marker: `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -71,14 +71,11 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - `DR-2026-07-24-078` under `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1` closes phone-quality cluster 3. Smart/keyless cards and the Weekly Plan disclaimer reflow at 2.0x; Smart, Fish ID, Symptom Triage, Weekly Plan, and the shared bubble loader honor reduced motion.
   Focused `GATE_TOTAL|PASS|105677|Focused`, Visual `GATE_TOTAL|PASS|14653|Visual`, and reset-assisted Full `GATE_TOTAL|PASS|253493|Full` pass.
   Bound device evidence confirms honest local no-key and locked Optional-AI states, then restores font 1.0, stops Danio, returns the launcher, and passes serial-pinned CheckOnly. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai.md`.
-- `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup.
-  `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1`
-  verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK.
-  Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on
-  `emulator-5554`. The checkout-relative Flutter wrapper and durable device
-  contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
+  The durable closeout truth is that two phone-quality clusters remain. Its exact historical stop was `No later cluster is selected`; the current user authorization now selects Cluster 4 without reopening that closure.
+- `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup. `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1` verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK. Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on `emulator-5554`. The checkout-relative Flutter wrapper and durable device contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
 - `WF-2026-07-25-024` defines three compact Android journeys. `WF-2026-07-25-025`
   makes live preview opt-in and adds a verified 60-second bounded viewer trial.
+- `WF-2026-07-25-026` synchronized the existing Figma Professional phone-audit control surface at file `JnSwJlWnisxF6xtiwK6nFc` to clean pushed repository truth at `0396c014`. The text-only sync records clusters 1-3 as closed, identifies clusters 4-5, `DCL-PERF-001`, and `DCL-RC-001` in the authorized remaining order, keeps external/tablet work parked, and states that Figma is an informational non-blocking mirror rather than a repository gate. A post-write screenshot verified the existing page renders without the displaced completion card or stale blocker summaries. No product, device, emulator, account, asset, paid feature, or repository gate changed.
 
 ## Fixed release sequence
 
@@ -141,10 +138,8 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Maintenance checkpoint receipt
 
-Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/prune/tags, clean status, exact HEAD, branch/remote/worktree inventory, `main...origin/main`, coordination status, and current authority. Branch, remote, and worktree outcome: baseline `main` clean/aligned `0 0` at `79c4658fbe6fe6de8dd85319178fee7d7a72fe56`, one worktree, retained live-development branch untouched. Cleanup outcome: none needed or authorized; no artifact, branch, worktree, generated tree, device, emulator, or process removed. Resolved: settled-diff policy, compact local Android journeys, and opt-in bounded live preview. Unresolved item: non-blocking Figma audit sync remains separate. Next work may proceed: yes, after fresh authority and explicit workflow-slice selection; Cluster 3 stays closed and Cluster 4/5 remains unselected.
+Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/prune/tags, clean status, exact HEAD, branch/remote/worktree inventory, `main...origin/main`, coordination status, and current authority. Branch, remote, and worktree outcome: baseline `main` clean/aligned `0 0` at `79c4658fbe6fe6de8dd85319178fee7d7a72fe56`, one worktree, retained live-development branch untouched. Cleanup outcome: none needed or authorized; no artifact, branch, worktree, generated tree, device, emulator, or process removed. Resolved: settled-diff policy, compact local Android journeys, opt-in bounded live preview, and non-blocking Figma audit sync. Next work may proceed: yes, after rebuilding fresh authority for the user-authorized Cluster 4 slice; Cluster 3 stays closed.
 
 ## Next manual action
 
-Cluster 3 is complete. No later cluster is selected. Next workflow slice, only
-after explicit direction: reconcile non-blocking Figma audit sync. Do not infer
-an account, paid feature, product change, or later phone-quality cluster.
+Cluster 3 is complete and the Figma audit mirror is synchronized. Rebuild live Git, remote, repository, and coordination authority, then begin only the user-authorized phone-quality Cluster 4 scope: More/tools/species/rewards/preferences. Do not reopen clusters 1-3 or expand to Cluster 5, performance, release signoff, tablet, account/provider, premium, store/deploy, or iOS work inside that slice.
