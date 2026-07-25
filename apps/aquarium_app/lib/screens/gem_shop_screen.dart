@@ -111,7 +111,12 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           bottom: TabBar(
             controller: _tabController,
             isScrollable: MediaQuery.textScalerOf(context).scale(1) >= 1.6,
-            indicatorColor: DanioColors.gemPrimary,
+            indicator: BoxDecoration(
+              color: DanioColors.gemPrimary.withAlpha(50),
+              borderRadius: AppRadius.largeRadius,
+              border: Border.all(color: DanioColors.gemPrimary, width: 1.5),
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
             labelColor: DanioColors.gemPrimary,
             unselectedLabelColor: AppColors.textSecondaryDark,
             tabs: const [

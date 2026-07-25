@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';
+import 'common/pressable_scale.dart';
 import 'effects/sparkle_effect.dart';
 
 /// Animated progress bar that tweens from 0 → [value] on first build.
@@ -88,11 +89,13 @@ class AchievementCard extends StatelessWidget {
           : '${achievement.name}, ${isLocked ? 'locked' : 'unlocked'}, ${achievement.description}',
       button: true,
       enabled: true,
-      child: Material(
-        color: isLocked
-            ? Theme.of(context).colorScheme.surfaceContainerHighest
-            : rarityColor.withAlpha(26),
-        borderRadius: AppRadius.mediumRadius,
+      child: PressableScale(
+        onTap: onTap,
+        child: Material(
+          color: isLocked
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
+              : rarityColor.withAlpha(26),
+          borderRadius: AppRadius.mediumRadius,
         child: InkWell(
           onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
@@ -256,7 +259,8 @@ class AchievementCard extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),
+  );
 
     // Return card with optional sparkle effect
     if (showSparkle) {

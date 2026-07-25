@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/logger.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/common/pressable_scale.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/danio_snack_bar.dart';
@@ -615,20 +617,26 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: color.withAlpha(26),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: AppTypography.bodySmall),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              '$currency${amount.toStringAsFixed(2)}',
-              style: AppTypography.headlineSmall.copyWith(color: color),
-            ),
-          ],
+    return PressableScale(
+      child: Card(
+        color: color.withAlpha(26),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: AppTypography.bodySmall),
+              const SizedBox(height: AppSpacing.xs),
+              AnimatedDigitWidget(
+                value: amount,
+                fractionDigits: 2,
+                prefix: currency,
+                textStyle: AppTypography.headlineSmall.copyWith(color: color),
+                curve: Curves.easeOutCubic,
+                duration: AppDurations.long2,
+              ),
+            ],
+          ),
         ),
       ),
     );
