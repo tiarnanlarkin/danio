@@ -109,3 +109,41 @@ Before release-candidate work:
 - Check stale screenshot/log folders.
 - Confirm docs do not claim fake cloud, fake premium, or unsupported AI.
 - Run the release-candidate row in `QUALITY_LADDER.md`.
+
+## Periodic Maintenance Checkpoints
+
+Run a maintenance checkpoint before new feature work after every 3-5 completed work bundles.
+Run one earlier when stale worktrees or branches, build clutter,
+long handoffs, repeated task-routing confusion, or writer/heavy-lane ambiguity
+appears.
+
+Keep the checkpoint read-mostly:
+
+1. Rebuild live Git and remote authority under `GIT_WORKFLOW.md`.
+2. Run `codex-coordination.ps1 Status` and confirm repository-writer and
+   heavy-lane ownership.
+3. Inspect current branches, worktrees, untracked or generated artifacts, and
+   the active handoff.
+4. Classify cleanup as completed, deferred, or decision-needed.
+5. Record the receipt below in `ACTIVE_HANDOFF.md` and one concise
+   `SLICE_LOG.md` row.
+
+Do not delete, move, prune, or rewrite an artifact, branch, worktree, or
+generated tree when its ownership or disposal safety is uncertain. Do not
+interrupt active owned work. Record uncertainty as an unresolved item or
+archive candidate.
+
+Use this exact receipt shape:
+
+```text
+Maintenance checkpoint receipt
+- Trigger:
+- Checks run:
+- Branch, remote, and worktree outcome:
+- Cleanup outcome:
+- Unresolved items:
+- Next work may proceed:
+```
+
+The receipt is mandatory even when no cleanup is needed. It does not select a
+product slice, authorize device work, or reopen parked roadmap scope.

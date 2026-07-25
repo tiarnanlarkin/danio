@@ -245,6 +245,22 @@ void main() {
     }
   });
 
+  test('housekeeping defines periodic maintenance checkpoints and receipts', () {
+    _expectContainsAll('docs/agent/HOUSEKEEPING.md', [
+      'every 3-5 completed work bundles',
+      'read-mostly',
+      'codex-coordination.ps1 Status',
+      'Do not delete, move, prune, or rewrite',
+      'Maintenance checkpoint receipt',
+      'Trigger',
+      'Checks run',
+      'Branch, remote, and worktree outcome',
+      'Cleanup outcome',
+      'Unresolved items',
+      'Next work may proceed',
+    ]);
+  });
+
   test('phone completion scope keeps tablet and external lanes parked', () {
     _expectContainsAll(
       'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
@@ -1360,9 +1376,15 @@ void main() {
     expect(currentSliceRows, hasLength(25));
     expect(
       currentSliceRows.where(
-        (line) => line.startsWith('| DR-2026-07-19-057 |'),
+        (line) => line.startsWith('| WF-2026-07-25-022 |'),
       ),
       hasLength(1),
+    );
+    expect(
+      currentSliceRows.any(
+        (line) => line.startsWith('| DR-2026-07-19-057 |'),
+      ),
+      isFalse,
     );
     expect(
       currentSliceRows.any(
