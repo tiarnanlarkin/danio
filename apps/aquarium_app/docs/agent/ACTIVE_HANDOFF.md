@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: DCL-PERF-001 accepted; DCL-RC-001 final signoff is next
+Status: DCL-RC-001 closed; local Android phone candidate complete
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-25-081` / `WF-2026-07-25-026`
-Marker: `danio-dcl-perf-001-dropped-frame-formal-disposition-2026-07-25/1`
+Latest product/workflow epochs: `DR-2026-07-25-082` / `WF-2026-07-25-026`
+Marker: `danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -76,12 +76,12 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   the later user-authorized Cluster 4 closeout below supersedes routing without
   reopening Cluster 3.
 - `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup. `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1` verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK. Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on `emulator-5554`. The checkout-relative Flutter wrapper and durable device contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
-- `WF-2026-07-25-024` defines three compact Android journeys. `WF-2026-07-25-025`
-  makes live preview opt-in and adds a verified 60-second bounded viewer trial.
+- `WF-2026-07-25-024` defines three compact Android journeys. `WF-2026-07-25-025` makes live preview opt-in and adds a verified 60-second bounded viewer trial.
 - `WF-2026-07-25-026` synchronized the existing Figma Professional phone-audit control surface at file `JnSwJlWnisxF6xtiwK6nFc` to clean pushed repository truth at `0396c014`. The text-only sync records clusters 1-3 as closed, identifies clusters 4-5, `DCL-PERF-001`, and `DCL-RC-001` in the authorized remaining order, keeps external/tablet work parked, and states that Figma is an informational non-blocking mirror rather than a repository gate. A post-write screenshot verified the existing page renders without the displaced completion card or stale blocker summaries. No product, device, emulator, account, asset, paid feature, or repository gate changed.
 - `DR-2026-07-25-079` closes phone-quality Cluster 4. Workshop, Achievements, and Gem Shop reflow at 2.0x; More, species/plants, Inventory, and Preferences have permanent 2.0x coverage. Focused, Visual, reset-assisted AndroidPrep and Full (`GATE_TOTAL|PASS|206858|Full`), independent review, and serial-pinned device evidence pass. Final Full remains required at `DCL-RC-001`. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-more-tools-species-rewards-preferences.md`.
 - `DR-2026-07-25-080` under `danio-phone-quality-cluster-5-first-run-destructive-recovery-dialogs-2026-07-25/1` closes Cluster 5 and the ordered phone accessibility/visual/motion program. Consent and destructive/data-recovery confirmations reflow at 2.0x with permanent action-reachability tests. Focused, Visual, AndroidPrep, independent review, and reset-assisted Full pass; evidence is `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs.md`. `DCL-PERF-001 remains open`; final Full remains required at `DCL-RC-001`.
-- `DR-2026-07-25-081` formally dispositions the emulator-only percentage misses. Exact `574b28b92107368e987e267aa11135541b417255` passes cold (`1203 ms`), warm (`98 ms`), tabs (`226.942 ms`), image (`180.685 ms`), Tank average (`16.307 ms`), and scroll average (`17.198 ms`); raw Tank (`37.186%`) and scroll (`48.387%`) counters fail. Paired attribution isolates no incremental product P1, budgets remain unchanged, and `DCL-PERF-001 is accepted`. Evidence: `docs/qa/performance/2026-07-25/dcl-perf-001-dropped-frame-formal-disposition.md`; `docs/qa/performance/2026-07-25/dcl-perf-001-phone-profile-current-rerun.json`; SHA-256 `975F0A38723A417974AF3090A56C5521BC8DBA6AD812873CB96CCBD055C0810F`.
+- `DR-2026-07-25-081` under `danio-dcl-perf-001-dropped-frame-formal-disposition-2026-07-25/1` formally dispositions the emulator-only percentage misses. Exact `574b28b92107368e987e267aa11135541b417255` passes cold (`1203 ms`), warm (`98 ms`), tabs (`226.942 ms`), image (`180.685 ms`), Tank average (`16.307 ms`), and scroll average (`17.198 ms`); raw Tank (`37.186%`) and scroll (`48.387%`) counters fail. Paired attribution isolates no incremental product P1, budgets remain unchanged, and `DCL-PERF-001 is accepted`. Evidence: `docs/qa/performance/2026-07-25/dcl-perf-001-dropped-frame-formal-disposition.md`; `docs/qa/performance/2026-07-25/dcl-perf-001-phone-profile-current-rerun.json`; SHA-256 `975F0A38723A417974AF3090A56C5521BC8DBA6AD812873CB96CCBD055C0810F`.
+- `DR-2026-07-25-082` closes `DCL-RC-001` at product commit `bc76532e90379a102598abf977f837d01709ed07`. Final Visual, reset-assisted Full, reset-assisted AndroidPrep, current performance, and serial-pinned Android journeys/black-box smoke are complete with no unresolved P0/P1. Debug APK SHA-256: `A63ADF60206AC44E918C6D363E917B9A84632685143C299F176673B915439BFD`. Evidence: `docs/qa/2026-07-25-dcl-rc-001-final-local-phone-candidate.md`.
 
 ## Fixed release sequence
 
@@ -146,5 +146,5 @@ Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/pru
 
 ## Next manual action
 
-After clean push, rebuild Git/remote/repository/coordination authority, then run
-only `DCL-RC-001`; preserve all clusters and accepted `DCL-PERF-001`.
+Stop. Local Android phone candidate complete. Tablet/store/public release,
+cloud/accounts, paid/provider-key work, and iOS need separate authority.

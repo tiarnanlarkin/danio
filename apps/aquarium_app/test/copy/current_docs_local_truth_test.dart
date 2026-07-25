@@ -2664,6 +2664,44 @@ void main() {
     );
   });
 
+  test('DCL-RC-001 records the final local phone candidate evidence', () {
+    const epoch = 'DR-2026-07-25-082';
+    const marker = 'danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1';
+    const evidencePath =
+        'docs/qa/2026-07-25-dcl-rc-001-final-local-phone-candidate.md';
+    final handoff = _source('docs/agent/ACTIVE_HANDOFF.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source('docs/agent/SLICE_LOG.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source('docs/agent/FINISH_MAP.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final evidence = _source(evidencePath).replaceAll(RegExp(r'\s+'), ' ');
+
+    for (final source in [handoff, sliceLog, evidence]) {
+      expect(source, contains(epoch));
+      expect(source, contains(marker));
+      expect(source, contains('bc76532e90379a102598abf977f837d01709ed07'));
+      expect(source, contains('A63ADF60206AC44E918C6D363E917B9A84632685143C299F176673B915439BFD'));
+    }
+    for (final value in [
+      'GATE_TOTAL|PASS|35254|Visual',
+      'GATE_TOTAL|PASS|200040|Full',
+      'GATE_TOTAL|PASS|78784|AndroidPrep',
+      'ANDROID_USER_JOURNEYS|PASS|device=emulator-5554',
+      'B169752AC473D3EB00876A871926E219A7AC047ED86CF76DAC9A57527B0F753C',
+      'no unresolved P0/P1',
+      'DCL-PERF-001 accepted limitation',
+      'local Android phone candidate',
+    ]) {
+      expect(evidence, contains(value));
+    }
+    expect(ledger, contains('| `VERIFY_LOCALLY` | closed | Final evidence |'));
+    expect(finishMap, contains('| Whole-app phone audit | `DCL-RC-001` | Done |'));
+    expect(handoff, contains('DCL-RC-001 closed'));
+  });
+
   test('Tank and daily-care evidence is durable, bounded, and remains open', () {
     const epoch = 'DR-2026-07-23-072';
     const marker = 'danio-phone-quality-cluster-1-tank-daily-care-2026-07-23/1';
