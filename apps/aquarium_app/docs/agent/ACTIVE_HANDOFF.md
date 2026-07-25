@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: compact local Android user-journey suite defined; cluster 3 complete and remains closed; two phone-quality clusters remain
+Status: opt-in bounded live-preview trial verified; cluster 3 complete and remains closed; two phone-quality clusters remain
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-25-024`
+Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-25-025`
 Marker: `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -77,8 +77,8 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   Normal Quick Boot stayed ADB-offline; only the owned process pair was stopped, then snapshot-disabled recovery and serial-pinned CheckOnly passed on
   `emulator-5554`. The checkout-relative Flutter wrapper and durable device
   contract pass Focused `GATE_TOTAL|PASS|10842|Focused`; no AVD/app/cluster data changed.
-- `WF-2026-07-25-024` defines three compact Android journeys behind one local,
-  serial-pinned wrapper; `-ListOnly` inspects them without device execution.
+- `WF-2026-07-25-024` defines three compact Android journeys. `WF-2026-07-25-025`
+  makes live preview opt-in and adds a verified 60-second bounded viewer trial.
 
 ## Fixed release sequence
 
@@ -141,10 +141,10 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Maintenance checkpoint receipt
 
-Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/prune/tags, clean status, exact HEAD, branch/remote/worktree inventory, `main...origin/main`, coordination status, and current authority. Branch, remote, and worktree outcome: baseline `main` clean/aligned `0 0` at `79c4658fbe6fe6de8dd85319178fee7d7a72fe56`, one worktree, retained live-development branch untouched. Cleanup outcome: none needed or authorized; no artifact, branch, worktree, generated tree, device, emulator, or process removed. Resolved: settled-diff policy and compact local Android journeys. Unresolved items: opt-in bounded live-preview reconciliation and non-blocking Figma audit sync remain separate. Next work may proceed: yes, after fresh authority and explicit workflow-slice selection; Cluster 3 stays closed and Cluster 4/5 remains unselected.
+Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/prune/tags, clean status, exact HEAD, branch/remote/worktree inventory, `main...origin/main`, coordination status, and current authority. Branch, remote, and worktree outcome: baseline `main` clean/aligned `0 0` at `79c4658fbe6fe6de8dd85319178fee7d7a72fe56`, one worktree, retained live-development branch untouched. Cleanup outcome: none needed or authorized; no artifact, branch, worktree, generated tree, device, emulator, or process removed. Resolved: settled-diff policy, compact local Android journeys, and opt-in bounded live preview. Unresolved item: non-blocking Figma audit sync remains separate. Next work may proceed: yes, after fresh authority and explicit workflow-slice selection; Cluster 3 stays closed and Cluster 4/5 remains unselected.
 
 ## Next manual action
 
 Cluster 3 is complete. No later cluster is selected. Next workflow slice, only
-after explicit direction: reconcile the opt-in bounded live-preview viewer.
-Non-blocking Figma audit sync remains later.
+after explicit direction: reconcile non-blocking Figma audit sync. Do not infer
+an account, paid feature, product change, or later phone-quality cluster.

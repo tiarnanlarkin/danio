@@ -8,6 +8,7 @@ param(
   [switch]$LaunchEmulator,
   [switch]$ColdBoot,
   [switch]$CheckOnly,
+  [int]$PreviewSeconds = 0,
   [int]$WaitSeconds = 90,
   [int]$AdbCommandTimeoutSeconds = 10,
   [int]$PreflightTimeoutSeconds = 30
@@ -109,10 +110,13 @@ $script:Adb = Resolve-Tool -Name "adb" -FallbackPaths @(
   (Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe")
 )
 $script:Emulator = Resolve-EmulatorTool
-Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -ColdBoot, -UseLocalEnv, -EnvFile, -WaitSeconds, -AdbCommandTimeoutSeconds, -PreflightTimeoutSeconds."
+Write-Host "Supported switches: -CheckOnly, -PreviewSeconds, -LaunchEmulator, -ColdBoot, -UseLocalEnv, -EnvFile, -WaitSeconds, -AdbCommandTimeoutSeconds, -PreflightTimeoutSeconds."
 
 if ($WaitSeconds -le 0) {
   throw "WaitSeconds must be greater than zero."
+}
+if ($PreviewSeconds -lt 0) {
+  throw "PreviewSeconds must be greater than zero when supplied."
 }
 if ($AdbCommandTimeoutSeconds -le 0) {
   throw "AdbCommandTimeoutSeconds must be greater than zero."
@@ -256,6 +260,39 @@ function Invoke-NativeCommand {
   return [pscustomobject]@{
     ExitCode = $process.ExitCode
     Output = $output
+  }
+}
+
+function Invoke-BoundedFlutterPreview {
+  param(
+    [Parameter(Mandatory = $true)][string[]]$Arguments,
+    [Parameter(Mandatory = $true)][int]$DurationSeconds
+  )
+
+  $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $startInfo.FileName = $script:Flutter
+  $startInfo.Arguments = ($Arguments | ForEach-Object {
+      ConvertTo-NativeArgument -Argument $_
+    }) -join " "
+  $startInfo.UseShellExecute = $false
+
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $startInfo
+  try {
+    [void]$process.Start()
+    if ($process.WaitForExit($DurationSeconds * 1000)) {
+      if ($process.ExitCode -ne 0) {
+        throw "flutter run exited with code $($process.ExitCode)."
+      }
+      Write-Host "BOUNDED_PREVIEW|PASS|ended=flutter|seconds=$DurationSeconds"
+      return
+    }
+
+    Stop-OwnedNativeProcessTree -Process $process -Phase "bounded_flutter_preview"
+    Write-Host "BOUNDED_PREVIEW|PASS|ended=deadline|seconds=$DurationSeconds"
+  }
+  finally {
+    $process.Dispose()
   }
 }
 
@@ -528,6 +565,14 @@ try {
     Write-Host "Includes --dart-define-from-file=<local env file>; values are not printed."
   }
   Write-Host "Controls: r hot reload, R hot restart, q quit."
+  if ($PreviewSeconds -gt 0) {
+    Write-Host "Bounded preview trial will stop its owned flutter process tree after $PreviewSeconds seconds."
+    Invoke-BoundedFlutterPreview `
+      -Arguments $flutterArgs `
+      -DurationSeconds $PreviewSeconds
+    exit 0
+  }
+
   & $script:Flutter @flutterArgs
   if ($LASTEXITCODE -ne 0) {
     throw "flutter run exited with code $LASTEXITCODE."

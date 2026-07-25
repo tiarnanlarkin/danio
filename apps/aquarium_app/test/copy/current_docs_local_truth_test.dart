@@ -1800,7 +1800,13 @@ void main() {
     );
     expect(matrixEnd, greaterThan(matrixStart));
     final matrixRecord = matrixSource.substring(matrixStart, matrixEnd);
-    final sliceLogRecord = _source('docs/agent/SLICE_LOG.md')
+    final sliceLogRecord = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n')
         .split('\n')
         .singleWhere((line) => line.startsWith('| DR-2026-07-19-058 |'));
 

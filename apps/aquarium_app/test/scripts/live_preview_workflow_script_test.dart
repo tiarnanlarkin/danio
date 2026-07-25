@@ -59,6 +59,10 @@ void main() {
     expect(source, contains('r hot reload'));
     expect(source, contains('R hot restart'));
     expect(source, contains('q quit'));
+    expect(source, contains(r'[int]$PreviewSeconds = 0'));
+    expect(source, contains('PreviewSeconds must be greater than zero'));
+    expect(source, contains('BOUNDED_PREVIEW|PASS|'));
+    expect(source, contains('Stop-OwnedNativeProcessTree'));
 
     for (final forbidden in [
       'kill-server',
@@ -154,6 +158,9 @@ void main() {
     }
 
     expect(workflow, contains('observation lane'));
+    expect(workflow, contains('opt-in'));
+    expect(workflow, contains('never a routine blocking gate'));
+    expect(workflow, contains('-PreviewSeconds 60'));
     expect(workflow, contains('does not replace'));
     expect(workflow, contains('Full gate'));
     expect(workflow, contains('danio_api36'));

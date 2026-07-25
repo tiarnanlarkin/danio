@@ -5,11 +5,10 @@ Path: `docs/agent/LIVE_PREVIEW_WORKFLOW.md`.
 This workflow lets the user watch Danio while Codex builds, without replacing
 the local verification gates.
 
-Default rule: for substantial Danio app work, especially UI, navigation,
-product behavior, Android, or visual slices, attempt to start live preview at
-the beginning of the session so the user can follow along. Skip it only for
-docs-only, tests-only, refactor-only, or device-unsafe slices, and state why it
-was skipped.
+Default rule: live preview is opt-in and never a routine blocking gate. Start
+it only when the current slice or user explicitly requests observation and the
+writer, shared heavy lane, and device ownership checks all pass. Skipping live
+preview needs no exception and does not weaken test or gate evidence.
 
 ## Purpose
 
@@ -111,6 +110,20 @@ Run commands from `apps/aquarium_app`.
 
 4. Keep the emulator window visible for user testing.
 
+   For a short opt-in trial that cleans up only the Flutter process tree it
+   starts, use a positive duration:
+
+   ```powershell
+   .\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 `
+     -PreviewSeconds 60 `
+     -AdbCommandTimeoutSeconds 10 `
+     -PreflightTimeoutSeconds 30
+   ```
+
+   `BOUNDED_PREVIEW|PASS|ended=deadline|seconds=60` means the viewer reached
+   its requested bound and stopped its owned Flutter process tree. It does not
+   stop or wipe the emulator.
+
 5. Use hot reload for Dart and UI-only changes while the terminal is running:
 
    ```text
@@ -174,6 +187,8 @@ Good feedback from the user includes:
 - `-ColdBoot` is supplied without `-LaunchEmulator`.
 - Flutter, ADB, or the Android emulator binary cannot be resolved.
 - `flutter run` exits with a non-zero code.
+- `-PreviewSeconds` is negative. Zero retains the explicit interactive mode;
+  a positive value runs the bounded opt-in trial.
 
 `capture_danio_screen.ps1` must stop instead of writing evidence when:
 
