@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: all five phone-quality clusters complete; performance disposition is next
+Status: DCL-PERF-001 accepted; DCL-RC-001 final signoff is next
 Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-25-080` / `WF-2026-07-25-026`
-Marker: `danio-phone-quality-cluster-5-first-run-destructive-recovery-dialogs-2026-07-25/1`
+Latest product/workflow epochs: `DR-2026-07-25-081` / `WF-2026-07-25-026`
+Marker: `danio-dcl-perf-001-dropped-frame-formal-disposition-2026-07-25/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -80,7 +80,8 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   makes live preview opt-in and adds a verified 60-second bounded viewer trial.
 - `WF-2026-07-25-026` synchronized the existing Figma Professional phone-audit control surface at file `JnSwJlWnisxF6xtiwK6nFc` to clean pushed repository truth at `0396c014`. The text-only sync records clusters 1-3 as closed, identifies clusters 4-5, `DCL-PERF-001`, and `DCL-RC-001` in the authorized remaining order, keeps external/tablet work parked, and states that Figma is an informational non-blocking mirror rather than a repository gate. A post-write screenshot verified the existing page renders without the displaced completion card or stale blocker summaries. No product, device, emulator, account, asset, paid feature, or repository gate changed.
 - `DR-2026-07-25-079` closes phone-quality Cluster 4. Workshop, Achievements, and Gem Shop reflow at 2.0x; More, species/plants, Inventory, and Preferences have permanent 2.0x coverage. Focused, Visual, reset-assisted AndroidPrep and Full (`GATE_TOTAL|PASS|206858|Full`), independent review, and serial-pinned device evidence pass. Final Full remains required at `DCL-RC-001`. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-more-tools-species-rewards-preferences.md`.
-- `DR-2026-07-25-080` closes Cluster 5 and the ordered phone accessibility/visual/motion program. Consent and destructive/data-recovery confirmations reflow at 2.0x with permanent action-reachability tests. Focused, Visual, AndroidPrep, independent review, and reset-assisted Full pass; evidence is `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs.md`. `DCL-PERF-001 remains open`; final Full remains required at `DCL-RC-001`.
+- `DR-2026-07-25-080` under `danio-phone-quality-cluster-5-first-run-destructive-recovery-dialogs-2026-07-25/1` closes Cluster 5 and the ordered phone accessibility/visual/motion program. Consent and destructive/data-recovery confirmations reflow at 2.0x with permanent action-reachability tests. Focused, Visual, AndroidPrep, independent review, and reset-assisted Full pass; evidence is `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-first-run-destructive-recovery-dialogs.md`. `DCL-PERF-001 remains open`; final Full remains required at `DCL-RC-001`.
+- `DR-2026-07-25-081` formally dispositions the emulator-only percentage misses. Exact `574b28b92107368e987e267aa11135541b417255` passes cold (`1203 ms`), warm (`98 ms`), tabs (`226.942 ms`), image (`180.685 ms`), Tank average (`16.307 ms`), and scroll average (`17.198 ms`); raw Tank (`37.186%`) and scroll (`48.387%`) counters fail. Paired attribution isolates no incremental product P1, budgets remain unchanged, and `DCL-PERF-001 is accepted`. Evidence: `docs/qa/performance/2026-07-25/dcl-perf-001-dropped-frame-formal-disposition.md`; `docs/qa/performance/2026-07-25/dcl-perf-001-phone-profile-current-rerun.json`; SHA-256 `975F0A38723A417974AF3090A56C5521BC8DBA6AD812873CB96CCBD055C0810F`.
 
 ## Fixed release sequence
 
@@ -95,8 +96,8 @@ The ten planned product/test epochs are:
 7. Secure Optional-AI key storage through `ApiKeyStore` - complete in `DR-2026-07-21-066`.
 8. Compatibility and calculation rule coverage - complete in `DR-2026-07-22-067`.
 9. Global haptic-preference enforcement - complete in `DR-2026-07-22-068`.
-10. Profile performance harness on `danio_api36` - baseline and cold-boot
-    authoritative rerun recorded; Tank and scrolling dropped-frame budgets remain open.
+10. Profile performance harness on `danio_api36` - current-commit rerun and
+    accepted emulator percentage floor; raw failed counters remain preserved.
 
 After epochs 1-3, run the bounded Wishlist replay probe. Add an epoch only if a
 focused RED proves P0/P1 duplicate or replay behavior. After epoch 8, close only
@@ -145,4 +146,5 @@ Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/pru
 
 ## Next manual action
 
-After this epoch is clean and pushed, rebuild live Git, remote, repository, and coordination authority, then reconcile only the authorized `DCL-PERF-001` Tank and scrolling dropped-frame-budget failures. Keep all five clusters closed; `DCL-RC-001` remains last.
+After clean push, rebuild Git/remote/repository/coordination authority, then run
+only `DCL-RC-001`; preserve all clusters and accepted `DCL-PERF-001`.

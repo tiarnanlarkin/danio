@@ -846,6 +846,7 @@ void main() {
     const allowedStates = {
       'open',
       'closed',
+      'accepted',
       'parked',
       'decision_required',
     };
@@ -2179,9 +2180,13 @@ void main() {
     final finishMap = _source(
       'docs/agent/FINISH_MAP.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
-    final sliceLog = _source(
-      'docs/agent/SLICE_LOG.md',
-    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n').replaceAll(RegExp(r'\s+'), ' ');
 
     for (final source in [handoff, ledger, finishMap, sliceLog]) {
       expect(source, contains('DR-2026-07-21-066'));
@@ -2208,9 +2213,13 @@ void main() {
     final finishMap = _source(
       'docs/agent/FINISH_MAP.md',
     ).replaceAll(RegExp(r'\s+'), ' ');
-    final sliceLog = _source(
-      'docs/agent/SLICE_LOG.md',
-    ).replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = [
+      _source('docs/agent/SLICE_LOG.md'),
+      _source(
+        'docs/archive/agent-workflow-2026-07-16/'
+        'SLICE_LOG-rolling-overflow.md',
+      ),
+    ].join('\n').replaceAll(RegExp(r'\s+'), ' ');
 
     for (final value in [
       'DR-2026-07-22-068',
@@ -2271,10 +2280,13 @@ void main() {
     expect(handoff, contains('10 verified sessions'));
     expect(handoff, contains('DCL-PERF-001 remains open'));
     expect(ledger, contains('| DCL-PERF-001 |'));
-    expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
+    expect(
+      ledger,
+      contains('| `VERIFY_LOCALLY` | accepted | Phone performance |'),
+    );
     expect(
       finishMap,
-      contains('| Performance | `DCL-PERF-001` | In progress |'),
+      contains('| Performance | `DCL-PERF-001` | Accepted |'),
     );
 
     expect(report['passed'], isFalse);
@@ -2342,10 +2354,13 @@ void main() {
       ),
     );
     expect(ledger, contains('| DCL-PERF-001 |'));
-    expect(ledger, contains('| `VERIFY_LOCALLY` | open | Phone performance |'));
+    expect(
+      ledger,
+      contains('| `VERIFY_LOCALLY` | accepted | Phone performance |'),
+    );
     expect(
       finishMap,
-      contains('| Performance | `DCL-PERF-001` | In progress |'),
+      contains('| Performance | `DCL-PERF-001` | Accepted |'),
     );
 
     expect(attribution['schema_version'], 1);
@@ -2552,17 +2567,102 @@ void main() {
 
       expect(report['passed'], isFalse);
       expect(handoff, contains('DCL-PERF-001 remains open'));
-      expect(handoff, isNot(contains('DCL-PERF-001 is closed')));
+      expect(handoff, contains('DCL-PERF-001 is accepted'));
       expect(
         ledger,
-        contains('| `VERIFY_LOCALLY` | open | Phone performance |'),
+        contains('| `VERIFY_LOCALLY` | accepted | Phone performance |'),
       );
       expect(
         finishMap,
-        contains('| Performance | `DCL-PERF-001` | In progress |'),
+        contains('| Performance | `DCL-PERF-001` | Accepted |'),
       );
     },
   );
+
+  test('current phone performance misses have a bounded formal disposition', () {
+    const epoch = 'DR-2026-07-25-081';
+    const marker =
+        'danio-dcl-perf-001-dropped-frame-formal-disposition-2026-07-25/1';
+    const reportPath =
+        'docs/qa/performance/2026-07-25/'
+        'dcl-perf-001-phone-profile-current-rerun.json';
+    const evidencePath =
+        'docs/qa/performance/2026-07-25/'
+        'dcl-perf-001-dropped-frame-formal-disposition.md';
+    const reportSha256 =
+        '975F0A38723A417974AF3090A56C5521BC8DBA6AD812873CB96CCBD055C0810F';
+    final handoff = _source('docs/agent/ACTIVE_HANDOFF.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final sliceLog = _source('docs/agent/SLICE_LOG.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final ledger = _source('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final finishMap = _source('docs/agent/FINISH_MAP.md')
+        .replaceAll(RegExp(r'\s+'), ' ');
+    final evidence = _source(evidencePath).replaceAll(RegExp(r'\s+'), ' ');
+    final reportBytes = File(reportPath).readAsBytesSync();
+    final report =
+        jsonDecode(utf8.decode(reportBytes)) as Map<String, dynamic>;
+
+    expect(
+      sha256.convert(reportBytes).toString().toUpperCase(),
+      reportSha256,
+    );
+    expect(report['product_commit'], '574b28b92107368e987e267aa11135541b417255');
+    expect(report['device'], 'danio_api36 (emulator-5554)');
+    expect(report['passed'], isFalse);
+    final scenarios = (report['scenarios'] as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final byName = {
+      for (final scenario in scenarios)
+        scenario['scenario'] as String: scenario,
+    };
+    expect(byName['cold_start']!['median_ms'], 1203.0);
+    expect(byName['warm_resume']!['median_ms'], 98.0);
+    expect(byName['tab_switching']!['median_ms'], 226.942);
+    expect(byName['local_image_first_paint']!['median_ms'], 180.685);
+    expect(
+      byName['tank_feedback']!['average_frame_time_ms'] as num,
+      closeTo(16.30669849246231, 0.000000001),
+    );
+    expect(
+      byName['tank_feedback']!['dropped_frame_percentage'] as num,
+      closeTo(37.185929648241206, 0.000000001),
+    );
+    expect(
+      byName['scrolling']!['average_frame_time_ms'] as num,
+      closeTo(17.198443548387086, 0.000000001),
+    );
+    expect(
+      byName['scrolling']!['dropped_frame_percentage'] as num,
+      closeTo(48.38709677419355, 0.000000001),
+    );
+
+    for (final source in [handoff, sliceLog, evidence]) {
+      expect(source, contains(epoch));
+      expect(source, contains(marker));
+      expect(source, contains(reportPath));
+      expect(source, contains(reportSha256));
+    }
+    for (final value in [
+      'idle `15.998 ms` versus feeding `16.007 ms`',
+      'Learn `15.924 ms` versus minimal `15.958 ms`',
+      'no incremental product P1',
+      'budgets were not relaxed',
+      'DCL-PERF-001 is accepted',
+      'DCL-RC-001',
+    ]) {
+      expect(evidence, contains(value));
+    }
+    expect(
+      ledger,
+      contains('| `VERIFY_LOCALLY` | accepted | Phone performance |'),
+    );
+    expect(
+      finishMap,
+      contains('| Performance | `DCL-PERF-001` | Accepted |'),
+    );
+  });
 
   test('Tank and daily-care evidence is durable, bounded, and remains open', () {
     const epoch = 'DR-2026-07-23-072';
