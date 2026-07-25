@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/features/smart/fish_id/fish_id_screen.dart';
@@ -89,6 +90,8 @@ Widget _wrap({
   required SharedPreferences prefs,
   required _FakeFishIdOpenAIService openAI,
   required Future<File?> Function() pickImage,
+  double textScaleFactor = 1,
+  bool disableAnimations = false,
 }) {
   return ProviderScope(
     overrides: [
@@ -98,6 +101,13 @@ Widget _wrap({
       aiHistoryProvider.overrideWith((ref) => AIHistoryNotifier(ref)),
     ],
     child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+          disableAnimations: disableAnimations,
+        ),
+        child: child!,
+      ),
       home: FishIdScreen(imagePicker: (_) => pickImage()),
     ),
   );
@@ -140,11 +150,15 @@ Future<void> _startIdentification({
   required _FakeFishIdOpenAIService openAI,
   required File selectedImage,
   void Function()? onPick,
+  double textScaleFactor = 1,
+  bool disableAnimations = false,
 }) async {
   await tester.pumpWidget(
     _wrap(
       prefs: prefs,
       openAI: openAI,
+      textScaleFactor: textScaleFactor,
+      disableAnimations: disableAnimations,
       pickImage: () async {
         onPick?.call();
         return selectedImage;
@@ -158,6 +172,25 @@ Future<void> _startIdentification({
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('skips Fish ID result motion when animations are disabled', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'openai_disclosure_accepted': true,
+    });
+    final prefs = await SharedPreferences.getInstance();
+
+    await _startIdentification(
+      tester: tester,
+      prefs: prefs,
+      openAI: _FakeFishIdOpenAIService(),
+      selectedImage: _createTestImage(),
+      disableAnimations: true,
+    );
+
+    expect(find.byType(Animate), findsNothing);
+  });
 
   testWidgets(
     'canceling Fish ID activity save keeps result visible and writes nothing',

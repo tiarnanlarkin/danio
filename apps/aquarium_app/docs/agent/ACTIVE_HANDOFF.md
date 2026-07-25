@@ -1,9 +1,9 @@
 # Danio Active Handoff
 
-Status: emulator workflow verified; cluster 3 paused; three phone-quality clusters remain
-Updated: 2026-07-24
-Latest product/workflow epochs: `DR-2026-07-24-077` / `WF-2026-07-24-021`
-Marker: `danio-local-android-emulator-workflow-2026-07-24/1`
+Status: cluster 3 complete; two phone-quality clusters remain
+Updated: 2026-07-25
+Latest product/workflow epochs: `DR-2026-07-24-078` / `WF-2026-07-24-021`
+Marker: `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1`
 Authority epoch: `DR-2026-07-19-057`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
@@ -20,22 +20,11 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Verified baseline
 
-- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`. `DCL-DR-003-F1` through `DCL-DR-003-F38` are settled evidence; F34 is complete; do not reopen without contradictory live evidence. Closure passed
-  `GATE_TOTAL|PASS|187023|Full` and `GATE_TOTAL|PASS|4551|Docs`.
-- `DCL-DR-004` is `closed` in `DR-2026-07-21-063` under marker
-  `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`; its
-  reset-assisted Full passed (`GATE_TOTAL|PASS|213027|Full`).
-- Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066 closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and
-  `GATE_TOTAL|PASS|243873|Full`; the secure-key closeout carried 14 verified sessions. Detailed evidence remains in the ledger/log.
-- Epoch 067 closed the Compatibility, calculation, content, and source rows
-  under `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1`
-  after direct executable coverage and reset-assisted Full
-  (`GATE_TOTAL|PASS|233189|Full`). Detailed evidence remains in the ledger/log.
-- Epoch 068 under `danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1`
-  routed every product haptic through the persisted preference adapter. Focused
-  passed (`GATE_TOTAL|PASS|17006|Focused`) and reset-assisted Full passed
-  (`GATE_TOTAL|PASS|202146|Full`). Its closeout left 11 verified sessions;
-  `DCL-MOTION-001` remains open only for the five phone-quality clusters.
+- `DCL-DR-001` is `closed`; `DCL-DR-002` is `closed`; `DCL-DR-003` is `closed`. `DCL-DR-003-F1` through `DCL-DR-003-F38` are settled evidence; F34 is complete; do not reopen without contradictory live evidence. Closure passed `GATE_TOTAL|PASS|187023|Full` and `GATE_TOTAL|PASS|4551|Docs`.
+- `DCL-DR-004` is `closed` in `DR-2026-07-21-063` under marker `danio-dcl-dr-004-backup-tombstone-relationship-proof-2026-07-21/1`; its reset-assisted Full passed (`GATE_TOTAL|PASS|213027|Full`).
+- Epoch 064 started with 17 verified sessions under marker `danio-dcl-ai-001-fish-id-activity-consent-proof-2026-07-21/1`; epochs 064-066 closed Fish ID consent, Compatibility consent, and secure Optional-AI key storage; Full gates passed at `GATE_TOTAL|PASS|177895|Full`, `GATE_TOTAL|PASS|183065|Full`, and `GATE_TOTAL|PASS|243873|Full`; the secure-key closeout carried 14 verified sessions. Detailed evidence remains in the ledger/log.
+- Epoch 067 closed the Compatibility, calculation, content, and source rows under `danio-dcl-rule-001-compatibility-calculation-rule-coverage-2026-07-21/1` after direct executable coverage and reset-assisted Full (`GATE_TOTAL|PASS|233189|Full`). Detailed evidence remains in the ledger/log.
+- Epoch 068 under `danio-dcl-motion-001-global-haptic-preference-enforcement-2026-07-22/1` routed every product haptic through the persisted preference adapter. Focused passed (`GATE_TOTAL|PASS|17006|Focused`) and reset-assisted Full passed (`GATE_TOTAL|PASS|202146|Full`). Its closeout left 11 verified sessions; `DCL-MOTION-001` remains open only for the five phone-quality clusters.
 - Epoch 069 (`DR-2026-07-22-069`) under `danio-dcl-perf-001-profile-performance-harness-2026-07-22/1`
   added the profile-only harness and measured exact product commit
   `61dbb1748487b9111fa8f6e2cccc24100c71dba4` on
@@ -79,6 +68,9 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
   and Practice reduced-motion fixes; stories need no product change. Focused
   and Visual plus reset-assisted Full (`GATE_TOTAL|PASS|297670|Full`) pass. The bounded device attempt produced no contradictory product
   evidence and released font 1.0, stopped app, launcher, and passing CheckOnly.
+- `DR-2026-07-24-078` under `danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1` closes phone-quality cluster 3. Smart/keyless cards and the Weekly Plan disclaimer reflow at 2.0x; Smart, Fish ID, Symptom Triage, Weekly Plan, and the shared bubble loader honor reduced motion.
+  Focused `GATE_TOTAL|PASS|105677|Focused`, Visual `GATE_TOTAL|PASS|14653|Visual`, and reset-assisted Full `GATE_TOTAL|PASS|253493|Full` pass.
+  Bound device evidence confirms honest local no-key and locked Optional-AI states, then restores font 1.0, stops Danio, returns the launcher, and passes serial-pinned CheckOnly. Evidence: `docs/qa/phone-quality/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai.md`.
 - `WF-2026-07-24-020` added the shared preflight deadline and bounded cleanup.
   `WF-2026-07-24-021` under `danio-local-android-emulator-workflow-2026-07-24/1`
   verified the installed Pixel 7/API 36 AVD, Flutter 3.44.0, and Android 16 SDK.
@@ -135,7 +127,8 @@ those product/content/rule rows backed by executable evidence. After epochs
   fresh-direction diagnostic left 12; epochs 068 and 069 left 11 then 10.
   Epoch 070's environment stop left 9 and repaired closeout left 8. Epochs 071,
   072, and 075 left 7, 6, and 5. Epoch 076 consumes one clean diagnostic
-  closeout and leaves four verified sessions; epoch 077 leaves three verified sessions.
+  closeout and leaves four verified sessions; epoch 077 leaves three verified
+  sessions; epoch 078 leaves two verified sessions.
 - Never create an automatic successor task. The former automation remains
   frozen; only the manual user-directed coordinator routing in the reconciliation
   plan may create one exact-marker successor from a clean pushed checkpoint.
@@ -146,5 +139,7 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Next manual action
 
-Do not resume from this workflow commit alone. After user confirmation, resume only the preserved Cluster 3 Smart/no-key/Optional-AI UI work; do not resume it automatically. Re-prove Git/writer coordination and run serial-pinned CheckOnly before interaction.
-Preserve the existing ten-path cluster diff and every later-cluster, performance, tablet, iOS, store, cloud, account, provider, paid-service, and secret exclusion.
+Cluster 3 is complete. No later cluster is selected. Stop at clean pushed
+`main` and wait for a fresh explicit marker and scope before any Cluster 4/5,
+performance, tablet, iOS, store, cloud, account, provider, paid-service,
+secret, or external work.

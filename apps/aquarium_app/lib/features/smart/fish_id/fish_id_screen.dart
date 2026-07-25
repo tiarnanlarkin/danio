@@ -462,7 +462,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   }
 
   Widget _buildLoading() {
-    return Center(
+    final content = Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
@@ -476,7 +476,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
           ],
         ),
       ),
-    ).animate().fadeIn();
+    );
+    if (MediaQuery.of(context).disableAnimations) return content;
+    return content.animate().fadeIn();
   }
 
   Widget _buildError() {
@@ -502,7 +504,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
   Widget _buildResultCard(ThemeData theme, bool isDark) {
     final r = _result!;
-    return Card(
+    final card = Card(
       elevation: AppElevation.level1,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
       child: Padding(
@@ -704,7 +706,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1);
+    );
+    if (MediaQuery.of(context).disableAnimations) return card;
+    return card.animate().fadeIn(duration: 400.ms).slideY(begin: 0.1);
   }
 
   Widget _buildCareLevel(int level) {

@@ -18,6 +18,13 @@ import '../openai_disclosure_gate.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
+extension on Widget {
+  Widget weeklyPlanAnimate(BuildContext context, {required Duration delay}) {
+    if (MediaQuery.of(context).disableAnimations) return this;
+    return animate(delay: delay).fadeIn().slideX(begin: 0.05);
+  }
+}
+
 /// Screen that generates and displays a personalised weekly maintenance plan.
 class WeeklyPlanScreen extends ConsumerStatefulWidget {
   const WeeklyPlanScreen({super.key});
@@ -338,11 +345,14 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             children: [
               Icon(Icons.auto_awesome, size: 12, color: context.textSecondary),
               const SizedBox(width: 4),
-              Text(
-                'AI-generated plan - Always verify with your tank\'s specific needs',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: context.textSecondary,
-                  fontStyle: FontStyle.italic,
+              Flexible(
+                child: Text(
+                  'AI-generated plan - Always verify with your tank\'s specific needs',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: context.textSecondary,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
             ],
@@ -420,7 +430,7 @@ class _DayCard extends StatelessWidget {
           );
         }).toList(),
       ),
-    ).animate(delay: (index * 50).ms).fadeIn().slideX(begin: 0.05);
+    ).weeklyPlanAnimate(context, delay: (index * 50).ms);
   }
 
   Widget _priorityIcon(String priority, BuildContext context) {

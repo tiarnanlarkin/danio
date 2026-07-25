@@ -142,18 +142,21 @@ class _Bubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [color.withAlpha(204), color.withAlpha(102)],
-              center: const Alignment(-0.3, -0.3),
-            ),
-            border: Border.all(color: color.withAlpha(153), width: 1),
-          ),
-        )
+    final bubble = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color.withAlpha(204), color.withAlpha(102)],
+          center: const Alignment(-0.3, -0.3),
+        ),
+        border: Border.all(color: color.withAlpha(153), width: 1),
+      ),
+    );
+    if (MediaQuery.of(context).disableAnimations) return bubble;
+
+    return bubble
         .animate(onPlay: (controller) => controller.repeat(), delay: delay)
         .fadeIn(duration: 200.ms)
         .then()
@@ -163,7 +166,11 @@ class _Bubble extends StatelessWidget {
           duration: duration,
           curve: AppCurves.standardDecelerate,
         )
-        .fadeOut(begin: 0.8, duration: duration * 0.3, delay: duration * 0.7)
+        .fadeOut(
+          begin: 0.8,
+          duration: duration * 0.3,
+          delay: duration * 0.7,
+        )
         .scaleXY(
           begin: 1.0,
           end: 0.6,

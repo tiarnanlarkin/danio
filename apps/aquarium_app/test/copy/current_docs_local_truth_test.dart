@@ -2189,7 +2189,7 @@ void main() {
       contains('| Motion and haptics | `DCL-MOTION-001` | In progress |'),
     );
     for (final source in [handoff, ledger, finishMap]) {
-      expect(source, contains('three phone-quality clusters remain'));
+      expect(source, contains('two phone-quality clusters remain'));
     }
   });
 
@@ -2795,8 +2795,8 @@ void main() {
             );
         expect(ledgerRow, contains('| open |'));
       }
-      expect(ledger, contains('three phone-quality clusters remain'));
-      expect(finishMap, contains('three phone-quality clusters remain'));
+      expect(ledger, contains('two phone-quality clusters remain'));
+      expect(finishMap, contains('two phone-quality clusters remain'));
       expect(
         finishMap,
         contains('| Accessibility | `DCL-A11Y-001` | In progress |'),
@@ -2955,10 +2955,16 @@ void main() {
         expect(source, contains(epoch));
         expect(source, contains(marker));
       }
-      for (final source in [handoff, sliceLog, ledger, finishMap, evidence]) {
+      for (final source in [sliceLog, evidence]) {
         expect(
           source.toLowerCase(),
           contains('three phone-quality clusters remain'),
+        );
+      }
+      for (final source in [handoff, ledger, finishMap]) {
+        expect(
+          source.toLowerCase(),
+          contains('two phone-quality clusters remain'),
         );
       }
 
@@ -2987,11 +2993,11 @@ void main() {
           'Yes; font scale 1.0; app stopped; launcher foreground; emulator left running',
         ),
       );
-      expect(handoff, contains('three verified sessions'));
-      expect(handoff, contains('cluster 3 paused'));
+      expect(handoff, contains('two verified sessions'));
+      expect(handoff, contains('cluster 3 complete'));
       expect(
         handoff,
-        contains('Do not resume from this workflow commit alone'),
+        contains('No later cluster is selected'),
       );
       expect(sliceLog, contains('No successor was created'));
 
@@ -3005,7 +3011,127 @@ void main() {
           'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
         ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
         expect(ledgerRow, contains('| open |'));
-        expect(ledgerRow, contains('three phone-quality clusters remain'));
+        expect(ledgerRow, contains('two phone-quality clusters remain'));
+      }
+    },
+  );
+
+  test(
+    'Smart no-key and Optional AI close phone-quality cluster 3',
+    () {
+      const epoch = 'DR-2026-07-24-078';
+      const marker =
+          'danio-phone-quality-cluster-3-smart-no-key-optional-ai-2026-07-24/1';
+      const evidencePath =
+          'docs/qa/phone-quality/2026-07-25/'
+          'dcl-a11y-001-smart-no-key-optional-ai.md';
+      const planPath =
+          'docs/agent/plans/'
+          '2026-07-24-phone-quality-cluster-3-smart-no-key-optional-ai.md';
+
+      final handoff = _source(
+        'docs/agent/ACTIVE_HANDOFF.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final sliceLog = _source(
+        'docs/agent/SLICE_LOG.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final deviceOwnership = _source(
+        'docs/agent/DEVICE_OWNERSHIP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final ledger = _source(
+        'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final finishMap = _source(
+        'docs/agent/FINISH_MAP.md',
+      ).replaceAll(RegExp(r'\s+'), ' ');
+      final plan = _source(planPath).replaceAll(RegExp(r'\s+'), ' ');
+      final evidenceFile = File(evidencePath);
+      expect(
+        evidenceFile.existsSync(),
+        isTrue,
+        reason: 'Cluster-3 evidence is missing.',
+      );
+      final evidence = evidenceFile.existsSync()
+          ? evidenceFile.readAsStringSync().replaceAll(RegExp(r'\s+'), ' ')
+          : '';
+
+      for (final source in [handoff, sliceLog, evidence, plan]) {
+        expect(source, contains(epoch));
+        expect(source, contains(marker));
+      }
+      for (final source in [handoff, sliceLog, ledger, finishMap, evidence]) {
+        expect(
+          source.toLowerCase(),
+          contains('two phone-quality clusters remain'),
+        );
+      }
+
+      for (final value in [
+        'GATE_TOTAL|PASS|105677|Focused',
+        'GATE_TOTAL|PASS|14653|Visual',
+        'GATE_TOTAL|PASS|253493|Full',
+        '2.0x',
+        '48 dp',
+        'disabled haptics',
+        'No asset bytes changed',
+        'DCL-PERF-001 remains open',
+        'Local checks, no AI key needed',
+        'Optional AI setup required',
+      ]) {
+        expect(evidence, contains(value));
+      }
+
+      const evidenceHashes = {
+        'docs/qa/screenshots/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai/phone-smart-no-key-2x.png':
+            'DBA72B02B6C77CA95C0ED5A51194854E6E56EAC30AA6068F953A3794DDB3D316',
+        'docs/qa/screenshots/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai/phone-smart-no-key-2x.xml':
+            '07EEEFAC9367ED9D039F1FC6E09B6F8C651C2AEC86803797934604339B48CF9E',
+        'docs/qa/screenshots/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai/phone-smart-no-key-2x-logcat.txt':
+            '6B6BA48790CB1B308F93279EC4506B3C48E82C3643A665F128318FE0B5EA23AC',
+        'docs/qa/screenshots/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai/phone-smart-no-key-cards-2x.png':
+            '3F8F680FCFD0537CE6D6EC437F7C38A1683683F114D8750E43187159A09934F0',
+        'docs/qa/screenshots/2026-07-25/dcl-a11y-001-smart-no-key-optional-ai/phone-smart-no-key-cards-2x.xml':
+            'FD002D9F0553612727A9C742AB72049BA258861776654485089B318A3EB97C2F',
+      };
+      for (final entry in evidenceHashes.entries) {
+        final artifact = File(entry.key);
+        expect(artifact.existsSync(), isTrue);
+        expect(evidence, contains(entry.key));
+        expect(evidence, contains(entry.value));
+        expect(
+          sha256
+              .convert(artifact.readAsBytesSync())
+              .toString()
+              .toUpperCase(),
+          entry.value,
+        );
+      }
+
+      expect(deviceOwnership, contains(epoch));
+      expect(deviceOwnership, contains(evidencePath));
+      expect(
+        deviceOwnership,
+        contains(
+          'Yes; font scale 1.0; app stopped; launcher foreground; emulator left running',
+        ),
+      );
+      expect(handoff, contains('two verified sessions'));
+      expect(handoff, contains('cluster 3 complete'));
+      expect(handoff, contains('No later cluster is selected'));
+      expect(sliceLog, contains('No successor was created'));
+      expect(plan, contains('Status: complete'));
+
+      for (final id in [
+        'DCL-A11Y-001',
+        'DCL-VIS-001',
+        'DCL-VIS-002',
+        'DCL-MOTION-001',
+      ]) {
+        final ledgerRow = _source(
+          'docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md',
+        ).split('\n').singleWhere((line) => line.startsWith('| $id |'));
+        expect(ledgerRow, contains('| open |'));
+        expect(ledgerRow, contains('two phone-quality clusters remain'));
       }
     },
   );

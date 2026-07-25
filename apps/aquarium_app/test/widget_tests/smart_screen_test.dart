@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/smart_screen.dart';
@@ -35,6 +36,8 @@ Widget _wrap({
   bool aiConfigured = false,
   StorageService? storage,
   OpenAIService? openAI,
+  double textScaleFactor = 1,
+  bool disableAnimations = false,
 }) {
   return ProviderScope(
     overrides: [
@@ -50,7 +53,16 @@ Widget _wrap({
       anomalyHistoryProvider.overrideWith((ref) => AnomalyHistoryNotifier(ref)),
       // apiRateLimiterProvider is built by the framework — not overridden here
     ],
-    child: const MaterialApp(home: SmartScreen()),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+          disableAnimations: disableAnimations,
+        ),
+        child: child!,
+      ),
+      home: const SmartScreen(),
+    ),
   );
 }
 
@@ -316,6 +328,49 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('reflows keyless Smart cards at 2.0x on a phone', (
+      tester,
+    ) async {
+      // Keep the compact phone width while giving the lazy list enough height
+      // to build every keyless card for direct text-layout inspection.
+      await tester.binding.setSurfaceSize(const Size(360, 2400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(textScaleFactor: 2));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(tester.takeException(), isNull);
+
+      final setupLabels = tester.widgetList<Text>(
+        find.text('Optional AI setup in Preferences', skipOffstage: false),
+      );
+      expect(setupLabels, hasLength(3));
+      expect(
+        setupLabels.every(
+          (label) =>
+              label.maxLines != 1 && label.overflow != TextOverflow.ellipsis,
+        ),
+        isTrue,
+        reason: 'Keyless setup guidance must reflow instead of truncating.',
+      );
+    });
+
+    testWidgets(
+      'skips Smart card entrance motion when animations are disabled',
+      (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(const Size(360, 2400));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        await tester.pumpWidget(_wrap(disableAnimations: true));
+        await tester.pump();
+
+        expect(find.byType(Animate), findsNothing);
+      },
+    );
 
     testWidgets('opens Emergency Guide from the local Smart actions', (
       tester,

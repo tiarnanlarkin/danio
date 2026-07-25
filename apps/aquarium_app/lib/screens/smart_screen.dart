@@ -33,6 +33,16 @@ import 'settings_screen.dart';
 
 const double _maxSmartReadableWidth = 720;
 
+extension on Widget {
+  Widget smartAnimate(
+    BuildContext context, {
+    Duration delay = Duration.zero,
+  }) {
+    if (MediaQuery.of(context).disableAnimations) return this;
+    return animate(delay: delay).fadeIn().slideX(begin: 0.05);
+  }
+}
+
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
   DanioSnackBar.warning(
@@ -386,7 +396,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           const EmergencyGuideScreen(),
           rootNavigator: true,
         ),
-      ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+      ).smartAnimate(context),
 
       // Feature cards gated behind API key (CA-004) + connectivity
       KeyedSubtree(
@@ -408,7 +418,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   AppRoutes.toFishId(context);
                 }
               : () => _showAiSetupSheet(context),
-        ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+        ).smartAnimate(context),
       ),
 
       _FeatureCard(
@@ -428,7 +438,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 AppRoutes.toSymptomTriage(context);
               }
             : () => _showAiSetupSheet(context),
-      ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
+      ).smartAnimate(context, delay: 50.ms),
 
       _FeatureCard(
         icon: Icons.calendar_month,
@@ -448,7 +458,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 AppRoutes.toWeeklyPlan(context);
               }
             : () => _showAiSetupSheet(context),
-      ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
+      ).smartAnimate(context, delay: 100.ms),
       // Compatibility Checker (optional AI advice when a key is configured)
       if (aiConfigured) ...[
         const SizedBox(height: AppSpacing.sm),
@@ -464,7 +474,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           subtitle: 'Check fish matches with local species data',
           color: AppColors.success,
           onTap: () => AppRoutes.toWorkshop(context),
-        ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+        ).smartAnimate(context, delay: 150.ms),
       ],
 
       // Ask Danio - quick question
@@ -542,7 +552,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               ],
             ),
           ),
-        ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
+        ).smartAnimate(context, delay: 200.ms),
       ],
 
       const SizedBox(height: AppSpacing.sm),
@@ -557,7 +567,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             : '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
         color: activeAnomalies.isEmpty ? AppColors.success : AppColors.warning,
         onTap: () => _showAnomalyHistory(context, ref),
-      ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+      ).smartAnimate(context, delay: 150.ms),
 
       const SizedBox(height: AppSpacing.lg),
 
@@ -1081,16 +1091,12 @@ class _FeatureCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
                             subtitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: context.textSecondary,
                             ),

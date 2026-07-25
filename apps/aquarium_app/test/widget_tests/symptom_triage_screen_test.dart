@@ -2,9 +2,12 @@
 //
 // Run: flutter test test/widget_tests/symptom_triage_screen_test.dart
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +21,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/openai_service.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/widgets/core/app_button.dart';
+import 'package:danio/widgets/core/bubble_loader.dart';
 import 'package:danio/widgets/offline_indicator.dart';
 
 class _FakeOpenAIService extends OpenAIService {
@@ -38,6 +42,21 @@ class _FakeOpenAIService extends OpenAIService {
   }) async* {
     streamCalls += 1;
     yield 'Likely water quality stress. Test ammonia and nitrite first.';
+  }
+}
+
+class _PendingOpenAIService extends _FakeOpenAIService {
+  final controller = StreamController<String>();
+
+  @override
+  Stream<String> chatCompletionStream({
+    required List<ChatMessage> messages,
+    String model = OpenAIModels.chat,
+    double temperature = 0.7,
+    int? maxTokens,
+  }) {
+    streamCalls += 1;
+    return controller.stream;
   }
 }
 
@@ -166,6 +185,8 @@ Widget _wrap({
   required _SymptomTriageStorage storage,
   SharedPreferences? prefs,
   _FakeOpenAIService? openAI,
+  double textScaleFactor = 1,
+  bool disableAnimations = false,
 }) {
   return ProviderScope(
     overrides: [
@@ -177,7 +198,16 @@ Widget _wrap({
       openAIConfiguredProvider.overrideWith((ref) async => true),
       isOnlineProvider.overrideWithValue(true),
     ],
-    child: const MaterialApp(home: SymptomTriageScreen()),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+          disableAnimations: disableAnimations,
+        ),
+        child: child!,
+      ),
+      home: const SymptomTriageScreen(),
+    ),
   );
 }
 
@@ -225,6 +255,53 @@ void main() {
       'openai_disclosure_accepted': true,
     });
   });
+
+  testWidgets(
+    'skips Symptom Triage loading motion when animations are disabled',
+    (
+      tester,
+    ) async {
+      final storage = _SymptomTriageStorage(_tank());
+      final openAI = _PendingOpenAIService();
+      addTearDown(() async {
+        if (!openAI.controller.isClosed) await openAI.controller.close();
+      });
+
+      await tester.pumpWidget(
+        _wrap(
+          storage: storage,
+          openAI: openAI,
+          disableAnimations: true,
+        ),
+      );
+      await tester.tap(find.text('White spots'));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(AppButton, 'Next').hitTestable());
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(AppButton, 'Get Diagnosis').hitTestable(),
+      );
+      await tester.pump();
+
+      expect(find.text('Analysing symptoms...'), findsOneWidget);
+      expect(
+        find.ancestor(
+          of: find.text('Analysing symptoms...'),
+          matching: find.byType(Animate),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(BubbleLoader),
+          matching: find.byType(Animate),
+        ),
+        findsNothing,
+      );
+      await openAI.controller.close();
+      await tester.pumpAndSettle();
+    },
+  );
 
   testWidgets(
     'canceling AI journal save confirmation does not write saved AI data',

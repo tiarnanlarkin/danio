@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +146,8 @@ Widget _wrap({
   required Tank tank,
   SharedPreferences? prefs,
   _FakeWeeklyPlanOpenAIService? openAI,
+  double textScaleFactor = 1,
+  bool disableAnimations = false,
 }) {
   return ProviderScope(
     overrides: [
@@ -158,7 +161,16 @@ Widget _wrap({
       openAIConfiguredProvider.overrideWith((ref) async => true),
       isOnlineProvider.overrideWithValue(true),
     ],
-    child: const MaterialApp(home: WeeklyPlanScreen()),
+    child: MaterialApp(
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScaleFactor),
+          disableAnimations: disableAnimations,
+        ),
+        child: child!,
+      ),
+      home: const WeeklyPlanScreen(),
+    ),
   );
 }
 
@@ -242,5 +254,51 @@ void main() {
       find.text('Couldn\'t save AI disclosure. Try again.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('skips weekly-plan card motion when animations are disabled', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(tank: _tank(), disableAnimations: true),
+    );
+    await _pumpUntilText(tester, 'Save Weekly Plan?');
+    await tester.tap(find.text('Save Plan'));
+    await _pumpUntilText(tester, 'Monday');
+
+    expect(find.byType(Animate), findsNothing);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('reflows a saved weekly plan at 2.0x on a phone', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final errors = <FlutterErrorDetails>[];
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = errors.add;
+    try {
+      await tester.pumpWidget(
+        _wrap(tank: _tank(), textScaleFactor: 2),
+      );
+      await _pumpUntilText(tester, 'Save Weekly Plan?');
+      await tester.tap(find.text('Save Plan'));
+      await _pumpUntilText(tester, 'Monday');
+      await tester.scrollUntilVisible(
+        find.textContaining('AI-generated plan'),
+        500,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+    } finally {
+      FlutterError.onError = originalOnError;
+    }
+
+    final overflowErrors = errors
+        .where((details) => details.exceptionAsString().contains('overflowed'))
+        .map((details) => details.exceptionAsString())
+        .toList();
+    expect(overflowErrors, isEmpty);
+    expect(find.textContaining('AI-generated plan'), findsOneWidget);
   });
 }

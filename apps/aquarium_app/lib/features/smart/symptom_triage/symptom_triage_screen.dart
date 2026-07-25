@@ -20,6 +20,13 @@ import '../openai_disclosure_gate.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
+extension on Widget {
+  Widget symptomLoadingAnimate(BuildContext context) {
+    if (MediaQuery.of(context).disableAnimations) return this;
+    return animate().fadeIn();
+  }
+}
+
 /// Common fish health symptoms for quick-select chips.
 const _commonSymptoms = [
   'Lethargy',
@@ -543,11 +550,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         if (_streaming || _diagnosis.isEmpty)
           Row(
             children: [
-              const SizedBox(
-                width: 16,
-                height: 16,
-                child: BubbleLoader.small(),
-              ),
+              const BubbleLoader(size: 16, bubbleCount: 3),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 _diagnosis.isEmpty ? 'Analysing symptoms...' : 'Thinking...',
@@ -556,7 +559,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                 ),
               ),
             ],
-          ).animate().fadeIn(),
+          ).symptomLoadingAnimate(context),
 
         if (_diagnosis.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
