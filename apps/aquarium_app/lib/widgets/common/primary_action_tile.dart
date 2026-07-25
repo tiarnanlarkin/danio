@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../core/app_card.dart';
+import 'pressable_scale.dart';
 
 /// A card-based action tile with icon, title, subtitle, and trailing action.
 ///
@@ -55,11 +56,13 @@ class PrimaryActionTile extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final effectiveIconColor = iconColor ?? primaryColor;
 
-    return AppCard(
-      variant: AppCardVariant.filled,
-      padding: AppCardPadding.standard,
+    return PressableScale(
       onTap: onTap,
-      child: Row(
+      child: AppCard(
+        variant: AppCardVariant.filled,
+        padding: AppCardPadding.standard,
+        onTap: onTap,
+        child: Row(
         children: [
           Container(
             width: 44,
@@ -106,6 +109,7 @@ class PrimaryActionTile extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
