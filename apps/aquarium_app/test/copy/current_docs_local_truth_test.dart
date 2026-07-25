@@ -1611,8 +1611,7 @@ void main() {
     _expectContainsAllAcross(
       const [
         'docs/agent/SLICE_LOG.md',
-        'docs/archive/agent-workflow-2026-07-16/'
-            'SLICE_LOG-rolling-overflow.md',
+        'docs/archive/agent-workflow-2026-07-16/SLICE_LOG-rolling-overflow.md',
       ],
       fixedFindingTruth,
     );
