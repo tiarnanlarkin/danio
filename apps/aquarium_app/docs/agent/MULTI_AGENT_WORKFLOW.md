@@ -20,7 +20,7 @@ successors.
 
 ## When review is required
 
-Require one independent settled-diff review for:
+Require one independent settled-diff review for high-risk or broad work:
 
 - data safety or persistence;
 - security or secrets;
@@ -29,8 +29,16 @@ Require one independent settled-diff review for:
 - release truth;
 - broad multi-module changes.
 
-Resolve findings before the final Full gate. A reviewer does not replace
-focused RED/GREEN proof or coordinator verification.
+The reviewer must not be the implementing coordinator and must remain
+repository-read-only: no edits, formatting, staging, commits, merges, pushes,
+cleanup, or device actions. Review the final settled diff after implementation
+and documentation updates, then resolve findings before the final broad gate.
+Record the reviewer and disposition in the epoch handoff or Slice Log.
+
+No hosted, paid, or account-backed review service is required or configured.
+Use an available local read-only reviewer. If none is available, stop before
+the final broad gate and report the missing independent review. A reviewer does
+not replace focused RED/GREEN proof or coordinator verification.
 
 ## Dirty work and devices
 

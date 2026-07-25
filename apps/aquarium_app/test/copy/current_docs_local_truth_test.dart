@@ -1738,7 +1738,11 @@ void main() {
       'docs/agent/DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md',
       fixedFindingTruth,
     );
-    _expectContainsAll('docs/agent/SLICE_LOG.md', fixedFindingTruth);
+    _expectContainsAll(
+      'docs/archive/agent-workflow-2026-07-16/'
+      'SLICE_LOG-rolling-overflow.md',
+      fixedFindingTruth,
+    );
     _expectContainsAll('docs/agent/ACTIVE_HANDOFF.md', [
       'F34 is complete',
       'reopen without contradictory live evidence',

@@ -87,6 +87,41 @@ void main() {
     expect(sliceLog.readAsStringSync(), contains('WF-2026-07-15-019'));
   });
 
+  test('settled-diff review policy is local independent and risk-triggered', () {
+    final charter = File(
+      _repoPath('$_agentRoot/WORKFLOW_CHARTER.md'),
+    ).readAsStringSync();
+    final checklist = File(
+      _repoPath('$_agentRoot/TESTING_CHECKLIST.md'),
+    ).readAsStringSync();
+    final multiAgent = File(
+      _repoPath('$_agentRoot/MULTI_AGENT_WORKFLOW.md'),
+    ).readAsStringSync();
+
+    for (final source in [charter, checklist, multiAgent]) {
+      final normalized = source.toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+      expect(normalized, contains('high-risk or broad'));
+      expect(normalized, contains('settled-diff review'));
+    }
+    final normalizedMultiAgent = multiAgent
+        .toLowerCase()
+        .replaceAll(RegExp(r'\s+'), ' ');
+    expect(
+      normalizedMultiAgent,
+      contains('must not be the implementing coordinator'),
+    );
+    expect(normalizedMultiAgent, contains('repository-read-only'));
+    expect(
+      normalizedMultiAgent,
+      contains('no hosted, paid, or account-backed'),
+    );
+    expect(normalizedMultiAgent, contains('before the final broad gate'));
+    expect(
+      normalizedMultiAgent,
+      contains('record the reviewer and disposition'),
+    );
+  });
+
   test('archived workflow history is immutable and non-authoritative', () {
     final archiveReadme = File(
       _repoPath('$_archiveRoot/README.md'),

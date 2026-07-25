@@ -27,8 +27,8 @@ Visual without `-FocusedTests`.
 - Docs-only epoch: one Docs gate and no Full gate.
 - Visual product epoch: explicit Visual paths, then Full once on settled code.
 - Android evidence: AndroidPrep after device ownership is clear.
-- High-risk epoch: failure-path proof and one independent settled-diff review
-  before Full.
+- High-risk or broad epoch: relevant proof and one independent settled-diff
+  review before the final broad gate.
 
 ```powershell
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs

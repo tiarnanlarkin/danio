@@ -20,7 +20,8 @@ epoch.
 3. Inspect directly relevant source and tests.
 4. Prove behavior or contract RED, then smallest-change GREEN.
 5. Run the smallest applicable profile.
-6. Review the settled diff; use one independent reviewer for high-risk work.
+6. Review the settled diff; require one independent settled-diff review for
+   high-risk or broad work.
 7. Update Active Handoff and one concise Slice Log row.
 8. Commit, fast-forward, prove tree identity, push once, and clean up safely.
 
