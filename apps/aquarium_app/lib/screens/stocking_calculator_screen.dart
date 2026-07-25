@@ -253,6 +253,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(title: const Text('Stocking Calculator')),
       body: SafeArea(
         top: false,

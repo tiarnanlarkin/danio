@@ -86,6 +86,7 @@ Future<T?> showAppDragSheet<T>({
 }) {
   return showModalBottomSheet<T>(
     context: context,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     showDragHandle: true,
     isScrollControlled: isScrollControlled,
     useSafeArea: useSafeArea,
