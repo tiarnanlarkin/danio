@@ -35,6 +35,9 @@ dependencies:
   rive: ^0.13.0
   confetti: ^0.7.0
   skeletonizer: ^2.1.2
+  lottie: ^3.1.0
+  smooth_page_indicator: ^1.2.0
+  animated_digit: ^3.1.0
 
   # Audio & Haptics
   
