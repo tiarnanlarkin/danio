@@ -1,9 +1,10 @@
 # Temperature And Water-Quality Side-Panel Redesign
 
-Status: current ordered manual continuation authority; Phase 3 complete; Phase 4 not started
+Status: current ordered manual continuation authority; Phase 3 behavior complete; Phase 3 visual reconciliation required; Phase 4 not started
 Authorized: 2026-07-30
 Authority epoch: `WF-2026-07-30-027`
 Marker: `danio-temperature-water-quality-side-panel-redesign-2026-07-30/1`
+Visual-reconciliation authority: `2026-07-31-temperature-visual-authority-addendum.md`, epoch `WF-2026-07-31-028`, marker `danio-temperature-visual-reconciliation-authority-2026-07-31/1`
 
 ## Outcome
 
@@ -26,6 +27,10 @@ precondition remains true. It does not authorize automatic successor tasks.
   `5e6e1a0c7cd8069ea3361bc4e178c37ae8d321cc`, tree
   `1c212fc5a54bfbb8e367861a8e199fe5e8ef98cd`, with
   `main...origin/main = 0 0`.
+- Phase 3 behavior is complete at clean aligned commit
+  `8b368dddfdab471eae009fcb9c3d6edfc10b927a`, tree
+  `e29210dea320e705aaab3019315f526b3261db45`; its visual acceptance is
+  superseded only as defined by the current visual-authority addendum.
 - Archive branch `archive/antigravity-exploration-wip-20260730` at
   `0f3167bb411ae1e6bc51966371c4cb986ae5a5c2` preserves the earlier exploratory
   bytes. It is evidence only: do not merge, cherry-pick, restore, or treat its
@@ -138,6 +143,26 @@ read-only settled-diff review, and one final Full gate. Claim the shared heavy
 lane before Flutter/Full work. No device run is required unless current
 visual evidence is insufficient; any device use needs separate ownership.
 
+### Phase 3R - Temperature visual reconciliation
+
+Run the docs-only authority checkpoint in
+`2026-07-31-temperature-visual-authority-addendum.md`, then stop. In a later
+separately executed product epoch, replace only the visually unreconciled
+Temperature presentation with the required full retro-aquatic, gauge-led
+instrument chassis. Preserve every completed Phase 3 data, target, route,
+accessibility, motion, haptic, theme, loading, empty, and error contract.
+
+The addendum pins the exact archive reference blobs as non-shipping visual
+evidence, maps every apparent instrument control/readout to verified current
+behavior, prohibits fake heater/sensor/power claims, and narrowly supersedes
+only the conflicting flat/no-gradient/slim-sparkline assertions. Do not copy
+archive bytes, add an asset or package, or begin Water Quality.
+
+Phase 3R implementation is test-first and closes with affected Focused and
+Visual profiles, a Temperature-specific current visual baseline, an independent
+settled-diff review, and one final Full gate. Phase 4 cannot start until Phase
+3R reaches its own clean verified checkpoint.
+
 ### Phase 4 - Water-quality panel hierarchy
 
 Keep the temperature phase settled. Audit the water-quality panel's current
@@ -169,6 +194,8 @@ completes.
 - Product behavior uses focused RED, smallest GREEN, affected Focused/Visual,
   independent settled-diff review, then one Full gate.
 - Documentation-only Phase 2 uses the Docs profile and no Full gate.
+- Documentation-only Phase 3R authority epoch `WF-2026-07-31-028` uses the
+  Docs profile and no product, visual, build, or device execution.
 - All gates run from `apps/aquarium_app`.
 - Stage only the files named by the active phase and inspect staged and
   unstaged diffs before commit.
@@ -188,7 +215,11 @@ blocker.
 
 ## Next Manual Action
 
-Phase 3 `DR-2026-07-30-083` is complete at its clean pushed checkpoint.
-Phase 4 Water Quality remains the next ordered phase but is not started; rebuild
-live Git and coordination authority before a later instruction, and never
+`WF-2026-07-31-028` records the docs-only Phase 3 visual-reconciliation
+checkpoint and must stop after its clean non-force push. No visual
+implementation belongs to that epoch.
+
+After a fresh authority and coordination check, the next manual product action
+is only Phase 3R test-first Temperature implementation under the visual-
+authority addendum. Phase 4 Water Quality remains blocked and unstarted. Never
 create an automatic successor.

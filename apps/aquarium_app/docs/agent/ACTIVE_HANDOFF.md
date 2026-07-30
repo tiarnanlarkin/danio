@@ -1,15 +1,15 @@
 # Danio Active Handoff
 
-Status: Phase 3 Temperature panel complete; Phase 4 Water Quality not started
-Updated: 2026-07-30
-Latest product/workflow epochs: `DR-2026-07-30-083` / `WF-2026-07-30-027`
-Marker: `danio-temperature-water-quality-side-panel-redesign-2026-07-30/1`
-Authority epoch: `WF-2026-07-30-027`
+Status: Phase 3 behavior complete; Temperature visual reconciliation required; Phase 4 Water Quality not started
+Updated: 2026-07-31
+Latest product/workflow epochs: `DR-2026-07-30-083` / `WF-2026-07-31-028`
+Marker: `danio-temperature-visual-reconciliation-authority-2026-07-31/1`
+Authority epoch: `WF-2026-07-31-028`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current authority
 
-- Ordered plan: `plans/2026-07-30-temperature-water-quality-side-panel-redesign.md`.
+- Current visual authority: `plans/2026-07-31-temperature-visual-authority-addendum.md`; parent ordered plan: `plans/2026-07-30-temperature-water-quality-side-panel-redesign.md`.
 - Closed phone RC plan: `plans/2026-07-19-phone-release-candidate-finalization-plan.md`; user-directed reconciliation: `plans/2026-07-21-user-directed-phone-rc-continuation-reconciliation.md`.
 - Closure state: `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Category status: `FINISH_MAP.md`.
@@ -146,5 +146,5 @@ Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival 
 
 ## Next manual action
 
-Phase 3 `DR-2026-07-30-083` is complete from exact Phase 2 commit `d27be2cac3a31e7f72cacac9cc8164794ebaa04f`, tree `ae906adb126d5f8c5b6149c462533408fe409eb3`: the Temperature instrument keeps manual readings honest, supports exact Tropical/Coldwater plus derived Custom targets, exposes real tank-context actions with secondary Tank Settings, and honors accessibility, reduced motion, and global haptic preferences. Focused `GATE_TOTAL|PASS|25259|Focused`, Visual `GATE_TOTAL|PASS|25121|Visual`, two independent read-only reviews, and reset-assisted Full `GATE_TOTAL|PASS|224716|Full` pass; the approved gate cleanup removed only unused `lottie` and `smooth_page_indicator` direct dependencies and lock entries.
-Git closeout is limited to the tested scoped commit, identical-tree fast-forward, and one non-force push to clean aligned `main`. No device, emulator, archived byte, asset, Water Quality, cloud, or account work was used. Stop here: Phase 4 is not started and no automatic successor may be created.
+Phase 3 behavior remains complete at `8b368dddfdab471eae009fcb9c3d6edfc10b927a`, tree `e29210dea320e705aaab3019315f526b3261db45`, but visual acceptance is unreconciled. `WF-2026-07-31-028` pins the exact non-shipping references and honest full-chassis contract; no product, asset, build, device, archive restoration, or Water Quality work belongs to this checkpoint.
+Stop after the clean pushed docs checkpoint. The next manual action is only test-first Phase 3R Temperature implementation under the current addendum after fresh authority checks; Phase 4 remains blocked and unstarted, and no automatic successor may be created.
