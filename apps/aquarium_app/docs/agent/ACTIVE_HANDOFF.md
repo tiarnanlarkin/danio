@@ -1,22 +1,22 @@
 # Danio Active Handoff
 
-Status: DCL-RC-001 closed; local Android phone candidate complete
-Updated: 2026-07-25
-Latest product/workflow epochs: `DR-2026-07-25-082` / `WF-2026-07-25-026`
-Marker: `danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1`
-Authority epoch: `DR-2026-07-19-057`
+Status: DCL-RC-001 closed; Phase 2 side-panel redesign docs checkpoint
+Updated: 2026-07-30
+Latest product/workflow epochs: `DR-2026-07-25-082` / `WF-2026-07-30-027`
+Marker: `danio-temperature-water-quality-side-panel-redesign-2026-07-30/1`
+Authority epoch: `WF-2026-07-30-027`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 
 ## Current authority
 
-- Ordered plan: `plans/2026-07-19-phone-release-candidate-finalization-plan.md`.
-- User-directed continuation reconciliation: `plans/2026-07-21-user-directed-phone-rc-continuation-reconciliation.md`.
+- Ordered plan: `plans/2026-07-30-temperature-water-quality-side-panel-redesign.md`.
+- Closed phone RC plan: `plans/2026-07-19-phone-release-candidate-finalization-plan.md`; user-directed reconciliation: `plans/2026-07-21-user-directed-phone-rc-continuation-reconciliation.md`.
 - Closure state: `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Category status: `FINISH_MAP.md`.
 - Settled CRUD/undo history: `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`.
 - Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and `QUALITY_LADDER.md`.
 - The older `plans/2026-07-11-phone-complete-local-completion-program.md` is superseded background and cannot select or resume work.
-- The current plan owns the P0/P1 release selector; P2/P3 is accepted or parked unless explicitly reopened.
+- The closed phone RC plan retains marker `danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1`, its historical P0/P1 release selector, and parked P2/P3 truth; the current plan owns only the bounded side-panel redesign.
 
 ## Verified baseline
 
@@ -142,9 +142,9 @@ those product/content/rule rows backed by executable evidence. After epochs
 
 ## Maintenance checkpoint receipt
 
-Trigger: post-Cluster-3 workflow/configuration checkpoint. Checks run: fetch/prune/tags, clean status, exact HEAD, branch/remote/worktree inventory, `main...origin/main`, coordination status, and current authority. Branch, remote, and worktree outcome: baseline `main` clean/aligned `0 0` at `79c4658fbe6fe6de8dd85319178fee7d7a72fe56`, one worktree, retained live-development branch untouched. Cleanup outcome: none needed or authorized; no artifact, branch, worktree, generated tree, device, emulator, or process removed. Resolved: settled-diff policy, compact local Android journeys, opt-in bounded live preview, and non-blocking Figma audit sync. Next work may proceed: yes, after rebuilding fresh authority for the user-authorized Cluster 4 slice; Cluster 3 stays closed.
+Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival WIP preservation. Checks run: coordination Status/writer claim, fetch/prune/tags, clean status, exact HEAD/tree, branch/remote/worktree inventory, `main...origin/main`, current authority, and live-log rollover guards. Outcome: starting `main` clean/aligned `0 0` at `5e6e1a0c7cd8069ea3361bc4e178c37ae8d321cc`, tree `1c212fc5a54bfbb8e367861a8e199fe5e8ef98cd`; archive `0f3167bb411ae1e6bc51966371c4cb986ae5a5c2` remains preservation-only; no product code/test file, asset, build, device, emulator, or heavy work. Next work may proceed only under the new ordered plan.
 
 ## Next manual action
 
-Stop. Local Android phone candidate complete. Tablet/store/public release,
-cloud/accounts, paid/provider-key work, and iOS need separate authority.
+From the clean Phase 2 commit, run only plan Phase 3: temperature-panel `Custom`
+target state and fixed shortcut hierarchy, test-first; reuse no archived bytes.
