@@ -1,6 +1,6 @@
 # Temperature And Water-Quality Side-Panel Redesign
 
-Status: current ordered manual continuation authority
+Status: current ordered manual continuation authority; Phase 3 complete; Phase 4 not started
 Authorized: 2026-07-30
 Authority epoch: `WF-2026-07-30-027`
 Marker: `danio-temperature-water-quality-side-panel-redesign-2026-07-30/1`
@@ -186,9 +186,9 @@ update at each material checkpoint and at least every 20 minutes, plus an
 immediate update for any authority, coordination, test, gate, scope, or device
 blocker.
 
-## Next Autonomous Action
+## Next Manual Action
 
-After this Phase 2 docs commit is clean and the writer claim is released, the
-next authorized phase is Phase 3 only: temperature-panel `Custom` target state
-and the fixed primary/secondary shortcut hierarchy, test-first from current
-`main`, with no archived asset or code reuse.
+Phase 3 `DR-2026-07-30-083` is complete at its clean pushed checkpoint.
+Phase 4 Water Quality remains the next ordered phase but is not started; rebuild
+live Git and coordination authority before a later instruction, and never
+create an automatic successor.

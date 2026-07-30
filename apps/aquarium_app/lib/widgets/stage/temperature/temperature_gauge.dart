@@ -3,8 +3,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../theme/app_theme.dart';
 import '../../../models/log_entry.dart';
+import '../../../theme/app_theme.dart';
 import 'brass_gauge.dart';
 
 // ── Colour constants (shared within temperature package) ─────────────────────
@@ -18,6 +18,12 @@ const kTempRedWarn = Color(0xFFC0392B);
 const kTempAmberGold = Color(0xFFD97706);
 const kTempCream = Color(0xFFFFF8F0);
 
+String _formatTemperatureValue(double value) {
+  return value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(1);
+}
+
 // ── Status enum ───────────────────────────────────────────────────────────────
 
 enum TempStatus { perfect, warm, cool, tooHot, tooCold }
@@ -29,8 +35,8 @@ class TempHeroSection extends StatelessWidget {
   final AnimationController fillAnim;
   final double gaugeMin;
   final double gaugeMax;
-  final double optimalMin;
-  final double optimalMax;
+  final double? optimalMin;
+  final double? optimalMax;
   final TempStatus? status;
   final LogEntry? lastEntry;
   final String Function(DateTime) formatTimestamp;
@@ -50,11 +56,12 @@ class TempHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Enforce gauge precondition: optimal range must be inside gauge range
-    // and min <= max. This prevents negative-sweep in BrassGaugePainter.
     assert(
-      optimalMin <= optimalMax,
-      'optimalMin ($optimalMin) must be <= optimalMax ($optimalMax)',
+      (optimalMin == null && optimalMax == null) ||
+          (optimalMin != null &&
+              optimalMax != null &&
+              optimalMin! <= optimalMax!),
+      'optimalMin and optimalMax must both be null or form a valid range',
     );
     assert(
       gaugeMin < gaugeMax,
@@ -78,21 +85,25 @@ class TempHeroSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         if (status != null) TempStatusBadge(status: status!),
-        const SizedBox(height: AppSpacing.xs),
-        TempOptimalRangeRow(min: optimalMin, max: optimalMax),
+        if (optimalMin != null && optimalMax != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          TempOptimalRangeRow(min: optimalMin!, max: optimalMax!),
+        ],
         if (lastEntry != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 4,
             children: [
               Icon(
                 Icons.access_time_rounded,
                 size: 12,
                 color: kTempCharcoal.withAlpha(100),
               ),
-              const SizedBox(width: 4),
               Text(
                 'Last logged: ${formatTimestamp(lastEntry!.timestamp)}',
+                textAlign: TextAlign.center,
                 style: AppTypography.labelSmall.copyWith(
                   color: kTempCharcoal.withAlpha(120),
                   fontSize: 11,
@@ -126,8 +137,10 @@ class TempOptimalRangeRow extends StatelessWidget {
         borderRadius: AppRadius.pillRadius,
         border: Border.all(color: kTempGreen.withAlpha(70)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 5,
         children: [
           Container(
             width: 8,
@@ -137,9 +150,10 @@ class TempOptimalRangeRow extends StatelessWidget {
               shape: BoxShape.circle,
             ),
           ),
-          const SizedBox(width: 5),
           Text(
-            'Optimal ${min.toInt()}–${max.toInt()}°C',
+            'Optimal ${_formatTemperatureValue(min)}–'
+            '${_formatTemperatureValue(max)}°C',
+            textAlign: TextAlign.center,
             style: AppTypography.labelSmall.copyWith(
               color: kTempGreen,
               fontWeight: FontWeight.w700,
@@ -185,13 +199,15 @@ class TempStatusBadge extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
         children: [
           Text(icon, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 6),
           Text(
             label,
+            textAlign: TextAlign.center,
             style: AppTypography.labelSmall.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,

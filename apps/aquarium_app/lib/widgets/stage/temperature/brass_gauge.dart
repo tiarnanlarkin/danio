@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import 'brass_gauge_painter.dart';
 
-/// Animated wrapper around [BrassGaugePainter].
+/// Animated gauge wrapper around [BrassGaugePainter].
 ///
 /// Drives `tempFraction` from 0 → actual on panel entry (900ms ease-out-cubic)
 /// and stacks a center temperature label on top of the dial.
@@ -14,8 +14,8 @@ class BrassGauge extends StatefulWidget {
   final double? temp;
   final double gaugeMin;
   final double gaugeMax;
-  final double optimalMin;
-  final double optimalMax;
+  final double? optimalMin;
+  final double? optimalMax;
 
   const BrassGauge({
     super.key,
@@ -70,12 +70,14 @@ class _BrassGaugeState extends State<BrassGauge>
   @override
   Widget build(BuildContext context) {
     final target = _targetFraction();
-    final optMin =
-        (widget.optimalMin - widget.gaugeMin) /
-        (widget.gaugeMax - widget.gaugeMin);
-    final optMax =
-        (widget.optimalMax - widget.gaugeMin) /
-        (widget.gaugeMax - widget.gaugeMin);
+    final optMin = widget.optimalMin == null
+        ? null
+        : (widget.optimalMin! - widget.gaugeMin) /
+              (widget.gaugeMax - widget.gaugeMin);
+    final optMax = widget.optimalMax == null
+        ? null
+        : (widget.optimalMax! - widget.gaugeMin) /
+              (widget.gaugeMax - widget.gaugeMin);
 
     return AnimatedBuilder(
       animation: _anim,

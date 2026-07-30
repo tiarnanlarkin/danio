@@ -10,36 +10,51 @@ import 'temperature_gauge.dart';
 
 class TempHeader extends StatelessWidget {
   final int streak;
+  final Color foregroundColor;
 
-  const TempHeader({super.key, required this.streak});
+  const TempHeader({
+    super.key,
+    required this.streak,
+    this.foregroundColor = kTempCharcoal,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 38,
-          height: 38,
-          decoration: const BoxDecoration(
-            color: kTempTeal,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.thermostat_rounded,
-            color: Colors.white,
-            size: 22,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: const BoxDecoration(
+                color: kTempTeal,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.thermostat_rounded,
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                'Temperature',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.titleMedium.copyWith(
+                  color: foregroundColor,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Text(
-          'Temperature',
-          style: AppTypography.titleMedium.copyWith(
-            color: kTempCharcoal,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const Spacer(),
-        if (streak > 0)
+        if (streak > 0) ...[
+          const SizedBox(height: AppSpacing.xs),
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm3,
@@ -50,22 +65,17 @@ class TempHeader extends StatelessWidget {
               borderRadius: AppRadius.pillRadius,
               border: Border.all(color: kTempAmberGold.withAlpha(80)),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('🔥', style: TextStyle(fontSize: 13)),
-                const SizedBox(width: 4),
-                Text(
-                  '$streak-day streak',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: kTempAmberGold,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
+            child: Text(
+              '🔥 $streak-day streak',
+              maxLines: 2,
+              style: AppTypography.labelSmall.copyWith(
+                color: kTempAmberGold,
+                fontWeight: FontWeight.w800,
+                fontSize: 11,
+              ),
             ),
           ),
+        ],
       ],
     );
   }
@@ -117,8 +127,9 @@ class HeaterStatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dotColor =
-        heaterOn ? const Color(0xFFE67E22) : const Color(0xFF9E9E9E);
+    final dotColor = heaterOn
+        ? const Color(0xFFE67E22)
+        : const Color(0xFF9E9E9E);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm2,
@@ -129,15 +140,17 @@ class HeaterStatusPill extends StatelessWidget {
         borderRadius: AppRadius.pillRadius,
         border: Border.all(color: dotColor.withValues(alpha: 0.35)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        runSpacing: 4,
         children: [
           Container(
             width: 8,
             height: 8,
             decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
           ),
-          const SizedBox(width: 6),
           Text(
             heaterOn ? 'Heater ON' : 'Heater OFF',
             style: AppTypography.labelSmall.copyWith(
@@ -146,12 +159,12 @@ class HeaterStatusPill extends StatelessWidget {
             ),
           ),
           if (lastTestLabel != null) ...[
-            const SizedBox(width: 8),
-            Text('•',
-                style: AppTypography.labelSmall.copyWith(
-                  color: const Color(0xFF2D3436).withValues(alpha: 0.4),
-                )),
-            const SizedBox(width: 8),
+            Text(
+              '•',
+              style: AppTypography.labelSmall.copyWith(
+                color: const Color(0xFF2D3436).withValues(alpha: 0.4),
+              ),
+            ),
             Text(
               'Last test: $lastTestLabel',
               style: AppTypography.labelSmall.copyWith(

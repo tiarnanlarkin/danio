@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: DCL-RC-001 closed; Phase 2 side-panel redesign docs checkpoint
+Status: Phase 3 Temperature panel complete; Phase 4 Water Quality not started
 Updated: 2026-07-30
-Latest product/workflow epochs: `DR-2026-07-25-082` / `WF-2026-07-30-027`
+Latest product/workflow epochs: `DR-2026-07-30-083` / `WF-2026-07-30-027`
 Marker: `danio-temperature-water-quality-side-panel-redesign-2026-07-30/1`
 Authority epoch: `WF-2026-07-30-027`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -16,7 +16,7 @@ Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
 - Settled CRUD/undo history: `DCL_DR_003_CRUD_UNDO_RESILIENCE_MATRIX.md`.
 - Execution mechanics: `VERIFIED_SLICE_EXECUTION_CONTRACT.md` and `QUALITY_LADDER.md`.
 - The older `plans/2026-07-11-phone-complete-local-completion-program.md` is superseded background and cannot select or resume work.
-- The closed phone RC plan retains marker `danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1`, its historical P0/P1 release selector, and parked P2/P3 truth; the current plan owns only the bounded side-panel redesign.
+- DCL-RC-001 closed under marker `danio-dcl-rc-001-final-local-phone-candidate-2026-07-25/1`; its historical P0/P1 release selector and parked P2/P3 truth remain intact, while the current plan owns only the bounded side-panel redesign.
 
 ## Verified baseline
 
@@ -146,5 +146,5 @@ Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival 
 
 ## Next manual action
 
-From the clean Phase 2 commit, run only plan Phase 3: temperature-panel `Custom`
-target state and fixed shortcut hierarchy, test-first; reuse no archived bytes.
+Phase 3 `DR-2026-07-30-083` is complete from exact Phase 2 commit `d27be2cac3a31e7f72cacac9cc8164794ebaa04f`, tree `ae906adb126d5f8c5b6149c462533408fe409eb3`: the Temperature instrument keeps manual readings honest, supports exact Tropical/Coldwater plus derived Custom targets, exposes real tank-context actions with secondary Tank Settings, and honors accessibility, reduced motion, and global haptic preferences. Focused `GATE_TOTAL|PASS|25259|Focused`, Visual `GATE_TOTAL|PASS|25121|Visual`, two independent read-only reviews, and reset-assisted Full `GATE_TOTAL|PASS|224716|Full` pass; the approved gate cleanup removed only unused `lottie` and `smooth_page_indicator` direct dependencies and lock entries.
+Git closeout is limited to the tested scoped commit, identical-tree fast-forward, and one non-force push to clean aligned `main`. No device, emulator, archived byte, asset, Water Quality, cloud, or account work was used. Stop here: Phase 4 is not started and no automatic successor may be created.

@@ -20,8 +20,8 @@ class BrassGaugePainter extends CustomPainter {
   final double? tempFraction;
 
   /// Normalized optimal range within the gauge range.
-  final double optFracMin;
-  final double optFracMax;
+  final double? optFracMin;
+  final double? optFracMax;
 
   const BrassGaugePainter({
     required this.tempFraction,
@@ -55,19 +55,21 @@ class BrassGaugePainter extends CustomPainter {
     );
 
     // Optimal arc overlay
-    final optStart = _angleFor(optFracMin);
-    final optEnd = _angleFor(optFracMax);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - 8),
-      optStart,
-      optEnd - optStart,
-      false,
-      Paint()
-        ..color = _green.withValues(alpha: 0.70)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 5
-        ..strokeCap = StrokeCap.round,
-    );
+    if (optFracMin != null && optFracMax != null) {
+      final optStart = _angleFor(optFracMin!);
+      final optEnd = _angleFor(optFracMax!);
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - 8),
+        optStart,
+        optEnd - optStart,
+        false,
+        Paint()
+          ..color = _green.withValues(alpha: 0.70)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 5
+          ..strokeCap = StrokeCap.round,
+      );
+    }
 
     // Brass outer ring
     canvas.drawArc(
