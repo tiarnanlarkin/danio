@@ -24,6 +24,7 @@ import '../../utils/haptic_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../danio_bottom_dock.dart';
 import 'stage_provider.dart';
+import 'temperature/brass_gauge.dart';
 import 'temperature/heater_status.dart';
 import 'temperature/temperature_gauge.dart';
 import 'temperature/temperature_history.dart';
@@ -322,90 +323,146 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         ? sparkData.reduce((a, b) => a + b) / sparkData.length
         : null;
 
-    return SingleChildScrollView(
-      key: const ValueKey('temperature-panel-scroll'),
-      physics: const ClampingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.sm4,
-        AppSpacing.md,
-        DanioBottomDock.contentClearance + AppSpacing.md,
-      ),
-      child: _TemperatureInstrumentChassis(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TempHeader(
-                streak: temperatureStreak,
-                foregroundColor: _temperatureInk,
-              ),
-              const SizedBox(height: AppSpacing.sm4),
-              _TemperatureTargetSelector(
-                targets: tank?.targets,
-                selected: selectedPreset,
-                isLoading: tankAsync.isLoading,
-                isUnavailable: targetUnavailable,
-                isSaving: _savingTarget,
-                theme: widget.theme,
-                onSelect: (preset) => _selectPreset(preset, tank),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              if (latestTestAsync.isLoading)
-                _PanelNotice(
-                  label: 'Loading temperature…',
-                  icon: Icons.hourglass_top_rounded,
-                  theme: widget.theme,
-                )
-              else if (latestTestAsync.hasError)
-                _PanelNotice(
-                  label: 'Temperature unavailable',
-                  icon: Icons.thermostat_outlined,
-                  theme: widget.theme,
-                )
-              else
-                TempHeroSection(
-                  temp: temp,
-                  fillAnim: _fillAnim,
-                  gaugeMin: gaugeBounds.min,
-                  gaugeMax: gaugeBounds.max,
-                  optimalMin: targetMin,
-                  optimalMax: targetMax,
-                  status: status,
-                  lastEntry: lastEntry,
-                  formatTimestamp: _formatTimestamp,
-                ),
-              if (logsAsync.isLoading)
-                _PanelNotice(
-                  label: 'Loading history…',
-                  icon: Icons.show_chart_rounded,
-                  theme: widget.theme,
-                )
-              else if (logsAsync.hasError)
-                _PanelNotice(
-                  label: 'History unavailable',
-                  icon: Icons.show_chart_rounded,
-                  theme: widget.theme,
-                )
-              else
-                TempTrendSection(
-                  sparkData: sparkData,
-                  minTemp: minTemp,
-                  maxTemp: maxTemp,
-                  avgTemp: avgTemp,
-                ),
-              const SizedBox(height: AppSpacing.md),
-              _TemperatureActionRail(
-                theme: widget.theme,
-                onLog: _openLog,
-                onCharts: _openCharts,
-                onEquipment: _openEquipment,
-                onAlerts: _openAlerts,
-                onSettings: _openSettings,
-              ),
-            ],
-          ),
+    final Widget readingAssembly;
+    if (latestTestAsync.isLoading) {
+      readingAssembly = _PanelNotice(
+        label: 'Loading temperature…',
+        icon: Icons.hourglass_top_rounded,
+        theme: widget.theme,
+      );
+    } else if (latestTestAsync.hasError) {
+      readingAssembly = _PanelNotice(
+        label: 'Temperature unavailable',
+        icon: Icons.thermostat_outlined,
+        theme: widget.theme,
+      );
+    } else {
+      readingAssembly = TempHeroSection(
+        temp: temp,
+        fillAnim: _fillAnim,
+        gaugeMin: gaugeBounds.min,
+        gaugeMax: gaugeBounds.max,
+        optimalMin: targetMin,
+        optimalMax: targetMax,
+        status: status,
+        lastEntry: lastEntry,
+        formatTimestamp: _formatTimestamp,
+      );
+    }
+
+    final canUseHybridInstrument =
+        temp != null &&
+        hasCompleteTarget &&
+        !tankAsync.isLoading &&
+        !targetUnavailable &&
+        !latestTestAsync.isLoading &&
+        !latestTestAsync.hasError &&
+        !logsAsync.isLoading &&
+        !logsAsync.hasError &&
+        MediaQuery.textScalerOf(context).scale(1) <= 1.2;
+
+    return DecoratedBox(
+      key: const ValueKey('temperature-panel-backdrop'),
+      decoration: const BoxDecoration(color: Color(0xFF111414)),
+      child: SingleChildScrollView(
+        key: const ValueKey('temperature-panel-scroll'),
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.sm4,
+          AppSpacing.md,
+          DanioBottomDock.contentClearance + AppSpacing.md,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final useHybridInstrument =
+                canUseHybridInstrument &&
+                constraints.maxWidth >=
+                    _TemperatureHybridInstrument._designWidth;
+            return useHybridInstrument
+                ? _TemperatureHybridInstrument(
+                    temp: temp,
+                    gaugeBounds: gaugeBounds,
+                    targetMin: targetMin!,
+                    targetMax: targetMax!,
+                    status: status,
+                    lastEntry: lastEntry,
+                    streak: temperatureStreak,
+                    sparkData: sparkData,
+                    minTemp: minTemp,
+                    maxTemp: maxTemp,
+                    avgTemp: avgTemp,
+                    targets: tank!.targets,
+                    selected: selectedPreset,
+                    isSaving: _savingTarget,
+                    formatTimestamp: _formatTimestamp,
+                    onSelect: (preset) => _selectPreset(preset, tank),
+                    onLog: _openLog,
+                    onCharts: _openCharts,
+                    onEquipment: _openEquipment,
+                    onAlerts: _openAlerts,
+                    onSettings: _openSettings,
+                  )
+                : _TemperatureInstrumentChassis(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          TempHeader(
+                            streak: temperatureStreak,
+                            foregroundColor: _temperatureInk,
+                          ),
+                          const SizedBox(height: AppSpacing.sm4),
+                          _TemperatureInstrumentCore(
+                            reading: readingAssembly,
+                            targetBuilder: (compactLayout) =>
+                                _TemperatureTargetSelector(
+                                  targets: tank?.targets,
+                                  selected: selectedPreset,
+                                  isLoading: tankAsync.isLoading,
+                                  isUnavailable: targetUnavailable,
+                                  isSaving: _savingTarget,
+                                  compactLayout: compactLayout,
+                                  theme: widget.theme,
+                                  onSelect: (preset) =>
+                                      _selectPreset(preset, tank),
+                                ),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          if (logsAsync.isLoading)
+                            _PanelNotice(
+                              label: 'Loading history…',
+                              icon: Icons.show_chart_rounded,
+                              theme: widget.theme,
+                            )
+                          else if (logsAsync.hasError)
+                            _PanelNotice(
+                              label: 'History unavailable',
+                              icon: Icons.show_chart_rounded,
+                              theme: widget.theme,
+                            )
+                          else
+                            TempTrendSection(
+                              sparkData: sparkData,
+                              minTemp: minTemp,
+                              maxTemp: maxTemp,
+                              avgTemp: avgTemp,
+                            ),
+                          const SizedBox(height: AppSpacing.md),
+                          _TemperatureActionRail(
+                            theme: widget.theme,
+                            onLog: _openLog,
+                            onCharts: _openCharts,
+                            onEquipment: _openEquipment,
+                            onAlerts: _openAlerts,
+                            onSettings: _openSettings,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+          },
         ),
       ),
     );
@@ -435,6 +492,911 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
   }
 }
 
+/// A deliberately small, one-coordinate-system version of the approved
+/// instrument for Danio's real 66% stage drawer. The chassis image is purely
+/// decorative; every reading, state, label, and control remains native.
+class _TemperatureHybridInstrument extends StatelessWidget {
+  static const _designWidth = 220.0;
+  static const _designHeight = 476.0;
+
+  final double temp;
+  final ({double min, double max}) gaugeBounds;
+  final double targetMin;
+  final double targetMax;
+  final TempStatus? status;
+  final LogEntry? lastEntry;
+  final int streak;
+  final List<double> sparkData;
+  final double? minTemp;
+  final double? maxTemp;
+  final double? avgTemp;
+  final WaterTargets targets;
+  final _TemperaturePreset? selected;
+  final bool isSaving;
+  final String Function(DateTime) formatTimestamp;
+  final ValueChanged<_TemperaturePreset> onSelect;
+  final VoidCallback onLog;
+  final VoidCallback onCharts;
+  final VoidCallback onEquipment;
+  final VoidCallback onAlerts;
+  final VoidCallback onSettings;
+
+  const _TemperatureHybridInstrument({
+    required this.temp,
+    required this.gaugeBounds,
+    required this.targetMin,
+    required this.targetMax,
+    required this.status,
+    required this.lastEntry,
+    required this.streak,
+    required this.sparkData,
+    required this.minTemp,
+    required this.maxTemp,
+    required this.avgTemp,
+    required this.targets,
+    required this.selected,
+    required this.isSaving,
+    required this.formatTimestamp,
+    required this.onSelect,
+    required this.onLog,
+    required this.onCharts,
+    required this.onEquipment,
+    required this.onAlerts,
+    required this.onSettings,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scale = constraints.maxWidth / _designWidth;
+        final displayWidth = _designWidth * scale;
+        final displayHeight = _designHeight * scale;
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            key: const ValueKey('temperature-hybrid-skin'),
+            width: displayWidth,
+            height: displayHeight,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                key: const ValueKey('temperature-instrument-core'),
+                width: _designWidth,
+                height: _designHeight,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Positioned.fill(
+                      child: ExcludeSemantics(
+                        child: Image(
+                          image: AssetImage(
+                            'assets/images/illustrations/'
+                            'temperature_instrument_chassis.png',
+                          ),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 14,
+                      top: 10,
+                      width: 132,
+                      height: 24,
+                      child: _HybridInstrumentHeader(streak: streak),
+                    ),
+                    Positioned(
+                      left: 10,
+                      top: 32,
+                      width: 146,
+                      height: 146,
+                      child: Semantics(
+                        label: _gaugeSemantics(),
+                        readOnly: true,
+                        child: ExcludeSemantics(
+                          child: BrassGauge(
+                            temp: temp,
+                            gaugeMin: gaugeBounds.min,
+                            gaugeMax: gaugeBounds.max,
+                            optimalMin: targetMin,
+                            optimalMax: targetMax,
+                            showCenterLabel: false,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 124,
+                      top: 43,
+                      width: 34,
+                      height: 14,
+                      child: ExcludeSemantics(
+                        child: _HybridStatusLamps(status: status),
+                      ),
+                    ),
+                    Positioned(
+                      left: 162,
+                      top: 52,
+                      width: 54,
+                      height: 168,
+                      child: _HybridTargetAssembly(
+                        targets: targets,
+                        selected: selected,
+                        isSaving: isSaving,
+                        onSelect: onSelect,
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      top: 218,
+                      width: 150,
+                      height: 74,
+                      child: Semantics(
+                        label: _manualSemantics(),
+                        readOnly: true,
+                        child: ExcludeSemantics(
+                          child: _HybridManualReadout(
+                            temp: temp,
+                            lastEntry: lastEntry,
+                            formatTimestamp: formatTimestamp,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 13,
+                      top: 305,
+                      width: 194,
+                      height: 74,
+                      child: Semantics(
+                        label: 'Seven day manual temperature history',
+                        readOnly: true,
+                        child: ExcludeSemantics(
+                          child: _HybridTemperatureTrend(
+                            sparkData: sparkData,
+                            minTemp: minTemp,
+                            maxTemp: maxTemp,
+                            avgTemp: avgTemp,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: KeyedSubtree(
+                        key: const ValueKey('temperature-primary-actions'),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: 166,
+                              top: 231,
+                              width: 48,
+                              height: 48,
+                              child: _HybridActionButton(
+                                label: 'Log Temperature',
+                                displayLabel: 'Log',
+                                icon: Icons.add_rounded,
+                                order: 0,
+                                emphasized: true,
+                                onTap: onLog,
+                              ),
+                            ),
+                            Positioned(
+                              left: 13,
+                              top: 395,
+                              width: 48,
+                              height: 48,
+                              child: _HybridActionButton(
+                                label: 'Charts/History',
+                                icon: Icons.show_chart_rounded,
+                                order: 1,
+                                onTap: onCharts,
+                              ),
+                            ),
+                            Positioned(
+                              left: 64,
+                              top: 395,
+                              width: 48,
+                              height: 48,
+                              child: _HybridActionButton(
+                                label: 'Equipment',
+                                icon: Icons.build_rounded,
+                                order: 2,
+                                onTap: onEquipment,
+                              ),
+                            ),
+                            Positioned(
+                              left: 115,
+                              top: 395,
+                              width: 48,
+                              height: 48,
+                              child: _HybridActionButton(
+                                label: 'Alerts',
+                                icon: Icons.notifications_active_outlined,
+                                order: 3,
+                                onTap: onAlerts,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 166,
+                      top: 395,
+                      width: 48,
+                      height: 48,
+                      child: KeyedSubtree(
+                        key: const ValueKey('temperature-secondary-actions'),
+                        child: _HybridActionButton(
+                          label: 'Tank Settings',
+                          icon: Icons.settings_outlined,
+                          order: 4,
+                          secondary: true,
+                          onTap: onSettings,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _manualSemantics() {
+    final timestamp = lastEntry == null
+        ? ''
+        : ', last logged ${formatTimestamp(lastEntry!.timestamp)}';
+    return 'Latest manually logged temperature ${temp.toStringAsFixed(1)} '
+        'degrees Celsius$timestamp';
+  }
+
+  String _gaugeSemantics() {
+    final target =
+        '${_formatTargetValue(targetMin)} to '
+        '${_formatTargetValue(targetMax)} degrees Celsius';
+    final statusLabel = switch (status) {
+      TempStatus.perfect => 'within the saved target',
+      TempStatus.warm => 'a little warm',
+      TempStatus.cool => 'a little cool',
+      TempStatus.tooHot => 'too hot',
+      TempStatus.tooCold => 'too cold',
+      null => 'unavailable',
+    };
+    return 'Manual temperature gauge. Saved target $target. '
+        'Current comparison is $statusLabel.';
+  }
+
+  static String _formatTargetValue(double value) {
+    return value == value.roundToDouble()
+        ? value.toInt().toString()
+        : value.toStringAsFixed(1);
+  }
+}
+
+class _HybridInstrumentHeader extends StatelessWidget {
+  final int streak;
+
+  const _HybridInstrumentHeader({required this.streak});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Temperature',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTypography.labelLarge.copyWith(
+            color: _temperatureInk,
+            fontSize: 12,
+            height: 0.95,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.1,
+          ),
+        ),
+        Text(
+          streak == 1 ? '1-day manual streak' : '$streak-day manual streak',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTypography.labelSmall.copyWith(
+            color: _temperatureMutedInk,
+            fontSize: 6.5,
+            height: 0.9,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HybridStatusLamps extends StatelessWidget {
+  final TempStatus? status;
+
+  const _HybridStatusLamps({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final activeIndex = switch (status) {
+      TempStatus.cool || TempStatus.tooCold => 0,
+      TempStatus.perfect => 1,
+      TempStatus.warm || TempStatus.tooHot => 2,
+      null => -1,
+    };
+    const colors = [kTempTealLight, kTempTeal, kTempRedWarn];
+    return SizedBox(
+      key: const ValueKey('temperature-status-lamps'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          for (var index = 0; index < colors.length; index++)
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: activeIndex == index
+                    ? colors[index]
+                    : const Color(0xFF211D19),
+                border: Border.all(
+                  color: _temperatureBrass.withValues(alpha: 0.78),
+                ),
+                boxShadow: activeIndex == index
+                    ? [
+                        BoxShadow(
+                          color: colors[index].withValues(alpha: 0.78),
+                          blurRadius: 4,
+                        ),
+                      ]
+                    : null,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HybridTargetAssembly extends StatelessWidget {
+  final WaterTargets targets;
+  final _TemperaturePreset? selected;
+  final bool isSaving;
+  final ValueChanged<_TemperaturePreset> onSelect;
+
+  const _HybridTargetAssembly({
+    required this.targets,
+    required this.selected,
+    required this.isSaving,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      key: const ValueKey('temperature-target-assembly'),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            height: 19,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Target range',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: _temperatureInk,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      isSaving ? 'Saving target' : 'Saved to this tank',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: _temperatureAccent,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 3,
+            top: 22,
+            width: 48,
+            height: 48,
+            child: _HybridPresetButton(
+              preset: _TemperaturePreset.tropical,
+              label: 'Tropical',
+              rangeLabel: '24\u201328\u00b0C',
+              selected: selected == _TemperaturePreset.tropical,
+              enabled: !isSaving,
+              onTap: () => onSelect(_TemperaturePreset.tropical),
+            ),
+          ),
+          Positioned(
+            left: 3,
+            top: 72,
+            width: 48,
+            height: 48,
+            child: _HybridPresetButton(
+              preset: _TemperaturePreset.coldwater,
+              label: 'Coldwater',
+              rangeLabel: '15\u201322\u00b0C',
+              selected: selected == _TemperaturePreset.coldwater,
+              enabled: !isSaving,
+              onTap: () => onSelect(_TemperaturePreset.coldwater),
+            ),
+          ),
+          Positioned(
+            left: 1,
+            top: 123,
+            width: 52,
+            height: 36,
+            child: Semantics(
+              label:
+                  'Custom temperature target, '
+                  '${_TemperatureTargetSelector._customRangeLabel(targets)}',
+              selected: selected == _TemperaturePreset.custom,
+              readOnly: true,
+              child: ExcludeSemantics(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF101414).withValues(alpha: 0.85),
+                    border: Border.all(
+                      color: _temperatureBrass.withValues(alpha: 0.52),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Custom',
+                          maxLines: 1,
+                          style: AppTypography.labelSmall.copyWith(
+                            color: _temperatureMutedInk,
+                            fontSize: 7,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            _TemperatureTargetSelector._customRangeLabel(
+                              targets,
+                            ),
+                            maxLines: 1,
+                            style: AppTypography.labelSmall.copyWith(
+                              color: _temperatureMutedInk,
+                              fontSize: 6.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HybridPresetButton extends StatelessWidget {
+  final _TemperaturePreset preset;
+  final String label;
+  final String rangeLabel;
+  final bool selected;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _HybridPresetButton({
+    required this.preset,
+    required this.label,
+    required this.rangeLabel,
+    required this.selected,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: '$label temperature target, $rangeLabel',
+      selected: selected,
+      button: true,
+      enabled: enabled,
+      onTap: enabled ? onTap : null,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: 'Use the $label temperature target',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: enabled ? onTap : null,
+              borderRadius: BorderRadius.circular(24),
+              child: Ink(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: selected
+                      ? _temperatureAccent.withValues(alpha: 0.24)
+                      : const Color(0xFF171B1B).withValues(alpha: 0.88),
+                  border: Border.all(
+                    color: selected ? _temperatureAccent : _temperatureBrass,
+                    width: selected ? 2 : 1.2,
+                  ),
+                  boxShadow: selected
+                      ? [
+                          BoxShadow(
+                            color: _temperatureAccent.withValues(alpha: 0.42),
+                            blurRadius: 7,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          label,
+                          style: AppTypography.labelSmall.copyWith(
+                            color: _temperatureInk,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        rangeLabel,
+                        style: AppTypography.labelSmall.copyWith(
+                          color: selected
+                              ? _temperatureAccent
+                              : _temperatureMutedInk,
+                          fontSize: 7,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HybridManualReadout extends StatelessWidget {
+  final double temp;
+  final LogEntry? lastEntry;
+  final String Function(DateTime) formatTimestamp;
+
+  const _HybridManualReadout({
+    required this.temp,
+    required this.lastEntry,
+    required this.formatTimestamp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      key: const ValueKey('temperature-manual-readout'),
+      decoration: BoxDecoration(
+        color: const Color(0xFF191408).withValues(alpha: 0.88),
+        border: Border.all(
+          color: _temperatureBrass.withValues(alpha: 0.76),
+          width: 1.1,
+        ),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'LATEST MANUAL',
+              style: AppTypography.labelSmall.copyWith(
+                color: _temperatureMutedInk,
+                fontSize: 7,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.7,
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${temp.toStringAsFixed(1)}\u00b0C',
+                style: AppTypography.headlineLarge.copyWith(
+                  color: _temperatureInk,
+                  fontWeight: FontWeight.w900,
+                  height: 0.92,
+                ),
+              ),
+            ),
+            if (lastEntry != null)
+              Text(
+                'Logged ${formatTimestamp(lastEntry!.timestamp)}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.labelSmall.copyWith(
+                  color: _temperatureAccent,
+                  fontSize: 7,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HybridTemperatureTrend extends StatelessWidget {
+  final List<double> sparkData;
+  final double? minTemp;
+  final double? maxTemp;
+  final double? avgTemp;
+
+  const _HybridTemperatureTrend({
+    required this.sparkData,
+    required this.minTemp,
+    required this.maxTemp,
+    required this.avgTemp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasSummary = minTemp != null && maxTemp != null && avgTemp != null;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFF071719).withValues(alpha: 0.72),
+        border: Border.all(
+          color: _temperatureBrass.withValues(alpha: 0.56),
+        ),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(7, 5, 7, 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.show_chart_rounded,
+                  size: 10,
+                  color: kTempTealLight,
+                ),
+                const SizedBox(width: 3),
+                Text(
+                  '7-day trend',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: _temperatureInk,
+                    fontSize: 8,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Spacer(),
+                if (hasSummary)
+                  Flexible(
+                    child: Text(
+                      '${minTemp!.toStringAsFixed(1)} / '
+                      '${avgTemp!.toStringAsFixed(1)} / '
+                      '${maxTemp!.toStringAsFixed(1)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: AppTypography.labelSmall.copyWith(
+                        color: _temperatureMutedInk,
+                        fontSize: 7,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 3),
+            Expanded(
+              child: sparkData.length >= 2
+                  ? CustomPaint(painter: TempSparklinePainter(data: sparkData))
+                  : Center(
+                      child: Text(
+                        sparkData.isEmpty
+                            ? 'No data yet'
+                            : 'Add another reading to see a trend',
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.labelSmall.copyWith(
+                          color: _temperatureMutedInk,
+                          fontSize: 8,
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HybridActionButton extends StatelessWidget {
+  final String label;
+  final String? displayLabel;
+  final IconData icon;
+  final double order;
+  final bool emphasized;
+  final bool secondary;
+  final VoidCallback onTap;
+
+  const _HybridActionButton({
+    required this.label,
+    required this.icon,
+    required this.order,
+    required this.onTap,
+    this.displayLabel,
+    this.emphasized = false,
+    this.secondary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = secondary ? _temperatureMutedInk : _temperatureInk;
+    return Semantics(
+      label: label,
+      button: true,
+      sortKey: OrdinalSortKey(order),
+      onTap: onTap,
+      child: ExcludeSemantics(
+        child: Tooltip(
+          message: label,
+          child: Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            child: InkWell(
+              onTap: onTap,
+              customBorder: const CircleBorder(),
+              child: Ink(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: emphasized
+                      ? _temperatureAccent.withValues(alpha: 0.20)
+                      : const Color(0xFF15191A).withValues(alpha: 0.82),
+                  border: Border.all(
+                    color: emphasized
+                        ? _temperatureAccent
+                        : _temperatureBrass.withValues(alpha: 0.78),
+                    width: emphasized ? 1.8 : 1.1,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(icon, size: 15, color: foreground),
+                      const SizedBox(height: 1),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          displayLabel ?? label,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.labelSmall.copyWith(
+                            color: foreground,
+                            fontSize: 7,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TemperatureInstrumentCore extends StatelessWidget {
+  final Widget reading;
+  final Widget Function(bool compactLayout) targetBuilder;
+
+  const _TemperatureInstrumentCore({
+    required this.reading,
+    required this.targetBuilder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      key: const ValueKey('temperature-instrument-core'),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF202425), Color(0xFF0E1112), Color(0xFF171B1C)],
+          stops: [0, 0.58, 1],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: _temperatureBrass.withValues(alpha: 0.78),
+          width: 1.4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.62),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: _temperatureBrass.withValues(alpha: 0.12),
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth >= 360) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 7, child: reading),
+                  const SizedBox(width: AppSpacing.sm2),
+                  Flexible(flex: 4, child: targetBuilder(false)),
+                ],
+              );
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                reading,
+                const SizedBox(height: AppSpacing.xs),
+                targetBuilder(true),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class _TemperatureInstrumentChassis extends StatelessWidget {
   final Widget child;
 
@@ -448,21 +1410,24 @@ class _TemperatureInstrumentChassis extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF28454A), Color(0xFF102A2E), Color(0xFF07181B)],
-          stops: [0, 0.54, 1],
+          colors: [Color(0xFF2A2D2D), Color(0xFF111414), Color(0xFF050707)],
+          stops: [0, 0.46, 1],
         ),
-        borderRadius: AppRadius.largeRadius,
-        border: Border.all(color: _temperatureBrass.withValues(alpha: 0.68)),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: const Color(0xFFE0B95F).withValues(alpha: 0.82),
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF020708).withValues(alpha: 0.48),
-            blurRadius: 22,
-            offset: const Offset(0, 12),
+            color: const Color(0xFF000000).withValues(alpha: 0.72),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
           ),
           BoxShadow(
-            color: kTempTeal.withValues(alpha: 0.14),
-            blurRadius: 16,
-            spreadRadius: -6,
+            color: _temperatureBrass.withValues(alpha: 0.16),
+            blurRadius: 8,
+            spreadRadius: -2,
           ),
         ],
       ),
@@ -480,28 +1445,57 @@ class _TemperatureChassisHardwarePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final seamPaint = Paint()
-      ..color = _temperatureBrass.withValues(alpha: 0.38)
+      ..color = _temperatureBrass.withValues(alpha: 0.42)
+      ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    canvas.drawLine(
-      const Offset(12, 12),
-      Offset(size.width - 12, 12),
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(8, 8, size.width - 16, size.height - 16),
+        const Radius.circular(16),
+      ),
       seamPaint,
     );
 
-    final boltPaint = Paint()
-      ..color = _temperatureBrass
-      ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 1.5);
+    final brushedPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.025)
+      ..strokeWidth = 0.7;
+    for (var y = 24.0; y < size.height - 20; y += 18) {
+      canvas.drawLine(
+        Offset(18, y),
+        Offset(size.width - 18, y + 1.5),
+        brushedPaint,
+      );
+    }
+
     for (final center in [
-      const Offset(14, 14),
-      Offset(size.width - 14, 14),
-      Offset(14, size.height - 14),
-      Offset(size.width - 14, size.height - 14),
+      const Offset(17, 17),
+      Offset(size.width - 17, 17),
+      Offset(17, size.height - 17),
+      Offset(size.width - 17, size.height - 17),
     ]) {
-      canvas.drawCircle(center, 4, boltPaint);
       canvas.drawCircle(
         center,
-        1.5,
-        Paint()..color = const Color(0xFF4F3914),
+        7,
+        Paint()
+          ..shader = const RadialGradient(
+            center: Alignment(-0.35, -0.35),
+            colors: [Color(0xFFFFD983), Color(0xFF9A6721), Color(0xFF38220B)],
+          ).createShader(Rect.fromCircle(center: center, radius: 7)),
+      );
+      canvas.drawCircle(
+        center,
+        3.5,
+        Paint()
+          ..color = const Color(0xFF151515)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
+      canvas.drawLine(
+        center.translate(-3, 0),
+        center.translate(3, 0),
+        Paint()
+          ..color = const Color(0xFF3A280F)
+          ..strokeWidth = 1.2,
       );
     }
   }
@@ -518,6 +1512,7 @@ class _TemperatureTargetSelector extends StatelessWidget {
   final bool isLoading;
   final bool isUnavailable;
   final bool isSaving;
+  final bool compactLayout;
   final RoomTheme theme;
   final ValueChanged<_TemperaturePreset> onSelect;
 
@@ -527,6 +1522,7 @@ class _TemperatureTargetSelector extends StatelessWidget {
     required this.isLoading,
     required this.isUnavailable,
     required this.isSaving,
+    required this.compactLayout,
     required this.theme,
     required this.onSelect,
   });
@@ -543,83 +1539,120 @@ class _TemperatureTargetSelector extends StatelessWidget {
     final canSelectNamed = !isLoading && !isUnavailable && !isSaving;
 
     return DecoratedBox(
+      key: const ValueKey('temperature-target-assembly'),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            _temperatureInset.withValues(alpha: 0.92),
-            const Color(0xFF091C20).withValues(alpha: 0.92),
-          ],
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF25292A), Color(0xFF090B0C)],
         ),
-        borderRadius: AppRadius.mediumRadius,
+        borderRadius: BorderRadius.circular(13),
         border: Border.all(
-          color: _temperatureBrass.withValues(alpha: 0.42),
+          color: _temperatureBrass.withValues(alpha: 0.72),
+          width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.58),
+            blurRadius: 8,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs2,
               children: [
-                Icon(
+                const Icon(
                   Icons.tune_rounded,
-                  size: 18,
-                  color: _temperatureAccent,
+                  size: 16,
+                  color: _temperatureBrass,
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Target range',
-                        style: AppTypography.labelLarge.copyWith(
-                          color: _temperatureInk,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Text(
-                        statusLabel,
-                        style: AppTypography.labelSmall.copyWith(
-                          color: _temperatureMutedInk,
-                        ),
-                      ),
-                    ],
+                Text(
+                  'Target range',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: _temperatureInk,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                Text(
+                  statusLabel,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: _temperatureAccent,
+                    fontSize: 9.5,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
-            _TargetOption(
-              key: const ValueKey('temperature-target-tropical'),
-              preset: _TemperaturePreset.tropical,
-              label: 'Tropical',
-              rangeLabel: '24–28°C',
-              selected: selected == _TemperaturePreset.tropical,
-              enabled: canSelectNamed,
-              onTap: () => onSelect(_TemperaturePreset.tropical),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            _TargetOption(
-              key: const ValueKey('temperature-target-coldwater'),
-              preset: _TemperaturePreset.coldwater,
-              label: 'Coldwater',
-              rangeLabel: '15–22°C',
-              selected: selected == _TemperaturePreset.coldwater,
-              enabled: canSelectNamed,
-              onTap: () => onSelect(_TemperaturePreset.coldwater),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            _TargetOption(
-              key: const ValueKey('temperature-target-custom'),
-              preset: _TemperaturePreset.custom,
-              label: 'Custom',
-              rangeLabel: _customRangeLabel(targets),
-              selected: selected == _TemperaturePreset.custom,
-              enabled: false,
-              onTap: null,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final compactOption = constraints.maxWidth < 310;
+                final tropical = _TargetOption(
+                  key: const ValueKey('temperature-target-tropical'),
+                  preset: _TemperaturePreset.tropical,
+                  label: 'Tropical',
+                  rangeLabel: '24–28°C',
+                  selected: selected == _TemperaturePreset.tropical,
+                  enabled: canSelectNamed,
+                  onTap: () => onSelect(_TemperaturePreset.tropical),
+                  compact: compactOption,
+                );
+                final coldwater = _TargetOption(
+                  key: const ValueKey('temperature-target-coldwater'),
+                  preset: _TemperaturePreset.coldwater,
+                  label: 'Coldwater',
+                  rangeLabel: '15–22°C',
+                  selected: selected == _TemperaturePreset.coldwater,
+                  enabled: canSelectNamed,
+                  onTap: () => onSelect(_TemperaturePreset.coldwater),
+                  compact: compactOption,
+                );
+                final custom = _TargetOption(
+                  key: const ValueKey('temperature-target-custom'),
+                  preset: _TemperaturePreset.custom,
+                  label: 'Custom',
+                  rangeLabel: _customRangeLabel(targets),
+                  selected: selected == _TemperaturePreset.custom,
+                  enabled: false,
+                  onTap: null,
+                  compact: compactOption,
+                );
+                if (compactLayout && compactOption) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: tropical),
+                          const SizedBox(width: AppSpacing.xs),
+                          Expanded(child: coldwater),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      custom,
+                    ],
+                  );
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    tropical,
+                    const SizedBox(height: AppSpacing.xs),
+                    coldwater,
+                    const SizedBox(height: AppSpacing.xs),
+                    custom,
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -648,6 +1681,7 @@ class _TargetOption extends StatelessWidget {
   final bool selected;
   final bool enabled;
   final VoidCallback? onTap;
+  final bool compact;
 
   const _TargetOption({
     super.key,
@@ -657,6 +1691,7 @@ class _TargetOption extends StatelessWidget {
     required this.selected,
     required this.enabled,
     required this.onTap,
+    this.compact = false,
   });
 
   @override
@@ -664,10 +1699,7 @@ class _TargetOption extends StatelessWidget {
     final isStateOnly = preset == _TemperaturePreset.custom;
     final borderColor = selected
         ? _temperatureAccent
-        : _temperatureInk.withValues(alpha: 0.22);
-    final backgroundColor = selected
-        ? _temperatureAccent.withValues(alpha: 0.10)
-        : Colors.transparent;
+        : _temperatureBrass.withValues(alpha: isStateOnly ? 0.22 : 0.48);
 
     return Semantics(
       label: '$label temperature target, $rangeLabel',
@@ -681,63 +1713,125 @@ class _TargetOption extends StatelessWidget {
               ? 'The temperature range currently saved to this tank'
               : 'Use the $label temperature target',
           child: Material(
-            color: backgroundColor,
+            color: Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.smallRadius,
-              side: BorderSide(color: borderColor),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
               onTap: enabled ? onTap : null,
               splashFactory: NoSplash.splashFactory,
-              borderRadius: AppRadius.smallRadius,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: 48,
-                  minHeight: 52,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm2,
-                    vertical: AppSpacing.xs,
+              borderRadius: BorderRadius.circular(10),
+              child: Ink(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isStateOnly
+                        ? const [Color(0xFF151718), Color(0xFF080909)]
+                        : const [Color(0xFF303435), Color(0xFF111314)],
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        selected
-                            ? Icons.radio_button_checked_rounded
-                            : Icons.radio_button_unchecked_rounded,
-                        size: 18,
-                        color: selected
-                            ? _temperatureAccent
-                            : _temperatureMutedInk,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              label,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelMedium.copyWith(
-                                color: _temperatureInk,
-                                fontWeight: FontWeight.w800,
-                              ),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: borderColor, width: 1.4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: selected
+                          ? _temperatureAccent.withValues(alpha: 0.28)
+                          : Colors.black.withValues(alpha: 0.48),
+                      blurRadius: selected ? 8 : 4,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: compact ? AppSpacing.xs : AppSpacing.sm,
+                      vertical: compact ? AppSpacing.xs2 : AppSpacing.xs,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: compact ? 14 : 20,
+                          height: compact ? 14 : 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: selected
+                                  ? const [
+                                      Color(0xFFFFFFFF),
+                                      Color(0xFF3BFFE7),
+                                      Color(0xFF05796E),
+                                      Color(0xFF0A1717),
+                                    ]
+                                  : const [
+                                      Color(0xFF3B4141),
+                                      Color(0xFF141718),
+                                    ],
+                              stops: selected
+                                  ? const [0, 0.18, 0.58, 1]
+                                  : const [0, 1],
                             ),
-                            Text(
-                              rangeLabel,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelSmall.copyWith(
-                                color: _temperatureMutedInk,
-                              ),
+                            border: Border.all(
+                              color: selected
+                                  ? _temperatureAccent
+                                  : _temperatureBrass.withValues(alpha: 0.45),
+                              width: 1.4,
                             ),
-                          ],
+                            boxShadow: selected
+                                ? [
+                                    BoxShadow(
+                                      color: _temperatureAccent.withValues(
+                                        alpha: 0.55,
+                                      ),
+                                      blurRadius: 8,
+                                    ),
+                                  ]
+                                : null,
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: compact ? AppSpacing.xs2 : AppSpacing.sm,
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                label,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.labelMedium.copyWith(
+                                  color: isStateOnly
+                                      ? _temperatureMutedInk
+                                      : _temperatureInk,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: compact ? 11 : null,
+                                ),
+                              ),
+                              Text(
+                                rangeLabel,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: selected
+                                      ? _temperatureAccent
+                                      : _temperatureMutedInk,
+                                  fontWeight: selected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  fontSize: compact ? 9.5 : null,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -252,7 +252,10 @@ function Remove-GeneratedDirectory {
     throw "Refusing to remove generated path outside app root: $resolvedPath"
   }
 
-  $links = @(Get-ChildItem -LiteralPath $resolvedPath -Force -Recurse -Attributes ReparsePoint -ErrorAction SilentlyContinue)
+    $links = @(
+        Get-ChildItem -LiteralPath $resolvedPath -Force -Recurse -Attributes ReparsePoint -ErrorAction SilentlyContinue |
+            Where-Object { $null -ne $_ }
+    )
   foreach ($link in $links) {
     if (-not $link.FullName.StartsWith($guard, [System.StringComparison]::OrdinalIgnoreCase)) {
       throw "Refusing to remove generated link outside app root: $($link.FullName)"

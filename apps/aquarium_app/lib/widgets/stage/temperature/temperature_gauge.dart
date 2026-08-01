@@ -90,16 +90,36 @@ class TempHeroSection extends StatelessWidget {
       child: ExcludeSemantics(
         child: Column(
           children: [
-            AspectRatio(
-              aspectRatio: 1.2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: BrassGauge(
-                  temp: temp,
-                  gaugeMin: gaugeMin,
-                  gaugeMax: gaugeMax,
-                  optimalMin: optimalMin,
-                  optimalMax: optimalMax,
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 320),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: DecoratedBox(
+                  key: const ValueKey('temperature-gauge-housing'),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.78),
+                        blurRadius: 18,
+                        offset: const Offset(0, 10),
+                      ),
+                      BoxShadow(
+                        color: const Color(
+                          0xFFC89B3C,
+                        ).withValues(alpha: 0.22),
+                        blurRadius: 9,
+                      ),
+                    ],
+                  ),
+                  child: BrassGauge(
+                    temp: temp,
+                    gaugeMin: gaugeMin,
+                    gaugeMax: gaugeMax,
+                    optimalMin: optimalMin,
+                    optimalMax: optimalMax,
+                    showCenterLabel: false,
+                  ),
                 ),
               ),
             ),
@@ -112,11 +132,16 @@ class TempHeroSection extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             _TemperatureStatusLamps(status: status),
             const SizedBox(height: AppSpacing.xs),
-            if (status != null) TempStatusBadge(status: status!),
-            if (optimalMin != null && optimalMax != null) ...[
-              const SizedBox(height: AppSpacing.xs),
-              TempOptimalRangeRow(min: optimalMin!, max: optimalMax!),
-            ],
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacing.xs,
+              runSpacing: AppSpacing.xs,
+              children: [
+                if (optimalMin != null && optimalMax != null)
+                  TempOptimalRangeRow(min: optimalMin!, max: optimalMax!),
+              ],
+            ),
           ],
         ),
       ),
@@ -134,15 +159,33 @@ class _TemperatureStatusLamps extends StatelessWidget {
     final lowActive = status == TempStatus.cool || status == TempStatus.tooCold;
     final targetActive = status == TempStatus.perfect;
     final highActive = status == TempStatus.warm || status == TempStatus.tooHot;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _StatusLamp(label: 'LOW', color: kTempTealLight, active: lowActive),
-        const SizedBox(width: AppSpacing.md),
-        _StatusLamp(label: 'TARGET', color: kTempGreen, active: targetActive),
-        const SizedBox(width: AppSpacing.md),
-        _StatusLamp(label: 'HIGH', color: kTempRedWarn, active: highActive),
-      ],
+    return DecoratedBox(
+      key: const ValueKey('temperature-status-lamps'),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0A0C0C),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: const Color(0xFFC89B3C).withValues(alpha: 0.56),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xs,
+          vertical: AppSpacing.xs,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatusLamp(label: 'LOW', color: kTempTealLight, active: lowActive),
+            _StatusLamp(
+              label: 'TARGET',
+              color: kTempTeal,
+              active: targetActive,
+            ),
+            _StatusLamp(label: 'HIGH', color: kTempRedWarn, active: highActive),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -164,30 +207,54 @@ class _StatusLamp extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 12,
-          height: 12,
+          width: 22,
+          height: 22,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: active ? color : const Color(0xFF243235),
-            border: Border.all(color: kTempCream.withValues(alpha: 0.28)),
+            gradient: RadialGradient(
+              center: const Alignment(-0.3, -0.35),
+              colors: active
+                  ? [
+                      Colors.white,
+                      color,
+                      color.withValues(alpha: 0.82),
+                      const Color(0xFF111313),
+                    ]
+                  : const [
+                      Color(0xFF4B3330),
+                      Color(0xFF220909),
+                      Color(0xFF080909),
+                    ],
+              stops: active ? const [0, 0.18, 0.6, 1] : const [0, 0.56, 1],
+            ),
+            border: Border.all(
+              color: const Color(0xFFC89B3C).withValues(alpha: 0.7),
+              width: 1.4,
+            ),
             boxShadow: active
                 ? [
                     BoxShadow(
-                      color: color.withValues(alpha: 0.62),
-                      blurRadius: 8,
+                      color: color.withValues(alpha: 0.72),
+                      blurRadius: 12,
                     ),
                   ]
-                : null,
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.7),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
         ),
         const SizedBox(height: 3),
         Text(
           label,
           style: AppTypography.labelSmall.copyWith(
-            color: kTempCream.withValues(alpha: active ? 0.92 : 0.52),
+            color: kTempCream.withValues(alpha: active ? 0.94 : 0.58),
             fontSize: 9,
             fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
+            letterSpacing: 0.9,
           ),
         ),
       ],
@@ -209,24 +276,31 @@ class _ManualTemperatureReadout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = temperature == null
-        ? '--Â°C'
-        : '${temperature!.toStringAsFixed(1)}Â°C';
+        ? '--°C'
+        : '${temperature!.toStringAsFixed(1)}°C';
     return Container(
+      key: const ValueKey('temperature-manual-readout'),
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm2,
-        vertical: AppSpacing.sm,
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF4A2D09), Color(0xFF221504)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF272B2B), Color(0xFF080A0A)],
         ),
-        borderRadius: AppRadius.smallRadius,
-        border: Border.all(color: kTempAmberGold.withValues(alpha: 0.78)),
+        borderRadius: BorderRadius.circular(11),
+        border: Border.all(
+          color: const Color(0xFFC89B3C).withValues(alpha: 0.8),
+          width: 1.3,
+        ),
         boxShadow: [
           BoxShadow(
-            color: kTempAmberGold.withValues(alpha: 0.2),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.68),
+            blurRadius: 7,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -238,13 +312,48 @@ class _ManualTemperatureReadout extends StatelessWidget {
               color: kTempCream.withValues(alpha: 0.72),
               fontWeight: FontWeight.w800,
               letterSpacing: 1.2,
+              fontSize: 9,
             ),
           ),
-          Text(
-            value,
-            style: AppTypography.headlineLarge.copyWith(
-              color: const Color(0xFFFFC861),
-              fontWeight: FontWeight.w800,
+          const SizedBox(height: 3),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs2,
+            ),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF120B02), Color(0xFF301B02)],
+              ),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: const Color(0xFF8D5B13),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: kTempAmberGold.withValues(alpha: 0.24),
+                  blurRadius: 9,
+                ),
+              ],
+            ),
+            child: Text(
+              value,
+              textAlign: TextAlign.center,
+              style: AppTypography.headlineLarge.copyWith(
+                color: const Color(0xFFFFC548),
+                fontWeight: FontWeight.w800,
+                fontFamily: 'monospace',
+                fontSize: 28,
+                letterSpacing: 1.2,
+                shadows: [
+                  Shadow(
+                    color: kTempAmberGold.withValues(alpha: 0.82),
+                    blurRadius: 9,
+                  ),
+                ],
+              ),
             ),
           ),
           if (lastEntry != null)
@@ -252,6 +361,7 @@ class _ManualTemperatureReadout extends StatelessWidget {
               'Last logged ${formatTimestamp(lastEntry!.timestamp)}',
               style: AppTypography.labelSmall.copyWith(
                 color: kTempCream.withValues(alpha: 0.78),
+                fontSize: 9.5,
               ),
             ),
         ],
@@ -272,13 +382,17 @@ class TempOptimalRangeRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm3,
-        vertical: AppSpacing.xs2,
+        horizontal: AppSpacing.sm2,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: kTempGreen.withAlpha(20),
-        borderRadius: AppRadius.pillRadius,
-        border: Border.all(color: kTempGreen.withAlpha(70)),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF272A2A), Color(0xFF101212)],
+        ),
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(
+          color: const Color(0xFFC89B3C).withValues(alpha: 0.52),
+        ),
       ),
       child: Wrap(
         alignment: WrapAlignment.center,
@@ -288,9 +402,15 @@ class TempOptimalRangeRow extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
-              color: kTempGreen,
+            decoration: BoxDecoration(
+              color: kTempTeal,
               shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: kTempTeal.withValues(alpha: 0.55),
+                  blurRadius: 5,
+                ),
+              ],
             ),
           ),
           Text(
@@ -298,9 +418,10 @@ class TempOptimalRangeRow extends StatelessWidget {
             '${_formatTemperatureValue(max)}°C',
             textAlign: TextAlign.center,
             style: AppTypography.labelSmall.copyWith(
-              color: kTempGreen,
+              color: kTempCream.withValues(alpha: 0.88),
               fontWeight: FontWeight.w700,
-              fontSize: 11,
+              fontSize: 10,
+              letterSpacing: 0.3,
             ),
           ),
         ],
@@ -318,27 +439,32 @@ class TempStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bgColor, label, icon) = switch (status) {
-      TempStatus.perfect => (kTempGreen, 'Perfect!', '🐟'),
-      TempStatus.warm => (kTempAmberWarn, 'A little warm', '☀️'),
-      TempStatus.cool => (kTempAmberWarn, 'A little cool', '❄️'),
-      TempStatus.tooHot => (kTempRedWarn, 'Too hot!', '🔥'),
-      TempStatus.tooCold => (kTempRedWarn, 'Too cold!', '🥶'),
+    final (statusColor, label) = switch (status) {
+      TempStatus.perfect => (kTempTeal, 'Within target'),
+      TempStatus.warm => (kTempAmberWarn, 'A little warm'),
+      TempStatus.cool => (kTempAmberWarn, 'A little cool'),
+      TempStatus.tooHot => (kTempRedWarn, 'Too hot'),
+      TempStatus.tooCold => (kTempRedWarn, 'Too cold'),
     };
 
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm2,
-        vertical: AppSpacing.sm,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: AppRadius.largeRadius,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF2D3030), Color(0xFF111313)],
+        ),
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(
+          color: statusColor.withValues(alpha: 0.76),
+        ),
         boxShadow: [
           BoxShadow(
-            color: bgColor.withAlpha(100),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.52),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -347,14 +473,28 @@ class TempStatusBadge extends StatelessWidget {
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 6,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 18)),
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: statusColor,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: statusColor.withValues(alpha: 0.55),
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+          ),
           Text(
             label,
             textAlign: TextAlign.center,
             style: AppTypography.labelSmall.copyWith(
-              color: Colors.white,
+              color: kTempCream.withValues(alpha: 0.92),
               fontWeight: FontWeight.w800,
-              fontSize: 14,
+              fontSize: 10,
+              letterSpacing: 0.4,
             ),
           ),
         ],

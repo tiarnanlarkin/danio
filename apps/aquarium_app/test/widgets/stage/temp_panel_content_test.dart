@@ -345,6 +345,163 @@ void main() {
 
   group('Phase 3 temperature instrument contract', () {
     testWidgets(
+      'the real narrow drawer uses a decorative hybrid skin with native controls',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await _pumpPhase3Panel(
+          tester,
+          temperature: 25,
+          disableAnimations: true,
+        );
+
+        final skin = find.byKey(const ValueKey('temperature-hybrid-skin'));
+        expect(skin, findsOneWidget);
+        expect(
+          find.descendant(of: skin, matching: find.byType(Image)),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: skin, matching: find.byType(BrassGauge)),
+          findsOneWidget,
+          reason: 'The gauge must remain a native, data-driven overlay.',
+        );
+        for (final label in const [
+          'Tropical',
+          'Coldwater',
+          'Log Temperature',
+          'Charts/History',
+          'Equipment',
+          'Alerts',
+          'Tank Settings',
+        ]) {
+          final control = label == 'Tropical' || label == 'Coldwater'
+              ? _targetFinder(label)
+              : find.bySemanticsLabel(label);
+          expect(control, findsOneWidget);
+          expect(
+            tester.getRect(control).shortestSide,
+            greaterThanOrEqualTo(48),
+            reason: '$label must remain a real 48dp native control.',
+          );
+        }
+      },
+    );
+
+    testWidgets(
+      'a 360dp phone uses the responsive instrument before hybrid targets shrink',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(360, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await _pumpPhase3Panel(
+          tester,
+          temperature: 25,
+          disableAnimations: true,
+        );
+
+        expect(
+          find.byKey(const ValueKey('temperature-hybrid-skin')),
+          findsNothing,
+          reason:
+              'The 220dp authored chassis must never shrink its 48dp controls.',
+        );
+        expect(find.bySemanticsLabel('Log Temperature'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'the derived Custom target remains visible and separate from Log',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await _pumpPhase3Panel(
+          tester,
+          temperature: 25,
+          targets: const WaterTargets(tempMin: 24, tempMax: 26),
+          disableAnimations: true,
+        );
+
+        final customTarget = _targetFinder('Custom');
+        final logAction = find.bySemanticsLabel('Log Temperature');
+        expect(customTarget, findsOneWidget);
+        expect(logAction, findsOneWidget);
+        expect(
+          tester.getRect(customTarget).overlaps(tester.getRect(logAction)),
+          isFalse,
+        );
+      },
+    );
+
+    testWidgets(
+      'phone first viewport is gauge-led inside one integrated instrument core',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
+
+        await _pumpPhase3Panel(
+          tester,
+          temperature: 25,
+          disableAnimations: true,
+        );
+
+        final core = find.byKey(
+          const ValueKey('temperature-instrument-core'),
+        );
+        final gauge = find.byType(BrassGauge);
+        final targetAssembly = find.byKey(
+          const ValueKey('temperature-target-assembly'),
+        );
+        final manualReadout = find.byKey(
+          const ValueKey('temperature-manual-readout'),
+        );
+        final statusLamps = find.byKey(
+          const ValueKey('temperature-status-lamps'),
+        );
+
+        expect(core, findsOneWidget);
+        for (final instrumentPart in [
+          gauge,
+          targetAssembly,
+          manualReadout,
+          statusLamps,
+        ]) {
+          expect(
+            find.descendant(of: core, matching: instrumentPart),
+            findsOneWidget,
+          );
+        }
+
+        expect(
+          tester.getTopLeft(gauge).dy,
+          lessThan(tester.getTopLeft(targetAssembly).dy),
+          reason: 'The analogue gauge must lead the compact phone layout.',
+        );
+        final coreRect = tester.getRect(core);
+        expect(
+          coreRect.bottom,
+          lessThanOrEqualTo(844 - DanioBottomDock.contentClearance),
+          reason:
+              'The complete instrument core must read in the first viewport. '
+              'core=$coreRect gauge=${tester.getRect(gauge)} '
+              'target=${tester.getRect(targetAssembly)} '
+              'readout=${tester.getRect(manualReadout)} '
+              'lamps=${tester.getRect(statusLamps)}',
+        );
+      },
+    );
+
+    testWidgets(
       'an unmatched saved range selects Custom across provider rebuilds',
       (tester) async {
         final harness = await _pumpPhase3Panel(
@@ -757,7 +914,7 @@ void main() {
           await tester.pump();
           // Phase 3R renders the readable copy on the instrument faceplate,
           // rather than the retired glass-card surface behind it.
-          const panelSurface = Color(0xFF102A2E);
+          const panelSurface = Color(0xFF111414);
           for (final label in const [
             'Temperature',
             'Target range',
@@ -869,8 +1026,10 @@ void main() {
     testWidgets(
       'the real 66 percent panel reflows at 2.0x and keeps actions above the dock',
       (tester) async {
-        await tester.binding.setSurfaceSize(const Size(390, 844));
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
         final capturedErrors = <FlutterErrorDetails>[];
         final originalOnError = FlutterError.onError;
         FlutterError.onError = capturedErrors.add;
@@ -920,8 +1079,10 @@ void main() {
     testWidgets(
       '2.0x panel layout stays overflow-free in both brightness modes and every room theme',
       (tester) async {
-        await tester.binding.setSurfaceSize(const Size(390, 844));
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPhysicalSize);
         final capturedErrors = <FlutterErrorDetails>[];
         final originalOnError = FlutterError.onError;
         FlutterError.onError = capturedErrors.add;

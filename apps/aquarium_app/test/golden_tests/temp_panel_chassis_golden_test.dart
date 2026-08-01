@@ -19,7 +19,8 @@ import '../helpers/danio_test_fonts.dart';
 import 'golden_test_helpers.dart';
 
 const _tankId = 'phase3r-temperature-golden';
-const _surfaceSize = Size(400, 1180);
+const _surfaceSize = Size(390, 844);
+const _drawerWidth = 390 * 0.66;
 
 void main() {
   setUpAll(loadDanioTestFonts);
@@ -53,7 +54,10 @@ void main() {
 
     await tester.pumpWidget(
       goldenWrapper(
-        TempPanelContent(tankId: _tankId, theme: RoomTheme.ocean),
+        SizedBox(
+          width: _drawerWidth,
+          child: TempPanelContent(tankId: _tankId, theme: RoomTheme.ocean),
+        ),
         overrides: [
           tankProvider(_tankId).overrideWith((_) => Future.value(tank)),
           latestWaterTestProvider(
@@ -74,7 +78,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await expectLater(
-      find.byKey(const ValueKey('temperature-instrument-chassis')),
+      find.byKey(const ValueKey('temperature-hybrid-skin')),
       matchesGoldenFile('goldens/temp_panel_chassis_manual_reading.png'),
     );
   });

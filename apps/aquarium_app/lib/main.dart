@@ -37,6 +37,8 @@ import 'utils/logger.dart';
 import 'services/debug_deep_link_service.dart';
 import 'utils/schema_migration.dart';
 import 'providers/gems_provider.dart';
+import 'providers/storage_provider.dart';
+import 'services/browser_preview_demo.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -60,6 +62,9 @@ final List<Object> _preFirebaseErrors = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final previewStorage = browserPreviewDemoEnabled
+      ? await createBrowserPreviewDemoStorage()
+      : null;
 
   // Enable edge-to-edge display (transparent status/nav bars)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -120,94 +125,109 @@ Future<void> main() async {
   // ── Defer heavy init to after the first frame ─────────────────────────
   // Firebase, Supabase, and Notifications are moved to a post-frame
   // callback so the splash/loading screen renders instantly.
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    // Initialize Firebase — graceful fallback if google-services.json is missing
-    final prefs = await SharedPreferences.getInstance();
-    final consent = prefs.getBool(kGdprAnalyticsConsentKey);
-    bool firebaseInitialized = false;
-    if (consent == true) {
-      try {
-        await Firebase.initializeApp();
-        firebaseInitialized = true;
-        appLog('Firebase initialised successfully', tag: 'Main');
-      } catch (e) {
-        logError('Firebase initialisation failed: $e', tag: 'Main');
-      }
-    } else {
-      appLog(
-        'Firebase initialisation skipped until analytics consent is accepted',
-        tag: 'Main',
-      );
-    }
-
-    // ── Apply persisted GDPR analytics consent ──
-    if (firebaseInitialized) {
-      // null means user hasn't decided yet — keep collection disabled
-      // (AndroidManifest defaults are already false).
-      await applyAnalyticsConsent(true);
-    }
-
-    // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
-    //
-    // GDPR SAFETY: applyAnalyticsConsent() is called above BEFORE this block,
-    // so Crashlytics collection is already disabled when the user has not yet
-    // given (or has declined) consent.  Installing the handlers here is safe
-    // because the Crashlytics SDK will not transmit any data when collection
-    // is disabled — errors are silently dropped.
-    //
-    // The pre-Firebase error buffer (below) is also flushed only after consent
-    // has been applied, so no pre-consent data reaches Firebase servers.
-    if (kReleaseMode && firebaseInitialized) {
-      FlutterError.onError =
-          FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-
-      // Flush any errors that occurred before Firebase was ready.
-      // Safe: consent has already been applied above; if collection is
-      // disabled (no consent) recordError() is a no-op on the network layer.
-      if (_preFirebaseErrors.isNotEmpty) {
-        for (final error in _preFirebaseErrors) {
-          FirebaseCrashlytics.instance.recordError(error, null, fatal: false);
+  if (!browserPreviewDemoEnabled) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Initialize Firebase — graceful fallback if google-services.json is missing
+      final prefs = await SharedPreferences.getInstance();
+      final consent = prefs.getBool(kGdprAnalyticsConsentKey);
+      bool firebaseInitialized = false;
+      if (consent == true) {
+        try {
+          await Firebase.initializeApp();
+          firebaseInitialized = true;
+          appLog('Firebase initialised successfully', tag: 'Main');
+        } catch (e) {
+          logError('Firebase initialisation failed: $e', tag: 'Main');
         }
-        _preFirebaseErrors.clear();
+      } else {
+        appLog(
+          'Firebase initialisation skipped until analytics consent is accepted',
+          tag: 'Main',
+        );
       }
-    }
 
-    // Initialize Supabase (safe to call - returns false if credentials are
-    // placeholders, and the app continues in offline-only mode).
-    await SupabaseService.initialize();
+      // ── Apply persisted GDPR analytics consent ──
+      if (firebaseInitialized) {
+        // null means user hasn't decided yet — keep collection disabled
+        // (AndroidManifest defaults are already false).
+        await applyAnalyticsConsent(true);
+      }
 
-    // Pre-warm database indices so the first user interaction is instant.
-    // Both calls defer to the next microtask then do their work, keeping
-    // this post-frame callback non-blocking.
-    unawaited(SpeciesDatabase.prewarm());
-    unawaited(PlantDatabase.prewarm());
+      // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
+      //
+      // GDPR SAFETY: applyAnalyticsConsent() is called above BEFORE this block,
+      // so Crashlytics collection is already disabled when the user has not yet
+      // given (or has declined) consent.  Installing the handlers here is safe
+      // because the Crashlytics SDK will not transmit any data when collection
+      // is disabled — errors are silently dropped.
+      //
+      // The pre-Firebase error buffer (below) is also flushed only after consent
+      // has been applied, so no pre-consent data reaches Firebase servers.
+      if (kReleaseMode && firebaseInitialized) {
+        FlutterError.onError =
+            FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-    // Start performance monitoring in debug mode if enabled
-    if (_enablePerformanceMonitoring) {
-      performanceMonitor.startMonitoring();
-    }
+        PlatformDispatcher.instance.onError = (error, stack) {
+          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+          return true;
+        };
 
-    // Initialize notifications with navigation callback.
-    // Notification payloads are handled by _AppRouter via a ValueNotifier
-    // so that tab navigators are available for in-tab navigation.
-    final notificationService = NotificationService();
-    await notificationService.initialize(
-      onSelectNotification: (payload) {
-        notificationPayloadNotifier.value = payload;
-      },
-    );
-  });
+        // Flush any errors that occurred before Firebase was ready.
+        // Safe: consent has already been applied above; if collection is
+        // disabled (no consent) recordError() is a no-op on the network layer.
+        if (_preFirebaseErrors.isNotEmpty) {
+          for (final error in _preFirebaseErrors) {
+            FirebaseCrashlytics.instance.recordError(error, null, fatal: false);
+          }
+          _preFirebaseErrors.clear();
+        }
+      }
+
+      // Initialize Supabase (safe to call - returns false if credentials are
+      // placeholders, and the app continues in offline-only mode).
+      await SupabaseService.initialize();
+
+      // Pre-warm database indices so the first user interaction is instant.
+      // Both calls defer to the next microtask then do their work, keeping
+      // this post-frame callback non-blocking.
+      unawaited(SpeciesDatabase.prewarm());
+      unawaited(PlantDatabase.prewarm());
+
+      // Start performance monitoring in debug mode if enabled
+      if (_enablePerformanceMonitoring) {
+        performanceMonitor.startMonitoring();
+      }
+
+      // Initialize notifications with navigation callback.
+      // Notification payloads are handled by _AppRouter via a ValueNotifier
+      // so that tab navigators are available for in-tab navigation.
+      final notificationService = NotificationService();
+      await notificationService.initialize(
+        onSelectNotification: (payload) {
+          notificationPayloadNotifier.value = payload;
+        },
+      );
+    });
+  }
 
   // ── Schema migration — run BEFORE the app router reads from storage ──────
-  final prefs = await SharedPreferences.getInstance();
-  await SchemaMigration.runIfNeeded(prefs);
+  if (!browserPreviewDemoEnabled) {
+    final prefs = await SharedPreferences.getInstance();
+    await SchemaMigration.runIfNeeded(prefs);
+  }
 
-  runApp(ErrorBoundary(child: const ProviderScope(child: DanioApp())));
+  runApp(
+    ErrorBoundary(
+      child: ProviderScope(
+        overrides: previewStorage == null
+            ? []
+            : [storageServiceProvider.overrideWithValue(previewStorage)],
+        child: browserPreviewDemoEnabled
+            ? const BrowserPreviewDemoApp()
+            : const DanioApp(),
+      ),
+    ),
+  );
 }
 
 class DanioApp extends ConsumerWidget {

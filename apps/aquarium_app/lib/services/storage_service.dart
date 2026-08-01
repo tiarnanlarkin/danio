@@ -47,6 +47,13 @@ class InMemoryStorageService implements StorageService {
   // Singleton
   static final InMemoryStorageService _instance = InMemoryStorageService._();
   factory InMemoryStorageService() => _instance;
+
+  /// A fresh store for a bounded local preview or an isolated test.
+  ///
+  /// Unlike the default factory, this instance never shares process state and
+  /// is not connected to a durable storage backend.
+  InMemoryStorageService.ephemeral();
+
   InMemoryStorageService._();
 
   // --- Tanks ---

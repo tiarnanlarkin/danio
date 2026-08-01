@@ -16,6 +16,7 @@ class BrassGauge extends StatefulWidget {
   final double gaugeMax;
   final double? optimalMin;
   final double? optimalMax;
+  final bool showCenterLabel;
 
   const BrassGauge({
     super.key,
@@ -24,6 +25,7 @@ class BrassGauge extends StatefulWidget {
     required this.gaugeMax,
     required this.optimalMin,
     required this.optimalMax,
+    this.showCenterLabel = true,
   });
 
   @override
@@ -93,19 +95,27 @@ class _BrassGaugeState extends State<BrassGauge>
                 tempFraction: frac,
                 optFracMin: optMin,
                 optFracMax: optMax,
+                gaugeMin: widget.gaugeMin,
+                gaugeMax: widget.gaugeMax,
               ),
             ),
-            Text(
-              widget.temp != null
-                  ? '${widget.temp!.toStringAsFixed(1)}°C'
-                  : '--°C',
-              style: AppTypography.headlineLarge.copyWith(
-                color: const Color(0xFF2D3436),
-                fontWeight: FontWeight.w800,
-                fontSize: 32,
-                letterSpacing: 0,
+            if (widget.showCenterLabel)
+              FractionallySizedBox(
+                widthFactor: 0.42,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    widget.temp != null
+                        ? '${widget.temp!.toStringAsFixed(1)}\u00b0C'
+                        : '--\u00b0C',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: const Color(0xFF202425),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
               ),
-            ),
           ],
         );
       },
