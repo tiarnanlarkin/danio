@@ -41,6 +41,28 @@ class BrassGaugePainter extends CustomPainter {
     final center = size.center(Offset.zero);
     final radius = math.min(size.width, size.height) / 2 - 6;
 
+    // The pale dial makes the gauge read as a physical analogue instrument
+    // against the dark chassis rather than as a floating dashboard graphic.
+    final dialRadius = radius - 10;
+    canvas.drawCircle(
+      center,
+      dialRadius,
+      Paint()
+        ..shader = const RadialGradient(
+          center: Alignment(-0.24, -0.3),
+          radius: 0.9,
+          colors: [Color(0xFFFFF8E6), Color(0xFFE6D6AD)],
+        ).createShader(Rect.fromCircle(center: center, radius: dialRadius)),
+    );
+    canvas.drawCircle(
+      center,
+      dialRadius,
+      Paint()
+        ..color = _brass.withValues(alpha: 0.78)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
+
     // Inner track
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - 8),

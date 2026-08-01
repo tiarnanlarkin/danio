@@ -157,74 +157,58 @@ void main() {
       expect(source, isNot(contains('Colors.white.withValues(alpha: 0.5)')));
     });
 
-    testWidgets('TempTrendSection has no card wrapper decoration', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 360,
-              child: TempTrendSection(
-                sparkData: const [24, 24.5, 25, 24.5, 24, 24, 24.5],
-                minTemp: 24,
-                maxTemp: 25,
-                avgTemp: 24.4,
+    testWidgets(
+      'TempTrendSection renders a substantial inset instrument display',
+      (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 360,
+                child: TempTrendSection(
+                  sparkData: const [24, 24.5, 25, 24.5, 24, 24, 24.5],
+                  minTemp: 24,
+                  maxTemp: 25,
+                  avgTemp: 24.4,
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      final decorated = tester
-          .widgetList<Container>(
-            find.descendant(
-              of: find.byType(TempTrendSection),
-              matching: find.byType(Container),
-            ),
-          )
-          .where(
-            (c) =>
-                c.decoration is BoxDecoration &&
-                ((c.decoration as BoxDecoration).color != null ||
-                    (c.decoration as BoxDecoration).boxShadow != null),
-          )
-          .toList();
-      expect(decorated, isEmpty);
-    });
-
-    testWidgets('TempTrendSection chart is slim (<= 40px tall)', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 360,
-              child: TempTrendSection(
-                sparkData: const [24, 24.5, 25, 24.5, 24, 24, 24.5],
-                minTemp: 24,
-                maxTemp: 25,
-                avgTemp: 24.4,
+        final decorated = tester
+            .widgetList<DecoratedBox>(
+              find.descendant(
+                of: find.byType(TempTrendSection),
+                matching: find.byType(DecoratedBox),
               ),
-            ),
-          ),
-        ),
-      );
+            )
+            .where(
+              (c) =>
+                  c.decoration is BoxDecoration &&
+                  ((c.decoration as BoxDecoration).gradient != null ||
+                      (c.decoration as BoxDecoration).boxShadow?.isNotEmpty ==
+                          true),
+            )
+            .toList();
+        expect(decorated, isNotEmpty);
 
-      final sizedBox = tester
-          .widgetList<SizedBox>(
-            find.descendant(
-              of: find.byType(TempTrendSection),
-              matching: find.byType(SizedBox),
-            ),
-          )
-          .where(
-            (sb) => sb.height != null && sb.height! > 20 && sb.height! <= 40,
-          )
-          .toList();
-      expect(sizedBox, isNotEmpty);
-    });
+        final substantialTrace = tester
+            .widgetList<SizedBox>(
+              find.descendant(
+                of: find.byType(TempTrendSection),
+                matching: find.byType(SizedBox),
+              ),
+            )
+            .where(
+              (sb) => sb.height != null && sb.height! >= 84,
+            )
+            .toList();
+        expect(substantialTrace, isNotEmpty);
+      },
+    );
 
     testWidgets(
       'TempTrendSection uses single-reading copy when one point exists',
@@ -251,7 +235,7 @@ void main() {
     );
 
     testWidgets(
-      'TempPanelContent keeps the flat instrument surface for an honest empty state',
+      'TempPanelContent renders an integrated instrument chassis for an honest empty state',
       (tester) async {
         await tester.pumpWidget(
           ProviderScope(
@@ -282,20 +266,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 250));
         await tester.pumpAndSettle();
 
-        final gradientContainers = tester
-            .widgetList<Container>(
-              find.descendant(
-                of: find.byType(TempPanelContent),
-                matching: find.byType(Container),
-              ),
-            )
-            .where(
-              (c) =>
-                  c.decoration is BoxDecoration &&
-                  (c.decoration as BoxDecoration).gradient != null,
-            )
-            .toList();
-        expect(gradientContainers, isEmpty);
+        final chassis = find.byKey(
+          const ValueKey('temperature-instrument-chassis'),
+        );
+        expect(chassis, findsOneWidget);
+        final chassisDecoration =
+            tester.widget<DecoratedBox>(chassis).decoration as BoxDecoration;
+        expect(chassisDecoration.gradient, isNotNull);
+        expect(chassisDecoration.boxShadow, isNotEmpty);
 
         final panel = find.byType(TempPanelContent);
         expect(
@@ -777,10 +755,9 @@ void main() {
             harness.buildApp(roomThemeOverride: roomTheme),
           );
           await tester.pump();
-          final panelSurface = Color.alphaBlend(
-            roomTheme.glassCard.withValues(alpha: 0.92),
-            Colors.white,
-          );
+          // Phase 3R renders the readable copy on the instrument faceplate,
+          // rather than the retired glass-card surface behind it.
+          const panelSurface = Color(0xFF102A2E);
           for (final label in const [
             'Temperature',
             'Target range',

@@ -23,58 +23,81 @@ class TempTrendSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.show_chart_rounded,
-              size: 14,
-              color: kTempTealDark,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              '7-day trend',
-              style: AppTypography.labelSmall.copyWith(
-                color: kTempCharcoal.withAlpha(160),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const Spacer(),
-            if (minTemp != null && maxTemp != null && avgTemp != null)
-              Flexible(
-                child: Text(
-                  'min ${minTemp!.toStringAsFixed(1)}° · avg ${avgTemp!.toStringAsFixed(1)}° · max ${maxTemp!.toStringAsFixed(1)}°',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: kTempCharcoal.withAlpha(120),
-                    fontSize: 10,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-          ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF183A3E), Color(0xFF0A2024)],
         ),
-        const SizedBox(height: AppSpacing.xs),
-        SizedBox(
-          height: 32,
-          child: sparkData.length >= 2
-              ? CustomPaint(
-                  size: const Size(double.infinity, 32),
-                  painter: TempSparklinePainter(data: sparkData),
-                )
-              : Center(
-                  child: Text(
-                    sparkData.isEmpty
-                        ? 'No data yet'
-                        : 'Add another reading to see a trend',
-                    style: AppTypography.labelSmall.copyWith(
-                      color: kTempCharcoal.withAlpha(100),
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(
+          color: const Color(0xFFC89B3C).withValues(alpha: 0.42),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF000000).withValues(alpha: 0.24),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.sm2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.show_chart_rounded,
+                  size: 14,
+                  color: kTempTealLight,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '7-day trend',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: kTempCream,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                if (minTemp != null && maxTemp != null && avgTemp != null)
+                  Flexible(
+                    child: Text(
+                      'min ${minTemp!.toStringAsFixed(1)}° · avg ${avgTemp!.toStringAsFixed(1)}° · max ${maxTemp!.toStringAsFixed(1)}°',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: kTempCream.withValues(alpha: 0.72),
+                        fontSize: 10,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              height: 96,
+              child: sparkData.length >= 2
+                  ? CustomPaint(
+                      size: const Size(double.infinity, 96),
+                      painter: TempSparklinePainter(data: sparkData),
+                    )
+                  : Center(
+                      child: Text(
+                        sparkData.isEmpty
+                            ? 'No data yet'
+                            : 'Add another reading to see a trend',
+                        style: AppTypography.labelSmall.copyWith(
+                          color: kTempCream.withValues(alpha: 0.72),
+                        ),
+                      ),
+                    ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

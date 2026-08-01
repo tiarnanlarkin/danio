@@ -30,9 +30,11 @@ import 'temperature/temperature_history.dart';
 
 enum _TemperaturePreset { tropical, coldwater, custom }
 
-const Color _temperatureInk = kTempCharcoal;
-const Color _temperatureMutedInk = Color(0xFF596366);
-const Color _temperatureAccent = kTempTealDark;
+const Color _temperatureInk = kTempCream;
+const Color _temperatureMutedInk = Color(0xFFB4C4C4);
+const Color _temperatureAccent = kTempTeal;
+const Color _temperatureBrass = Color(0xFFC89B3C);
+const Color _temperatureInset = Color(0xFF10272B);
 
 /// Rich, fully-packed temperature panel for the Swiss Army stage system.
 class TempPanelContent extends ConsumerStatefulWidget {
@@ -329,77 +331,82 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         AppSpacing.md,
         DanioBottomDock.contentClearance + AppSpacing.md,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TempHeader(
-            streak: temperatureStreak,
-            foregroundColor: _temperatureInk,
+      child: _TemperatureInstrumentChassis(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TempHeader(
+                streak: temperatureStreak,
+                foregroundColor: _temperatureInk,
+              ),
+              const SizedBox(height: AppSpacing.sm4),
+              _TemperatureTargetSelector(
+                targets: tank?.targets,
+                selected: selectedPreset,
+                isLoading: tankAsync.isLoading,
+                isUnavailable: targetUnavailable,
+                isSaving: _savingTarget,
+                theme: widget.theme,
+                onSelect: (preset) => _selectPreset(preset, tank),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              if (latestTestAsync.isLoading)
+                _PanelNotice(
+                  label: 'Loading temperature…',
+                  icon: Icons.hourglass_top_rounded,
+                  theme: widget.theme,
+                )
+              else if (latestTestAsync.hasError)
+                _PanelNotice(
+                  label: 'Temperature unavailable',
+                  icon: Icons.thermostat_outlined,
+                  theme: widget.theme,
+                )
+              else
+                TempHeroSection(
+                  temp: temp,
+                  fillAnim: _fillAnim,
+                  gaugeMin: gaugeBounds.min,
+                  gaugeMax: gaugeBounds.max,
+                  optimalMin: targetMin,
+                  optimalMax: targetMax,
+                  status: status,
+                  lastEntry: lastEntry,
+                  formatTimestamp: _formatTimestamp,
+                ),
+              if (logsAsync.isLoading)
+                _PanelNotice(
+                  label: 'Loading history…',
+                  icon: Icons.show_chart_rounded,
+                  theme: widget.theme,
+                )
+              else if (logsAsync.hasError)
+                _PanelNotice(
+                  label: 'History unavailable',
+                  icon: Icons.show_chart_rounded,
+                  theme: widget.theme,
+                )
+              else
+                TempTrendSection(
+                  sparkData: sparkData,
+                  minTemp: minTemp,
+                  maxTemp: maxTemp,
+                  avgTemp: avgTemp,
+                ),
+              const SizedBox(height: AppSpacing.md),
+              _TemperatureActionRail(
+                theme: widget.theme,
+                onLog: _openLog,
+                onCharts: _openCharts,
+                onEquipment: _openEquipment,
+                onAlerts: _openAlerts,
+                onSettings: _openSettings,
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm4),
-          _TemperatureTargetSelector(
-            targets: tank?.targets,
-            selected: selectedPreset,
-            isLoading: tankAsync.isLoading,
-            isUnavailable: targetUnavailable,
-            isSaving: _savingTarget,
-            theme: widget.theme,
-            onSelect: (preset) => _selectPreset(preset, tank),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          if (latestTestAsync.isLoading)
-            _PanelNotice(
-              label: 'Loading temperature…',
-              icon: Icons.hourglass_top_rounded,
-              theme: widget.theme,
-            )
-          else if (latestTestAsync.hasError)
-            _PanelNotice(
-              label: 'Temperature unavailable',
-              icon: Icons.thermostat_outlined,
-              theme: widget.theme,
-            )
-          else
-            TempHeroSection(
-              temp: temp,
-              fillAnim: _fillAnim,
-              gaugeMin: gaugeBounds.min,
-              gaugeMax: gaugeBounds.max,
-              optimalMin: targetMin,
-              optimalMax: targetMax,
-              status: status,
-              lastEntry: lastEntry,
-              formatTimestamp: _formatTimestamp,
-            ),
-          if (logsAsync.isLoading)
-            _PanelNotice(
-              label: 'Loading history…',
-              icon: Icons.show_chart_rounded,
-              theme: widget.theme,
-            )
-          else if (logsAsync.hasError)
-            _PanelNotice(
-              label: 'History unavailable',
-              icon: Icons.show_chart_rounded,
-              theme: widget.theme,
-            )
-          else
-            TempTrendSection(
-              sparkData: sparkData,
-              minTemp: minTemp,
-              maxTemp: maxTemp,
-              avgTemp: avgTemp,
-            ),
-          const SizedBox(height: AppSpacing.md),
-          _TemperatureActionRail(
-            theme: widget.theme,
-            onLog: _openLog,
-            onCharts: _openCharts,
-            onEquipment: _openEquipment,
-            onAlerts: _openAlerts,
-            onSettings: _openSettings,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -426,6 +433,83 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     }
     return result;
   }
+}
+
+class _TemperatureInstrumentChassis extends StatelessWidget {
+  final Widget child;
+
+  const _TemperatureInstrumentChassis({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      key: const ValueKey('temperature-instrument-chassis'),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF28454A), Color(0xFF102A2E), Color(0xFF07181B)],
+          stops: [0, 0.54, 1],
+        ),
+        borderRadius: AppRadius.largeRadius,
+        border: Border.all(color: _temperatureBrass.withValues(alpha: 0.68)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF020708).withValues(alpha: 0.48),
+            blurRadius: 22,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: kTempTeal.withValues(alpha: 0.14),
+            blurRadius: 16,
+            spreadRadius: -6,
+          ),
+        ],
+      ),
+      child: CustomPaint(
+        foregroundPainter: const _TemperatureChassisHardwarePainter(),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _TemperatureChassisHardwarePainter extends CustomPainter {
+  const _TemperatureChassisHardwarePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final seamPaint = Paint()
+      ..color = _temperatureBrass.withValues(alpha: 0.38)
+      ..strokeWidth = 1;
+    canvas.drawLine(
+      const Offset(12, 12),
+      Offset(size.width - 12, 12),
+      seamPaint,
+    );
+
+    final boltPaint = Paint()
+      ..color = _temperatureBrass
+      ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 1.5);
+    for (final center in [
+      const Offset(14, 14),
+      Offset(size.width - 14, 14),
+      Offset(14, size.height - 14),
+      Offset(size.width - 14, size.height - 14),
+    ]) {
+      canvas.drawCircle(center, 4, boltPaint);
+      canvas.drawCircle(
+        center,
+        1.5,
+        Paint()..color = const Color(0xFF4F3914),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(
+    covariant _TemperatureChassisHardwarePainter oldDelegate,
+  ) => false;
 }
 
 class _TemperatureTargetSelector extends StatelessWidget {
@@ -460,10 +544,15 @@ class _TemperatureTargetSelector extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.glassCard.withValues(alpha: 0.48),
+        gradient: LinearGradient(
+          colors: [
+            _temperatureInset.withValues(alpha: 0.92),
+            const Color(0xFF091C20).withValues(alpha: 0.92),
+          ],
+        ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: _temperatureInk.withValues(alpha: 0.18),
+          color: _temperatureBrass.withValues(alpha: 0.42),
         ),
       ),
       child: Padding(
@@ -721,10 +810,10 @@ class _TemperatureActionRail extends StatelessWidget {
         DecoratedBox(
           key: const ValueKey('temperature-primary-actions'),
           decoration: BoxDecoration(
-            color: theme.glassCard.withValues(alpha: 0.34),
+            color: _temperatureInset.withValues(alpha: 0.86),
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: _temperatureInk.withValues(alpha: 0.16),
+              color: _temperatureBrass.withValues(alpha: 0.38),
             ),
           ),
           child: Column(
@@ -739,7 +828,7 @@ class _TemperatureActionRail extends StatelessWidget {
                     child: Divider(
                       height: 1,
                       thickness: 1,
-                      color: _temperatureInk.withValues(alpha: 0.12),
+                      color: _temperatureBrass.withValues(alpha: 0.28),
                     ),
                   ),
               ],
@@ -877,10 +966,10 @@ class _PanelNotice extends StatelessWidget {
       child: ExcludeSemantics(
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: theme.glassCard.withValues(alpha: 0.32),
+            color: _temperatureInset.withValues(alpha: 0.86),
             borderRadius: AppRadius.smallRadius,
             border: Border.all(
-              color: _temperatureInk.withValues(alpha: 0.16),
+              color: _temperatureBrass.withValues(alpha: 0.38),
             ),
           ),
           child: ConstrainedBox(

@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: Phase 3 behavior complete; Temperature visual reconciliation required; Phase 4 Water Quality not started
-Updated: 2026-07-31
-Latest product/workflow epochs: `DR-2026-07-30-083` / `WF-2026-07-31-028`
+Status: Phase 3R Temperature visual foundation complete; remaining reconciliation required; Phase 4 Water Quality not started
+Updated: 2026-08-01
+Latest product/workflow epochs: `DR-2026-08-01-084` / `WF-2026-07-31-028`
 Marker: `danio-temperature-visual-reconciliation-authority-2026-07-31/1`
 Authority epoch: `WF-2026-07-31-028`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -146,5 +146,4 @@ Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival 
 
 ## Next manual action
 
-Phase 3 behavior remains complete at `8b368dddfdab471eae009fcb9c3d6edfc10b927a`, tree `e29210dea320e705aaab3019315f526b3261db45`, but visual acceptance is unreconciled. `WF-2026-07-31-028` pins the exact non-shipping references and honest full-chassis contract; no product, asset, build, device, archive restoration, or Water Quality work belongs to this checkpoint.
-Stop after the clean pushed docs checkpoint. The next manual action is only test-first Phase 3R Temperature implementation under the current addendum after fresh authority checks; Phase 4 remains blocked and unstarted, and no automatic successor may be created.
+`DR-2026-08-01-084` establishes an owned local visual foundation: a single dark/brass Temperature chassis, ivory analogue dial, amber manual-reading window, state-derived LOW/TARGET/HIGH lamps, a substantial seven-day inset, and a local golden rendered from a 25.0 C manual log. It preserves the executed Tropical/Coldwater presets and derived Custom state; it does not add live telemetry, a sensor, heater/thermostat, power, or equipment-control claim. The archive reference remains non-shipping and was neither copied, restored, nor registered. This is not Phase 3R acceptance. Stop after the verified, pushed visual-foundation checkpoint. The next manual action, only after fresh authority checks, is a narrowly selected remaining Phase 3R Temperature visual/integration slice followed by independent visual review; Phase 4 remains blocked and unstarted, and no automatic successor may be created.
