@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: Phase 3R Temperature and Phase 4 Water Parameters integrated and verified; owned Android integration validation pending
+Status: Phase 3R Temperature and Phase 4 Water Parameters integrated and verified, including owned Android validation
 Updated: 2026-08-01
-Latest product/workflow epochs: `DR-2026-08-01-086` / `WF-2026-07-31-028`
+Latest product/workflow epochs: `DR-2026-08-01-087` / `WF-2026-07-31-028`
 Marker: `danio-temperature-visual-reconciliation-authority-2026-07-31/1`
 Authority epoch: `WF-2026-07-31-028`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -146,4 +146,4 @@ Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival 
 
 ## Next manual action
 
-`DR-2026-08-01-086` completes Phase 4 Water Parameters on `feature/danio-web-preview-demo-temperature`: original text-free Water chassis with recorded provenance; native local/manual parameter values, health, history, exact ranges, readable normal/large-text layouts, and one real `Log Water Test` route. Settled review resolved deterministic-golden, range-coverage, readability, and native-readout-overflow findings. Focused tests, Water golden, Visual `PASS|14694`, and reset-assisted Full `PASS|191772` pass. No archive byte, sensor, telemetry, dosing, filtering, automatic correction, equipment-control, account, network, or user-data work. Both archive images remain reference-only. Next: after the Water commit/push, use only owned `danio_api36` / `emulator-5554` to validate the actual integrated Temperature and Water app, including large text and accessibility; browser evidence is not Android validation.
+`DR-2026-08-01-087` completes the authorized Android integration on `feature/danio-web-preview-demo-temperature`: normal Quick Boot and serial-pinned `danio_api36` / `emulator-5554` preflight, the current Full-gate debug APK, Temperature presets/derived Custom, all six Water semantics, `Log Water Test` routing, and both 2.0x fallback layouts passed. Evidence is `docs/qa/2026-08-01-temperature-water-android-integration.md`. Font scale and the original Coldwater target were restored; the Water panel remains open. No app-data clear, AVD mutation, archive byte, sensor/telemetry/equipment claim, release/store/iOS/tablet/cloud, account, network, or real-user-data work. Both archive images remain reference-only. No further product work is authorized by this completed program.
