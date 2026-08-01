@@ -13,8 +13,8 @@ import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import 'stage_provider.dart';
 import 'water_quality/water_health_card.dart';
+import 'water_quality/water_hybrid_instrument.dart';
 import 'water_quality/water_param_card.dart';
-import 'water_quality/water_sparkline.dart';
 
 // ── Panel Content ─────────────────────────────────────────────────────────────
 
@@ -33,35 +33,7 @@ class WaterPanelContent extends ConsumerStatefulWidget {
   ConsumerState<WaterPanelContent> createState() => _WaterPanelContentState();
 }
 
-class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
-    with TickerProviderStateMixin {
-  late final AnimationController _ringAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    _ringAnim = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted) _ringAnim.forward(from: 0);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
-    _ringAnim.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 900);
-  }
-
-  @override
-  void dispose() {
-    _ringAnim.dispose();
-    super.dispose();
-  }
-
+class _WaterPanelContentState extends ConsumerState<WaterPanelContent> {
   String _formatTimestamp(DateTime ts) {
     final diff = DateTime.now().difference(ts);
     if (diff.inMinutes < 1) return 'Just now';
@@ -79,9 +51,13 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
     );
     final logsAsync = ref.watch(logsProvider(widget.tankId));
 
-    final test = latestTestAsync.value;
-    final lastEntry = latestEntryAsync.value;
-    final recentLogs = logsAsync.value ?? [];
+    final test = latestTestAsync.hasValue ? latestTestAsync.value : null;
+    final lastEntry = latestEntryAsync.hasValue ? latestEntryAsync.value : null;
+    final recentLogs = logsAsync.when(
+      data: (logs) => logs,
+      loading: () => <LogEntry>[],
+      error: (_, _) => <LogEntry>[],
+    );
 
     final ph = test?.ph;
     final ammonia = test?.ammonia;
@@ -142,73 +118,63 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
     ];
 
     final health = wqComputeHealth(params.map((p) => p.status).toList());
-    final allPerfect =
-        health == WqHealthStatus.excellent &&
-        params.any((p) => p.status != WqParamStatus.unknown);
-
+    final dataUnavailable =
+        latestTestAsync.hasError || latestEntryAsync.hasError;
+    final historyUnavailable = logsAsync.hasError;
     final sparkPh = _buildSparkData(recentLogs, 'ph');
     final sparkNO3 = _buildSparkData(recentLogs, 'nitrate');
 
     return SingleChildScrollView(
+      key: const ValueKey('water-panel-scroll'),
       physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
-        AppSpacing.md,
+        AppSpacing.sm,
         AppSpacing.md,
         AppSpacing.lg,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ── Header ───────────────────────────────────────────────────
-          _WqHeader(theme: widget.theme),
-          const SizedBox(height: AppSpacing.sm),
-
-          // ── Last tested ──────────────────────────────────────────────
-          if (lastEntry != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.access_time_rounded,
-                    size: 13,
-                    color: kWqCharcoal.withAlpha(100),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    'Last tested: ${_formatTimestamp(lastEntry.timestamp)}',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: kWqCharcoal.withAlpha(120),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          // ── Health score ring ────────────────────────────────────────
-          WqHealthScoreCard(health: health, ringAnim: _ringAnim),
-          const SizedBox(height: AppSpacing.md),
-
-          // ── Perfect! celebration badge ───────────────────────────────
-          if (allPerfect) ...[
-            const WqPerfectBadge(),
-            const SizedBox(height: AppSpacing.md),
-          ],
-
-          // ── Parameter cards (2-column grid) ─────────────────────────
-          WqParamGrid(params: params),
-          const SizedBox(height: AppSpacing.md),
-
-          // ── Sparklines (pH + Nitrate trend) ─────────────────────────
-          if (sparkPh.length >= 2 || sparkNO3.length >= 2) ...[
-            WqSparklineSection(phData: sparkPh, nitData: sparkNO3),
-            const SizedBox(height: AppSpacing.md),
-          ],
-
-          // ── Log Water Test button ────────────────────────────────────
-          _WqLogButton(tankId: widget.tankId),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final useHybrid =
+              MediaQuery.textScalerOf(context).scale(1) <= 1.2 &&
+              constraints.maxWidth >= WaterHybridInstrument.designWidth;
+          if (useHybrid) {
+            return WaterHybridInstrument(
+              params: params,
+              health: health,
+              lastEntry: lastEntry,
+              phHistory: sparkPh,
+              nitrateHistory: sparkNO3,
+              dataUnavailable: dataUnavailable,
+              historyUnavailable: historyUnavailable,
+              formatTimestamp: _formatTimestamp,
+              onLog: () {
+                ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
+                AppRoutes.toAddLog(
+                  context,
+                  widget.tankId,
+                  initialType: LogType.waterTest,
+                );
+              },
+            );
+          }
+          return _WaterResponsivePanel(
+            params: params,
+            health: health,
+            lastEntry: lastEntry,
+            dataUnavailable: dataUnavailable,
+            historyUnavailable: historyUnavailable,
+            formatTimestamp: _formatTimestamp,
+            onLog: () {
+              ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
+              AppRoutes.toAddLog(
+                context,
+                widget.tankId,
+                initialType: LogType.waterTest,
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -257,64 +223,188 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
   }
 }
 
-// ── Header ────────────────────────────────────────────────────────────────────
+/// Readable native fallback for large text and drawers narrower than the
+/// 220dp authored hybrid coordinate system.
+class _WaterResponsivePanel extends StatelessWidget {
+  final List<WqParamSpec> params;
+  final WqHealthStatus health;
+  final LogEntry? lastEntry;
+  final bool dataUnavailable;
+  final bool historyUnavailable;
+  final String Function(DateTime) formatTimestamp;
+  final VoidCallback onLog;
 
-class _WqHeader extends StatelessWidget {
-  final RoomTheme theme;
-
-  const _WqHeader({required this.theme});
+  const _WaterResponsivePanel({
+    required this.params,
+    required this.health,
+    required this.lastEntry,
+    required this.dataUnavailable,
+    required this.historyUnavailable,
+    required this.formatTimestamp,
+    required this.onLog,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: const BoxDecoration(
-            color: Color(0xFF3BBFB0),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.water_drop_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
         Text(
           'Water Quality',
-          style: AppTypography.titleMedium.copyWith(color: kWqCharcoal),
+          style: AppTypography.titleLarge.copyWith(
+            color: kWqCharcoal,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        if (dataUnavailable)
+          const _WaterResponsiveNotice(
+            label: 'Water test data unavailable',
+            detail: 'Check the local test log or add a new manual test.',
+          )
+        else
+          _WaterResponsiveNotice(
+            label: wqHealthLabel(health),
+            detail: lastEntry == null
+                ? 'No manual water test logged yet.'
+                : 'Last manual test: ${formatTimestamp(lastEntry!.timestamp)}',
+            accent: wqHealthColor(health),
+          ),
+        const SizedBox(height: AppSpacing.md),
+        for (final param in params) ...[
+          _WaterResponsiveParameter(param: param),
+          const SizedBox(height: AppSpacing.sm),
+        ],
+        _WaterResponsiveNotice(
+          label: historyUnavailable
+              ? 'History unavailable'
+              : 'Seven-day local history',
+          detail: historyUnavailable
+              ? 'The manual-log history could not be read.'
+              : 'pH and nitrate use only logged water-test entries.',
+        ),
+        const SizedBox(height: AppSpacing.md),
+        SizedBox(
+          height: 52,
+          child: Semantics(
+            label: 'Log Water Test',
+            button: true,
+            onTap: onLog,
+            child: ExcludeSemantics(
+              child: OutlinedButton.icon(
+                key: const ValueKey('water-responsive-log-test-action'),
+                onPressed: onLog,
+                icon: const Icon(Icons.science_outlined),
+                label: const Text('Log Water Test'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: kWqCharcoal,
+                  side: const BorderSide(color: kWqAmber, width: 1.5),
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 }
 
-// ── Log Button ────────────────────────────────────────────────────────────────
+class _WaterResponsiveNotice extends StatelessWidget {
+  final String label;
+  final String detail;
+  final Color accent;
 
-class _WqLogButton extends ConsumerWidget {
-  final String tankId;
-
-  const _WqLogButton({required this.tankId});
+  const _WaterResponsiveNotice({
+    required this.label,
+    required this.detail,
+    this.accent = kWqCharcoal,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      width: double.infinity,
-      height: 48,
-      child: OutlinedButton.icon(
-        onPressed: () {
-          ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
-          AppRoutes.toAddLog(context, tankId, initialType: LogType.waterTest);
-        },
-        icon: const Icon(Icons.science_rounded, size: 18),
-        label: Text('Log Water Test', style: AppTypography.labelLarge),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: kWqCharcoal,
-          side: BorderSide(color: kWqAmber, width: 1.5),
-          shape: const StadiumBorder(),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: '$label. $detail',
+      readOnly: true,
+      child: ExcludeSemantics(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.82),
+            border: Border.all(color: accent.withValues(alpha: 0.35)),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(detail, style: AppTypography.bodySmall),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WaterResponsiveParameter extends StatelessWidget {
+  final WqParamSpec param;
+
+  const _WaterResponsiveParameter({required this.param});
+
+  @override
+  Widget build(BuildContext context) {
+    final value = param.value == null
+        ? '—'
+        : (param.value! == param.value!.roundToDouble()
+              ? param.value!.toStringAsFixed(0)
+              : param.value!.toStringAsFixed(2));
+    return Semantics(
+      label:
+          '${param.label}, $value ${param.unit}, expected ${param.idealRange}, ${wqStatusLabel(param.status)}',
+      readOnly: true,
+      child: ExcludeSemantics(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.82),
+            border: Border.all(
+              color: wqStatusColor(param.status).withValues(alpha: 0.45),
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  param.label,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: kWqCharcoal,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  '$value ${param.unit}'.trim(),
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: wqStatusColor(param.status),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text('Expected ${param.idealRange}'),
+              ],
+            ),
+          ),
         ),
       ),
     );

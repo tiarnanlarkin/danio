@@ -1,8 +1,8 @@
 # Danio Active Handoff
 
-Status: Phase 3R Temperature integrated and verified; Phase 4 Water Parameters not started
+Status: Phase 3R Temperature and Phase 4 Water Parameters integrated and verified; owned Android integration validation pending
 Updated: 2026-08-01
-Latest product/workflow epochs: `DR-2026-08-01-085` / `WF-2026-07-31-028`
+Latest product/workflow epochs: `DR-2026-08-01-086` / `WF-2026-07-31-028`
 Marker: `danio-temperature-visual-reconciliation-authority-2026-07-31/1`
 Authority epoch: `WF-2026-07-31-028`
 Historical E0 marker: `danio-completion-roadmap-authority-lock-2026-07-15/1`
@@ -146,4 +146,4 @@ Trigger: Phase 2 restart-safe redesign checkpoint after the authorized archival 
 
 ## Next manual action
 
-`DR-2026-08-01-085` completes Phase 3R Temperature on `feature/danio-web-preview-demo-temperature`: its original text-free decorative chassis is recorded with provenance, Flutter owns every changing value/control/semantic, and the reviewed 390 x 844 local browser comparison plus Focused, Visual, Docs, and reset-assisted Full gates pass. The build/preview processes are stopped and the heavy lane is released. Begin only Phase 4 Water Parameters: rebuild its authority/model/action inventory, make a Water-specific text-free hybrid target with native overlays and real controls, use RED/GREEN plus Visual/Full, then obtain owned Android evidence after both instruments are integrated. Both archive images remain reference-only: never copy, restore, register, upload, or ship them. Browser evidence is not Android validation.
+`DR-2026-08-01-086` completes Phase 4 Water Parameters on `feature/danio-web-preview-demo-temperature`: original text-free Water chassis with recorded provenance; native local/manual parameter values, health, history, exact ranges, readable normal/large-text layouts, and one real `Log Water Test` route. Settled review resolved deterministic-golden, range-coverage, readability, and native-readout-overflow findings. Focused tests, Water golden, Visual `PASS|14694`, and reset-assisted Full `PASS|191772` pass. No archive byte, sensor, telemetry, dosing, filtering, automatic correction, equipment-control, account, network, or user-data work. Both archive images remain reference-only. Next: after the Water commit/push, use only owned `danio_api36` / `emulator-5554` to validate the actual integrated Temperature and Water app, including large text and accessibility; browser evidence is not Android validation.
